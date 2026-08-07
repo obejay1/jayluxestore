@@ -1,0 +1,43 @@
+{
+  "name": "jayjaystyles-ecommerce",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "admin:bootstrap": "node scripts/bootstrap-super-admin.mjs"
+  },
+  "dependencies": {
+    "@paystack/inline-js": "^2.22.0",
+    "axios": "^1.18.1",
+    "cloudinary": "^2.10.0",
+    "firebase": "^10.14.1",
+    "firebase-admin": "^14.2.0",
+    "framer-motion": "^12.42.2",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^4.2.1",
+    "lucide-react": "^1.27.0",
+    "next": "14.2.15",
+    "qrcode.react": "^4.2.0",
+    "react": "^18.3.1",
+    "react-barcode": "^1.6.1",
+    "react-compare-slider": "^4.0.0",
+    "react-dom": "^18.3.1",
+    "react-focus-lock": "^2.13.7",
+    "react-paystack": "^6.0.0",
+    "recharts": "^3.8.1",
+    "resend": "^6.18.1",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.30",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "14.2.15",
+    "postcss": "^8.4.31",
+    "typescript": "^5.5.4"
+  }
+}

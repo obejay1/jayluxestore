@@ -1,0 +1,143 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function adminProfilePath() {
+      return /databases/$(database)/documents/adminUsers/$(request.auth.uid);
+    }
+
+    function hasActiveAdminProfile() {
+      return signedIn()
+        && request.auth.token.admin == true
+        && exists(adminProfilePath())
+        && get(adminProfilePath()).data.status == 'active'
+        && (
+          get(adminProfilePath()).data.role == 'super_admin'
+          || get(adminProfilePath()).data.role == 'admin'
+          || get(adminProfilePath()).data.role == 'staff'
+        );
+    }
+
+    function isAdminUser() {
+      return hasActiveAdminProfile();
+    }
+
+    function isSuperAdmin() {
+      return hasActiveAdminProfile()
+        && get(adminProfilePath()).data.role == 'super_admin';
+    }
+
+    function hasPermission(permission) {
+      return isSuperAdmin()
+        || (
+          hasActiveAdminProfile()
+          && get(adminProfilePath()).data.permissions is list
+          && get(adminProfilePath()).data.permissions.hasAny([permission])
+        );
+    }
+
+    function isOwner(userId) {
+      return signedIn() && request.auth.uid == userId;
+    }
+
+    match /products/{document=**} {
+      allow read: if true;
+      allow write: if hasPermission('products');
+    }
+
+    match /categories/{document=**} {
+      allow read: if true;
+      allow write: if hasPermission('categories');
+    }
+
+    match /settings/{document=**} {
+      allow read: if true;
+      allow write: if hasPermission('settings');
+    }
+
+    match /bridalPackages/{document=**} {
+      allow read: if true;
+      allow write: if hasPermission('products');
+    }
+
+    match /bridalGallery/{document=**} {
+      allow read: if true;
+      allow write: if hasPermission('content');
+    }
+
+    match /transformations/{document=**} {
+      allow read: if true;
+      allow write: if hasPermission('content');
+    }
+
+    match /testimonials/{document=**} {
+      allow read: if true;
+      allow write: if hasPermission('testimonials');
+    }
+
+    match /coupons/{document=**} {
+      allow read: if true;
+      allow write: if hasPermission('promotions');
+    }
+
+    match /users/{userId} {
+      allow read: if isOwner(userId) || hasPermission('customers');
+      allow create: if isOwner(userId)
+        && request.resource.data.id == request.auth.uid
+        && request.resource.data.uid == request.auth.uid;
+      allow update: if hasPermission('customers') || (
+        isOwner(userId)
+        && request.resource.data.id == request.auth.uid
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.email == resource.data.email
+        && request.resource.data.emailLower == resource.data.emailLower
+      );
+      allow delete: if hasPermission('customers');
+    }
+
+    match /adminUsers/{userId} {
+      allow read: if isOwner(userId) || isSuperAdmin();
+      allow write: if false;
+    }
+
+    match /adminActivity/{activityId} {
+      allow read, write: if false;
+    }
+
+    match /sessions/{sessionId} {
+      allow create: if signedIn()
+        && request.resource.data.userId == request.auth.uid;
+      allow read, update, delete: if hasPermission('customers');
+    }
+
+    match /bookings/{bookingId} {
+      allow read, update, delete: if hasPermission('bookings');
+      allow create: if false;
+    }
+
+    match /newsletterSubscribers/{subscriberId} {
+      allow read, write: if false;
+    }
+
+    match /orders/{orderId} {
+      allow read, write: if hasPermission('orders') || hasPermission('reports');
+    }
+
+    match /contactMessages/{messageId} {
+      allow read: if hasPermission('orders');
+      allow write: if false;
+    }
+
+    match /smsLogs/{logId} {
+      allow read: if hasPermission('orders');
+      allow write: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

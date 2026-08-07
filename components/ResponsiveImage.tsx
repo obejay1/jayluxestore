@@ -1,0 +1,36 @@
+'use client';
+
+import Image, { type ImageProps } from 'next/image';
+import { useEffect, useState } from 'react';
+
+import { getSafeImageSource } from '@/lib/images';
+
+type ResponsiveImageProps = Omit<ImageProps, 'src' | 'onError'> & {
+  src?: string | null;
+  fallbackSrc?: string;
+};
+
+export default function ResponsiveImage({
+  src,
+  fallbackSrc = '/product-placeholder.png',
+  alt,
+  ...props
+}: ResponsiveImageProps) {
+  const [imageSource, setImageSource] = useState(getSafeImageSource(src, fallbackSrc));
+
+  useEffect(() => {
+    setImageSource(getSafeImageSource(src, fallbackSrc));
+  }, [src, fallbackSrc]);
+
+  return (
+    <Image
+      {...props}
+      src={imageSource}
+      alt={alt}
+      onError={() => {
+        const safeFallback = getSafeImageSource(null, fallbackSrc);
+        if (imageSource !== safeFallback) setImageSource(safeFallback);
+      }}
+    />
+  );
+}

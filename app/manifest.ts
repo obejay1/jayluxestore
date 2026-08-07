@@ -1,0 +1,17 @@
+import type { MetadataRoute } from 'next';
+
+export default function manifest(): MetadataRoute.Manifest {
+  return {
+    name: 'JayLuxe',
+    short_name: 'JayLuxe',
+    description: 'Luxury beauty, fashion, bridal and lifestyle essentials.',
+    start_url: '/',
+    display: 'standalone',
+    background_color: '#faf8f4',
+    theme_color: '#111111',
+    icons: [
+      { src: '/logo.png', sizes: '192x192', type: 'image/png' },
+      { src: '/logo.png', sizes: '512x512', type: 'image/png' },
+    ],
+  };
+}

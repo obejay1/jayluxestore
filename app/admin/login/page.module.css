@@ -1,0 +1,387 @@
+.page {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: clamp(16px, 4vw, 48px);
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, rgba(12, 11, 9, 0.96), rgba(26, 23, 19, 0.98)),
+    #11100e;
+}
+
+.glowOne,
+.glowTwo {
+  position: absolute;
+  z-index: -1;
+  width: min(55vw, 680px);
+  aspect-ratio: 1;
+  border-radius: 999px;
+  filter: blur(16px);
+  pointer-events: none;
+}
+
+.glowOne {
+  top: -30%;
+  left: -18%;
+  background: radial-gradient(circle, rgba(205, 165, 69, 0.24), transparent 68%);
+}
+
+.glowTwo {
+  right: -22%;
+  bottom: -34%;
+  background: radial-gradient(circle, rgba(205, 165, 69, 0.14), transparent 70%);
+}
+
+.card {
+  display: grid;
+  grid-template-columns: minmax(300px, 0.92fr) minmax(360px, 1.08fr);
+  width: min(980px, 100%);
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid rgba(222, 185, 94, 0.3);
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 34px 100px rgba(0, 0, 0, 0.42);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+.brandPanel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 560px;
+  padding: clamp(38px, 6vw, 74px);
+  background:
+    radial-gradient(circle at 50% 0%, rgba(209, 168, 69, 0.17), transparent 42%),
+    linear-gradient(145deg, rgba(18, 17, 15, 0.98), rgba(35, 31, 26, 0.98));
+  color: #fff;
+  text-align: center;
+}
+
+.logoWrap {
+  display: grid;
+  place-items: center;
+  width: 102px;
+  height: 102px;
+  margin-bottom: 24px;
+  overflow: hidden;
+  border: 1px solid rgba(222, 185, 94, 0.34);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.28);
+}
+
+.logo {
+  width: 88px;
+  height: 88px;
+  object-fit: contain;
+}
+
+.brandEyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  color: #d9b45d;
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.brandPanel h1 {
+  margin: 0;
+  color: #d4aa46;
+  font-family: var(--font-jayluxe-serif), Georgia, serif;
+  font-size: clamp(3rem, 5.5vw, 4.4rem);
+  font-weight: 600;
+  line-height: 0.95;
+}
+
+.brandPanel > p {
+  margin: 18px 0 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.74rem;
+  font-weight: 800;
+  line-height: 1.65;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.trustNote {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  max-width: 310px;
+  margin-top: 38px;
+  padding: 14px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.77rem;
+  line-height: 1.55;
+  text-align: left;
+}
+
+.trustNote svg {
+  flex: 0 0 auto;
+  color: #d4aa46;
+}
+
+.formPanel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  padding: clamp(38px, 6vw, 74px);
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.heading > span {
+  display: block;
+  margin-bottom: 12px;
+  color: #9d741b;
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.heading h2 {
+  margin: 0;
+  color: #171511;
+  font-family: var(--font-jayluxe-serif), Georgia, serif;
+  font-size: clamp(2.4rem, 4.4vw, 3.8rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.heading p {
+  max-width: 430px;
+  margin: 18px 0 0;
+  color: #746d64;
+  font-size: 0.98rem;
+  line-height: 1.7;
+}
+
+.form {
+  display: grid;
+  gap: 14px;
+  width: 100%;
+  margin-top: 34px;
+}
+
+.form label {
+  color: #302b24;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.pinField {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+
+.pinField > svg {
+  position: absolute;
+  top: 50%;
+  left: 17px;
+  z-index: 2;
+  color: #9d741b;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.pinField input {
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: 58px;
+  margin: 0;
+  padding: 0 52px 0 50px;
+  border: 1px solid #dbd4c9;
+  border-radius: 14px;
+  outline: none;
+  background: rgba(250, 248, 244, 0.92);
+  color: #181511;
+  font: inherit;
+  font-size: 1rem;
+  transition: border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+}
+
+.pinField input:focus {
+  border-color: #c79b31;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(199, 155, 49, 0.13);
+}
+
+.visibilityButton {
+  position: absolute;
+  top: 50%;
+  right: 9px;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: #6f685f;
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+
+.visibilityButton:hover:not(:disabled) {
+  background: rgba(199, 155, 49, 0.1);
+  color: #8d6617;
+}
+
+.error {
+  margin: 0;
+  padding: 11px 13px;
+  border: 1px solid rgba(185, 28, 28, 0.2);
+  border-radius: 11px;
+  background: #fff3f3;
+  color: #a61b1b;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.submitButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 58px;
+  margin-top: 4px;
+  padding: 14px 20px;
+  border: 1px solid #171511;
+  border-radius: 14px;
+  background: #171511;
+  color: #fff;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 900;
+  cursor: pointer;
+  transition: transform 180ms ease, border-color 180ms ease, background-color 180ms ease, color 180ms ease;
+}
+
+.submitButton:hover:not(:disabled) {
+  border-color: #c79b31;
+  background: #c79b31;
+  color: #171511;
+  transform: translateY(-2px);
+}
+
+.submitButton:disabled,
+.visibilityButton:disabled,
+.pinField input:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+}
+
+.securityNote {
+  margin: 24px 0 0;
+  color: #9a9389;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+@media (max-width: 780px) {
+  .page {
+    place-items: start center;
+    padding: 14px;
+  }
+
+  .card {
+    grid-template-columns: minmax(0, 1fr);
+    width: min(100%, 580px);
+    border-radius: 22px;
+  }
+
+  .brandPanel {
+    min-height: 0;
+    padding: 34px 24px;
+  }
+
+  .logoWrap {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 16px;
+    border-radius: 17px;
+  }
+
+  .logo {
+    width: 68px;
+    height: 68px;
+  }
+
+  .brandPanel h1 {
+    font-size: 2.8rem;
+  }
+
+  .trustNote {
+    display: none;
+  }
+
+  .formPanel {
+    padding: 34px 24px 38px;
+  }
+}
+
+@media (max-width: 380px) {
+  .page {
+    padding: 8px;
+  }
+
+  .card {
+    border-radius: 17px;
+  }
+
+  .brandPanel,
+  .formPanel {
+    padding-inline: 18px;
+  }
+
+  .heading h2 {
+    font-size: 2.1rem;
+  }
+
+  .pinField input,
+  .submitButton {
+    min-height: 54px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pinField input,
+  .submitButton {
+    transition: none;
+  }
+}
+
+.securityNote a {
+  color: #8d6617;
+  text-decoration: none;
+}
+
+.securityNote a:hover {
+  text-decoration: underline;
+}

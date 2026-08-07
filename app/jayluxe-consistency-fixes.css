@@ -1,0 +1,356 @@
+/* =========================================================
+   JAYLUXE CROSS-PAGE CONSISTENCY FIXES
+   Imported last to resolve legacy cascade conflicts without
+   changing Firebase, checkout, cart, wishlist or admin logic.
+========================================================= */
+
+:root {
+  --jl-fix-ink: #1b1712;
+  --jl-fix-muted: #625b52;
+  --jl-fix-gold: #c89f3d;
+  --jl-fix-paper: #fbf8f2;
+  --jl-fix-line: rgba(64, 50, 30, 0.14);
+}
+
+/* ---------- Newsletter: one readable light treatment everywhere ---------- */
+.global-footer-newsletter {
+  color: var(--jl-fix-ink) !important;
+  border: 1px solid rgba(154, 116, 35, 0.2) !important;
+  background:
+    radial-gradient(circle at top right, rgba(217, 185, 111, 0.18), transparent 38%),
+    linear-gradient(145deg, #fffdf9 0%, #f7f0e4 100%) !important;
+  box-shadow: 0 22px 60px rgba(14, 12, 9, 0.18) !important;
+}
+
+.global-footer-newsletter > div > span {
+  color: #8a651b !important;
+}
+
+.global-footer-newsletter h2,
+body .global-footer-newsletter h2 {
+  color: var(--jl-fix-ink) !important;
+  text-wrap: balance;
+}
+
+.global-footer-newsletter p,
+body .global-footer-newsletter p {
+  color: var(--jl-fix-muted) !important;
+}
+
+.global-footer-newsletter-control {
+  border: 1px solid rgba(55, 44, 29, 0.15) !important;
+  background: rgba(255, 255, 255, 0.88) !important;
+  box-shadow: 0 10px 26px rgba(38, 29, 18, 0.06) !important;
+}
+
+.global-footer-newsletter-control input {
+  color: var(--jl-fix-ink) !important;
+  caret-color: var(--jl-fix-gold) !important;
+}
+
+.global-footer-newsletter-control input::placeholder {
+  color: #80766a !important;
+  opacity: 1 !important;
+}
+
+.global-footer-newsletter-control button {
+  background: var(--jl-fix-gold) !important;
+  color: #17130f !important;
+  transition: transform 180ms ease, background-color 180ms ease, box-shadow 180ms ease !important;
+}
+
+.global-footer-newsletter-control button:hover:not(:disabled) {
+  background: #d7b65e !important;
+  box-shadow: 0 10px 24px rgba(154, 116, 35, 0.22) !important;
+  transform: translateY(-1px);
+}
+
+.global-footer-newsletter-control button:focus-visible,
+.global-footer-newsletter-control input:focus-visible {
+  outline: 3px solid rgba(200, 159, 61, 0.3) !important;
+  outline-offset: 2px !important;
+}
+
+.global-footer-newsletter small {
+  color: #27663b !important;
+}
+
+.global-footer-newsletter small.error {
+  color: #9f1d2f !important;
+}
+
+/* ---------- Footer: five aligned desktop columns ---------- */
+.global-footer-grid {
+  align-items: start !important;
+}
+
+.global-footer-brand,
+.global-footer-links,
+.global-footer-contact {
+  min-width: 0 !important;
+  align-self: start !important;
+}
+
+.global-footer-links h3,
+.global-footer-contact h3 {
+  min-height: 1.35em;
+  margin-top: 0 !important;
+}
+
+.global-footer-contact > a {
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+.global-footer-contact > a span {
+  min-width: 0 !important;
+  overflow-wrap: break-word !important;
+  word-break: normal !important;
+}
+
+@media (min-width: 1024px) {
+  .global-footer-grid {
+    grid-template-columns: minmax(220px, 1.35fr) repeat(4, minmax(118px, 0.82fr)) !important;
+    gap: clamp(22px, 2.8vw, 46px) !important;
+  }
+
+  .global-footer-brand,
+  .global-footer-links,
+  .global-footer-contact {
+    grid-column: auto !important;
+    width: auto !important;
+    padding: 0 !important;
+    border: 0 !important;
+    text-align: left !important;
+  }
+
+  .global-footer-socials {
+    justify-content: flex-start !important;
+  }
+
+  .global-footer-links ul {
+    justify-items: start !important;
+  }
+
+  .global-footer-contact > a {
+    justify-content: flex-start !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .global-footer-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 34px 28px !important;
+  }
+
+  .global-footer-brand {
+    grid-column: 1 / -1 !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .global-footer-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .global-footer-brand,
+  .global-footer-links,
+  .global-footer-contact {
+    grid-column: auto !important;
+    width: 100% !important;
+  }
+
+  .global-footer-contact > a span {
+    overflow-wrap: break-word !important;
+  }
+}
+
+/* ---------- Categories: same 2 / 3 / 4 grid as Home ---------- */
+.jl-category-page-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  grid-auto-rows: 1fr !important;
+  align-items: stretch !important;
+  gap: 12px !important;
+  width: min(100%, 1280px) !important;
+  margin-inline: auto !important;
+  padding-inline: 16px !important;
+}
+
+.jl-category-page-grid > * {
+  min-width: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.jl-category-page-card {
+  display: flex !important;
+  min-width: 0 !important;
+  height: 100% !important;
+  flex-direction: column !important;
+}
+
+.jl-category-page-media {
+  aspect-ratio: 4 / 3 !important;
+}
+
+.jl-category-page-copy {
+  min-width: 0 !important;
+  flex: 1 1 auto !important;
+}
+
+.jl-category-page-copy h2,
+.jl-category-page-copy p {
+  overflow-wrap: break-word !important;
+  word-break: normal !important;
+}
+
+.jl-category-loading,
+.jl-category-error {
+  grid-column: 1 / -1 !important;
+}
+
+@media (min-width: 768px) {
+  .jl-category-page-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 16px !important;
+    padding-inline: 20px !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .jl-category-page-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 20px !important;
+  }
+}
+
+/* ---------- Reliable mobile menu layer ---------- */
+.jl-header-menu-button {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (max-width: 1040px) {
+  .jl-header-menu-button {
+    display: inline-grid !important;
+    place-items: center !important;
+    width: 44px !important;
+    min-width: 44px !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+  }
+
+  .jl-mobile-menu-layer {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 9999 !important;
+    display: block !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transition: opacity 220ms ease, visibility 0s linear 280ms !important;
+  }
+
+  .jl-mobile-menu-layer.is-open {
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    transition-delay: 0s !important;
+  }
+
+  .jl-mobile-menu-backdrop {
+    position: absolute !important;
+    inset: 0 !important;
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: rgba(13, 11, 9, 0.58) !important;
+    opacity: 0 !important;
+    pointer-events: auto !important;
+    transition: opacity 220ms ease !important;
+  }
+
+  .jl-mobile-menu-layer.is-open .jl-mobile-menu-backdrop {
+    opacity: 1 !important;
+  }
+
+  .jl-mobile-menu {
+    position: absolute !important;
+    top: 0 !important;
+    right: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    width: min(92vw, 420px) !important;
+    max-width: 100% !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    background: #ffffff !important;
+    color: var(--jl-fix-ink) !important;
+    transform: translate3d(105%, 0, 0) !important;
+    transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1) !important;
+    overscroll-behavior: contain !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .jl-mobile-menu-layer.is-open .jl-mobile-menu {
+    transform: translate3d(0, 0, 0) !important;
+  }
+
+  .jl-mobile-menu nav a,
+  .jl-mobile-menu-links a,
+  .jl-mobile-menu-heading button {
+    min-height: 44px !important;
+  }
+
+  .jl-mobile-menu nav a.active,
+  .jl-mobile-menu nav a[aria-current='page'] {
+    color: #7b5917 !important;
+    background: #f7f0e2 !important;
+  }
+}
+
+@media (max-width: 430px) {
+  .jl-mobile-menu {
+    width: 100% !important;
+  }
+}
+
+@media (min-width: 1041px) {
+  .jl-mobile-menu-layer {
+    display: none !important;
+  }
+}
+
+/* ---------- Conservative cross-page typography consistency ---------- */
+.jl-main-content {
+  color: var(--jl-fix-ink);
+}
+
+.jl-main-content :is(h1, h2, h3) {
+  text-wrap: balance;
+}
+
+.jl-main-content :is(p, li, label, input, select, textarea, button) {
+  font-family: var(--font-jayluxe-sans), Arial, sans-serif;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jl-mobile-menu-layer,
+  .jl-mobile-menu,
+  .jl-mobile-menu-backdrop,
+  .global-footer-newsletter-control button {
+    transition-duration: 0.01ms !important;
+  }
+}

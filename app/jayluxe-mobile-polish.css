@@ -1,0 +1,597 @@
+/* =========================================================
+   JAYLUXE MOBILE POLISH
+   Scope: phones and tablets only (320px–768px).
+   Imported last so desktop styles and business logic remain unchanged.
+========================================================= */
+
+@media (max-width: 768px) {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html,
+  body,
+  .jl-main-content {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip !important;
+  }
+
+  /* ---------- Product details ---------- */
+
+  .jl-product-page {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: clip !important;
+  }
+
+  .jl-product-wrap {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 24px !important;
+    width: calc(100% - 32px) !important;
+    max-width: 720px !important;
+    margin-inline: auto !important;
+    padding: 20px 0 48px !important;
+  }
+
+  .jl-product-gallery,
+  .jl-product-info,
+  .jl-product-purchase-box,
+  .jl-product-tabs,
+  .jl-related-products {
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  /* The link was removed from the page; this also hides stale cached markup. */
+  .jl-product-back {
+    display: none !important;
+  }
+
+  .jl-product-main-image {
+    width: 100% !important;
+    max-width: 100% !important;
+    aspect-ratio: 4 / 5 !important;
+    border-radius: 16px !important;
+    cursor: default !important;
+  }
+
+  .jl-product-main-image img {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    object-fit: cover !important;
+    transform: none !important;
+  }
+
+  .jl-product-thumbs {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-top: 10px !important;
+    padding-bottom: 4px !important;
+    overflow-x: auto !important;
+    overscroll-behavior-inline: contain;
+  }
+
+  .jl-product-thumbs button {
+    flex: 0 0 70px !important;
+    width: 70px !important;
+    height: 78px !important;
+  }
+
+  .jl-product-info {
+    width: 100% !important;
+    padding-top: 0 !important;
+  }
+
+  .jl-product-breadcrumb {
+    flex-wrap: wrap !important;
+    margin-bottom: 14px !important;
+  }
+
+  .jl-product-info h1 {
+    max-width: 100% !important;
+    margin-bottom: 13px !important;
+    font-size: clamp(2rem, 10vw, 3.15rem) !important;
+    line-height: 1.02 !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .jl-product-rating,
+  .jl-product-price-row {
+    max-width: 100% !important;
+    flex-wrap: wrap !important;
+  }
+
+  .jl-product-meta-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+
+  .jl-product-meta-grid > span:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .jl-product-meta-grid strong {
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .jl-product-desc {
+    max-width: 100% !important;
+    font-size: 0.92rem !important;
+    line-height: 1.7 !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .jl-product-benefits {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 8px !important;
+    margin: 20px 0 !important;
+  }
+
+  .jl-product-benefits > div {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .jl-product-purchase-box {
+    width: 100% !important;
+    margin-top: 20px !important;
+    padding: 16px !important;
+    border-radius: 14px !important;
+  }
+
+  .jl-product-qty {
+    gap: 14px !important;
+    flex-wrap: wrap !important;
+  }
+
+  .jl-product-actions {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 9px !important;
+  }
+
+  .jl-product-actions button,
+  .jl-wishlist-action {
+    grid-column: auto !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 48px !important;
+    white-space: normal !important;
+  }
+
+  .jl-product-tabs {
+    width: calc(100% - 32px) !important;
+    margin: 0 auto 24px !important;
+    border-radius: 14px !important;
+  }
+
+  .jl-product-tab-buttons {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    overscroll-behavior-inline: contain;
+  }
+
+  .jl-product-tab-buttons button {
+    flex: 0 0 auto !important;
+    min-width: max-content !important;
+    padding: 14px 16px !important;
+  }
+
+  .jl-product-tab-content {
+    min-height: 0 !important;
+    padding: 20px 16px !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .jl-spec-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .jl-spec-grid > div {
+    align-items: flex-start !important;
+    gap: 12px !important;
+  }
+
+  .jl-spec-grid strong {
+    min-width: 0 !important;
+    text-align: right !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .jl-related-products {
+    width: calc(100% - 32px) !important;
+    padding: 42px 0 !important;
+  }
+
+  /* ---------- Home feature cards ---------- */
+
+  .jj-trust {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 10px !important;
+    width: calc(100% - 32px) !important;
+    margin: 16px auto 0 !important;
+    overflow: visible !important;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .jj-trust > div {
+    display: grid !important;
+    grid-template-columns: 38px minmax(0, 1fr) !important;
+    grid-template-rows: auto auto !important;
+    align-items: center !important;
+    gap: 3px 12px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 92px !important;
+    padding: 16px !important;
+    border: 1px solid rgba(41, 34, 24, 0.1) !important;
+    border-radius: 15px !important;
+    background: #ffffff !important;
+    text-align: left !important;
+  }
+
+  .jj-trust > div svg {
+    grid-row: 1 / 3 !important;
+    width: 24px !important;
+    height: 24px !important;
+  }
+
+  .jj-trust h3,
+  .jj-trust p {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .jj-trust h3 {
+    margin: 0 !important;
+    font-size: 0.9rem !important;
+    line-height: 1.3 !important;
+  }
+
+  .jj-trust p {
+    font-size: 0.76rem !important;
+    line-height: 1.4 !important;
+  }
+
+  .jj-promo-rail > a {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    height: 100% !important;
+    padding: 22px 18px !important;
+  }
+
+  .jj-promo-rail h2,
+  .jj-promo-rail h3,
+  .jj-promo-rail p,
+  .jj-promo-rail strong,
+  .jj-promo-rail span {
+    max-width: 100% !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  /* ---------- Mobile footer ---------- */
+
+  .global-footer-pro {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: clip !important;
+    padding-bottom: calc(84px + env(safe-area-inset-bottom)) !important;
+  }
+
+  .global-footer-shell {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+
+  .global-footer-newsletter {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 20px !important;
+    width: calc(100% - 32px) !important;
+    max-width: 680px !important;
+    margin: 0 auto !important;
+    padding: 28px 18px !important;
+    border-radius: 18px !important;
+    text-align: center !important;
+  }
+
+  .global-footer-newsletter > div,
+  .global-footer-newsletter form,
+  .global-footer-newsletter-control {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .global-footer-newsletter > div > span {
+    justify-content: center !important;
+    max-width: 100% !important;
+    white-space: normal !important;
+  }
+
+  .global-footer-newsletter h2 {
+    max-width: 100% !important;
+    margin-inline: auto !important;
+    font-size: clamp(1.65rem, 8.5vw, 2.25rem) !important;
+    line-height: 1.12 !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+  }
+
+  .global-footer-newsletter p {
+    max-width: 100% !important;
+    font-size: 0.86rem !important;
+    line-height: 1.6 !important;
+  }
+
+  .global-footer-newsletter form {
+    display: block !important;
+    min-height: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+  }
+
+  .global-footer-newsletter-control {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 48px !important;
+    gap: 8px !important;
+    min-height: 50px !important;
+    padding: 5px !important;
+    border: 1px solid rgba(255, 255, 255, 0.22) !important;
+    border-radius: 13px !important;
+    background: rgba(255, 255, 255, 0.06) !important;
+  }
+
+  .global-footer-newsletter-control input {
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 44px !important;
+    padding: 0 11px !important;
+    font-size: 0.85rem !important;
+  }
+
+  .global-footer-newsletter-control button {
+    width: 44px !important;
+    min-width: 44px !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .global-footer-newsletter small {
+    position: static !important;
+    display: block !important;
+    width: 100% !important;
+    margin-top: 10px !important;
+    text-align: center !important;
+  }
+
+  .global-footer-grid {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 0 !important;
+    width: calc(100% - 32px) !important;
+    max-width: 680px !important;
+    margin: 0 auto !important;
+    padding: 42px 0 28px !important;
+  }
+
+  .global-footer-brand,
+  .global-footer-links,
+  .global-footer-contact {
+    grid-column: auto !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    padding: 22px 0 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    text-align: center !important;
+  }
+
+  .global-footer-contact {
+    border-bottom: 0 !important;
+  }
+
+  .global-footer-wordmark {
+    display: inline-flex !important;
+    justify-content: center !important;
+    max-width: 100% !important;
+    font-size: clamp(2rem, 10vw, 2.8rem) !important;
+  }
+
+  .global-footer-brand p {
+    max-width: 34rem !important;
+    margin: 14px auto 0 !important;
+    font-size: 0.86rem !important;
+    line-height: 1.7 !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+  }
+
+  .global-footer-socials {
+    justify-content: center !important;
+    width: 100% !important;
+    margin-top: 20px !important;
+  }
+
+  .global-footer-socials a {
+    flex: 0 0 auto !important;
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+  }
+
+  .global-footer-links h3 {
+    margin: 0 0 16px !important;
+    font-size: 0.75rem !important;
+  }
+
+  .global-footer-links ul {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    justify-items: center !important;
+    gap: 11px !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .global-footer-links li,
+  .global-footer-links a,
+  .global-footer-links p {
+    max-width: 100% !important;
+    margin: 0 !important;
+    font-size: 0.86rem !important;
+    line-height: 1.55 !important;
+    white-space: normal !important;
+    word-break: normal !important;
+  }
+
+  .global-footer-contact > a {
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: center !important;
+    gap: 9px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    padding: 5px 0 !important;
+  }
+
+  .global-footer-contact > a span {
+    min-width: 0 !important;
+    max-width: calc(100% - 28px) !important;
+    text-align: left !important;
+    overflow-wrap: anywhere !important;
+    word-break: normal !important;
+  }
+
+  .global-footer-bottom {
+    display: flex !important;
+    align-items: center !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    width: calc(100% - 32px) !important;
+    max-width: 680px !important;
+    margin: 0 auto !important;
+    padding: 22px 0 28px !important;
+    text-align: center !important;
+  }
+
+  .global-footer-bottom p {
+    width: 100% !important;
+    margin: 0 !important;
+    font-size: 0.72rem !important;
+    line-height: 1.5 !important;
+    white-space: normal !important;
+    word-break: normal !important;
+  }
+
+  /* ---------- General mobile safety ---------- */
+
+  .jl-main-content img,
+  .jl-main-content video,
+  .jl-main-content canvas,
+  .jl-main-content iframe {
+    max-width: 100% !important;
+  }
+
+  .jl-main-content button,
+  .jl-main-content [role='button'] {
+    max-width: 100% !important;
+  }
+
+  .jl-main-content input,
+  .jl-main-content select,
+  .jl-main-content textarea {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+@media (min-width: 640px) and (max-width: 768px) {
+  .jj-trust {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+
+  .jj-trust > div {
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-rows: auto auto auto !important;
+    justify-items: center !important;
+    min-height: 150px !important;
+    text-align: center !important;
+  }
+
+  .jj-trust > div svg {
+    grid-row: auto !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .jl-product-wrap,
+  .jl-product-tabs,
+  .jl-related-products {
+    width: calc(100% - 28px) !important;
+  }
+
+  .jl-product-gallery-badges {
+    top: 10px !important;
+    left: 10px !important;
+  }
+
+  .jl-product-heart {
+    top: 10px !important;
+    right: 10px !important;
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  .global-footer-newsletter,
+  .global-footer-grid,
+  .global-footer-bottom {
+    width: calc(100% - 24px) !important;
+  }
+}
+
+@media (max-width: 340px) {
+  .jl-product-wrap,
+  .jl-product-tabs,
+  .jl-related-products {
+    width: calc(100% - 24px) !important;
+  }
+
+  .jl-product-meta-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .jl-product-meta-grid > span:last-child {
+    grid-column: auto;
+  }
+
+  .global-footer-newsletter,
+  .global-footer-grid,
+  .global-footer-bottom {
+    width: calc(100% - 20px) !important;
+  }
+}
+
+@media (max-width: 768px) and (pointer: coarse) {
+  .jl-product-main-image img {
+    transform: none !important;
+  }
+}

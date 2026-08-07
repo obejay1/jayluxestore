@@ -1,0 +1,1254 @@
+/* =========================================================
+   JAYLUXE MOBILE-ONLY REFINEMENT
+   Scope: 320px–768px. Imported after every other stylesheet.
+   Nothing in this file applies above 768px.
+========================================================= */
+
+@media (max-width: 768px) {
+  html,
+  body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip !important;
+  }
+
+  body {
+    min-width: 320px;
+  }
+
+  .jl-main-content,
+  .jl-main-content > *,
+  .jl-main-content main,
+  .jl-main-content section,
+  .jl-main-content article,
+  .jl-main-content aside,
+  .jl-main-content form,
+  .jl-main-content div {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  img,
+  video,
+  canvas,
+  svg {
+    max-width: 100%;
+  }
+
+  button,
+  a,
+  input,
+  select,
+  textarea {
+    min-width: 0;
+  }
+
+  /* ---------- Mobile header and drawer ---------- */
+
+  .jl-site-header {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 2200 !important;
+    width: 100% !important;
+  }
+
+  .jl-announcement-bar {
+    min-height: 32px !important;
+    padding: 6px 12px !important;
+    gap: 8px !important;
+    font-size: 0.62rem !important;
+    line-height: 1.25 !important;
+  }
+
+  .jl-announcement-bar span {
+    min-width: 0 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  .jl-announcement-bar a {
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+  }
+
+  .jl-header-main {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    align-items: center !important;
+    gap: 8px !important;
+    width: calc(100% - 20px) !important;
+    min-height: 64px !important;
+    margin-inline: auto !important;
+    padding-block: 8px !important;
+  }
+
+  .jl-header-left,
+  .jl-header-brand {
+    min-width: 0 !important;
+  }
+
+  .jl-header-brand {
+    gap: 8px !important;
+    overflow: hidden !important;
+  }
+
+  .jl-header-logo {
+    flex: 0 0 auto !important;
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  .jl-header-brand-copy {
+    min-width: 0 !important;
+  }
+
+  .jl-header-brand-copy strong {
+    display: block !important;
+    overflow: hidden !important;
+    font-size: 1.16rem !important;
+    line-height: 1.1 !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  .jl-header-brand-copy small {
+    display: none !important;
+  }
+
+  .jl-header-nav {
+    display: none !important;
+  }
+
+  .jl-header-actions {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 3px !important;
+    min-width: max-content !important;
+  }
+
+  .jl-header-search-wrap,
+  .jl-header-actions > a[href='/account'],
+  .jl-header-actions > a[href='/wishlist'] {
+    display: none !important;
+  }
+
+  .jl-header-actions > a[href='/cart'],
+  .jl-header-menu-button {
+    display: inline-grid !important;
+    place-items: center !important;
+    flex: 0 0 auto !important;
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    touch-action: manipulation;
+  }
+
+  .jl-header-menu-button {
+    position: relative !important;
+    z-index: 2 !important;
+  }
+
+  .jl-mobile-menu-layer {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 5000 !important;
+    display: block !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+  }
+
+  .jl-mobile-menu-backdrop {
+    position: absolute !important;
+    inset: 0 !important;
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: rgba(15, 12, 9, 0.56) !important;
+    backdrop-filter: blur(4px) !important;
+    -webkit-backdrop-filter: blur(4px) !important;
+  }
+
+  .jl-mobile-menu {
+    position: absolute !important;
+    top: 0 !important;
+    right: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    width: min(90vw, 390px) !important;
+    max-width: 100% !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    margin: 0 !important;
+    padding:
+      max(18px, env(safe-area-inset-top))
+      18px
+      max(22px, env(safe-area-inset-bottom)) !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain !important;
+    border-radius: 0 !important;
+    background: #fffdf9 !important;
+    box-shadow: -18px 0 56px rgba(20, 16, 11, 0.28) !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .jl-mobile-menu-heading {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 12px !important;
+    padding-bottom: 14px !important;
+  }
+
+  .jl-mobile-menu-heading strong {
+    font-size: clamp(1.75rem, 8vw, 2.25rem) !important;
+  }
+
+  .jl-mobile-menu-heading button {
+    flex: 0 0 auto !important;
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 42px !important;
+    min-height: 42px !important;
+    padding: 0 !important;
+  }
+
+  .jl-mobile-search {
+    grid-template-columns: 20px minmax(0, 1fr) !important;
+    width: 100% !important;
+    margin: 12px 0 16px !important;
+  }
+
+  .jl-mobile-search input {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .jl-mobile-menu nav {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 7px !important;
+    width: 100% !important;
+  }
+
+  .jl-mobile-menu nav > a,
+  .jl-mobile-nav-group,
+  .jl-mobile-menu-links a {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .jl-mobile-menu nav > a,
+  .jl-mobile-menu nav .jl-mobile-nav-group-title,
+  .jl-mobile-menu-links a {
+    min-height: 46px !important;
+    padding: 11px 12px !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .jl-mobile-nav-children {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .jl-mobile-menu-links {
+    width: 100% !important;
+    margin-top: 18px !important;
+    padding-top: 14px !important;
+  }
+
+  /* ---------- Homepage hero ---------- */
+
+  .jj-hero {
+    min-height: 500px !important;
+    height: min(72svh, 560px) !important;
+    max-height: 560px !important;
+  }
+
+  .jj-hero-img {
+    object-fit: cover !important;
+    object-position: 70% center !important;
+    transform: none !important;
+  }
+
+  .jj-hero-overlay {
+    background:
+      linear-gradient(
+        180deg,
+        rgba(10, 9, 7, 0.08) 0%,
+        rgba(10, 9, 7, 0.28) 34%,
+        rgba(10, 9, 7, 0.82) 100%
+      ) !important;
+  }
+
+  .jj-hero-content {
+    justify-content: flex-end !important;
+    width: calc(100% - 28px) !important;
+    max-width: 560px !important;
+    padding: 58px 0 38px !important;
+  }
+
+  .jj-badge {
+    max-width: 100% !important;
+    padding: 8px 11px !important;
+    font-size: 0.62rem !important;
+    line-height: 1.25 !important;
+  }
+
+  .jj-hero h1 {
+    max-width: 100% !important;
+    margin: 16px 0 12px !important;
+    font-size: clamp(2.55rem, 12vw, 4rem) !important;
+    line-height: 0.96 !important;
+    letter-spacing: -0.045em !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+  }
+
+  .jj-hero-content > p {
+    max-width: 34rem !important;
+    margin: 0 !important;
+    font-size: clamp(0.82rem, 3.6vw, 0.95rem) !important;
+    line-height: 1.55 !important;
+  }
+
+  .jj-hero-buttons {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 9px !important;
+    width: 100% !important;
+    margin-top: 20px !important;
+  }
+
+  .jj-hero-buttons .jj-btn {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 46px !important;
+    padding: 10px 10px !important;
+    font-size: 0.72rem !important;
+    line-height: 1.2 !important;
+    white-space: normal !important;
+  }
+
+  /* ---------- Homepage sections ---------- */
+
+  .jj-home > section:not(.jj-hero):not(.jj-trust) {
+    width: calc(100% - 24px) !important;
+    margin-top: 48px !important;
+  }
+
+  .jj-trust {
+    width: calc(100% - 24px) !important;
+    margin-top: -18px !important;
+    gap: 8px !important;
+  }
+
+  .jj-trust > div {
+    min-width: 0 !important;
+    padding: 14px 10px !important;
+  }
+
+  .jj-section-header,
+  .jj-bridal-header {
+    align-items: flex-start !important;
+    gap: 10px !important;
+    margin-bottom: 18px !important;
+  }
+
+  .jj-section-header h2,
+  .jj-bridal-header h2,
+  .jj-services h2,
+  .jj-contact h2 {
+    max-width: 100% !important;
+    font-size: clamp(2rem, 10vw, 3rem) !important;
+    line-height: 1 !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .jj-section-header > a {
+    min-height: 42px !important;
+  }
+
+  /* Categories: always two cards per row on mobile. */
+  .jj-category-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+    width: 100% !important;
+  }
+
+  .jj-category-card {
+    display: flex !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    height: 100% !important;
+    border-radius: 15px !important;
+  }
+
+  .jj-category-image {
+    height: auto !important;
+    aspect-ratio: 1 / 0.9 !important;
+  }
+
+  .jj-category-content {
+    min-width: 0 !important;
+    padding: 11px !important;
+  }
+
+  .jj-category-content strong {
+    display: -webkit-box !important;
+    min-height: 2.5em !important;
+    overflow: hidden !important;
+    font-size: 0.8rem !important;
+    line-height: 1.25 !important;
+    overflow-wrap: anywhere !important;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .jj-category-content small {
+    display: -webkit-box !important;
+    margin-top: 5px !important;
+    overflow: hidden !important;
+    font-size: 0.65rem !important;
+    line-height: 1.35 !important;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .jj-category-label {
+    right: 7px !important;
+    bottom: 7px !important;
+    max-width: calc(100% - 14px) !important;
+    padding: 5px 7px !important;
+    font-size: 0.5rem !important;
+  }
+
+  .jj-category-explore {
+    gap: 4px !important;
+    padding-top: 9px !important;
+    font-size: 0.65rem !important;
+  }
+
+  /* Product collections: always two cards per row on mobile. */
+  :is(
+    .jj-product-grid,
+    .jl-shop-grid,
+    .jl-product-grid,
+    .product-grid,
+    .wishlist-grid,
+    .jl-related-grid
+  ) {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+    width: 100% !important;
+  }
+
+  :is(
+    .jj-product-grid,
+    .jl-shop-grid,
+    .jl-product-grid,
+    .product-grid,
+    .wishlist-grid,
+    .jl-related-grid
+  ) > * {
+    min-width: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  .lux-product-card {
+    min-width: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 14px !important;
+  }
+
+  .lux-product-image {
+    width: 100% !important;
+    aspect-ratio: 4 / 5 !important;
+    min-height: 0 !important;
+  }
+
+  .lux-product-img {
+    object-fit: cover !important;
+  }
+
+  .lux-product-overlay {
+    display: none !important;
+  }
+
+  .lux-product-wishlist {
+    top: 7px !important;
+    right: 7px !important;
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+    min-height: 34px !important;
+  }
+
+  .lux-product-badges {
+    top: 7px !important;
+    left: 7px !important;
+    max-width: calc(100% - 48px) !important;
+  }
+
+  .lux-badge {
+    min-height: 20px !important;
+    padding: 3px 6px !important;
+    font-size: 0.5rem !important;
+  }
+
+  .lux-product-info {
+    min-width: 0 !important;
+    padding: 10px !important;
+  }
+
+  .lux-product-category {
+    min-height: 1.35em !important;
+    margin-bottom: 4px !important;
+    overflow: hidden !important;
+    font-size: 0.52rem !important;
+    line-height: 1.35 !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  .lux-product-title-link {
+    min-width: 0 !important;
+  }
+
+  .lux-product-info h3 {
+    display: -webkit-box !important;
+    min-height: 2.62em !important;
+    margin: 0 0 8px !important;
+    overflow: hidden !important;
+    font-size: clamp(0.72rem, 3.5vw, 0.86rem) !important;
+    line-height: 1.31 !important;
+    overflow-wrap: anywhere !important;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .lux-product-pricing {
+    align-items: flex-start !important;
+    flex-direction: column !important;
+    gap: 2px !important;
+    min-height: 40px !important;
+    margin: auto 0 9px !important;
+  }
+
+  .lux-product-price {
+    width: 100% !important;
+    font-size: clamp(0.77rem, 3.7vw, 0.94rem) !important;
+    line-height: 1.25 !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .lux-product-old-price {
+    font-size: 0.65rem !important;
+    line-height: 1.2 !important;
+  }
+
+  .lux-product-add-btn {
+    gap: 5px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 44px !important;
+    padding: 7px 5px !important;
+    font-size: clamp(0.58rem, 3vw, 0.7rem) !important;
+    line-height: 1.15 !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .lux-product-add-btn svg {
+    flex: 0 0 auto !important;
+    width: 14px !important;
+    height: 14px !important;
+  }
+
+  .jl-related-products {
+    width: calc(100% - 20px) !important;
+    margin-inline: auto !important;
+    padding-inline: 0 !important;
+  }
+
+  .jl-related-head {
+    margin-bottom: 16px !important;
+  }
+
+  .jl-related-head h2 {
+    font-size: clamp(1.9rem, 9vw, 2.8rem) !important;
+    line-height: 1 !important;
+  }
+
+  /* ---------- Services page ---------- */
+
+  .jl-services-page {
+    width: 100% !important;
+    overflow-x: clip !important;
+  }
+
+  body.jl-remove-hero-images .jl-services-hero,
+  .jl-services-hero {
+    min-height: 0 !important;
+    height: auto !important;
+    padding: 26px 16px 22px !important;
+  }
+
+  body.jl-remove-hero-images .jl-services-hero-content,
+  .jl-services-hero-content {
+    width: 100% !important;
+    max-width: 680px !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+  }
+
+  .jl-services-hero h1 {
+    margin: 14px 0 10px !important;
+    font-size: clamp(2.15rem, 11vw, 3.25rem) !important;
+    line-height: 1 !important;
+  }
+
+  .jl-services-hero p {
+    max-width: 100% !important;
+    font-size: 0.9rem !important;
+    line-height: 1.55 !important;
+  }
+
+  .jl-services-badge {
+    max-width: 100% !important;
+    padding: 8px 11px !important;
+    font-size: 0.6rem !important;
+  }
+
+  .jl-services-hero-actions {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+    width: 100% !important;
+    margin-top: 18px !important;
+  }
+
+  .jl-services-hero-actions .jl-services-btn {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 44px !important;
+    padding: 9px 8px !important;
+    font-size: 0.68rem !important;
+    line-height: 1.2 !important;
+    white-space: normal !important;
+  }
+
+  .jl-services-trust {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 9px !important;
+    width: calc(100% - 24px) !important;
+    margin: 12px auto 46px !important;
+  }
+
+  .jl-services-trust div {
+    min-width: 0 !important;
+    padding: 13px !important;
+    border-radius: 15px !important;
+  }
+
+  .jl-services-trust svg {
+    width: 21px !important;
+    height: 21px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .jl-services-trust strong {
+    font-size: 0.76rem !important;
+    line-height: 1.3 !important;
+  }
+
+  .jl-services-trust span {
+    font-size: 0.67rem !important;
+    line-height: 1.4 !important;
+  }
+
+  .jl-services-featured,
+  .jl-services-list-section,
+  .jl-booking-section {
+    width: 100% !important;
+    padding: 0 12px 54px !important;
+  }
+
+  .jl-services-section-head {
+    width: 100% !important;
+    margin-bottom: 22px !important;
+  }
+
+  .jl-services-section-head h2 {
+    font-size: clamp(2rem, 10vw, 3rem) !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .jl-services-section-head p {
+    font-size: 0.88rem !important;
+    line-height: 1.6 !important;
+  }
+
+  .jl-services-featured-grid,
+  .jl-services-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 14px !important;
+    width: 100% !important;
+  }
+
+  .jl-featured-service,
+  .jl-service-card {
+    min-width: 0 !important;
+    border-radius: 20px !important;
+  }
+
+  .jl-featured-service img,
+  .jl-service-image {
+    height: auto !important;
+    aspect-ratio: 16 / 10 !important;
+  }
+
+  .jl-featured-service div,
+  .jl-service-body {
+    min-width: 0 !important;
+    padding: 17px !important;
+  }
+
+  .jl-featured-service h3,
+  .jl-service-card h3 {
+    margin: 10px 0 8px !important;
+    font-size: 1.15rem !important;
+    line-height: 1.25 !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .jl-service-body p {
+    display: -webkit-box !important;
+    margin-bottom: 14px !important;
+    overflow: hidden !important;
+    font-size: 0.82rem !important;
+    line-height: 1.55 !important;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+
+  .jl-service-footer {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    align-items: center !important;
+    gap: 10px !important;
+  }
+
+  .jl-service-footer strong {
+    min-width: 0 !important;
+    margin: 0 !important;
+    font-size: 1.05rem !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .jl-service-footer button {
+    width: auto !important;
+    min-width: 104px !important;
+    min-height: 42px !important;
+    padding: 9px 12px !important;
+    font-size: 0.72rem !important;
+    white-space: nowrap !important;
+  }
+
+  .jl-services-search {
+    width: 100% !important;
+    min-height: 52px !important;
+    padding: 7px 13px !important;
+  }
+
+  .jl-services-categories {
+    flex-wrap: nowrap !important;
+    justify-content: flex-start !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    scrollbar-width: none;
+  }
+
+  .jl-services-categories::-webkit-scrollbar {
+    display: none;
+  }
+
+  .jl-services-categories button {
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+  }
+
+  .jl-booking-layout {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 14px !important;
+    width: 100% !important;
+  }
+
+  .jl-booking-summary,
+  .jl-booking-form,
+  .jl-booking-placeholder,
+  .jl-booking-success {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 18px !important;
+    border-radius: 20px !important;
+  }
+
+  .jl-booking-form {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 14px !important;
+  }
+
+  .jl-services-final-cta {
+    width: calc(100% - 24px) !important;
+    margin: 0 auto 66px !important;
+    padding: 38px 18px !important;
+    border-radius: 22px !important;
+  }
+
+  /* ---------- Gallery page ---------- */
+
+  .jl-gallery-page {
+    width: 100% !important;
+    overflow-x: clip !important;
+  }
+
+  body.jl-remove-hero-images .jl-gallery-hero,
+  .jl-gallery-hero {
+    min-height: 0 !important;
+    height: auto !important;
+    padding: 24px 14px 20px !important;
+  }
+
+  body.jl-remove-hero-images .jl-gallery-hero-content,
+  .jl-gallery-hero-content {
+    width: 100% !important;
+    max-width: 680px !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+  }
+
+  .jl-gallery-hero h1 {
+    margin: 12px 0 9px !important;
+    font-size: clamp(2.15rem, 11vw, 3.2rem) !important;
+    line-height: 1 !important;
+  }
+
+  .jl-gallery-hero p {
+    max-width: 100% !important;
+    font-size: 0.88rem !important;
+    line-height: 1.55 !important;
+  }
+
+  .jl-gallery-badge {
+    max-width: 100% !important;
+    padding: 8px 11px !important;
+    font-size: 0.59rem !important;
+  }
+
+  .jl-gallery-hero-actions {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+    width: 100% !important;
+    margin-top: 17px !important;
+  }
+
+  .jl-gallery-hero-actions .jl-gallery-btn {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 44px !important;
+    padding: 9px 7px !important;
+    font-size: 0.68rem !important;
+    white-space: normal !important;
+  }
+
+  .jl-gallery-stats {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 9px !important;
+    width: calc(100% - 24px) !important;
+    margin: 12px auto 46px !important;
+  }
+
+  .jl-gallery-stats div {
+    min-width: 0 !important;
+    padding: 15px 10px !important;
+    border-radius: 16px !important;
+  }
+
+  .jl-gallery-stats strong {
+    font-size: 1.45rem !important;
+    line-height: 1.1 !important;
+  }
+
+  .jl-gallery-stats span {
+    display: block !important;
+    margin-top: 5px !important;
+    font-size: 0.68rem !important;
+    line-height: 1.35 !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .jl-gallery-section {
+    width: 100% !important;
+    padding: 0 12px 58px !important;
+  }
+
+  .jl-gallery-heading {
+    width: 100% !important;
+    margin-bottom: 22px !important;
+  }
+
+  .jl-gallery-heading h2 {
+    font-size: clamp(2rem, 10vw, 3rem) !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .jl-gallery-heading p {
+    font-size: 0.86rem !important;
+    line-height: 1.55 !important;
+  }
+
+  .jl-gallery-toolbar {
+    width: 100% !important;
+    margin-bottom: 20px !important;
+    gap: 12px !important;
+  }
+
+  .jl-gallery-search {
+    width: 100% !important;
+    min-height: 52px !important;
+    padding: 7px 13px !important;
+  }
+
+  .jl-gallery-filters {
+    flex-wrap: nowrap !important;
+    justify-content: flex-start !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    padding-bottom: 5px !important;
+    scrollbar-width: none;
+  }
+
+  .jl-gallery-filters::-webkit-scrollbar {
+    display: none;
+  }
+
+  .jl-gallery-filters button {
+    flex: 0 0 auto !important;
+    white-space: nowrap !important;
+  }
+
+  .jl-gallery-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+    width: 100% !important;
+  }
+
+  .jl-gallery-card {
+    display: flex !important;
+    flex-direction: column !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 16px !important;
+  }
+
+  .jl-gallery-image {
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 1 / 1 !important;
+  }
+
+  .jl-gallery-image img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+  }
+
+  .jl-gallery-image span {
+    top: 7px !important;
+    left: 7px !important;
+    max-width: calc(100% - 14px) !important;
+    padding: 5px 7px !important;
+    overflow: hidden !important;
+    font-size: 0.49rem !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  .jl-gallery-card-body {
+    display: flex !important;
+    flex-direction: column !important;
+    min-width: 0 !important;
+    flex: 1 1 auto !important;
+    height: auto !important;
+    padding: 10px !important;
+  }
+
+  .jl-gallery-card-body h3 {
+    display: -webkit-box !important;
+    min-height: 2.5em !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+    font-size: 0.82rem !important;
+    line-height: 1.25 !important;
+    overflow-wrap: anywhere !important;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .jl-gallery-card-body p {
+    display: -webkit-box !important;
+    min-height: 2.8em !important;
+    margin: 7px 0 10px !important;
+    overflow: hidden !important;
+    font-size: 0.65rem !important;
+    line-height: 1.4 !important;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .jl-gallery-card-body button {
+    justify-content: center !important;
+    width: 100% !important;
+    min-height: 38px !important;
+    margin-top: auto !important;
+    padding: 7px 8px !important;
+    font-size: 0.62rem !important;
+  }
+
+  .jl-gallery-card.skeleton {
+    height: auto !important;
+    min-height: 250px !important;
+  }
+
+  .jl-gallery-cta {
+    width: calc(100% - 24px) !important;
+    margin: 0 auto 66px !important;
+    padding: 38px 18px !important;
+    border-radius: 22px !important;
+  }
+
+  .jl-gallery-modal {
+    padding: 8px !important;
+  }
+
+  .jl-gallery-modal-card {
+    grid-template-columns: minmax(0, 1fr) !important;
+    width: 100% !important;
+    max-height: calc(100dvh - 16px) !important;
+    overflow-y: auto !important;
+    border-radius: 18px !important;
+  }
+
+  .jl-gallery-modal-image {
+    min-height: 0 !important;
+    height: auto !important;
+    aspect-ratio: 4 / 3 !important;
+  }
+
+  .jl-gallery-modal-info {
+    padding: 20px !important;
+  }
+
+  /* ---------- General mobile forms, cards and tables ---------- */
+
+  :is(
+    .jl-form-card,
+    .jl-checkout-summary,
+    .jl-contact-form,
+    .jl-contact-details,
+    .jl-account-card,
+    .table-card,
+    .admin-card
+  ) {
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  :is(
+    .jl-form-grid,
+    .jl-contact-form-grid,
+    .admin-form-grid,
+    .jl-booking-form
+  ) {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  :is(input, select, textarea) {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  :is(
+    .table-card,
+    .admin-table-wrap,
+    .jl-account-table-wrap,
+    .jl-compare-table-wrap
+  ) {
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .mobile-bottom-nav,
+  .jl-mobile-bottom-nav {
+    z-index: 2100 !important;
+  }
+}
+
+/* Tailwind `sm` equivalent: extra-tight adjustments below 640px. */
+@media (max-width: 639px) {
+  .jj-hero {
+    min-height: 470px !important;
+    height: min(70svh, 520px) !important;
+    max-height: 520px !important;
+  }
+
+  .jj-hero-content {
+    padding-bottom: 30px !important;
+  }
+
+  .jj-product-showcase + .jj-product-showcase {
+    padding-top: 38px !important;
+  }
+
+  .jl-related-products {
+    margin-bottom: 50px !important;
+  }
+}
+
+@media (max-width: 390px) {
+  .jl-announcement-bar span {
+    display: none !important;
+  }
+
+  .jl-announcement-bar {
+    justify-content: center !important;
+  }
+
+  .jj-hero {
+    min-height: 445px !important;
+    height: min(68svh, 485px) !important;
+    max-height: 485px !important;
+  }
+
+  .jj-hero-content {
+    width: calc(100% - 22px) !important;
+    padding-bottom: 24px !important;
+  }
+
+  .jj-hero h1 {
+    font-size: clamp(2.35rem, 12vw, 3.15rem) !important;
+  }
+
+  .jj-hero-buttons .jj-btn {
+    font-size: 0.65rem !important;
+  }
+
+  .jl-mobile-nav-children {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .jl-service-footer {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .jl-service-footer button {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 340px) {
+  .jl-header-main {
+    width: calc(100% - 12px) !important;
+  }
+
+  .jl-header-logo {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  .jl-header-brand-copy strong {
+    font-size: 1.04rem !important;
+  }
+
+  .jl-header-actions > a[href='/cart'],
+  .jl-header-menu-button {
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px !important;
+    min-height: 38px !important;
+  }
+
+  .jj-hero {
+    min-height: 420px !important;
+    height: 66svh !important;
+    max-height: 455px !important;
+  }
+
+  .jj-category-grid,
+  :is(
+    .jj-product-grid,
+    .jl-shop-grid,
+    .jl-product-grid,
+    .product-grid,
+    .wishlist-grid,
+    .jl-related-grid,
+    .jl-gallery-grid
+  ) {
+    gap: 7px !important;
+  }
+
+  .jj-category-content,
+  .lux-product-info,
+  .jl-gallery-card-body {
+    padding: 8px !important;
+  }
+
+  .lux-product-add-btn {
+    min-height: 42px !important;
+    font-size: 0.56rem !important;
+  }
+}
+
+@media (max-width: 768px) and (pointer: coarse) {
+  .lux-product-card:hover,
+  .jj-category-card:hover,
+  .jl-service-card:hover,
+  .jl-gallery-card:hover {
+    transform: none !important;
+  }
+
+  button,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+@media (max-width: 768px) and (prefers-reduced-motion: reduce) {
+  .jl-mobile-menu-layer,
+  .jl-mobile-menu-backdrop,
+  .jl-mobile-menu {
+    transition: none !important;
+  }
+}

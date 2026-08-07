@@ -1,0 +1,21 @@
+/* Contact-form sending states */
+.jl-contact-submit-btn:disabled {
+  cursor: wait !important;
+  opacity: 0.72;
+}
+
+.jl-contact-spinner {
+  animation: jlContactSpin 0.8s linear infinite;
+}
+
+@keyframes jlContactSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.jl-contact-error {
+  border-color: #fecaca !important;
+  background: #fef2f2 !important;
+  color: #991b1b !important;
+}
