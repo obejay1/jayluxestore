@@ -1,6 +1,8 @@
 import crypto from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
 
+import { getSiteUrlString } from '@/lib/site';
+
 export const runtime = 'nodejs';
 
 export async function POST(request: NextRequest) {
@@ -39,7 +41,7 @@ export async function POST(request: NextRequest) {
     }
 
     const baseUrl = (process.env.OPAY_BASE_URL || 'https://liveapi.opayweb.com').replace(/\/$/, '');
-    const appUrl = (process.env.NEXT_PUBLIC_APP_URL || request.nextUrl.origin).replace(/\/$/, '');
+    const appUrl = getSiteUrlString();
     const forwardedFor = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim();
 
     const payload = {

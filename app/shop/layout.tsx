@@ -1,14 +1,11 @@
-import type { Metadata } from 'next';
+import { createPageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
-  title: 'Shop | Jayluxe',
-  description: 'Explore the full collection of luxury fashion, beauty, and lifestyle products from Jayluxe.',
-};
+export const metadata = createPageMetadata({
+  title: 'Shop',
+  description: 'Explore the full collection of luxury fashion, beauty and lifestyle products from JayLuxe.',
+  path: '/shop',
+});
 
-export default function ShopLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function ShopLayout({ children }: { children: React.ReactNode }) {
   return children;
 }

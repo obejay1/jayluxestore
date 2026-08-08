@@ -1,12 +1,12 @@
-import type { Metadata } from 'next';
-
+import { createPageMetadata } from '@/lib/seo';
 import EditorialPage from '@/components/EditorialPage';
 import { OFFICIAL_EMAIL } from '@/lib/contact';
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: 'Privacy Policy',
   description: 'How JayLuxe handles customer, order, booking and website information.',
-};
+  path: '/privacy',
+});
 
 export default function PrivacyPage() {
   return (

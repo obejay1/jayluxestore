@@ -1,14 +1,12 @@
-import type { Metadata } from 'next';
+import { createPageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
-  title: 'Order Confirmation | Jayluxe',
-  description: 'Thank you for your order from Jayluxe.',
-};
+export const metadata = createPageMetadata({
+  title: 'Order Confirmation',
+  description: 'Private JayLuxe order details.',
+  path: '/order',
+  noIndex: true,
+});
 
-export default function OrderLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function OrderLayout({ children }: { children: React.ReactNode }) {
   return children;
 }

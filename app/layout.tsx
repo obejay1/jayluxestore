@@ -40,6 +40,7 @@ const siteUrl = getSiteUrl().toString().replace(/\/$/, '');
 const organizationJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
+  '@id': `${siteUrl}/#organization`,
   name: 'JayLuxe',
   url: siteUrl,
   logo: `${siteUrl}/logo.png`,
@@ -73,6 +74,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     siteName: 'JayLuxe',
+    url: siteUrl,
     title: 'JayLuxe',
     description: 'Luxury beauty, fashion, bridal and lifestyle essentials.',
     images: [

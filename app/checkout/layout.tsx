@@ -1,14 +1,12 @@
-import type { Metadata } from 'next';
+import { createPageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
-  title: 'Secure Checkout | Jayluxe',
-  description: 'Complete your purchase with Jayluxe. Secure and fast checkout for all your luxury items.',
-};
+export const metadata = createPageMetadata({
+  title: 'Secure Checkout',
+  description: 'Complete your JayLuxe purchase securely.',
+  path: '/checkout',
+  noIndex: true,
+});
 
-export default function CheckoutLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function CheckoutLayout({ children }: { children: React.ReactNode }) {
   return children;
 }

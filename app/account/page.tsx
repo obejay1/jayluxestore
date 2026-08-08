@@ -215,10 +215,32 @@ export default function AccountPage() {
         cache: 'no-store',
       });
 
+      const contentType = response.headers.get('content-type') || '';
       const text = await response.text();
-      const data = text
-        ? (JSON.parse(text) as { orders?: Order[]; message?: string })
-        : {};
+
+      if (!contentType.toLowerCase().includes('application/json')) {
+        console.error('Account orders API returned a non-JSON response', {
+          status: response.status,
+          statusText: response.statusText,
+          contentType,
+          preview: text.slice(0, 160),
+        });
+        throw new Error(
+          'The order service is temporarily unavailable. Please refresh in a moment.',
+        );
+      }
+
+      let data: { orders?: Order[]; message?: string } = {};
+      if (text) {
+        try {
+          data = JSON.parse(text) as { orders?: Order[]; message?: string };
+        } catch (parseError) {
+          console.error('Account orders API returned invalid JSON', parseError);
+          throw new Error(
+            'The order service returned an invalid response. Please refresh in a moment.',
+          );
+        }
+      }
 
       if (!response.ok) {
         throw new Error(data.message || 'Your orders could not be loaded.');

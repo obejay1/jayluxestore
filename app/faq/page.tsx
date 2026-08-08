@@ -1,11 +1,11 @@
-import type { Metadata } from 'next';
-
+import { createPageMetadata } from '@/lib/seo';
 import EditorialPage from '@/components/EditorialPage';
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: 'Frequently Asked Questions',
   description: 'Answers about JayLuxe orders, delivery, returns, services and bridal bookings.',
-};
+  path: '/faq',
+});
 
 export default function FaqPage() {
   return (

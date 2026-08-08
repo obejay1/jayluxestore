@@ -3,6 +3,7 @@ import { Resend } from 'resend';
 
 import { adminDb } from '@/lib/firebaseAdmin';
 import type { Order } from '@/lib/types';
+import { getSiteUrlString } from '@/lib/site';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -70,11 +71,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: 'Order email is missing.' }, { status: 400 });
     }
 
-    const siteUrl = (
-      process.env.NEXT_PUBLIC_APP_URL ||
-      process.env.NEXT_PUBLIC_SITE_URL ||
-      request.nextUrl.origin
-    ).replace(/\/$/, '');
+    const siteUrl = getSiteUrlString();
     const orderUrl = `${siteUrl}/order/${encodeURIComponent(order.id)}?token=${encodeURIComponent(accessToken)}`;
     const itemRows = (order.items || [])
       .map((item) => {

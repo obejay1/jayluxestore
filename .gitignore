@@ -2,17 +2,20 @@ node_modules/
 .next/
 out/
 .vercel/
+.firebase/
 
-.env
-.env.local
-.env*.local
+# Local/production environment files can contain secrets.
+.env*
+!.env.example
+!env.local.example
 
 secrets/
 firebase-service-account.json
+*firebase-adminsdk*.json
+*service-account*.json
+secrets/*.json
+*.pem
+*.key
 
 *.log
 .DS_Store
-
-# Never commit Firebase service-account credentials
-*firebase-adminsdk*.json
-secrets/*.json

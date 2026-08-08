@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { onAuthStateChanged } from 'firebase/auth';
 import { OFFICIAL_EMAIL } from '@/lib/contact';
 import { auth } from '@/lib/firebase';
+import { PRODUCTION_SITE_URL } from '@/lib/site';
 import { getSafeImageSource } from '@/lib/images';
 import type { Order } from '@/lib/types';
 import { QRCodeSVG } from 'qrcode.react';
@@ -152,9 +153,11 @@ export default function InvoicePage({ params }: { params: { id: string } }) {
   const total = order.total || 0;
   const accessToken = searchParams.get('token') || order.accessToken || '';
   const appOrigin =
-    typeof window !== 'undefined'
-      ? window.location.origin
-      : process.env.NEXT_PUBLIC_APP_URL || '';
+    process.env.NODE_ENV === 'production'
+      ? PRODUCTION_SITE_URL
+      : typeof window !== 'undefined'
+        ? window.location.origin
+        : process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_SITE_URL || '';
   const invoiceUrl = `${appOrigin}/invoice/${encodeURIComponent(order.id)}${
     accessToken ? `?token=${encodeURIComponent(accessToken)}` : ''
   }`;

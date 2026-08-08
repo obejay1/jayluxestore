@@ -1,11 +1,11 @@
-import type { Metadata } from 'next';
-
+import { createPageMetadata } from '@/lib/seo';
 import EditorialPage from '@/components/EditorialPage';
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: 'Terms and Conditions',
   description: 'Terms for using the JayLuxe website, purchasing products and requesting services.',
-};
+  path: '/terms',
+});
 
 export default function TermsPage() {
   return (

@@ -1,15 +1,11 @@
-import type { Metadata } from 'next';
+import { createPageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
-  title: 'Jayluxe Gallery',
-  description:
-    'Explore Jayluxe beauty, bridal, wigs, makeup, gele and lifestyle portfolio.',
-};
+export const metadata = createPageMetadata({
+  title: 'Gallery',
+  description: 'Explore JayLuxe beauty, bridal, wigs, makeup, gele and lifestyle portfolio.',
+  path: '/gallery',
+});
 
-export default function GalleryLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function GalleryLayout({ children }: { children: React.ReactNode }) {
   return children;
 }

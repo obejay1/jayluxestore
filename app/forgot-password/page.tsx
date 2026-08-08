@@ -6,6 +6,7 @@ import { sendPasswordResetEmail } from 'firebase/auth';
 import { ArrowLeft, Mail, Sparkles } from 'lucide-react';
 
 import { auth } from '@/lib/firebase';
+import { PRODUCTION_SITE_URL } from '@/lib/site';
 import {
   getAuthErrorMessage,
   normaliseEmail,
@@ -26,7 +27,14 @@ export default function ForgotPasswordPage() {
 
     try {
       await prepareCustomerAuth();
-      await sendPasswordResetEmail(auth, normaliseEmail(email));
+      const actionOrigin =
+        process.env.NODE_ENV === 'production'
+          ? PRODUCTION_SITE_URL
+          : window.location.origin;
+      await sendPasswordResetEmail(auth, normaliseEmail(email), {
+        url: `${actionOrigin}/login`,
+        handleCodeInApp: false,
+      });
       setSent(true);
     } catch (resetError) {
       setError(getAuthErrorMessage(resetError));

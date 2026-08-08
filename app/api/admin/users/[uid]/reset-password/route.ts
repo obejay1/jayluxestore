@@ -64,8 +64,7 @@ export async function POST(
       );
     }
 
-    const appUrl =
-      process.env.NEXT_PUBLIC_APP_URL?.trim().replace(/\/$/, '') || undefined;
+    const appUrl = getSiteUrlString();
     const resetLink = await adminAuth.generatePasswordResetLink(
       profile.email,
       appUrl

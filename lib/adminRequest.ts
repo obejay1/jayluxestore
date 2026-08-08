@@ -1,5 +1,7 @@
 import type { NextRequest } from 'next/server';
 
+import { getSiteUrl } from '@/lib/site';
+
 export function getRequestIp(request: Request | NextRequest) {
   const forwarded = request.headers.get('x-forwarded-for');
   return (
@@ -31,17 +33,11 @@ export function hasTrustedRequestOrigin(request: Request | NextRequest) {
     ?.trim()
     .toLowerCase();
   const requestHost = request.headers.get('host')?.trim().toLowerCase();
-  const configuredHost = (() => {
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL?.trim();
-    if (!appUrl) return '';
-    try {
-      return new URL(appUrl).host.toLowerCase();
-    } catch {
-      return '';
-    }
-  })();
+  const configuredHost = getSiteUrl().host.toLowerCase();
+  const trustedHosts = new Set(
+    [forwardedHost, requestHost, configuredHost, 'www.jayluxestore.com']
+      .filter((host): host is string => Boolean(host)),
+  );
 
-  return [forwardedHost, requestHost, configuredHost]
-    .filter(Boolean)
-    .includes(originHost);
+  return trustedHosts.has(originHost);
 }

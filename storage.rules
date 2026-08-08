@@ -1,0 +1,44 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    function isAdmin() {
+      return request.auth != null && request.auth.token.admin == true;
+    }
+
+    function hasPermission(permission) {
+      return isAdmin() && (
+        request.auth.token.role == 'super_admin'
+        || (
+          request.auth.token.permissions is list
+          && request.auth.token.permissions.hasAny([permission])
+        )
+      );
+    }
+
+    function isAllowedImage() {
+      return request.resource == null || (
+        request.resource.contentType != null
+        && request.resource.contentType.matches('image/.*')
+      );
+    }
+
+    match /bridal-packages/{fileName} {
+      allow read: if true;
+      allow write: if hasPermission('products') && isAllowedImage();
+    }
+
+    match /testimonials/{fileName} {
+      allow read: if true;
+      allow write: if hasPermission('testimonials') && isAllowedImage();
+    }
+
+    match /transformations/{allPaths=**} {
+      allow read: if true;
+      allow write: if hasPermission('content') && isAllowedImage();
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
