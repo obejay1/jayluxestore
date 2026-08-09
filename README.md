@@ -241,3 +241,11 @@ https://jayluxestore.com/api/account/orders
 
 `/api/health` must return JSON containing `"ok": true`. `/api/account/orders` without a Firebase ID token should return a JSON `401` response, not HTML. If either URL returns an HTML page, fix the hosting/runtime routing before changing Firestore or authentication code.
 
+
+## Live-site runtime correction (2026-08-08)
+
+If local authentication/order APIs work but the custom domain returns HTML for
+`/api/*`, use the App Hosting procedure in `LIVE_DEPLOYMENT_FIX.md`. The included
+Firebase Admin bootstrap now prefers Google Application Default Credentials when
+running on Firebase App Hosting/Cloud Run, while preserving explicit
+service-account credentials for local development and non-Google hosts.

@@ -7,17 +7,8 @@ import {
   Camera,
   Share2,
   LoaderCircle,
-  Mail,
-  MessageCircle,
   Sparkles,
 } from 'lucide-react';
-
-import {
-  OFFICIAL_EMAIL,
-  OFFICIAL_EMAIL_LINK,
-  OFFICIAL_WHATSAPP_DISPLAY,
-  OFFICIAL_WHATSAPP_URL,
-} from '@/lib/contact';
 
 type SubscribeState = 'idle' | 'submitting' | 'success' | 'error';
 
@@ -91,7 +82,10 @@ export default function Footer() {
   return (
     <footer className="global-footer-pro">
       <div className="global-footer-shell">
-        <section className="global-footer-newsletter" aria-labelledby="footer-newsletter-title">
+        <section
+          className="global-footer-newsletter"
+          aria-labelledby="footer-newsletter-title"
+        >
           <div>
             <span>
               <Sparkles size={16} aria-hidden="true" /> The JayLuxe Edit
@@ -184,61 +178,55 @@ export default function Footer() {
               >
                 <Share2 size={19} aria-hidden="true" />
               </a>
-              <a
-                href={OFFICIAL_WHATSAPP_URL}
-                target="_blank"
-                rel="noreferrer"
-                aria-label="Chat with JayLuxe on WhatsApp"
-              >
-                <MessageCircle size={19} aria-hidden="true" />
-              </a>
             </div>
           </div>
 
-          <nav className="global-footer-links" aria-label="Quick links">
-            <h3>Quick Links</h3>
+          <nav className="global-footer-links" aria-label="Shop and offers links">
+            <h3>Shop &amp; Offers</h3>
             <ul>
-              <li><Link href="/">Home</Link></li>
               <li><Link href="/shop">Shop</Link></li>
               <li><Link href="/categories">Categories</Link></li>
+              <li><Link href="/new-arrivals">New Arrivals</Link></li>
+              <li><Link href="/featured-products">Featured Products</Link></li>
+              <li><Link href="/best-sellers">Best Sellers</Link></li>
+              <li><Link href="/flash-sale">Flash Sale</Link></li>
               <li><Link href="/promotions">Promotions</Link></li>
+            </ul>
+          </nav>
+
+          <nav className="global-footer-links" aria-label="Services and inspiration links">
+            <h3>Services &amp; Inspiration</h3>
+            <ul>
               <li><Link href="/services">Services</Link></li>
+              <li><Link href="/beauty-services">Beauty Services</Link></li>
               <li><Link href="/bridal">Bridal Packages</Link></li>
-            </ul>
-          </nav>
-
-          <nav className="global-footer-links" aria-label="Customer service links">
-            <h3>Customer Service</h3>
-            <ul>
-              <li><Link href="/account">My Account</Link></li>
-              <li><Link href="/wishlist">Wishlist</Link></li>
-              <li><Link href="/cart">Shopping Bag</Link></li>
-              <li><Link href="/faq">Frequently Asked Questions</Link></li>
-              <li><Link href="/contact">Contact Client Care</Link></li>
-            </ul>
-          </nav>
-
-          <nav className="global-footer-links" aria-label="Policy links">
-            <h3>Policies</h3>
-            <ul>
-              <li><Link href="/privacy">Privacy Policy</Link></li>
-              <li><Link href="/terms">Terms &amp; Conditions</Link></li>
-              <li><Link href="/about">About JayLuxe</Link></li>
+              <li><Link href="/bridal/book">Book Bridal Consultation</Link></li>
+              <li><Link href="/gallery">Before &amp; After</Link></li>
               <li><Link href="/testimonials">Testimonials</Link></li>
             </ul>
           </nav>
 
-          <div className="global-footer-links global-footer-contact">
-            <h3>Contact</h3>
-            <a href={OFFICIAL_EMAIL_LINK}>
-              <Mail size={18} aria-hidden="true" />
-              <span>{OFFICIAL_EMAIL}</span>
-            </a>
-            <a href={OFFICIAL_WHATSAPP_URL} target="_blank" rel="noreferrer">
-              <MessageCircle size={18} aria-hidden="true" />
-              <span>WhatsApp: {OFFICIAL_WHATSAPP_DISPLAY}</span>
-            </a>
-          </div>
+          <nav className="global-footer-links" aria-label="Account and support links">
+            <h3>Account &amp; Support</h3>
+            <ul>
+              <li><Link href="/account">My Account</Link></li>
+              <li><Link href="/wishlist">Wishlist</Link></li>
+              <li><Link href="/cart">Cart</Link></li>
+              <li><Link href="/login">Login</Link></li>
+              <li><Link href="/register">Create Account</Link></li>
+              <li><Link href="/faq">Frequently Asked Questions</Link></li>
+              <li><Link href="/contact">Contact Us</Link></li>
+            </ul>
+          </nav>
+
+          <nav className="global-footer-links" aria-label="Company and policy links">
+            <h3>Company &amp; Policies</h3>
+            <ul>
+              <li><Link href="/about">About Us</Link></li>
+              <li><Link href="/privacy">Privacy Policy</Link></li>
+              <li><Link href="/terms">Terms &amp; Conditions</Link></li>
+            </ul>
+          </nav>
         </div>
 
         <div className="global-footer-bottom">
