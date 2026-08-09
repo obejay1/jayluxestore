@@ -18,6 +18,7 @@ export const dynamic = 'force-dynamic';
 
 const SUPPORTED_STATUSES = [
   'Processing',
+  'Ready for Shipment',
   'Packed',
   'Shipped',
   'Out for Delivery',
@@ -41,6 +42,9 @@ function createStatusMessage(status: SupportedStatus, customerName: string, orde
   if (status === 'Processing') return processingSMS(customerName, orderId);
   if (status === 'Shipped') return shippedSMS(customerName, orderId);
   if (status === 'Delivered') return deliveredSMS(customerName, orderId);
+  if (status === 'Ready for Shipment') {
+    return `Hi ${customerName}, your JayLuxe order ${orderId} is ready for shipment and will be dispatched soon.`;
+  }
   if (status === 'Packed') {
     return `Hi ${customerName}, your JayLuxe order ${orderId} has been packed and is being prepared for dispatch.`;
   }

@@ -2,6 +2,7 @@ import { createHash, randomUUID } from 'node:crypto';
 import { NextRequest, NextResponse } from 'next/server';
 
 import { adminDb } from '@/lib/firebaseAdmin';
+import { sendOrderCreatedEmails, sendPaymentConfirmedEmails } from '@/lib/email/workflows';
 import { getBearerToken, getVerifiedCustomer } from '@/lib/requestAuth';
 import type { Order, Product } from '@/lib/types';
 
@@ -392,6 +393,18 @@ export async function POST(request: NextRequest) {
         orderId,
         createdAt: createdAt.toISOString(),
       });
+    });
+
+    // Transactional email delivery is intentionally non-blocking for commerce:
+    // a temporary email-provider failure must never roll back a verified payment/order.
+    const emailResults = await Promise.allSettled([
+      sendOrderCreatedEmails(order),
+      sendPaymentConfirmedEmails(order),
+    ]);
+    emailResults.forEach((result) => {
+      if (result.status === 'rejected') {
+        console.error('POST-ORDER EMAIL WORKFLOW ERROR:', result.reason);
+      }
     });
 
     return NextResponse.json(

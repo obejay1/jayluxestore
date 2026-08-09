@@ -2,16 +2,8 @@
 
 import Link from 'next/link';
 import { FormEvent, useState } from 'react';
-import { sendPasswordResetEmail } from 'firebase/auth';
 import { ArrowLeft, Mail, Sparkles } from 'lucide-react';
 
-import { auth } from '@/lib/firebase';
-import { PRODUCTION_SITE_URL } from '@/lib/site';
-import {
-  getAuthErrorMessage,
-  normaliseEmail,
-  prepareCustomerAuth,
-} from '@/lib/customerAuth';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -26,18 +18,18 @@ export default function ForgotPasswordPage() {
     setLoading(true);
 
     try {
-      await prepareCustomerAuth();
-      const actionOrigin =
-        process.env.NODE_ENV === 'production'
-          ? PRODUCTION_SITE_URL
-          : window.location.origin;
-      await sendPasswordResetEmail(auth, normaliseEmail(email), {
-        url: `${actionOrigin}/login`,
-        handleCodeInApp: false,
+      const response = await fetch('/api/email/password-reset', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim().toLowerCase() }),
       });
+      const data = (await response.json()) as { ok?: boolean; message?: string };
+      if (!response.ok || !data.ok) {
+        throw new Error(data.message || 'The reset request could not be completed.');
+      }
       setSent(true);
     } catch (resetError) {
-      setError(getAuthErrorMessage(resetError));
+      setError(resetError instanceof Error ? resetError.message : 'The reset request could not be completed.');
     } finally {
       setLoading(false);
     }
@@ -55,7 +47,7 @@ export default function ForgotPasswordPage() {
           </h1>
           <p>
             We will send a secure Firebase password-reset link to your account
-            email address.
+            email address through JayLuxe email delivery.
           </p>
         </div>
       </section>

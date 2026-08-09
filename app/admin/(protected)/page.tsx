@@ -62,6 +62,16 @@ type AdminOrder = Omit<Order, 'items'> & {
   total?: number;
   createdAt?: string;
   status?: string;
+  confirmationEmailStatus?: string;
+  confirmationEmailError?: string | null;
+  paymentEmailStatus?: string;
+  paymentEmailError?: string | null;
+  statusEmailStatus?: string;
+  statusEmailError?: string | null;
+  statusEmailLastStatus?: string;
+  lastEmailType?: string;
+  lastEmailStatus?: string;
+  lastEmailSentAt?: string;
   items?: Array<{
     id?: string;
     name?: string;
@@ -712,10 +722,10 @@ export default function Admin() {
 
   async function updateOrderStatusWithNotification(
     order: AdminOrder,
-    status: 'Processing' | 'Packed' | 'Shipped' | 'Out for Delivery' | 'Delivered' | 'Cancelled',
+    status: 'Processing' | 'Ready for Shipment' | 'Packed' | 'Shipped' | 'Out for Delivery' | 'Delivered' | 'Cancelled',
   ) {
     try {
-      await updateOrderStatus(order.id, status);
+      const statusResult = await updateOrderStatus(order.id, status);
       void recordAdminActivity({
         action: 'Updated Order Status',
         description: `Updated order #${order.id} to ${status}.`,
@@ -745,16 +755,34 @@ export default function Admin() {
             'error',
           );
         } else {
-          showToast(`Order updated to ${status}. Customer SMS sent.`, 'success');
+          showToast(`Order updated to ${status}. Customer SMS sent. Email: ${statusResult?.emailStatus || 'logged'}.`, 'success');
         }
       } else {
-        showToast('Order cancelled.', 'success');
+        showToast(`Order cancelled. Customer email: ${statusResult?.emailStatus || 'logged'}.`, 'success');
       }
 
       await load();
     } catch (error) {
       console.error('Order status update failed:', error);
       showToast('The order status could not be updated.', 'error');
+    }
+  }
+
+  async function retryOrderEmails(orderId: string) {
+    try {
+      const response = await fetch(`/api/admin/orders/${encodeURIComponent(orderId)}/retry-email`, {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        credentials: 'same-origin',
+      });
+      const text = await response.text();
+      const data = text ? (JSON.parse(text) as { ok?: boolean; message?: string }) : {};
+      if (!response.ok || !data.ok) throw new Error(data.message || 'Email retry failed.');
+      showToast(data.message || 'Email retry completed.', 'success');
+      await load();
+    } catch (error) {
+      console.error('Order email retry failed:', error);
+      showToast(error instanceof Error ? error.message : 'Email retry failed.', 'error');
     }
   }
 
@@ -2347,6 +2375,7 @@ export default function Admin() {
                 <th>Reference</th>
                 <th>Date</th>
                 <th>Est. Delivery</th>
+                <th>Email</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -2354,7 +2383,7 @@ export default function Admin() {
             <tbody>
               {paginatedOrders.length === 0 ? (
                 <tr>
-                  <td colSpan={8} style={{ textAlign: 'center' }}>No orders found</td>
+                  <td colSpan={9} style={{ textAlign: 'center' }}>No orders found</td>
                 </tr>
               ) : (
                 paginatedOrders.map((o) => (
@@ -2367,6 +2396,19 @@ export default function Admin() {
                     <td>{o.createdAt ? new Date(o.createdAt).toLocaleString() : 'N/A'}</td>
                     <td>{getEstimatedDeliveryDisplay(o)}</td>
                     <td>
+                      <div style={{ display: 'grid', gap: 3, minWidth: 140, fontSize: 12 }}>
+                        <span>Order: {o.confirmationEmailStatus || '—'}</span>
+                        <span>Payment: {o.paymentEmailStatus || '—'}</span>
+                        <span>Status: {o.statusEmailStatus || '—'}</span>
+                        {o.lastEmailSentAt ? <small>Last: {new Date(o.lastEmailSentAt).toLocaleString()}</small> : null}
+                        {o.confirmationEmailError || o.paymentEmailError || o.statusEmailError ? (
+                          <small style={{ color: '#b42318', maxWidth: 220 }}>
+                            {o.statusEmailError || o.paymentEmailError || o.confirmationEmailError}
+                          </small>
+                        ) : null}
+                      </div>
+                    </td>
+                    <td>
                       <button onClick={() => window.open(`/invoice/${o.id}`, '_blank')}>View Invoice</button>
                       <button onClick={() => exportOrderInvoicePDF(o)}>Print Invoice</button>
                       <button
@@ -2377,6 +2419,15 @@ export default function Admin() {
                         }}
                       >
                         Process
+                      </button>
+                      <button
+                        onClick={() => {
+                          if (confirm(`Mark order #${o.id} as Ready for Shipment?`)) {
+                            void updateOrderStatusWithNotification(o, 'Ready for Shipment');
+                          }
+                        }}
+                      >
+                        Ready
                       </button>
                       <button
                         onClick={() => {
@@ -2427,6 +2478,7 @@ export default function Admin() {
                           Cancel
                         </button>
                       )}
+                      <button onClick={() => void retryOrderEmails(String(o.id))}>Retry Email</button>
                     </td>
                   </tr>
                 ))

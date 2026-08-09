@@ -136,6 +136,16 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    match /emailEvents/{eventId} {
+      allow read: if hasPermission('orders');
+      allow write: if false;
+    }
+
+    match /resendWebhookEvents/{eventId} {
+      allow read: if isSuperAdmin();
+      allow write: if false;
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }

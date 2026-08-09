@@ -1,9 +1,8 @@
 import { FieldValue } from 'firebase-admin/firestore';
 import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
-
 import { adminDb } from '@/lib/firebaseAdmin';
-import { OFFICIAL_EMAIL } from '@/lib/contact';
+import { getEmailConfig } from '@/lib/email/config';
+import { sendManagedEmail } from '@/lib/email/service';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -113,76 +112,62 @@ export async function POST(request: Request) {
 
     await bookingRef.set(bookingData);
 
-    const resendKey = process.env.RESEND_API_KEY;
     const toEmail =
-      process.env.BOOKING_TO_EMAIL ||
-      process.env.CONTACT_TO_EMAIL ||
-      OFFICIAL_EMAIL;
-    const fromEmail =
-      process.env.BOOKING_FROM_EMAIL?.trim() ||
-      process.env.RESEND_FROM_EMAIL?.trim() ||
-      process.env.CONTACT_FROM_EMAIL?.trim();
+      process.env.BOOKING_TO_EMAIL?.trim() ||
+      getEmailConfig().adminRecipient;
+    const safeName = escapeHtml(customerName);
+    const safeService = escapeHtml(serviceName);
+    const safePhone = escapeHtml(customerPhone);
+    const safeEmail = escapeHtml(customerEmail || 'Not supplied');
+    const safeDate = escapeHtml(date);
+    const safeTime = escapeHtml(time || 'To be confirmed');
+    const safeLocation = escapeHtml(eventLocation || 'Not supplied');
+    const safeNotes = escapeHtml(notes || 'None').replace(/\n/g, '<br />');
 
-    if (resendKey && toEmail && fromEmail) {
-      const resend = new Resend(resendKey);
-      const safeName = escapeHtml(customerName);
-      const safeService = escapeHtml(serviceName);
-      const safePhone = escapeHtml(customerPhone);
-      const safeEmail = escapeHtml(customerEmail || 'Not supplied');
-      const safeDate = escapeHtml(date);
-      const safeTime = escapeHtml(time || 'To be confirmed');
-      const safeLocation = escapeHtml(eventLocation || 'Not supplied');
-      const safeNotes = escapeHtml(notes || 'None').replace(/\n/g, '<br />');
-
-      const result = await resend.emails.send({
-        from: fromEmail,
-        to: [toEmail],
-        replyTo: customerEmail || undefined,
-        subject: `JayLuxe ${kind === 'bridal' ? 'bridal' : 'service'} booking — ${customerName}`,
-        text: [
-          `New ${kind} booking request`,
-          `Booking ID: ${bookingRef.id}`,
-          `Service: ${serviceName}`,
-          `Customer: ${customerName}`,
-          `Email: ${customerEmail || 'Not supplied'}`,
-          `Phone: ${customerPhone}`,
-          `Date: ${date}`,
-          `Time: ${time || 'To be confirmed'}`,
-          `Location: ${eventLocation || 'Not supplied'}`,
-          `Notes: ${notes || 'None'}`,
-        ].join('\n'),
-        html: `
-          <div style="font-family:Arial,sans-serif;background:#f6f1e8;padding:28px;color:#171717">
-            <div style="max-width:680px;margin:auto;background:#fff;border:1px solid #e7ddcd;border-radius:16px;overflow:hidden">
-              <div style="background:#111;padding:24px;color:#fff"><p style="color:#d4af37;margin:0 0 5px">JayLuxe Bookings</p><h1 style="margin:0;font-family:Georgia,serif">New booking request</h1></div>
-              <div style="padding:26px;line-height:1.65">
-                <p><strong>Service:</strong> ${safeService}</p>
-                <p><strong>Customer:</strong> ${safeName}</p>
-                <p><strong>Email:</strong> ${safeEmail}</p>
-                <p><strong>Phone:</strong> ${safePhone}</p>
-                <p><strong>Date:</strong> ${safeDate}</p>
-                <p><strong>Time:</strong> ${safeTime}</p>
-                <p><strong>Location:</strong> ${safeLocation}</p>
-                <p><strong>Notes:</strong><br />${safeNotes}</p>
-                <p style="color:#777;font-size:12px">Booking ID: ${bookingRef.id}</p>
-              </div>
+    const emailResult = await sendManagedEmail({
+      eventKey: `booking-admin:${bookingRef.id}`,
+      emailType: 'booking_admin_notification',
+      to: toEmail,
+      sender: 'bookings',
+      replyTo: customerEmail || undefined,
+      subject: `JayLuxe ${kind === 'bridal' ? 'bridal' : 'service'} booking — ${customerName}`,
+      text: [
+        `New ${kind} booking request`,
+        `Booking ID: ${bookingRef.id}`,
+        `Service: ${serviceName}`,
+        `Customer: ${customerName}`,
+        `Email: ${customerEmail || 'Not supplied'}`,
+        `Phone: ${customerPhone}`,
+        `Date: ${date}`,
+        `Time: ${time || 'To be confirmed'}`,
+        `Location: ${eventLocation || 'Not supplied'}`,
+        `Notes: ${notes || 'None'}`,
+      ].join('\n'),
+      html: `
+        <div style="font-family:Arial,sans-serif;background:#f6f1e8;padding:28px;color:#171717">
+          <div style="max-width:680px;margin:auto;background:#fff;border:1px solid #e7ddcd;border-radius:16px;overflow:hidden">
+            <div style="background:#111;padding:24px;color:#fff"><p style="color:#d4af37;margin:0 0 5px">JayLuxe Bookings</p><h1 style="margin:0;font-family:Georgia,serif">New booking request</h1></div>
+            <div style="padding:26px;line-height:1.65">
+              <p><strong>Service:</strong> ${safeService}</p>
+              <p><strong>Customer:</strong> ${safeName}</p>
+              <p><strong>Email:</strong> ${safeEmail}</p>
+              <p><strong>Phone:</strong> ${safePhone}</p>
+              <p><strong>Date:</strong> ${safeDate}</p>
+              <p><strong>Time:</strong> ${safeTime}</p>
+              <p><strong>Location:</strong> ${safeLocation}</p>
+              <p><strong>Notes:</strong><br />${safeNotes}</p>
+              <p style="color:#777;font-size:12px">Booking ID: ${bookingRef.id}</p>
             </div>
           </div>
-        `,
-      });
+        </div>`,
+    });
 
-      await bookingRef.update({
-        emailStatus: result.error ? 'failed' : 'sent',
-        emailError: result.error?.message || null,
-        resendEmailId: result.data?.id || null,
-        updatedAt: FieldValue.serverTimestamp(),
-      });
-    } else {
-      await bookingRef.update({
-        emailStatus: 'not-configured',
-        updatedAt: FieldValue.serverTimestamp(),
-      });
-    }
+    await bookingRef.update({
+      emailStatus: emailResult.status,
+      emailError: emailResult.error || null,
+      resendEmailId: emailResult.resendId || null,
+      updatedAt: FieldValue.serverTimestamp(),
+    });
 
     return NextResponse.json({
       ok: true,

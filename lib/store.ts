@@ -10,7 +10,6 @@ import {
   deleteDoc,
   query,
   orderBy,
-  updateDoc,
   addDoc,
 } from 'firebase/firestore';
 
@@ -334,7 +333,21 @@ export async function getOrders(): Promise<Order[]> {
 export async function updateOrderStatus(id: string, status: string) {
   if (!db) return;
 
-  await updateDoc(doc(db, 'orders', id), { status });
+  const response = await fetch(`/api/admin/orders/${encodeURIComponent(id)}/status`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    credentials: 'same-origin',
+    body: JSON.stringify({ status }),
+  });
+  const text = await response.text();
+  const data = text ? (JSON.parse(text) as { ok?: boolean; message?: string; emailStatus?: string }) : {};
+  if (!response.ok || !data.ok) {
+    throw new Error(data.message || 'The order status could not be updated.');
+  }
+  return data;
 }
 
 /* SESSIONS */

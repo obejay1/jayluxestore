@@ -249,3 +249,96 @@ If local authentication/order APIs work but the custom domain returns HTML for
 Firebase Admin bootstrap now prefers Google Application Default Credentials when
 running on Firebase App Hosting/Cloud Run, while preserving explicit
 service-account credentials for local development and non-Google hosts.
+
+
+## Production email system (Resend)
+
+JayLuxe uses the official `resend` Node.js package, which is already declared in `package.json`. All Resend initialization now lives in `lib/email/service.ts`; application routes call trusted server-side workflow functions rather than sending email from the browser.
+
+### Required Vercel environment variables
+
+Set these in **Vercel → Project → Settings → Environment Variables** and redeploy after changing them:
+
+Vercel also needs valid Firebase Admin service-account variables (`FIREBASE_ADMIN_PROJECT_ID`, `FIREBASE_ADMIN_CLIENT_EMAIL`, `FIREBASE_ADMIN_PRIVATE_KEY`). The private key must be the complete PEM value from the Firebase service-account JSON; do not paste the JSON field name or an escaped/truncated key.
+
+```env
+RESEND_API_KEY=
+RESEND_WEBHOOK_SECRET=
+
+RESEND_FROM_EMAIL=JayLuxe <noreply@jayluxestore.com>
+ORDER_FROM_EMAIL=JayLuxe <orders@jayluxestore.com>
+CONTACT_FROM_EMAIL=JayLuxe Support <support@jayluxestore.com>
+ACCOUNT_FROM_EMAIL=JayLuxe <noreply@jayluxestore.com>
+ADMIN_EMAIL_FROM=JayLuxe <admin@jayluxestore.com>
+BOOKING_FROM_EMAIL=JayLuxe Support <support@jayluxestore.com>
+NEWSLETTER_FROM_EMAIL=JayLuxe <noreply@jayluxestore.com>
+
+ADMIN_NOTIFICATION_EMAIL=officialjayluxe.ng@gmail.com
+CONTACT_TO_EMAIL=officialjayluxe.ng@gmail.com
+BOOKING_TO_EMAIL=officialjayluxe.ng@gmail.com
+SUPPORT_EMAIL=officialjayluxe.ng@gmail.com
+
+EMAIL_TEST_MODE=false
+EMAIL_TEST_RECIPIENT=
+REVIEW_REQUEST_EMAILS_ENABLED=false
+```
+
+Only configure `@jayluxestore.com` sender values after the domain shows **Verified** in Resend. Do not expose any of these server secrets through `NEXT_PUBLIC_*` variables.
+
+For safe local testing, set `EMAIL_TEST_MODE=true` and provide `EMAIL_TEST_RECIPIENT`. Every workflow will be redirected to that test mailbox, and the original intended recipient is added to the subject for clarity.
+
+### Resend DNS on Vercel DNS
+
+Use the exact values displayed by **Resend → Domains → jayluxestore.com**. The current domain setup requires:
+
+- `TXT` name `resend._domainkey` → the complete DKIM `p=...` value from Resend.
+- `MX` name `send` → the exact `feedback-smtp...amazonses.com` value from Resend, priority `10`.
+- `TXT` name `send` → the exact SPF value shown by Resend (normally `v=spf1 include:amazonses.com ~all`).
+- DMARC is optional and can be added after SPF/DKIM verify.
+
+Do not replace Vercel's website ALIAS/A records when adding these mail records.
+
+### Resend webhook
+
+Create a Resend webhook pointing to:
+
+`https://jayluxestore.com/api/email/resend-webhook`
+
+Subscribe at minimum to `email.sent`, `email.delivered`, `email.delivery_delayed`, `email.failed`, `email.bounced`, and `email.complained`. Put the webhook signing secret in `RESEND_WEBHOOK_SECRET`. The route verifies the raw signed payload before changing Firestore. Delivery/bounce/complaint state is attached to `emailEvents`, and bounced/complained newsletter recipients are suppressed from marketing.
+
+### Email event architecture
+
+Every send goes through `sendManagedEmail()` and creates a deterministic Firestore record in `emailEvents`. The log stores the event type, intended recipient, related order/user, attempts, Resend message ID, send status, timestamps and errors. A Firestore transaction prevents simultaneous duplicate sends, while the same deterministic key is also sent to Resend as an idempotency key. Already-sent events are skipped. Failed events may be retried safely from the Admin Orders table with **Retry Email**.
+
+Order/payment creation remains authoritative even if Resend is unavailable. Email errors are logged but do not roll back a verified payment, stock deduction or successful order.
+
+### Implemented workflows
+
+- Customer order confirmation after the server verifies Paystack and commits the order.
+- Customer payment confirmation based only on the trusted backend Paystack verification result.
+- Admin new-order notification to `officialjayluxe.ng@gmail.com`.
+- Admin payment notification.
+- Order status emails for Processing/Packed/Shipped/Out for Delivery/Delivered/Cancelled/Refunded and other supported statuses.
+- Shipping email includes courier/tracking details when those fields exist on the order.
+- Delivery email; optional review request is scheduled three days later when `REVIEW_REQUEST_EMAILS_ENABLED=true`.
+- Firebase password-reset links delivered through Resend without account enumeration.
+- Firebase email-verification and JayLuxe welcome emails after registration.
+- Contact-form admin notification plus customer acknowledgement, with honeypot, duplicate detection and rate limiting.
+- Newsletter welcome email with Firestore subscription state and RFC-style unsubscribe headers/endpoint.
+- Booking admin notifications routed through the same centralized Resend service.
+- Signed Resend webhook delivery/bounce/failure tracking.
+
+Wishlist notifications are intentionally not enabled yet because the current wishlist is browser `localStorage`, not a server-side per-user subscription model. This avoids inventing an unreliable notification system.
+
+### Smoke-test checklist
+
+1. Enable `EMAIL_TEST_MODE=true` in a Preview deployment and use a mailbox you control.
+2. Register a new Firebase account: verify welcome + verification emails.
+3. Request a password reset from `/forgot-password`: response must remain generic and the test mailbox should receive the link.
+4. Place a Paystack test order: verify order confirmation, payment confirmation, and both admin notifications; refresh/retry the request and confirm duplicates are skipped.
+5. Change an order status from Admin: confirm the order state changes even if email fails; for Shipped/Delivered confirm the appropriate template.
+6. Submit Contact: verify the admin message and customer acknowledgement; immediately repeat the exact message and confirm duplicate protection.
+7. Subscribe to the newsletter: verify one subscription record and one welcome email; use the unsubscribe link and confirm `marketingConsent=false`.
+8. Configure the Resend webhook and use Resend test events to confirm `providerStatus` updates in `emailEvents`.
+9. Disable test mode only after the domain and sender addresses are verified.
+10. Run `npm run lint`, `npx tsc --noEmit --incremental false`, and `npm run build` before production deployment.

@@ -89,6 +89,20 @@ export default function RegisterPage() {
       });
       await logUserSession(credential.user.uid, credential.user.email);
 
+      try {
+        const idToken = await credential.user.getIdToken();
+        await fetch('/api/email/registration', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${idToken}`,
+          },
+          body: JSON.stringify({ name: name.trim() }),
+        });
+      } catch (emailError) {
+        console.error('Registration email workflow failed:', emailError);
+      }
+
       localStorage.removeItem('jj-user');
       localStorage.removeItem('jj-users');
       router.replace('/account');

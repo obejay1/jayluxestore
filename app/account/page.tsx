@@ -5,7 +5,6 @@ import Link from 'next/link';
 import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
-  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signOut,
   updateProfile,
@@ -329,7 +328,20 @@ export default function AccountPage() {
             email: normalizedEmail,
           }),
         );
-        setAuthMessage('Your JayLuxe account has been created.');
+        try {
+          const idToken = await credential.user.getIdToken();
+          await fetch('/api/email/registration', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${idToken}`,
+            },
+            body: JSON.stringify({ name: fullName.trim() }),
+          });
+        } catch (emailError) {
+          console.error('Registration email workflow failed:', emailError);
+        }
+        setAuthMessage('Your JayLuxe account has been created. Check your inbox for account emails.');
       } else {
         await signInWithEmailAndPassword(auth, normalizedEmail, password);
         setAuthMessage('You are now signed in.');
@@ -357,10 +369,18 @@ export default function AccountPage() {
     setAuthLoading(true);
 
     try {
-      await sendPasswordResetEmail(auth, normalizedEmail);
-      setAuthMessage('A password reset link has been sent to your email.');
+      const response = await fetch('/api/email/password-reset', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: normalizedEmail }),
+      });
+      const data = (await response.json()) as { ok?: boolean; message?: string };
+      if (!response.ok || !data.ok) {
+        throw new Error(data.message || 'The password-reset request could not be completed.');
+      }
+      setAuthMessage(data.message || 'If the account exists, a password reset link will be sent shortly.');
     } catch (error) {
-      setAuthError(getFirebaseErrorMessage(error));
+      setAuthError(error instanceof Error ? error.message : 'The password-reset request could not be completed.');
     } finally {
       setAuthLoading(false);
     }

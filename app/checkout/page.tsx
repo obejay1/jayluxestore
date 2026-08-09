@@ -293,15 +293,6 @@ export default function Checkout() {
 
       setCart([]);
 
-      void fetch('/api/send-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          orderId: data.orderId,
-          accessToken: data.accessToken,
-        }),
-      }).catch((error) => console.error('Order email failed:', error));
-
       void fetch('/api/termii/send-order-sms', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
