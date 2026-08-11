@@ -7,9 +7,19 @@ const ALLOWED_REMOTE_IMAGE_HOSTS = new Set([
   'storage.googleapis.com',
 ]);
 
+const LEGACY_DATA_IMAGE = /^data:image\/(?:jpeg|png|webp);base64,/i;
+const MAX_LEGACY_DATA_URL_LENGTH = 12_000_000;
+
+export function isLegacyDataImageSource(source?: string | null): boolean {
+  const value = source?.trim() || '';
+  return value.length <= MAX_LEGACY_DATA_URL_LENGTH && LEGACY_DATA_IMAGE.test(value);
+}
+
 /**
  * Prevents Next/Image from receiving unconfigured or malformed remote URLs.
- * Local public-folder paths and the hosts declared in next.config.js are kept.
+ * New catalog uploads are durable Firebase Storage/Cloudinary URLs. Legacy
+ * catalog records that still contain a safe image data URL remain readable so
+ * existing products do not suddenly show blank placeholders.
  */
 export function getSafeImageSource(
   source?: string | null,
@@ -19,6 +29,7 @@ export function getSafeImageSource(
 
   if (!value) return fallback;
   if (value.startsWith('/')) return value;
+  if (isLegacyDataImageSource(value)) return value;
 
   try {
     const url = new URL(value);

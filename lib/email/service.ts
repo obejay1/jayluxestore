@@ -108,18 +108,8 @@ export async function sendManagedEmail(input: ManagedEmailInput): Promise<Manage
     return { ok: false, status: 'not_configured', error: `Missing ${missing}.` };
   }
 
-  if (config.testMode && !config.testRecipient) {
-    const message = 'EMAIL_TEST_MODE is enabled but EMAIL_TEST_RECIPIENT is missing.';
-    await eventRef.set({ status: 'failed', error: message, updatedAt: FieldValue.serverTimestamp(), updatedAtMs: Date.now() }, { merge: true });
-    return { ok: false, status: 'failed', error: message };
-  }
-
-  const actualRecipients = config.testMode
-    ? [config.testRecipient.toLowerCase()]
-    : originalRecipients;
-  const subject = config.testMode
-    ? `[TEST → ${originalRecipients.join(', ')}] ${input.subject}`
-    : input.subject;
+  const actualRecipients = originalRecipients;
+  const subject = input.subject;
 
   try {
     const resend = new Resend(config.apiKey);
@@ -143,7 +133,8 @@ export async function sendManagedEmail(input: ManagedEmailInput): Promise<Manage
       status: finalStatus,
       resendMessageId: data?.id || null,
       actualRecipient: actualRecipients.join(','),
-      testMode: config.testMode,
+      sender: from,
+      subject,
       scheduledAt: input.scheduledAt || null,
       sentAt: input.scheduledAt ? null : FieldValue.serverTimestamp(),
       updatedAt: FieldValue.serverTimestamp(),
@@ -172,12 +163,12 @@ export async function verifyResendWebhook(input: {
   signature: string;
 }) {
   const config = getEmailConfig();
-  const webhookSecret = process.env.RESEND_WEBHOOK_SECRET?.trim();
-  if (!config.apiKey || !webhookSecret) {
-    throw new Error('Resend webhook verification is not configured.');
+  const webhookSecret = config.webhookSecret;
+  if (!webhookSecret) {
+    throw new Error('RESEND_WEBHOOK_SECRET is not configured.');
   }
 
-  const resend = new Resend(config.apiKey);
+  const resend = new Resend(config.apiKey || 're_webhook_verification_only');
   return resend.webhooks.verify({
     payload: input.payload,
     headers: {

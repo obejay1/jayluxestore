@@ -14,7 +14,6 @@ import {
   LockKeyhole,
   Mail,
   Phone,
-  Sparkles,
   UserRound,
 } from 'lucide-react';
 
@@ -119,7 +118,7 @@ export default function RegisterPage() {
       <section className="jl-auth-aside" aria-labelledby="register-welcome-title">
         <div>
           <span className="jl-auth-badge">
-            <Sparkles size={16} aria-hidden="true" /> Join JayLuxe
+            Join JayLuxe
           </span>
           <h1 id="register-welcome-title" className="font-serif">
             Your personalised luxury experience starts here.

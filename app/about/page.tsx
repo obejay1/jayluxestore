@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, Heart, Shield, Sparkles, Truck } from 'lucide-react';
+import { ArrowRight, Heart, Shield, Truck } from 'lucide-react';
 import Footer from '@/components/Footer';
 import PageHeroIcon from '@/components/PageHeroIcon';
 
@@ -8,7 +8,7 @@ export default function AboutPage() {
     <main className="jl-editorial-page jl-about-page">
       <section className="jl-editorial-hero jl-about-hero">
         <PageHeroIcon icon={Heart} label="About JayLuxe" />
-        <span><Sparkles size={16} /> The JayLuxe Story</span>
+        <span>The JayLuxe Story</span>
         <h1 className="font-serif">Luxury that feels personal.</h1>
         <p>JayLuxe brings fashion, beauty, hair, bridal and lifestyle essentials together in one refined Nigerian shopping experience.</p>
       </section>

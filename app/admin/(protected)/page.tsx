@@ -42,6 +42,7 @@ import { getCheckoutSettings, saveCheckoutSettings } from '@/lib/settings';
 import { Product, Order, Category } from '@/lib/types';
 import { showToast } from '@/lib/toast';
 import { recordAdminActivity } from '@/lib/adminActivityClient';
+import { uploadCatalogImage } from '@/lib/catalogImages';
 
 
 type AdminOrder = Omit<Order, 'items'> & {
@@ -72,6 +73,9 @@ type AdminOrder = Omit<Order, 'items'> & {
   lastEmailType?: string;
   lastEmailStatus?: string;
   lastEmailSentAt?: string;
+  lastEmailDeliveryStatus?: string;
+  lastEmailProviderEvent?: string;
+  lastEmailProviderEventAt?: string;
   items?: Array<{
     id?: string;
     name?: string;
@@ -435,20 +439,22 @@ export default function Admin() {
     load();
   }
 
-  function uploadCategoryImage(e: React.ChangeEvent<HTMLInputElement>) {
+  async function uploadCategoryImage(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const reader = new FileReader();
-
-    reader.onloadend = () => {
-      setCategoryForm((prev) => ({
-        ...prev,
-        image: reader.result as string,
-      }));
-    };
-
-    reader.readAsDataURL(file);
+    setIsUploading(true);
+    try {
+      const imageUrl = await uploadCatalogImage(file, 'categories');
+      setCategoryForm((prev) => ({ ...prev, image: imageUrl }));
+      showToast('Category image uploaded.', 'success');
+    } catch (error) {
+      console.error('CATEGORY IMAGE UPLOAD ERROR:', error);
+      showToast(error instanceof Error ? error.message : 'Category image upload failed.', 'error');
+      e.target.value = '';
+    } finally {
+      setIsUploading(false);
+    }
   }
 
   async function submitCategory() {
@@ -1213,7 +1219,7 @@ export default function Admin() {
         {can('promotions') ? <a href="#coupons">🎟 Promotions &amp; Coupons</a> : null}
         {can('bookings') ? <a href="#bookings">📅 Bookings</a> : null}
         {can('testimonials') ? <a href="#testimonials-form">💬 Testimonials</a> : null}
-        {can('content') ? <a href="#transformations-form">✨ Before &amp; After</a> : null}
+        {can('content') ? <a href="#transformations-form">Before &amp; After</a> : null}
         {can('settings') ? <a href="#settings">⚙️ Store Settings</a> : null}
         {can('reports') ? <Link href="/admin/reports">💹 Financial Reports</Link> : null}
         {adminUser?.role === 'super_admin' ? <Link href="/admin/users">👤 Admin &amp; Staff</Link> : null}
@@ -1604,7 +1610,7 @@ export default function Admin() {
 
             <div className="category-upload-box">
               <label>Category Image</label>
-              <input type="file" accept="image/*" onChange={uploadCategoryImage} />
+              <input type="file" accept="image/jpeg,image/png,image/webp" disabled={isUploading} onChange={uploadCategoryImage} />
 
               {categoryForm.image && (
                 <img
@@ -1626,8 +1632,8 @@ export default function Admin() {
           </div>
 
           <div style={{ display: 'flex', gap: 12, marginTop: 16 }}>
-            <button className="btn" onClick={submitCategory}>
-              {categoryForm.id ? 'Update Category' : 'Save Category'}
+            <button className="btn" onClick={submitCategory} disabled={isUploading}>
+              {isUploading ? 'Uploading image...' : (categoryForm.id ? 'Update Category' : 'Save Category')}
             </button>
 
             <button
@@ -1905,7 +1911,7 @@ export default function Admin() {
         <section className="table-card" id="transformations-form" hidden={!can('content')}>
           <div className="admin-section-title">
             <div>
-              <h2>✨ Add/Edit Transformation</h2>
+              <h2>Add/Edit Transformation</h2>
               <p>Showcase your work in the Before & After gallery.</p>
             </div>
           </div>
@@ -2219,21 +2225,24 @@ export default function Admin() {
 
   <input
     type="file"
-    accept="image/*"
-    onChange={(e) => {
+    accept="image/jpeg,image/png,image/webp"
+    disabled={isUploading}
+    onChange={async (e) => {
       const file = e.target.files?.[0];
       if (!file) return;
 
-      const reader = new FileReader();
-
-      reader.onloadend = () => {
-        setForm({
-          ...form,
-          image: reader.result as string,
-        });
-      };
-
-      reader.readAsDataURL(file);
+      setIsUploading(true);
+      try {
+        const imageUrl = await uploadCatalogImage(file, 'products');
+        setForm((current) => ({ ...current, image: imageUrl }));
+        showToast('Product image uploaded.', 'success');
+      } catch (error) {
+        console.error('PRODUCT IMAGE UPLOAD ERROR:', error);
+        showToast(error instanceof Error ? error.message : 'Product image upload failed.', 'error');
+        e.target.value = '';
+      } finally {
+        setIsUploading(false);
+      }
     }}
   />
 
@@ -2292,8 +2301,8 @@ export default function Admin() {
           <br />
           <br />
 
-          <button className="btn" onClick={submitProduct}>
-            Save Product / Service
+          <button className="btn" onClick={submitProduct} disabled={isUploading}>
+            {isUploading ? 'Uploading image...' : 'Save Product / Service'}
           </button>
         </section>
 
@@ -2400,7 +2409,9 @@ export default function Admin() {
                         <span>Order: {o.confirmationEmailStatus || '—'}</span>
                         <span>Payment: {o.paymentEmailStatus || '—'}</span>
                         <span>Status: {o.statusEmailStatus || '—'}</span>
-                        {o.lastEmailSentAt ? <small>Last: {new Date(o.lastEmailSentAt).toLocaleString()}</small> : null}
+                        <span>Delivery: {o.lastEmailDeliveryStatus || '—'}</span>
+                        {o.lastEmailProviderEvent ? <small>Provider: {o.lastEmailProviderEvent}</small> : null}
+                        {o.lastEmailSentAt ? <small>Last sent: {new Date(o.lastEmailSentAt).toLocaleString()}</small> : null}
                         {o.confirmationEmailError || o.paymentEmailError || o.statusEmailError ? (
                           <small style={{ color: '#b42318', maxWidth: 220 }}>
                             {o.statusEmailError || o.paymentEmailError || o.confirmationEmailError}

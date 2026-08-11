@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
-import { ArrowRight, FileText, Sparkles } from 'lucide-react';
+import { ArrowRight, FileText } from 'lucide-react';
 
 import Footer from '@/components/Footer';
 import PageHeroIcon from '@/components/PageHeroIcon';
@@ -30,7 +30,7 @@ export default function EditorialPage({
       <section className="jl-policy-hero" aria-labelledby="policy-title">
         <PageHeroIcon icon={FileText} label={`${title} page`} />
         <span className="jl-policy-eyebrow">
-          <Sparkles size={15} aria-hidden="true" /> {eyebrow}
+          {eyebrow}
         </span>
         <h1 id="policy-title" className="font-serif">{title}</h1>
         <p>{introduction}</p>

@@ -6,7 +6,7 @@ import Link from 'next/link';
 import FocusLock from 'react-focus-lock';
 import { ArrowUpRight, Heart, Shield, ShoppingBag, Truck, X } from 'lucide-react';
 
-import { DEFAULT_PRODUCT_IMAGE, getSafeImageSource } from '@/lib/images';
+import { DEFAULT_PRODUCT_IMAGE, getSafeImageSource, isLegacyDataImageSource } from '@/lib/images';
 import type { Product } from '@/lib/types';
 import { addToCart, getWishlist, toggleWishlist } from '@/lib/store';
 import { showToast } from '@/lib/toast';
@@ -78,6 +78,7 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
               src={imageSource}
               alt={product.name}
               fill
+              unoptimized={isLegacyDataImageSource(imageSource)}
               sizes="(max-width: 760px) 100vw, 46vw"
               onError={() => setImageSource(DEFAULT_PRODUCT_IMAGE)}
             />

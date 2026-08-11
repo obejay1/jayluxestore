@@ -54,8 +54,6 @@ BOOKING_FROM_EMAIL=JayLuxe Support <support@jayluxestore.com>
 NEWSLETTER_FROM_EMAIL=JayLuxe <noreply@jayluxestore.com>
 ADMIN_NOTIFICATION_EMAIL=officialjayluxe.ng@gmail.com
 SUPPORT_EMAIL=officialjayluxe.ng@gmail.com
-EMAIL_TEST_MODE=false
-EMAIL_TEST_RECIPIENT=
 REVIEW_REQUEST_EMAILS_ENABLED=false
 ```
 
@@ -115,8 +113,6 @@ Do not replace/delete Vercel's web A/ALIAS records while adding mail records.
 Use a Preview deployment with:
 
 ```env
-EMAIL_TEST_MODE=true
-EMAIL_TEST_RECIPIENT=your-test-mailbox@example.com
 ```
 
 Then test:
@@ -132,7 +128,7 @@ Then test:
 9. Submit the contact form: admin email and customer acknowledgement; duplicate/rate-limit checks should work.
 10. Subscribe to newsletter twice: only the first active subscription sends the welcome; unsubscribe link sets `marketingConsent=false`.
 11. Use Resend webhook test events and verify `providerStatus` in `emailEvents`.
-12. Disable test mode only after all workflows and DNS/domain verification are confirmed.
+12. Keep production recipient routing enabled; use controlled recipient addresses only when performing manual development/preview verification.
 
 ## I. Issues / limitations discovered
 

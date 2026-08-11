@@ -242,6 +242,25 @@ export function orderStatusTemplate(order: Order, status: string) {
   };
 }
 
+
+export function adminOrderStatusTemplate(order: Order, status: string) {
+  const siteUrl = getSiteUrlString();
+  const body = `<p style="font-size:16px;line-height:1.7">Order <strong>#${esc(order.id)}</strong> has been updated to <strong>${esc(status)}</strong>.</p>
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#faf7f1;border:1px solid #eee4d5;border-radius:14px">
+      <tr><td style="padding:10px 16px;color:#746b60">Customer</td><td style="padding:10px 16px;text-align:right">${esc(order.customerName || 'Customer')}</td></tr>
+      <tr><td style="padding:10px 16px;color:#746b60">Email</td><td style="padding:10px 16px;text-align:right">${esc(order.customerEmail || 'N/A')}</td></tr>
+      <tr><td style="padding:10px 16px;color:#746b60">Status</td><td style="padding:10px 16px;text-align:right">${esc(status)}</td></tr>
+      <tr><td style="padding:10px 16px;color:#746b60">Total</td><td style="padding:10px 16px;text-align:right">${esc(money(order.total))}</td></tr>
+      <tr><td style="padding:10px 16px;color:#746b60">Payment</td><td style="padding:10px 16px;text-align:right">${esc(order.paymentStatus || 'N/A')}</td></tr>
+    </table>
+    ${button('View Order in Admin Dashboard', `${siteUrl}/admin#orders`)}`;
+  return {
+    subject: `JayLuxe Order #${order.id} — ${status}`,
+    html: shell('Order Status Notification', body, { eyebrow: 'Admin notification' }),
+    text: `JayLuxe order #${order.id} for ${order.customerName || order.customerEmail || 'Customer'} is now ${status}. Total: ${money(order.total)}.`,
+  };
+}
+
 export function passwordResetTemplate(name: string, resetLink: string) {
   const body = `<p style="font-size:16px;line-height:1.7">Hello <strong>${esc(name || 'Customer')}</strong>, we received a request to reset your JayLuxe password.</p>
     <p style="color:#655d53;line-height:1.7">Use the secure button below to continue. This Firebase-generated action link is time-limited. If you did not request a password reset, you can safely ignore this email.</p>

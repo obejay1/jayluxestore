@@ -22,6 +22,8 @@ npm install
 cp .env.example .env.local
 ```
 
+The previous archive contained an internally inconsistent `package-lock.json`: it labeled `firebase-admin` as `12.7.0` while still pointing at the `14.2.0` tarball/dependency tree, which can reproduce the `jwks-rsa`/`jose` ESM failure on a clean Vercel build. That corrupt lockfile has been removed. `firebase-admin` is pinned exactly to `12.7.0`; the first successful `npm install` will generate a fresh lockfile. Commit that newly generated lockfile before the final production rollout so Vercel and local installs use the same dependency graph.
+
 For local development, override these two values in `.env.local`:
 
 ```env
@@ -98,10 +100,12 @@ NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY=
 PAYSTACK_SECRET_KEY=
 
 RESEND_API_KEY=
+RESEND_WEBHOOK_SECRET=
 RESEND_FROM_EMAIL=
 ADMIN_EMAIL_FROM=
 CONTACT_FROM_EMAIL=
 ORDER_FROM_EMAIL=
+ACCOUNT_FROM_EMAIL=
 BOOKING_FROM_EMAIL=
 NEWSLETTER_FROM_EMAIL=
 
@@ -242,14 +246,20 @@ https://jayluxestore.com/api/account/orders
 `/api/health` must return JSON containing `"ok": true`. `/api/account/orders` without a Firebase ID token should return a JSON `401` response, not HTML. If either URL returns an HTML page, fix the hosting/runtime routing before changing Firestore or authentication code.
 
 
-## Live-site runtime correction (2026-08-08)
+## Live-site runtime correction
 
-If local authentication/order APIs work but the custom domain returns HTML for
-`/api/*`, use the App Hosting procedure in `LIVE_DEPLOYMENT_FIX.md`. The included
-Firebase Admin bootstrap now prefers Google Application Default Credentials when
-running on Firebase App Hosting/Cloud Run, while preserving explicit
-service-account credentials for local development and non-Google hosts.
+JayLuxe is deployed as a full-stack Next.js application. On Vercel, keep all Firebase Admin and payment/email routes on the Node.js runtime and provide the server-only Firebase Admin service-account environment variables. The Firebase Admin bootstrap also remains compatible with Google Application Default Credentials when intentionally deployed on Google-managed runtimes. Do not deploy the application as a static `out` directory because the `/api/*` routes, Firebase Admin sessions, payment verification and Resend workflows require a server runtime.
 
+
+## Product and category image uploads
+
+Admin product/category images use the existing Firebase Storage application. New catalog uploads are written to the `products/` or `categories/` Storage paths, then the resulting HTTPS download URL is stored in the existing Firestore image field. `storage.rules` allows public reads for these catalog images and restricts writes to authenticated administrators with the matching `products` or `categories` permission. Accepted upload types are JPEG, PNG and WebP up to 8 MB. Existing legacy `data:image/...` records remain readable for backwards compatibility, but new saves use durable Storage URLs.
+
+Deploy Storage rules after changing them:
+
+```bash
+firebase deploy --only storage
+```
 
 ## Production email system (Resend)
 
@@ -278,14 +288,12 @@ CONTACT_TO_EMAIL=officialjayluxe.ng@gmail.com
 BOOKING_TO_EMAIL=officialjayluxe.ng@gmail.com
 SUPPORT_EMAIL=officialjayluxe.ng@gmail.com
 
-EMAIL_TEST_MODE=false
-EMAIL_TEST_RECIPIENT=
 REVIEW_REQUEST_EMAILS_ENABLED=false
 ```
 
 Only configure `@jayluxestore.com` sender values after the domain shows **Verified** in Resend. Do not expose any of these server secrets through `NEXT_PUBLIC_*` variables.
 
-For safe local testing, set `EMAIL_TEST_MODE=true` and provide `EMAIL_TEST_RECIPIENT`. Every workflow will be redirected to that test mailbox, and the original intended recipient is added to the subject for clarity.
+JayLuxe does not include recipient-redirect test mode in the production email service. Local development uses the same server-side workflow and configured recipient addresses; use a dedicated Resend development domain/account or controlled recipient addresses when manually testing.
 
 ### Resend DNS on Vercel DNS
 
@@ -332,7 +340,7 @@ Wishlist notifications are intentionally not enabled yet because the current wis
 
 ### Smoke-test checklist
 
-1. Enable `EMAIL_TEST_MODE=true` in a Preview deployment and use a mailbox you control.
+1. Use a Preview deployment or local development with controlled recipient addresses and a verified Resend sender domain.
 2. Register a new Firebase account: verify welcome + verification emails.
 3. Request a password reset from `/forgot-password`: response must remain generic and the test mailbox should receive the link.
 4. Place a Paystack test order: verify order confirmation, payment confirmation, and both admin notifications; refresh/retry the request and confirm duplicates are skipped.
@@ -340,5 +348,5 @@ Wishlist notifications are intentionally not enabled yet because the current wis
 6. Submit Contact: verify the admin message and customer acknowledgement; immediately repeat the exact message and confirm duplicate protection.
 7. Subscribe to the newsletter: verify one subscription record and one welcome email; use the unsubscribe link and confirm `marketingConsent=false`.
 8. Configure the Resend webhook and use Resend test events to confirm `providerStatus` updates in `emailEvents`.
-9. Disable test mode only after the domain and sender addresses are verified.
+9. Confirm the production domain and sender addresses are verified before live customer email testing.
 10. Run `npm run lint`, `npx tsc --noEmit --incremental false`, and `npm run build` before production deployment.

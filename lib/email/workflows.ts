@@ -3,6 +3,7 @@ import { getEmailConfig } from '@/lib/email/config';
 import { sendManagedEmail, type ManagedEmailResult } from '@/lib/email/service';
 import {
   adminNewOrderTemplate,
+  adminOrderStatusTemplate,
   adminPaymentTemplate,
   contactAcknowledgementTemplate,
   contactAdminTemplate,
@@ -146,6 +147,21 @@ export async function sendOrderStatusEmail(order: Order, status: string) {
     lastEmailStatus: result.status,
     lastEmailSentAt: result.ok && !result.skipped ? new Date().toISOString() : null,
   });
+
+  if (status === 'Cancelled' || status === 'Refunded') {
+    const admin = getEmailConfig().adminRecipient;
+    if (admin) {
+      const adminTemplate = adminOrderStatusTemplate(order, status);
+      await sendManagedEmail({
+        eventKey: `admin-order-status:${order.id}:${status.toLowerCase()}`,
+        emailType: status === 'Refunded' ? 'admin_refund' : 'admin_order_cancellation',
+        to: admin,
+        sender: 'admin',
+        orderId: order.id,
+        ...adminTemplate,
+      });
+    }
+  }
 
   if (status === 'Delivered' && getEmailConfig().reviewRequestEnabled) {
     const reviewTemplate = reviewRequestTemplate(order);

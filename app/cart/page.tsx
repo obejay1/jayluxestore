@@ -10,7 +10,7 @@ import { useEffect, useMemo, useState } from 'react';
 import Footer from '@/components/Footer';
 import PageHeroIcon from '@/components/PageHeroIcon';
 import { trackEvent } from '@/lib/analytics';
-import { getSafeImageSource } from '@/lib/images';
+import { getSafeImageSource, isLegacyDataImageSource } from '@/lib/images';
 import { getCart, getProducts, setCart } from '@/lib/store';
 import type { Product } from '@/lib/types';
 
@@ -172,6 +172,7 @@ export default function CartPage() {
                     >
                       <Image
                         src={getSafeImageSource(item.image)}
+                        unoptimized={isLegacyDataImageSource(item.image)}
                         alt={item.name}
                         fill
                         sizes="(max-width: 640px) 84px, 112px"

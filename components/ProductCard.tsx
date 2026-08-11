@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { MouseEvent, useEffect, useMemo, useState } from 'react';
 import { Eye, Heart, ShoppingBag, Star } from 'lucide-react';
 
-import { DEFAULT_PRODUCT_IMAGE, getSafeImageSource } from '@/lib/images';
+import { DEFAULT_PRODUCT_IMAGE, getSafeImageSource, isLegacyDataImageSource } from '@/lib/images';
 import type { Product } from '@/lib/types';
 import { addToCart, getWishlist, toggleWishlist } from '@/lib/store';
 import { showToast } from '@/lib/toast';
@@ -77,6 +77,7 @@ export default function ProductCard({ p, onQuickView }: ProductCardProps) {
             src={imageSource}
             alt={p.name}
             fill
+            unoptimized={isLegacyDataImageSource(imageSource)}
             sizes="(max-width: 767px) 50vw, (max-width: 1023px) 33vw, 25vw"
             className="lux-product-img"
             onError={() => setImageSource(DEFAULT_PRODUCT_IMAGE)}

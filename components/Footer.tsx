@@ -7,7 +7,6 @@ import {
   Camera,
   Share2,
   LoaderCircle,
-  Sparkles,
 } from 'lucide-react';
 
 type SubscribeState = 'idle' | 'submitting' | 'success' | 'error';
@@ -88,7 +87,7 @@ export default function Footer() {
         >
           <div>
             <span>
-              <Sparkles size={16} aria-hidden="true" /> The JayLuxe Edit
+              The JayLuxe Edit
             </span>
             <h2 id="footer-newsletter-title">
               Luxury arrivals, beauty notes and private offers.

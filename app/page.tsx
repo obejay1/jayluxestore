@@ -11,11 +11,9 @@ import {
   Shield,
   Headphones,
   Clock,
-  Star,
   Scissors,
   MessageCircle,
   Mail,
-  Sparkles,
 } from 'lucide-react';
 import { getSafeImageSource } from '@/lib/images';
 import {
@@ -162,7 +160,6 @@ export default function Home() {
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
           <div className="jj-badge">
-            <Sparkles size={16} />
             Premium Beauty & Lifestyle
           </div>
 
@@ -215,14 +212,14 @@ export default function Home() {
 
         <div className="jj-promo-pair">
           <Link href="/promotions" className="jj-promo-compact">
-            <span><Sparkles size={16} aria-hidden="true" /> JayLuxe Offers</span>
+            <span>JayLuxe Offers</span>
             <h3>Seasonal promotions</h3>
             <p>Discover special offers, gift picks and curated luxury edits.</p>
             <strong>View promotions <ArrowRight size={17} aria-hidden="true" /></strong>
           </Link>
 
           <Link href="/best-sellers" className="jj-promo-compact">
-            <span><Star size={16} aria-hidden="true" /> Customer favourites</span>
+            <span>Customer favourites</span>
             <h3>Best-selling pieces</h3>
             <p>Explore the products our customers return to again and again.</p>
             <strong>Shop best sellers <ArrowRight size={17} aria-hidden="true" /></strong>
@@ -392,7 +389,7 @@ export default function Home() {
         <section className="jj-transformations">
           <div className="jj-section-header">
             <div>
-              <small>✨ BEFORE & AFTER</small>
+              <small>BEFORE &amp; AFTER</small>
               <h2>Real Customer Transformations</h2>
             </div>
             <Link href="/gallery" className="jj-view-all-dark">

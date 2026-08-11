@@ -3,7 +3,7 @@
 import Image, { type ImageProps } from 'next/image';
 import { useEffect, useState } from 'react';
 
-import { getSafeImageSource } from '@/lib/images';
+import { getSafeImageSource, isLegacyDataImageSource } from '@/lib/images';
 
 type ResponsiveImageProps = Omit<ImageProps, 'src' | 'onError'> & {
   src?: string | null;
@@ -27,6 +27,7 @@ export default function ResponsiveImage({
       {...props}
       src={imageSource}
       alt={alt}
+      unoptimized={isLegacyDataImageSource(imageSource) || props.unoptimized}
       onError={() => {
         const safeFallback = getSafeImageSource(null, fallbackSrc);
         if (imageSource !== safeFallback) setImageSource(safeFallback);

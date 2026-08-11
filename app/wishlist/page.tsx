@@ -8,7 +8,7 @@ import QuickViewModal from '@/components/QuickViewModal';
 import Footer from '@/components/Footer';
 import { addToCart, getProducts, getWishlist } from '@/lib/store';
 import { Product } from '@/lib/types';
-import { Heart, ShoppingBag, Sparkles } from 'lucide-react';
+import { Heart, ShoppingBag } from 'lucide-react';
 import { showToast } from '@/lib/toast';
 import { PRODUCT_GRID_CLASSES } from '@/lib/layoutClasses';
 
@@ -53,7 +53,7 @@ export default function WishlistPage() {
           </div>
           <div className="wishlist-header-actions">
             {products.length > 0 && <button type="button" className="wishlist-add-all" onClick={addAllToCart}><ShoppingBag size={18} /> Add All to Cart</button>}
-            <Link href="/shop" className="wishlist-shop-link"><Sparkles size={18} /> Continue Shopping</Link>
+            <Link href="/shop" className="wishlist-shop-link">Continue Shopping</Link>
           </div>
         </div>
 

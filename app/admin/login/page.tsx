@@ -17,7 +17,6 @@ import {
   LockKeyhole,
   Mail,
   ShieldCheck,
-  Sparkles,
 } from 'lucide-react';
 
 import { auth } from '@/lib/firebase';
@@ -161,7 +160,7 @@ export default function AdminLoginPage() {
           </div>
 
           <span className={styles.brandEyebrow}>
-            <Sparkles size={15} aria-hidden="true" /> Private administration
+            Private administration
           </span>
           <h1>JayLuxe</h1>
           <p>Luxury Beauty, Fashion &amp; Lifestyle Store</p>

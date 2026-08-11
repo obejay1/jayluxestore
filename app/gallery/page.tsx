@@ -11,7 +11,6 @@ import {
   ImageIcon,
   Search,
   Share2,
-  Sparkles,
   X,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -216,7 +215,6 @@ export default function GalleryPage() {
             transition={{ duration: 0.65 }}
           >
             <span className="jl-gallery-badge">
-              <Sparkles size={16} />
               Beauty Portfolio
             </span>
 

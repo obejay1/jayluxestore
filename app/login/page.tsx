@@ -10,7 +10,7 @@ import {
   setPersistence,
   signInWithEmailAndPassword,
 } from 'firebase/auth';
-import { Eye, EyeOff, LockKeyhole, Mail, Sparkles } from 'lucide-react';
+import { Eye, EyeOff, LockKeyhole, Mail } from 'lucide-react';
 
 import { auth } from '@/lib/firebase';
 import {
@@ -106,7 +106,7 @@ export default function LoginPage() {
       <section className="jl-auth-aside" aria-labelledby="login-welcome-title">
         <div>
           <span className="jl-auth-badge">
-            <Sparkles size={16} aria-hidden="true" /> JayLuxe Client Access
+            JayLuxe Client Access
           </span>
           <h1 id="login-welcome-title" className="font-serif">
             Welcome back to your world of luxury.

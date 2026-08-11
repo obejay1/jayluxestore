@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Quote, Sparkles, Star } from 'lucide-react';
+import { Quote, Star } from 'lucide-react';
 import Footer from '@/components/Footer';
 import PageHeroIcon from '@/components/PageHeroIcon';
 import { getTestimonials, Testimonial } from '@/lib/testimonials';
@@ -23,7 +23,7 @@ export default function TestimonialsPage() {
     <main className="jl-editorial-page jl-testimonials-page">
       <section className="jl-editorial-hero">
         <PageHeroIcon icon={Quote} label="Customer testimonials" />
-        <span><Sparkles size={16} /> Client Stories</span>
+        <span>Client Stories</span>
         <h1 className="font-serif">Loved by the JayLuxe community.</h1>
         <p>Real experiences from customers who shop, celebrate and transform with JayLuxe.</p>
       </section>

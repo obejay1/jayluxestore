@@ -70,6 +70,9 @@ export type Order={
     lastEmailType?: string;
     lastEmailStatus?: string;
     lastEmailSentAt?: string | null;
+    lastEmailDeliveryStatus?: string;
+    lastEmailProviderEvent?: string;
+    lastEmailProviderEventAt?: string | null;
 };
 export type Session={id:string;userId:string;email:string;loginAt:string;userAgent:string};
 export type BridalPackage = {

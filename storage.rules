@@ -18,8 +18,19 @@ service firebase.storage {
     function isAllowedImage() {
       return request.resource == null || (
         request.resource.contentType != null
-        && request.resource.contentType.matches('image/.*')
+        && request.resource.contentType.matches('image/(jpeg|png|webp)')
+        && request.resource.size < 8 * 1024 * 1024
       );
+    }
+
+    match /products/{fileName} {
+      allow read: if true;
+      allow write: if hasPermission('products') && isAllowedImage();
+    }
+
+    match /categories/{fileName} {
+      allow read: if true;
+      allow write: if hasPermission('categories') && isAllowedImage();
     }
 
     match /bridal-packages/{fileName} {

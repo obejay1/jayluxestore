@@ -14,8 +14,6 @@ import {
   Scissors,
   Search,
   ShieldCheck,
-  Sparkles,
-  Star,
   X,
 } from 'lucide-react';
 
@@ -179,7 +177,7 @@ export default function ServicesPage() {
         <div className="jl-services-hero-content">
           <PageHeroIcon icon={Scissors} label="Beauty services" />
           <span className="jl-services-badge">
-            <Sparkles size={16} aria-hidden="true" /> Professional Beauty Services
+            Professional Beauty Services
           </span>
           <h1>Book Premium Beauty &amp; Lifestyle Services</h1>
           <p>Choose from professional wig installation, makeup, gele styling, dreadlocks, pedicure and other luxury beauty services from JayLuxe.</p>
@@ -194,7 +192,7 @@ export default function ServicesPage() {
         <div><ShieldCheck aria-hidden="true" /><strong>Trusted Service</strong><span>Professional beauty care</span></div>
         <div><Clock aria-hidden="true" /><strong>Easy Booking</strong><span>Choose date and time</span></div>
         <div><Heart aria-hidden="true" /><strong>Luxury Finish</strong><span>Designed around your style</span></div>
-        <div><Star aria-hidden="true" /><strong>Premium Experience</strong><span>Beauty service that stands out</span></div>
+        <div><strong>Premium Experience</strong><span>Beauty service that stands out</span></div>
       </section>
 
       {loadError ? (

@@ -8,7 +8,6 @@ import {
   LoaderCircle,
   Scissors,
   ShoppingBag,
-  Sparkles,
 } from 'lucide-react';
 
 import Footer from '@/components/Footer';
@@ -64,7 +63,7 @@ export default function CategoriesPage() {
       <section className="jl-editorial-hero jl-categories-hero">
         <div className="jl-editorial-hero-content">
           <PageHeroIcon icon={ShoppingBag} label="JayLuxe categories" />
-          <span><Sparkles size={16} /> Curated Departments</span>
+          <span>Curated Departments</span>
           <h1 className="font-serif">Explore JayLuxe Categories</h1>
           <p>
             Discover premium fashion, beauty, hair, fragrance, lifestyle and

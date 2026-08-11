@@ -3,10 +3,12 @@
 import { FormEvent, useRef, useState } from 'react';
 import {
   Clock,
+  Headphones,
   Mail,
   MapPin,
   MessageCircle,
-  Sparkles,
+  Phone,
+  Send,
 } from 'lucide-react';
 
 import Footer from '@/components/Footer';
@@ -14,6 +16,7 @@ import PageHeroIcon from '@/components/PageHeroIcon';
 import {
   OFFICIAL_EMAIL,
   OFFICIAL_EMAIL_LINK,
+  OFFICIAL_PHONE_LINK,
   OFFICIAL_WHATSAPP_DISPLAY,
   OFFICIAL_WHATSAPP_URL,
 } from '@/lib/contact';
@@ -31,11 +34,9 @@ export default function ContactPage() {
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-
     if (status === 'submitting') return;
 
     const form = event.currentTarget;
-
     if (!form.reportValidity()) return;
 
     setStatus('submitting');
@@ -96,9 +97,9 @@ export default function ContactPage() {
 
   return (
     <main className="jl-editorial-page jl-contact-page">
-      <section className="jl-editorial-hero">
+      <section className="jl-editorial-hero jl-contact-hero-new">
         <PageHeroIcon icon={MessageCircle} label="Contact JayLuxe" />
-        <span><Sparkles size={16} aria-hidden="true" /> Client Care</span>
+        <span className="jl-contact-eyebrow">Client Care</span>
         <h1 className="font-serif">We are here to help.</h1>
         <p>
           Contact JayLuxe about products, orders, delivery, bridal packages,
@@ -106,34 +107,73 @@ export default function ContactPage() {
         </p>
       </section>
 
-      <section className="jl-contact-layout">
-        <div className="jl-contact-details">
-          <p className="jl-section-kicker">Contact Information</p>
-          <h2 className="font-serif">Speak with the JayLuxe team.</h2>
-          <a href={OFFICIAL_EMAIL_LINK}>
-            <Mail size={21} aria-hidden="true" />
-            <span><small>Email</small>{OFFICIAL_EMAIL}</span>
-          </a>
-          <a href={OFFICIAL_WHATSAPP_URL} target="_blank" rel="noreferrer">
-            <MessageCircle size={21} aria-hidden="true" />
-            <span><small>WhatsApp</small>{OFFICIAL_WHATSAPP_DISPLAY}</span>
-          </a>
-          <div>
-            <MapPin size={21} aria-hidden="true" />
-            <span><small>Service Area</small>Nigeria</span>
+      <section className="jl-contact-layout" aria-label="JayLuxe contact information and form">
+        <aside className="jl-contact-details" aria-labelledby="jl-contact-details-title">
+          <div className="jl-contact-details-intro">
+            <p className="jl-section-kicker">Contact Information</p>
+            <h2 id="jl-contact-details-title" className="font-serif">
+              Speak with the JayLuxe team.
+            </h2>
+            <p>
+              Choose the channel that works best for you. For an existing order,
+              include your order number so our team can assist you faster.
+            </p>
           </div>
-          <div>
-            <Clock size={21} aria-hidden="true" />
-            <span><small>Customer Care</small>Monday–Saturday</span>
-          </div>
-        </div>
 
-        <form ref={formRef} className="jl-contact-form" onSubmit={submit} noValidate>
-          <p className="jl-section-kicker">Send a Message</p>
-          <h2 className="font-serif">How may we assist you?</h2>
+          <div className="jl-contact-info-grid">
+            <a className="jl-contact-info-card" href={OFFICIAL_EMAIL_LINK}>
+              <span className="jl-contact-info-icon" aria-hidden="true"><Mail size={20} /></span>
+              <span><small>Email</small><strong>{OFFICIAL_EMAIL}</strong></span>
+            </a>
+
+            <a className="jl-contact-info-card" href={OFFICIAL_PHONE_LINK}>
+              <span className="jl-contact-info-icon" aria-hidden="true"><Phone size={20} /></span>
+              <span><small>Phone</small><strong>{OFFICIAL_WHATSAPP_DISPLAY}</strong></span>
+            </a>
+
+            <a
+              className="jl-contact-info-card"
+              href={OFFICIAL_WHATSAPP_URL}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <span className="jl-contact-info-icon" aria-hidden="true"><MessageCircle size={20} /></span>
+              <span><small>WhatsApp</small><strong>{OFFICIAL_WHATSAPP_DISPLAY}</strong></span>
+            </a>
+
+            <div className="jl-contact-info-card">
+              <span className="jl-contact-info-icon" aria-hidden="true"><MapPin size={20} /></span>
+              <span><small>Service Area</small><strong>Nigeria</strong></span>
+            </div>
+
+            <div className="jl-contact-info-card">
+              <span className="jl-contact-info-icon" aria-hidden="true"><Clock size={20} /></span>
+              <span><small>Business Hours</small><strong>Monday–Saturday</strong></span>
+            </div>
+
+            <div className="jl-contact-info-card">
+              <span className="jl-contact-info-icon" aria-hidden="true"><Headphones size={20} /></span>
+              <span><small>Customer Support</small><strong>Orders, delivery &amp; services</strong></span>
+            </div>
+          </div>
+        </aside>
+
+        <form
+          ref={formRef}
+          className="jl-contact-form"
+          onSubmit={submit}
+          noValidate
+          aria-describedby={feedback ? 'jl-contact-feedback' : undefined}
+        >
+          <div className="jl-contact-form-heading">
+            <p className="jl-section-kicker">Send a Message</p>
+            <h2 className="font-serif">How may we assist you?</h2>
+            <p>Complete the form and our customer care team will review your enquiry.</p>
+          </div>
 
           {feedback ? (
             <div
+              id="jl-contact-feedback"
               className={status === 'success' ? 'jl-contact-success' : 'jl-contact-error'}
               role={status === 'error' ? 'alert' : 'status'}
               aria-live="polite"
@@ -156,7 +196,7 @@ export default function ContactPage() {
                 minLength={2}
                 maxLength={100}
                 autoComplete="name"
-                placeholder="Your name"
+                placeholder="Your full name"
                 disabled={status === 'submitting'}
               />
             </label>
@@ -170,7 +210,7 @@ export default function ContactPage() {
                 maxLength={160}
                 autoComplete="email"
                 inputMode="email"
-                placeholder="Enter your email address"
+                placeholder="you@example.com"
                 disabled={status === 'submitting'}
               />
             </label>
@@ -204,7 +244,7 @@ export default function ContactPage() {
               <span>Message</span>
               <textarea
                 name="message"
-                rows={6}
+                rows={7}
                 required
                 minLength={10}
                 maxLength={5000}
@@ -215,6 +255,7 @@ export default function ContactPage() {
           </div>
 
           <button type="submit" disabled={status === 'submitting'}>
+            <Send size={17} aria-hidden="true" />
             {status === 'submitting' ? 'Sending message…' : 'Send Message'}
           </button>
         </form>

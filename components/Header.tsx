@@ -15,14 +15,16 @@ import {
   LogIn,
   LogOut,
   Menu,
+  Gem,
+  Images,
+  Layers3,
   MessageCircle,
   Scissors,
   Search,
   ShieldCheck,
   ShoppingBag,
   ShoppingCart,
-  Sparkles,
-  Star,
+  Tags,
   User,
   UserPlus,
   X,
@@ -115,10 +117,10 @@ const mobileNavigation: MobileNavigationItem[] = [
   { label: 'Home', href: '/', icon: Home },
   { label: 'Shop', href: '/shop', icon: ShoppingBag },
   { label: 'Services', href: '/services', icon: Scissors },
-  { label: 'Bridal Packages', href: '/bridal', icon: Sparkles },
-  { label: 'Before & After', href: '/gallery', icon: Star },
-  { label: 'Promotions', href: '/promotions', icon: Sparkles },
-  { label: 'Testimonials', href: '/testimonials', icon: Star },
+  { label: 'Bridal Packages', href: '/bridal', icon: Gem },
+  { label: 'Before & After', href: '/gallery', icon: Images },
+  { label: 'Promotions', href: '/promotions', icon: Tags },
+  { label: 'Testimonials', href: '/testimonials', icon: MessageCircle },
   { label: 'About Us', href: '/about', icon: Info },
   { label: 'Contact Us', href: '/contact', icon: MessageCircle },
   { label: 'Wishlist', href: '/wishlist', icon: Heart },
@@ -536,7 +538,7 @@ export default function Header({
                     onClick={() => setCategoriesOpen((open) => !open)}
                     tabIndex={menuOpen ? 0 : -1}
                   >
-                    <Sparkles size={18} aria-hidden="true" />
+                    <Layers3 size={18} aria-hidden="true" />
                     <span>Categories</span>
                     <ChevronDown size={17} aria-hidden="true" />
                   </button>
@@ -717,8 +719,7 @@ export default function Header({
       <header className="jl-site-header">
         <div className="jl-announcement-bar">
           <span>
-            <Sparkles size={14} aria-hidden="true" /> Curated luxury for beauty,
-            fashion and lifestyle
+            Curated luxury for beauty, fashion and lifestyle
           </span>
           <Link href="/promotions">View current offers</Link>
         </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 import ResponsiveImage from '@/components/ResponsiveImage';
 import type { Product } from '@/lib/types';
@@ -36,7 +36,6 @@ export default function ServiceCard({
 
         {featured ? (
           <span className="jl-unified-service-featured">
-            <Sparkles size={13} aria-hidden="true" />
             Featured
           </span>
         ) : null}

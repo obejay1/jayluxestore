@@ -1,10 +1,8 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { collection, getDocs } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
-import { useAdminAuth } from '@/lib/useAdminAuth';
 import {
   Bar,
   BarChart,
@@ -21,6 +19,10 @@ import {
   YAxis,
 } from 'recharts';
 
+import styles from '@/components/admin/AdminReportsClient.module.css';
+import { db } from '@/lib/firebase';
+import { useAdminAuth } from '@/lib/useAdminAuth';
+
 interface OrderItem {
   id?: string;
   name?: string;
@@ -29,7 +31,6 @@ interface OrderItem {
   qty?: number;
   quantity?: number;
 }
-
 interface OrderData {
   id?: string;
   total?: number;
@@ -44,105 +45,64 @@ interface OrderData {
   paymentMethod?: string;
   items?: OrderItem[];
 }
-
-interface ProductData {
-  id?: string;
-  name?: string;
-  category?: string;
-  price?: number;
-  stock?: number;
-  type?: string;
-}
-
-interface UserData {
-  id?: string;
-  name?: string;
-  fullName?: string;
-  email?: string;
-  createdAt?: string;
-  joined?: string;
-}
-
-interface ChartData {
-  name: string;
-  revenue: number;
-  orders: number;
-}
-
-interface TopProduct {
-  name: string;
-  category: string;
-  qtySold: number;
-  revenue: number;
-}
-
-interface TopCustomer {
-  email: string;
-  name: string;
-  totalSpent: number;
-  orderCount: number;
-}
-
-interface StatusData {
-  name: string;
-  value: number;
-}
-
-interface CategoryData {
-  name: string;
-  revenue: number;
-  qtySold: number;
-}
-
+interface ProductData { id?: string; name?: string; category?: string; price?: number; stock?: number; type?: string; }
+interface UserData { id?: string; name?: string; fullName?: string; email?: string; createdAt?: string; joined?: string; }
+interface TopProduct { name: string; category: string; qtySold: number; revenue: number; }
+interface TopCustomer { email: string; name: string; totalSpent: number; orderCount: number; }
+interface CategoryData { name: string; revenue: number; qtySold: number; }
 type DateFilter = 'all' | 'today' | 'week' | 'month' | 'year' | 'custom';
 
-const money = (amount: number) => `₦${Math.round(amount || 0).toLocaleString()}`;
-
+const money = (amount: number) => `₦${Math.round(amount || 0).toLocaleString('en-NG')}`;
 const getOrderTotal = (order: OrderData) => Number(order.total ?? order.subtotal ?? 0);
+const toDateInput = (date: Date) => date.toISOString().slice(0, 10);
 
-const normaliseStatus = (status?: string) => {
+function normaliseStatus(status?: string) {
   const value = (status || 'Processing').toLowerCase();
   if (value.includes('deliver')) return 'Delivered';
   if (value.includes('ship')) return 'Shipped';
+  if (value.includes('refund')) return 'Refunded';
   if (value.includes('cancel')) return 'Cancelled';
   if (value.includes('pending')) return 'Pending';
+  if (value.includes('confirm')) return 'Confirmed';
   if (value.includes('process')) return 'Processing';
   return status || 'Processing';
-};
-
-const toDateInput = (date: Date) => date.toISOString().slice(0, 10);
+}
 
 export default function AdminReportsClient() {
   const { ready: adminReady } = useAdminAuth();
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [orders, setOrders] = useState<OrderData[]>([]);
   const [products, setProducts] = useState<ProductData[]>([]);
   const [users, setUsers] = useState<UserData[]>([]);
   const [dateFilter, setDateFilter] = useState<DateFilter>('month');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [exporting, setExporting] = useState('');
+
+  const fetchReportsData = useCallback(async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const [ordersSnap, usersSnap, productsSnap] = await Promise.all([
+        getDocs(collection(db, 'orders')),
+        getDocs(collection(db, 'users')),
+        getDocs(collection(db, 'products')),
+      ]);
+      setOrders(ordersSnap.docs.map((item) => ({ id: item.id, ...(item.data() as OrderData) })));
+      setUsers(usersSnap.docs.map((item) => ({ id: item.id, ...(item.data() as UserData) })));
+      setProducts(productsSnap.docs.map((item) => ({ id: item.id, ...(item.data() as ProductData) })));
+    } catch (loadError) {
+      console.error('Error loading financial reports:', loadError);
+      setError('Reports could not be loaded. Check your connection and administrator permissions, then try again.');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    async function fetchReportsData() {
-      try {
-        const [ordersSnap, usersSnap, productsSnap] = await Promise.all([
-          getDocs(collection(db, 'orders')),
-          getDocs(collection(db, 'users')),
-          getDocs(collection(db, 'products')),
-        ]);
-
-        setOrders(ordersSnap.docs.map((doc) => ({ id: doc.id, ...(doc.data() as OrderData) })));
-        setUsers(usersSnap.docs.map((doc) => ({ id: doc.id, ...(doc.data() as UserData) })));
-        setProducts(productsSnap.docs.map((doc) => ({ id: doc.id, ...(doc.data() as ProductData) })));
-      } catch (error) {
-        console.error('Error loading financial reports:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
     if (adminReady) void fetchReportsData();
-  }, [adminReady]);
+  }, [adminReady, fetchReportsData]);
 
   const filteredOrders = useMemo(() => {
     const now = new Date();
@@ -153,35 +113,27 @@ export default function AdminReportsClient() {
     if (dateFilter === 'today') {
       filterStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
       filterEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
-    }
-
-    if (dateFilter === 'week') {
+    } else if (dateFilter === 'week') {
       start.setDate(now.getDate() - 7);
       filterStart = start;
       filterEnd = now;
-    }
-
-    if (dateFilter === 'month') {
+    } else if (dateFilter === 'month') {
       filterStart = new Date(now.getFullYear(), now.getMonth(), 1);
       filterEnd = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-    }
-
-    if (dateFilter === 'year') {
+    } else if (dateFilter === 'year') {
       filterStart = new Date(now.getFullYear(), 0, 1);
       filterEnd = new Date(now.getFullYear() + 1, 0, 1);
-    }
-
-    if (dateFilter === 'custom') {
+    } else if (dateFilter === 'custom') {
       filterStart = startDate ? new Date(`${startDate}T00:00:00`) : null;
       filterEnd = endDate ? new Date(`${endDate}T23:59:59`) : null;
     }
 
     if (!filterStart && !filterEnd) return orders;
-
     return orders.filter((order) => {
-      const orderDate = new Date(order.createdAt || Date.now());
-      if (filterStart && orderDate < filterStart) return false;
-      if (filterEnd && orderDate > filterEnd) return false;
+      const date = new Date(order.createdAt || 0);
+      if (Number.isNaN(date.getTime())) return false;
+      if (filterStart && date < filterStart) return false;
+      if (filterEnd && date > filterEnd) return false;
       return true;
     });
   }, [orders, dateFilter, startDate, endDate]);
@@ -193,7 +145,6 @@ export default function AdminReportsClient() {
     const customersMap: Record<string, TopCustomer> = {};
     const categoryMap: Record<string, CategoryData> = {};
     const statusMap: Record<string, number> = {};
-
     let totalRevenue = 0;
     let deliveredRevenue = 0;
     let cancelledRevenue = 0;
@@ -202,437 +153,223 @@ export default function AdminReportsClient() {
     filteredOrders.forEach((order) => {
       const orderTotal = getOrderTotal(order);
       const status = normaliseStatus(order.status);
-      const dateObj = new Date(order.createdAt || Date.now());
+      const dateObj = new Date(order.createdAt || 0);
+      if (Number.isNaN(dateObj.getTime())) return;
       const monthKey = `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, '0')}`;
-      const dayKey = `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, '0')}-${String(dateObj.getDate()).padStart(2, '0')}`;
+      const dayKey = `${monthKey}-${String(dateObj.getDate()).padStart(2, '0')}`;
+      const countsAsRevenue = status !== 'Cancelled' && status !== 'Refunded';
 
-      totalRevenue += status === 'Cancelled' ? 0 : orderTotal;
+      if (countsAsRevenue) totalRevenue += orderTotal;
       if (status === 'Delivered') deliveredRevenue += orderTotal;
-      if (status === 'Cancelled') cancelledRevenue += orderTotal;
-      if (status === 'Pending' || status === 'Processing') pendingRevenue += orderTotal;
+      if (status === 'Cancelled' || status === 'Refunded') cancelledRevenue += orderTotal;
+      if (status === 'Pending' || status === 'Processing' || status === 'Confirmed') pendingRevenue += orderTotal;
 
-      monthlyMap[monthKey] = monthlyMap[monthKey] || { revenue: 0, orders: 0 };
-      monthlyMap[monthKey].revenue += status === 'Cancelled' ? 0 : orderTotal;
+      monthlyMap[monthKey] ||= { revenue: 0, orders: 0 };
+      monthlyMap[monthKey].revenue += countsAsRevenue ? orderTotal : 0;
       monthlyMap[monthKey].orders += 1;
-
-      dailyMap[dayKey] = dailyMap[dayKey] || { revenue: 0, orders: 0 };
-      dailyMap[dayKey].revenue += status === 'Cancelled' ? 0 : orderTotal;
+      dailyMap[dayKey] ||= { revenue: 0, orders: 0 };
+      dailyMap[dayKey].revenue += countsAsRevenue ? orderTotal : 0;
       dailyMap[dayKey].orders += 1;
-
       statusMap[status] = (statusMap[status] || 0) + 1;
 
       order.items?.forEach((item) => {
         const qty = Number(item.qty ?? item.quantity ?? 1);
         const price = Number(item.price ?? 0);
         const itemRevenue = price * qty;
-        const productName = item.name || 'Unknown Product';
+        const name = item.name || 'Unknown Product';
         const category = item.category || 'Uncategorised';
-
-        productsMap[productName] = productsMap[productName] || {
-          name: productName,
-          category,
-          qtySold: 0,
-          revenue: 0,
-        };
-        productsMap[productName].qtySold += qty;
-        productsMap[productName].revenue += itemRevenue;
-
-        categoryMap[category] = categoryMap[category] || { name: category, revenue: 0, qtySold: 0 };
+        productsMap[name] ||= { name, category, qtySold: 0, revenue: 0 };
+        productsMap[name].qtySold += qty;
+        productsMap[name].revenue += itemRevenue;
+        categoryMap[category] ||= { name: category, revenue: 0, qtySold: 0 };
         categoryMap[category].revenue += itemRevenue;
         categoryMap[category].qtySold += qty;
       });
 
-      const customerEmail = order.customerEmail || 'Not provided';
-      const customerName = order.customerName || 'Unknown Customer';
-      customersMap[customerEmail] = customersMap[customerEmail] || {
-        email: customerEmail,
-        name: customerName,
-        totalSpent: 0,
-        orderCount: 0,
-      };
-      customersMap[customerEmail].totalSpent += status === 'Cancelled' ? 0 : orderTotal;
-      customersMap[customerEmail].orderCount += 1;
+      const email = order.customerEmail || 'Not provided';
+      const name = order.customerName || 'Unknown Customer';
+      customersMap[email] ||= { email, name, totalSpent: 0, orderCount: 0 };
+      customersMap[email].totalSpent += countsAsRevenue ? orderTotal : 0;
+      customersMap[email].orderCount += 1;
     });
-
-    const monthlyData = Object.keys(monthlyMap)
-      .sort()
-      .map((key) => ({ name: key, ...monthlyMap[key] }));
-
-    const dailyData = Object.keys(dailyMap)
-      .sort()
-      .slice(-14)
-      .map((key) => ({ name: key, ...dailyMap[key] }));
-
-    const topProducts = Object.values(productsMap)
-      .sort((a, b) => b.revenue - a.revenue)
-      .slice(0, 8);
-
-    const topCustomers = Object.values(customersMap)
-      .sort((a, b) => b.totalSpent - a.totalSpent)
-      .slice(0, 8);
-
-    const statusData = Object.keys(statusMap).map((key) => ({ name: key, value: statusMap[key] }));
-
-    const categoryData = Object.values(categoryMap)
-      .sort((a, b) => b.revenue - a.revenue)
-      .slice(0, 8);
-
-    const lowStockProducts = products
-      .filter((product) => Number(product.stock ?? 0) <= 5)
-      .sort((a, b) => Number(a.stock ?? 0) - Number(b.stock ?? 0))
-      .slice(0, 8);
-
-    const averageOrderValue = filteredOrders.length ? totalRevenue / filteredOrders.length : 0;
-    const conversionRevenue = totalRevenue - cancelledRevenue;
 
     return {
       totalRevenue,
       deliveredRevenue,
       cancelledRevenue,
       pendingRevenue,
-      conversionRevenue,
-      averageOrderValue,
-      monthlyData,
-      dailyData,
-      topProducts,
-      topCustomers,
-      statusData,
-      categoryData,
-      lowStockProducts,
+      averageOrderValue: filteredOrders.length ? totalRevenue / filteredOrders.length : 0,
+      monthlyData: Object.entries(monthlyMap).sort(([a], [b]) => a.localeCompare(b)).map(([name, value]) => ({ name, ...value })),
+      dailyData: Object.entries(dailyMap).sort(([a], [b]) => a.localeCompare(b)).slice(-14).map(([name, value]) => ({ name, ...value })),
+      topProducts: Object.values(productsMap).sort((a, b) => b.revenue - a.revenue).slice(0, 8),
+      topCustomers: Object.values(customersMap).sort((a, b) => b.totalSpent - a.totalSpent).slice(0, 8),
+      statusData: Object.entries(statusMap).map(([name, value]) => ({ name, value })),
+      categoryData: Object.values(categoryMap).sort((a, b) => b.revenue - a.revenue).slice(0, 8),
+      lowStockProducts: products.filter((product) => Number(product.stock ?? 0) <= 5).sort((a, b) => Number(a.stock ?? 0) - Number(b.stock ?? 0)).slice(0, 8),
     };
   }, [filteredOrders, products]);
 
-  const exportCSV = () => {
-    const headers = ['Order ID', 'Date', 'Customer Name', 'Customer Email', 'Status', 'Payment Method', 'Total Amount'];
-    const rows = filteredOrders.map((order) => [
-      order.id || '',
-      new Date(order.createdAt || Date.now()).toLocaleString(),
-      `"${order.customerName || ''}"`,
-      `"${order.customerEmail || ''}"`,
-      normaliseStatus(order.status),
-      order.paymentMethod || '',
-      getOrderTotal(order),
-    ]);
-
-    const csvContent = [headers.join(','), ...rows.map((row) => row.join(','))].join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `jaylux-financial-report-${toDateInput(new Date())}.csv`;
-    link.click();
-    URL.revokeObjectURL(url);
-  };
-
-  const exportExcel = async () => {
-    const XLSX = await import('xlsx');
-    const rows = filteredOrders.map((order) => ({
-      'Order ID': order.id || '',
-      Date: new Date(order.createdAt || Date.now()).toLocaleString(),
-      Customer: order.customerName || '',
-      Email: order.customerEmail || '',
-      Status: normaliseStatus(order.status),
-      'Payment Method': order.paymentMethod || '',
-      Total: getOrderTotal(order),
-    }));
-
-    const workbook = XLSX.utils.book_new();
-    const summary = [
-      { Metric: 'Total Revenue', Value: analytics.totalRevenue },
-      { Metric: 'Total Orders', Value: filteredOrders.length },
-      { Metric: 'Total Customers', Value: users.length },
-      { Metric: 'Total Products', Value: products.length },
-      { Metric: 'Average Order Value', Value: analytics.averageOrderValue },
-      { Metric: 'Delivered Revenue', Value: analytics.deliveredRevenue },
-      { Metric: 'Pending/Processing Revenue', Value: analytics.pendingRevenue },
-    ];
-
-    XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(summary), 'Summary');
-    XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(rows), 'Orders');
-    XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(analytics.topProducts), 'Top Products');
-    XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(analytics.topCustomers), 'Top Customers');
-    XLSX.writeFile(workbook, `jaylux-financial-report-${toDateInput(new Date())}.xlsx`);
-  };
-
-  const exportPDF = async () => {
-    const { jsPDF } = await import('jspdf');
-    const doc = new jsPDF();
-    const pageWidth = doc.internal.pageSize.getWidth();
-    let y = 18;
-
-    doc.setFontSize(18);
-    doc.text('JayLux Financial Report', pageWidth / 2, y, { align: 'center' });
-    y += 10;
-
-    doc.setFontSize(10);
-    doc.text(`Generated: ${new Date().toLocaleString()}`, pageWidth / 2, y, { align: 'center' });
-    y += 14;
-
-    const lines = [
-      `Total Revenue: ${money(analytics.totalRevenue)}`,
-      `Total Orders: ${filteredOrders.length}`,
-      `Total Customers: ${users.length}`,
-      `Total Products: ${products.length}`,
-      `Average Order Value: ${money(analytics.averageOrderValue)}`,
-      `Delivered Revenue: ${money(analytics.deliveredRevenue)}`,
-      `Pending/Processing Revenue: ${money(analytics.pendingRevenue)}`,
-    ];
-
-    lines.forEach((line) => {
-      doc.text(line, 14, y);
-      y += 8;
-    });
-
-    y += 6;
-    doc.setFontSize(13);
-    doc.text('Top Products', 14, y);
-    y += 8;
-    doc.setFontSize(10);
-
-    analytics.topProducts.slice(0, 6).forEach((product, index) => {
-      doc.text(`${index + 1}. ${product.name} - Qty ${product.qtySold} - ${money(product.revenue)}`, 14, y);
-      y += 7;
-    });
-
-    y += 6;
-    doc.setFontSize(13);
-    doc.text('Top Customers', 14, y);
-    y += 8;
-    doc.setFontSize(10);
-
-    analytics.topCustomers.slice(0, 6).forEach((customer, index) => {
-      doc.text(`${index + 1}. ${customer.name} - ${customer.orderCount} orders - ${money(customer.totalSpent)}`, 14, y);
-      y += 7;
-    });
-
-    doc.save(`jaylux-financial-report-${toDateInput(new Date())}.pdf`);
-  };
-
-  if (!adminReady || loading) {
-    return (
-      <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', background: '#f8fafc' }}>
-        <p style={{ color: '#d4af37', fontSize: 20, fontWeight: 800 }}>Loading Financial Reports...</p>
-      </div>
-    );
+  function exportCSV() {
+    setExporting('csv');
+    try {
+      const headers = ['Order ID', 'Date', 'Customer Name', 'Customer Email', 'Status', 'Payment Method', 'Total Amount'];
+      const escapeCsv = (value: unknown) => `"${String(value ?? '').replaceAll('"', '""')}"`;
+      const rows = filteredOrders.map((order) => [
+        order.id || '',
+        new Date(order.createdAt || 0).toLocaleString(),
+        order.customerName || '',
+        order.customerEmail || '',
+        normaliseStatus(order.status),
+        order.paymentMethod || '',
+        getOrderTotal(order),
+      ].map(escapeCsv));
+      const content = [headers.map(escapeCsv).join(','), ...rows.map((row) => row.join(','))].join('\n');
+      const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `jayluxe-financial-report-${toDateInput(new Date())}.csv`;
+      link.click();
+      URL.revokeObjectURL(url);
+    } finally {
+      setExporting('');
+    }
   }
 
-  const cardStyle = {
-    background: '#ffffff',
-    padding: 24,
-    borderRadius: 18,
-    boxShadow: '0 12px 30px rgba(15, 23, 42, 0.06)',
-    border: '1px solid #eef2f7',
-  };
+  async function exportExcel() {
+    setExporting('excel');
+    try {
+      const XLSX = await import('xlsx');
+      const rows = filteredOrders.map((order) => ({
+        'Order ID': order.id || '',
+        Date: new Date(order.createdAt || 0).toLocaleString(),
+        Customer: order.customerName || '',
+        Email: order.customerEmail || '',
+        Status: normaliseStatus(order.status),
+        'Payment Method': order.paymentMethod || '',
+        Total: getOrderTotal(order),
+      }));
+      const summary = [
+        { Metric: 'Total Revenue', Value: analytics.totalRevenue },
+        { Metric: 'Total Orders', Value: filteredOrders.length },
+        { Metric: 'Total Customers', Value: users.length },
+        { Metric: 'Total Products', Value: products.length },
+        { Metric: 'Average Order Value', Value: analytics.averageOrderValue },
+        { Metric: 'Delivered Revenue', Value: analytics.deliveredRevenue },
+        { Metric: 'Pending/Processing Revenue', Value: analytics.pendingRevenue },
+      ];
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(summary), 'Summary');
+      XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(rows), 'Orders');
+      XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(analytics.topProducts), 'Top Products');
+      XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(analytics.topCustomers), 'Top Customers');
+      XLSX.writeFile(workbook, `jayluxe-financial-report-${toDateInput(new Date())}.xlsx`);
+    } finally {
+      setExporting('');
+    }
+  }
 
-  const tableHeaderStyle = {
-    textAlign: 'left' as const,
-    padding: '12px 10px',
-    borderBottom: '1px solid #e5e7eb',
-    color: '#6b7280',
-    fontSize: 12,
-    fontWeight: 800,
-    textTransform: 'uppercase' as const,
-  };
+  async function exportPDF() {
+    setExporting('pdf');
+    try {
+      const { jsPDF } = await import('jspdf');
+      const doc = new jsPDF();
+      const pageWidth = doc.internal.pageSize.getWidth();
+      let y = 18;
+      doc.setFontSize(18);
+      doc.text('JayLuxe Financial Report', pageWidth / 2, y, { align: 'center' });
+      y += 10;
+      doc.setFontSize(10);
+      doc.text(`Generated: ${new Date().toLocaleString()}`, pageWidth / 2, y, { align: 'center' });
+      y += 14;
+      [
+        `Total Revenue: ${money(analytics.totalRevenue)}`,
+        `Total Orders: ${filteredOrders.length}`,
+        `Total Customers: ${users.length}`,
+        `Total Products: ${products.length}`,
+        `Average Order Value: ${money(analytics.averageOrderValue)}`,
+        `Delivered Revenue: ${money(analytics.deliveredRevenue)}`,
+        `Pending/Processing Revenue: ${money(analytics.pendingRevenue)}`,
+      ].forEach((line) => { doc.text(line, 14, y); y += 8; });
+      y += 6;
+      doc.setFontSize(13); doc.text('Top Products', 14, y); y += 8; doc.setFontSize(10);
+      analytics.topProducts.slice(0, 6).forEach((product, index) => { doc.text(`${index + 1}. ${product.name} - Qty ${product.qtySold} - ${money(product.revenue)}`, 14, y); y += 7; });
+      y += 6;
+      doc.setFontSize(13); doc.text('Top Customers', 14, y); y += 8; doc.setFontSize(10);
+      analytics.topCustomers.slice(0, 6).forEach((customer, index) => { doc.text(`${index + 1}. ${customer.name} - ${customer.orderCount} orders - ${money(customer.totalSpent)}`, 14, y); y += 7; });
+      doc.save(`jayluxe-financial-report-${toDateInput(new Date())}.pdf`);
+    } finally {
+      setExporting('');
+    }
+  }
 
-  const tableCellStyle = {
-    padding: '14px 10px',
-    borderBottom: '1px solid #f3f4f6',
-    color: '#111827',
-    fontSize: 14,
-  };
+  if (!adminReady || loading) {
+    return <div className={styles.state}><div className={styles.stateCard}><h2>Loading financial reports…</h2><p>Preparing the latest JayLuxe sales and inventory data.</p></div></div>;
+  }
+  if (error) {
+    return <div className={styles.state}><div className={styles.stateCard} role="alert"><h2>Reports are unavailable</h2><p>{error}</p><button type="button" onClick={() => void fetchReportsData()}>Try again</button></div></div>;
+  }
+
+  const statusColours = ['#211b15', '#c39731', '#2f855a', '#b83232', '#2b6cb0', '#7b4bb7', '#64748b'];
+  const statItems = [
+    ['Total Revenue', money(analytics.totalRevenue), 'gold'],
+    ['Total Orders', filteredOrders.length.toLocaleString(), ''],
+    ['Customers', users.length.toLocaleString(), ''],
+    ['Products', products.length.toLocaleString(), ''],
+    ['Average Order', money(analytics.averageOrderValue), ''],
+    ['Pending Revenue', money(analytics.pendingRevenue), ''],
+    ['Delivered Revenue', money(analytics.deliveredRevenue), ''],
+    ['Low Stock Items', analytics.lowStockProducts.length.toLocaleString(), ''],
+  ];
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: '#f8fafc', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-      <style dangerouslySetInnerHTML={{ __html: `
-        @media print {
-          .no-print { display: none !important; }
-          .print-full-width { width: 100% !important; padding: 0 !important; }
-          .report-card { box-shadow: none !important; border: 1px solid #e5e7eb !important; break-inside: avoid; }
-          body { background: #ffffff !important; }
-        }
-        @media (max-width: 900px) {
-          .reports-shell { flex-direction: column !important; }
-          .reports-sidebar { width: 100% !important; }
-          .reports-main { padding: 20px !important; }
-          .reports-grid-2 { grid-template-columns: 1fr !important; }
-        }
-      ` }} />
+    <div className={styles.shell}>
+      <header className={styles.header}>
+        <div className={styles.headerCopy}><h1>Financial Reports</h1><p>Sales, customers, products and inventory performance.</p></div>
+        <Link href="/admin" className={styles.backLink}>Back to Dashboard</Link>
+      </header>
 
-      <aside className="no-print reports-sidebar" style={{ width: 270, background: '#111827', color: '#ffffff', flexShrink: 0 }}>
-        <div style={{ padding: 24, borderBottom: '1px solid #1f2937' }}>
-          <h1 style={{ color: '#d4af37', fontSize: 23, margin: 0, fontWeight: 900 }}>JayLux</h1>
-          <p style={{ color: '#9ca3af', margin: '6px 0 0', fontSize: 12 }}>Admin Portal</p>
-        </div>
-
-        <nav style={{ padding: 18 }}>
-          <Link href="/admin" style={{ display: 'block', padding: '13px 14px', color: '#d1d5db', textDecoration: 'none', borderRadius: 12 }}>Dashboard</Link>
-          <Link href="/admin/reports" style={{ display: 'block', padding: '13px 14px', color: '#111827', background: '#d4af37', textDecoration: 'none', borderRadius: 12, fontWeight: 900 }}>Financial Reports</Link>
-        </nav>
-
-        <div style={{ padding: 24, borderTop: '1px solid #1f2937' }}>
-          <Link href="/admin" style={{ color: '#9ca3af', textDecoration: 'none', fontSize: 14 }}>← Back to Dashboard</Link>
-        </div>
-      </aside>
-
-      <main className="print-full-width reports-main" style={{ flex: 1, padding: 36, overflowX: 'hidden' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16, flexWrap: 'wrap', marginBottom: 24 }}>
-          <div>
-            <h2 style={{ fontSize: 30, color: '#111827', margin: 0, fontWeight: 900 }}>Financial Reports</h2>
-            <p style={{ margin: '6px 0 0', color: '#6b7280' }}>Revenue, customers, products, orders, stock and export tools.</p>
-          </div>
-
-          <div className="no-print" style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-            <button onClick={exportCSV} style={{ padding: '11px 14px', border: '1px solid #d1d5db', borderRadius: 10, background: '#fff', fontWeight: 800, cursor: 'pointer' }}>CSV</button>
-            <button onClick={exportExcel} style={{ padding: '11px 14px', border: '1px solid #d1d5db', borderRadius: 10, background: '#fff', fontWeight: 800, cursor: 'pointer' }}>Excel</button>
-            <button onClick={exportPDF} style={{ padding: '11px 14px', border: '1px solid #111827', borderRadius: 10, background: '#111827', color: '#fff', fontWeight: 800, cursor: 'pointer' }}>PDF</button>
-            <button onClick={() => window.print()} style={{ padding: '11px 14px', border: '1px solid #d4af37', borderRadius: 10, background: '#d4af37', color: '#111827', fontWeight: 900, cursor: 'pointer' }}>Print</button>
-          </div>
-        </div>
-
-        <div className="no-print" style={{ ...cardStyle, marginBottom: 24 }}>
-          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'end' }}>
-            <div>
-              <label style={{ display: 'block', fontWeight: 800, color: '#374151', marginBottom: 6 }}>Date Range</label>
-              <select value={dateFilter} onChange={(event) => setDateFilter(event.target.value as DateFilter)} style={{ padding: '12px 14px', borderRadius: 10, border: '1px solid #d1d5db' }}>
-                <option value="all">All Time</option>
-                <option value="today">Today</option>
-                <option value="week">Last 7 Days</option>
-                <option value="month">This Month</option>
-                <option value="year">This Year</option>
-                <option value="custom">Custom</option>
+      <main className={styles.main}>
+        <section className={styles.toolbar} aria-label="Report filters and exports">
+          <div className={styles.filters}>
+            <div className={styles.field}>
+              <label htmlFor="report-period">Period</label>
+              <select id="report-period" value={dateFilter} onChange={(event) => setDateFilter(event.target.value as DateFilter)}>
+                <option value="all">All time</option><option value="today">Today</option><option value="week">Last 7 days</option><option value="month">This month</option><option value="year">This year</option><option value="custom">Custom range</option>
               </select>
             </div>
-
-            {dateFilter === 'custom' && (
-              <>
-                <div>
-                  <label style={{ display: 'block', fontWeight: 800, color: '#374151', marginBottom: 6 }}>Start</label>
-                  <input type="date" value={startDate} onChange={(event) => setStartDate(event.target.value)} style={{ padding: '12px 14px', borderRadius: 10, border: '1px solid #d1d5db' }} />
-                </div>
-                <div>
-                  <label style={{ display: 'block', fontWeight: 800, color: '#374151', marginBottom: 6 }}>End</label>
-                  <input type="date" value={endDate} onChange={(event) => setEndDate(event.target.value)} style={{ padding: '12px 14px', borderRadius: 10, border: '1px solid #d1d5db' }} />
-                </div>
-              </>
-            )}
+            {dateFilter === 'custom' && <>
+              <div className={styles.field}><label htmlFor="report-start">Start</label><input id="report-start" type="date" value={startDate} onChange={(event) => setStartDate(event.target.value)} /></div>
+              <div className={styles.field}><label htmlFor="report-end">End</label><input id="report-end" type="date" value={endDate} onChange={(event) => setEndDate(event.target.value)} /></div>
+            </>}
           </div>
-        </div>
-
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 18, marginBottom: 24 }}>
-          <div className="report-card" style={cardStyle}><p style={{ margin: 0, color: '#6b7280', fontWeight: 800 }}>Total Revenue</p><h3 style={{ margin: '8px 0 0', fontSize: 28, color: '#d4af37' }}>{money(analytics.totalRevenue)}</h3></div>
-          <div className="report-card" style={cardStyle}><p style={{ margin: 0, color: '#6b7280', fontWeight: 800 }}>Total Orders</p><h3 style={{ margin: '8px 0 0', fontSize: 28 }}>{filteredOrders.length}</h3></div>
-          <div className="report-card" style={cardStyle}><p style={{ margin: 0, color: '#6b7280', fontWeight: 800 }}>Customers</p><h3 style={{ margin: '8px 0 0', fontSize: 28 }}>{users.length}</h3></div>
-          <div className="report-card" style={cardStyle}><p style={{ margin: 0, color: '#6b7280', fontWeight: 800 }}>Products</p><h3 style={{ margin: '8px 0 0', fontSize: 28 }}>{products.length}</h3></div>
-          <div className="report-card" style={cardStyle}><p style={{ margin: 0, color: '#6b7280', fontWeight: 800 }}>Average Order</p><h3 style={{ margin: '8px 0 0', fontSize: 28 }}>{money(analytics.averageOrderValue)}</h3></div>
-          <div className="report-card" style={cardStyle}><p style={{ margin: 0, color: '#6b7280', fontWeight: 800 }}>Pending Revenue</p><h3 style={{ margin: '8px 0 0', fontSize: 28 }}>{money(analytics.pendingRevenue)}</h3></div>
-          <div className="report-card" style={cardStyle}><p style={{ margin: 0, color: '#6b7280', fontWeight: 800 }}>Delivered Revenue</p><h3 style={{ margin: '8px 0 0', fontSize: 28 }}>{money(analytics.deliveredRevenue)}</h3></div>
-          <div className="report-card" style={cardStyle}><p style={{ margin: 0, color: '#6b7280', fontWeight: 800 }}>Low Stock Items</p><h3 style={{ margin: '8px 0 0', fontSize: 28 }}>{analytics.lowStockProducts.length}</h3></div>
-        </div>
-
-        <div className="reports-grid-2" style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 18, marginBottom: 24 }}>
-          <div className="report-card" style={cardStyle}>
-            <h3 style={{ margin: '0 0 18px', color: '#111827' }}>Monthly Revenue Trend</h3>
-            <div style={{ width: '100%', height: 320 }}>
-              <ResponsiveContainer>
-                <LineChart data={analytics.monthlyData}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
-                  <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#6b7280' }} />
-                  <YAxis tick={{ fontSize: 12, fill: '#6b7280' }} tickFormatter={(value) => `₦${Number(value) / 1000}k`} />
-                  <Tooltip formatter={(value) => money(Number(value))} />
-                  <Legend />
-                  <Line type="monotone" dataKey="revenue" stroke="#d4af37" strokeWidth={3} name="Revenue" />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
+          <div className={styles.exports}>
+            <button type="button" className={`${styles.exportButton} ${styles.secondary}`} onClick={exportCSV} disabled={Boolean(exporting)}>{exporting === 'csv' ? 'Exporting…' : 'CSV'}</button>
+            <button type="button" className={`${styles.exportButton} ${styles.secondary}`} onClick={() => void exportExcel()} disabled={Boolean(exporting)}>{exporting === 'excel' ? 'Exporting…' : 'Excel'}</button>
+            <button type="button" className={styles.exportButton} onClick={() => void exportPDF()} disabled={Boolean(exporting)}>{exporting === 'pdf' ? 'Exporting…' : 'PDF'}</button>
           </div>
+        </section>
 
-          <div className="report-card" style={cardStyle}>
-            <h3 style={{ margin: '0 0 18px', color: '#111827' }}>Order Status</h3>
-            <div style={{ width: '100%', height: 320 }}>
-              <ResponsiveContainer>
-                <PieChart>
-                  <Pie data={analytics.statusData} dataKey="value" nameKey="name" outerRadius={105} label>
-                    {analytics.statusData.map((entry, index) => (
-                      <Cell key={entry.name} fill={['#111827', '#d4af37', '#16a34a', '#dc2626', '#2563eb', '#7c3aed'][index % 6]} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-        </div>
+        <section className={styles.statsGrid} aria-label="Report summary">
+          {statItems.map(([label, value, accent]) => <article key={label} className={styles.statCard} data-accent={accent || undefined}><p>{label}</p><strong>{value}</strong></article>)}
+        </section>
 
-        <div className="reports-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 18, marginBottom: 24 }}>
-          <div className="report-card" style={cardStyle}>
-            <h3 style={{ margin: '0 0 18px', color: '#111827' }}>Daily Orders - Last 14 Days</h3>
-            <div style={{ width: '100%', height: 300 }}>
-              <ResponsiveContainer>
-                <BarChart data={analytics.dailyData}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
-                  <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#6b7280' }} tickFormatter={(value) => String(value).split('-').slice(1).join('/')} />
-                  <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: '#6b7280' }} />
-                  <Tooltip />
-                  <Bar dataKey="orders" fill="#111827" name="Orders" radius={[8, 8, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
+        <section className={styles.twoColumn}>
+          <article className={styles.card}><div className={styles.cardHeader}><h2>Monthly Revenue Trend</h2></div><div className={styles.chart}>{analytics.monthlyData.length ? <ResponsiveContainer width="100%" height="100%"><LineChart data={analytics.monthlyData} margin={{ top: 8, right: 10, left: -16, bottom: 0 }}><CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e9e4dc" /><XAxis dataKey="name" tick={{ fontSize: 11, fill: '#766d61' }} /><YAxis tick={{ fontSize: 11, fill: '#766d61' }} tickFormatter={(value) => `₦${Number(value) / 1000}k`} /><Tooltip formatter={(value) => money(Number(value))} /><Line type="monotone" dataKey="revenue" stroke="#b88823" strokeWidth={3} dot={false} name="Revenue" /></LineChart></ResponsiveContainer> : <div className={styles.state}><p>No revenue data in this period.</p></div>}</div></article>
+          <article className={styles.card}><div className={styles.cardHeader}><h2>Order Status</h2></div><div className={styles.chart}>{analytics.statusData.length ? <ResponsiveContainer width="100%" height="100%"><PieChart><Pie data={analytics.statusData} dataKey="value" nameKey="name" outerRadius="68%" innerRadius="38%" paddingAngle={2}>{analytics.statusData.map((entry, index) => <Cell key={entry.name} fill={statusColours[index % statusColours.length]} />)}</Pie><Tooltip /><Legend wrapperStyle={{ fontSize: 11 }} /></PieChart></ResponsiveContainer> : <div className={styles.state}><p>No order status data yet.</p></div>}</div></article>
+        </section>
 
-          <div className="report-card" style={cardStyle}>
-            <h3 style={{ margin: '0 0 18px', color: '#111827' }}>Category Revenue</h3>
-            <div style={{ width: '100%', height: 300 }}>
-              <ResponsiveContainer>
-                <BarChart data={analytics.categoryData} layout="vertical">
-                  <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#e5e7eb" />
-                  <XAxis type="number" tick={{ fontSize: 12, fill: '#6b7280' }} tickFormatter={(value) => `₦${Number(value) / 1000}k`} />
-                  <YAxis type="category" dataKey="name" tick={{ fontSize: 12, fill: '#6b7280' }} width={100} />
-                  <Tooltip formatter={(value) => money(Number(value))} />
-                  <Bar dataKey="revenue" fill="#d4af37" name="Revenue" radius={[0, 8, 8, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-        </div>
+        <section className={styles.twoColumnEqual}>
+          <article className={styles.card}><div className={styles.cardHeader}><h2>Daily Orders</h2><small>Last 14 active days</small></div><div className={styles.chart}>{analytics.dailyData.length ? <ResponsiveContainer width="100%" height="100%"><BarChart data={analytics.dailyData} margin={{ top: 8, right: 8, left: -22, bottom: 0 }}><CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e9e4dc" /><XAxis dataKey="name" tick={{ fontSize: 10, fill: '#766d61' }} tickFormatter={(value) => String(value).slice(5)} /><YAxis allowDecimals={false} tick={{ fontSize: 11, fill: '#766d61' }} /><Tooltip /><Bar dataKey="orders" fill="#2c251e" name="Orders" radius={[7, 7, 0, 0]} /></BarChart></ResponsiveContainer> : <div className={styles.state}><p>No order activity yet.</p></div>}</div></article>
+          <article className={styles.card}><div className={styles.cardHeader}><h2>Category Revenue</h2></div><div className={styles.chart}>{analytics.categoryData.length ? <ResponsiveContainer width="100%" height="100%"><BarChart data={analytics.categoryData} layout="vertical" margin={{ top: 8, right: 8, left: 6, bottom: 0 }}><CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#e9e4dc" /><XAxis type="number" tick={{ fontSize: 10, fill: '#766d61' }} tickFormatter={(value) => `₦${Number(value) / 1000}k`} /><YAxis type="category" dataKey="name" width={82} tick={{ fontSize: 10, fill: '#766d61' }} /><Tooltip formatter={(value) => money(Number(value))} /><Bar dataKey="revenue" fill="#b88823" name="Revenue" radius={[0, 7, 7, 0]} /></BarChart></ResponsiveContainer> : <div className={styles.state}><p>No category revenue data yet.</p></div>}</div></article>
+        </section>
 
-        <div className="reports-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 18, marginBottom: 24 }}>
-          <div className="report-card" style={{ ...cardStyle, overflowX: 'auto' }}>
-            <h3 style={{ margin: '0 0 16px' }}>Best Selling Products</h3>
-            <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 520 }}>
-              <thead><tr><th style={tableHeaderStyle}>Product</th><th style={tableHeaderStyle}>Category</th><th style={tableHeaderStyle}>Qty</th><th style={tableHeaderStyle}>Revenue</th></tr></thead>
-              <tbody>
-                {analytics.topProducts.length ? analytics.topProducts.map((product) => (
-                  <tr key={product.name}><td style={tableCellStyle}>{product.name}</td><td style={tableCellStyle}>{product.category}</td><td style={tableCellStyle}>{product.qtySold}</td><td style={tableCellStyle}>{money(product.revenue)}</td></tr>
-                )) : <tr><td colSpan={4} style={{ ...tableCellStyle, textAlign: 'center', color: '#9ca3af' }}>No product sales yet.</td></tr>}
-              </tbody>
-            </table>
-          </div>
+        <section className={styles.twoColumnEqual}>
+          <article className={styles.card}><div className={styles.cardHeader}><h2>Best Selling Products</h2></div><div className={styles.tableViewport}><table className={styles.table}><thead><tr><th>Product</th><th>Category</th><th>Qty</th><th>Revenue</th></tr></thead><tbody>{analytics.topProducts.length ? analytics.topProducts.map((product) => <tr key={product.name}><td>{product.name}</td><td>{product.category}</td><td>{product.qtySold}</td><td>{money(product.revenue)}</td></tr>) : <tr><td colSpan={4} className={styles.emptyCell}>No product sales yet.</td></tr>}</tbody></table></div></article>
+          <article className={styles.card}><div className={styles.cardHeader}><h2>Top Customers</h2></div><div className={styles.tableViewport}><table className={styles.table}><thead><tr><th>Customer</th><th>Email</th><th>Orders</th><th>Spent</th></tr></thead><tbody>{analytics.topCustomers.length ? analytics.topCustomers.map((customer) => <tr key={customer.email}><td>{customer.name}</td><td>{customer.email}</td><td>{customer.orderCount}</td><td>{money(customer.totalSpent)}</td></tr>) : <tr><td colSpan={4} className={styles.emptyCell}>No customer data yet.</td></tr>}</tbody></table></div></article>
+        </section>
 
-          <div className="report-card" style={{ ...cardStyle, overflowX: 'auto' }}>
-            <h3 style={{ margin: '0 0 16px' }}>Top Customers</h3>
-            <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 520 }}>
-              <thead><tr><th style={tableHeaderStyle}>Customer</th><th style={tableHeaderStyle}>Email</th><th style={tableHeaderStyle}>Orders</th><th style={tableHeaderStyle}>Spent</th></tr></thead>
-              <tbody>
-                {analytics.topCustomers.length ? analytics.topCustomers.map((customer) => (
-                  <tr key={customer.email}><td style={tableCellStyle}>{customer.name}</td><td style={tableCellStyle}>{customer.email}</td><td style={tableCellStyle}>{customer.orderCount}</td><td style={tableCellStyle}>{money(customer.totalSpent)}</td></tr>
-                )) : <tr><td colSpan={4} style={{ ...tableCellStyle, textAlign: 'center', color: '#9ca3af' }}>No customer data yet.</td></tr>}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <div className="report-card" style={{ ...cardStyle, overflowX: 'auto' }}>
-          <h3 style={{ margin: '0 0 16px' }}>Low Stock Products</h3>
-          <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 650 }}>
-            <thead><tr><th style={tableHeaderStyle}>Product</th><th style={tableHeaderStyle}>Category</th><th style={tableHeaderStyle}>Type</th><th style={tableHeaderStyle}>Price</th><th style={tableHeaderStyle}>Stock</th></tr></thead>
-            <tbody>
-              {analytics.lowStockProducts.length ? analytics.lowStockProducts.map((product) => (
-                <tr key={product.id || product.name}><td style={tableCellStyle}>{product.name || 'Unnamed Product'}</td><td style={tableCellStyle}>{product.category || 'N/A'}</td><td style={tableCellStyle}>{product.type || 'product'}</td><td style={tableCellStyle}>{money(Number(product.price || 0))}</td><td style={{ ...tableCellStyle, color: Number(product.stock || 0) === 0 ? '#dc2626' : '#d97706', fontWeight: 900 }}>{Number(product.stock || 0)}</td></tr>
-              )) : <tr><td colSpan={5} style={{ ...tableCellStyle, textAlign: 'center', color: '#16a34a', fontWeight: 800 }}>No low stock products. Inventory looks good.</td></tr>}
-            </tbody>
-          </table>
-        </div>
+        <section className={styles.card}><div className={styles.cardHeader}><h2>Low Stock Products</h2></div><div className={styles.tableViewport}><table className={`${styles.table} ${styles.tableWide}`}><thead><tr><th>Product</th><th>Category</th><th>Type</th><th>Price</th><th>Stock</th></tr></thead><tbody>{analytics.lowStockProducts.length ? analytics.lowStockProducts.map((product) => <tr key={product.id || product.name}><td>{product.name || 'Unnamed Product'}</td><td>{product.category || 'N/A'}</td><td>{product.type || 'product'}</td><td>{money(Number(product.price || 0))}</td><td>{Number(product.stock || 0)}</td></tr>) : <tr><td colSpan={5} className={`${styles.emptyCell} ${styles.goodCell}`}>No low stock products. Inventory looks good.</td></tr>}</tbody></table></div></section>
       </main>
     </div>
   );

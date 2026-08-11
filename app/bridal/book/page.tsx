@@ -10,7 +10,6 @@ import {
   Clock3,
   MapPin,
   ReceiptText,
-  Sparkles,
   UserRound,
 } from 'lucide-react';
 
@@ -160,7 +159,6 @@ function BridalBookingContent() {
         <PageHeroIcon icon={CalendarDays} label="Bridal booking" />
 
         <span>
-          <Sparkles size={16} aria-hidden="true" />
           JayLuxe Bridal Booking
         </span>
 

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { FormEvent, useState } from 'react';
-import { ArrowLeft, Mail, Sparkles } from 'lucide-react';
+import { ArrowLeft, Mail } from 'lucide-react';
 
 
 export default function ForgotPasswordPage() {
@@ -40,7 +40,7 @@ export default function ForgotPasswordPage() {
       <section className="jl-auth-aside" aria-labelledby="reset-welcome-title">
         <div>
           <span className="jl-auth-badge">
-            <Sparkles size={16} aria-hidden="true" /> Account Recovery
+            Account Recovery
           </span>
           <h1 id="reset-welcome-title" className="font-serif">
             Return to your JayLuxe account securely.

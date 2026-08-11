@@ -8,8 +8,8 @@ import {
   Clock3,
   Gift,
   Percent,
+  PackageOpen,
   ShoppingBag,
-  Sparkles,
 } from 'lucide-react';
 
 import Footer from '@/components/Footer';
@@ -56,7 +56,7 @@ const promotionCards = [
       'Be among the first to discover newly added products and limited seasonal collections.',
     href: '/new-arrivals',
     linkLabel: 'View new arrivals',
-    icon: Sparkles,
+    icon: PackageOpen,
   },
   {
     label: 'Most loved',
@@ -176,7 +176,6 @@ export default function PromotionsPage() {
           </div>
         ) : (
           <div className="jl-promo-card">
-            <Sparkles size={27} aria-hidden="true" />
             <span>Coming soon</span>
             <h2>New offers are being prepared.</h2>
             <p>

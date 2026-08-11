@@ -16,7 +16,7 @@ import {
 import Footer from '@/components/Footer';
 import PageHeroIcon from '@/components/PageHeroIcon';
 import { auth } from '@/lib/firebase';
-import { getSafeImageSource } from '@/lib/images';
+import { getSafeImageSource, isLegacyDataImageSource } from '@/lib/images';
 import { money } from '@/lib/store';
 import type { Order } from '@/lib/types';
 
@@ -190,6 +190,7 @@ export default function OrderConfirmationPage() {
                     <article className="jl-order-item" key={`${item.id || item.name}-${index}`}>
                       <Image
                         src={getSafeImageSource(item.image)}
+                        unoptimized={isLegacyDataImageSource(item.image)}
                         alt={item.name || 'JayLuxe product'}
                         width={64}
                         height={64}

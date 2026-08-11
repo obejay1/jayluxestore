@@ -7,7 +7,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { getCart, getProducts, money, setCart } from '@/lib/store';
 import { trackEvent } from '@/lib/analytics';
-import { getSafeImageSource } from '@/lib/images';
+import { getSafeImageSource, isLegacyDataImageSource } from '@/lib/images';
 import { getCheckoutSettings } from '@/lib/settings';
 import { validateCoupon } from '@/lib/coupons';
 import type { Product } from '@/lib/types';
@@ -465,7 +465,7 @@ export default function Checkout() {
           <div className="jl-summary-items">
             {items.length > 0 ? items.map(item => (
               <div className="jl-summary-item" key={String(item.id)}>
-                <Image src={getSafeImageSource(item.image)} alt={item.name} width={64} height={64} sizes="64px" />
+                <Image src={getSafeImageSource(item.image)} unoptimized={isLegacyDataImageSource(item.image)} alt={item.name} width={64} height={64} sizes="64px" />
                 <div className="jl-summary-item-info">
                   <p style={{fontWeight: 600}}>{item.name}</p>
                   <p style={{fontSize: '14px'}}>Qty: {item.qty}</p>

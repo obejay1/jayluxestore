@@ -8,9 +8,19 @@ export type EmailSenderKind =
 
 const DEFAULT_ADMIN_RECIPIENT = 'officialjayluxe.ng@gmail.com';
 
+const DEFAULT_SENDERS: Record<EmailSenderKind, string> = {
+  orders: 'JayLuxe Orders <orders@jayluxestore.com>',
+  support: 'JayLuxe Support <support@jayluxestore.com>',
+  noreply: 'JayLuxe <noreply@jayluxestore.com>',
+  admin: 'JayLuxe Admin <admin@jayluxestore.com>',
+  bookings: 'JayLuxe Support <support@jayluxestore.com>',
+  newsletter: 'The JayLuxe Edit <noreply@jayluxestore.com>',
+};
+
 export function getEmailConfig() {
   return {
     apiKey: process.env.RESEND_API_KEY?.trim() || '',
+    webhookSecret: process.env.RESEND_WEBHOOK_SECRET?.trim() || '',
     adminRecipient:
       process.env.ADMIN_NOTIFICATION_EMAIL?.trim() ||
       process.env.CONTACT_TO_EMAIL?.trim() ||
@@ -19,24 +29,22 @@ export function getEmailConfig() {
       process.env.SUPPORT_EMAIL?.trim() ||
       process.env.CONTACT_TO_EMAIL?.trim() ||
       DEFAULT_ADMIN_RECIPIENT,
-    testMode: process.env.EMAIL_TEST_MODE?.trim().toLowerCase() === 'true',
-    testRecipient: process.env.EMAIL_TEST_RECIPIENT?.trim() || '',
     reviewRequestEnabled:
       process.env.REVIEW_REQUEST_EMAILS_ENABLED?.trim().toLowerCase() === 'true',
   };
 }
 
 export function getEmailSender(kind: EmailSenderKind): string {
-  const fallback = process.env.RESEND_FROM_EMAIL?.trim() || '';
+  const generic = process.env.RESEND_FROM_EMAIL?.trim();
 
-  const senderByKind: Record<EmailSenderKind, string> = {
-    orders: process.env.ORDER_FROM_EMAIL?.trim() || fallback,
-    support: process.env.CONTACT_FROM_EMAIL?.trim() || fallback,
-    noreply: process.env.ACCOUNT_FROM_EMAIL?.trim() || fallback,
-    admin: process.env.ADMIN_EMAIL_FROM?.trim() || fallback,
-    bookings: process.env.BOOKING_FROM_EMAIL?.trim() || fallback,
-    newsletter: process.env.NEWSLETTER_FROM_EMAIL?.trim() || fallback,
+  const senderByKind: Record<EmailSenderKind, string | undefined> = {
+    orders: process.env.ORDER_FROM_EMAIL?.trim(),
+    support: process.env.CONTACT_FROM_EMAIL?.trim(),
+    noreply: process.env.ACCOUNT_FROM_EMAIL?.trim(),
+    admin: process.env.ADMIN_EMAIL_FROM?.trim(),
+    bookings: process.env.BOOKING_FROM_EMAIL?.trim(),
+    newsletter: process.env.NEWSLETTER_FROM_EMAIL?.trim(),
   };
 
-  return senderByKind[kind];
+  return senderByKind[kind] || generic || DEFAULT_SENDERS[kind];
 }

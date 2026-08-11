@@ -9,8 +9,6 @@ import {
   Crown,
   Heart,
   ShieldCheck,
-  Sparkles,
-  Star,
   Truck,
   X,
 } from 'lucide-react';
@@ -131,7 +129,6 @@ export default function BridalPage() {
           >
             <PageHeroIcon icon={Crown} label="Bridal packages" />
             <span className="jl-bridal-badge">
-              <Sparkles size={16} aria-hidden="true" />
               Jayluxe Bridal Experience
             </span>
 
@@ -273,11 +270,6 @@ export default function BridalPage() {
                 >
                   {isPopular && (
                     <div className="jl-popular-badge">
-                      <Star
-                        size={15}
-                        fill="currentColor"
-                        aria-hidden="true"
-                      />
                       Most Popular
                     </div>
                   )}
@@ -453,7 +445,6 @@ export default function BridalPage() {
 
           <div className="jl-bridal-showcase-content">
             <span>
-              <Sparkles size={16} aria-hidden="true" />
               Verified Bride Experience
             </span>
 
