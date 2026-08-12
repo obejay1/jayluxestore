@@ -232,3 +232,40 @@
 @media (prefers-reduced-motion: reduce) {
   .shell *, .shell *::before, .shell *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
 }
+
+.emptyNotice {
+  display: grid;
+  gap: 4px;
+  width: 100%;
+  margin-bottom: 16px;
+  padding: 16px 18px;
+  border: 1px solid rgba(169, 121, 23, 0.2);
+  border-radius: 15px;
+  background: #fffaf0;
+  color: #4b3b25;
+}
+.emptyNotice strong { font-size: 0.95rem; }
+.emptyNotice span { color: #766d61; font-size: 0.8rem; line-height: 1.5; }
+
+.loadingBar {
+  width: min(220px, 70%);
+  height: 5px;
+  margin: 0 auto 18px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #eee8df;
+}
+.loadingBar::after {
+  content: '';
+  display: block;
+  width: 45%;
+  height: 100%;
+  border-radius: inherit;
+  background: #b88823;
+  animation: report-loading 1.1s ease-in-out infinite alternate;
+}
+
+@keyframes report-loading {
+  from { transform: translateX(0); }
+  to { transform: translateX(122%); }
+}

@@ -13,10 +13,12 @@ import './jayluxe-mobile-polish.css';
 import './jayluxe-card-system.css';
 import './jayluxe-consistency-fixes.css';
 import './jayluxe-production-stability.css';
+import './jayluxe-feature-update.css';
 
 import GoogleAnalytics from '@/components/GoogleAnalytics';
 import HeroImageController from '@/components/HeroImageController';
 import SiteChrome from '@/components/SiteChrome';
+import ToastViewport from '@/components/ToastViewport';
 import { getSiteUrl } from '@/lib/site';
 import {
   OFFICIAL_EMAIL,
@@ -132,6 +134,7 @@ export default function RootLayout({
           {children}
         </div>
 
+        <ToastViewport />
         <GoogleAnalytics />
       </body>
     </html>

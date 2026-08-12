@@ -6,6 +6,32 @@ import { auth } from '@/lib/firebase';
 import { useAdminAuth } from '@/lib/useAdminAuth';
 import { useCallback, useEffect, useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
+import {
+  Activity,
+  BadgeDollarSign,
+  BarChart3,
+  Boxes,
+  ClipboardList,
+  CalendarDays,
+  Gem,
+  Heart,
+  LayoutDashboard,
+  Layers3,
+  LogOut,
+  Mail,
+  Images,
+  MessageCircle,
+  Package2,
+  Search,
+  Settings,
+  Smartphone,
+  ShieldCheck,
+  ShoppingBag,
+  Tags,
+  TicketPercent,
+  UserCog,
+  UsersRound,
+} from 'lucide-react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import {
@@ -40,9 +66,11 @@ import {
 import { getCoupons, saveCoupon, removeCoupon, Coupon } from '@/lib/coupons';
 import { getCheckoutSettings, saveCheckoutSettings } from '@/lib/settings';
 import { Product, Order, Category } from '@/lib/types';
+import type { ProductReview } from '@/lib/productReviews';
 import { showToast } from '@/lib/toast';
 import { recordAdminActivity } from '@/lib/adminActivityClient';
 import { uploadCatalogImage } from '@/lib/catalogImages';
+import AdminPagination from '@/components/admin/AdminPagination';
 
 
 type AdminOrder = Omit<Order, 'items'> & {
@@ -110,9 +138,12 @@ const blankProduct: Product = {
   description: '',
   image: '',
   stock: 1,
+  sizes: [],
   featured: false,
   active: true,
 };
+
+const PRODUCT_SIZE_OPTIONS = ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'] as const;
 
 const blankCategory: Category = {
   id: '',
@@ -259,6 +290,7 @@ export default function Admin() {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [contactMessages, setContactMessages] = useState<ContactMessageDoc[]>([]);
   const [smsLogs, setSmsLogs] = useState<SmsLogDoc[]>([]);
+  const [productReviews, setProductReviews] = useState<ProductReview[]>([]);
   const [adminUserStats, setAdminUserStats] = useState<AdminUserStats>(
     emptyAdminUserStats,
   );
@@ -270,7 +302,10 @@ export default function Admin() {
 
   const [ordersPage, setOrdersPage] = useState(1);
   const [customersPage, setCustomersPage] = useState(1);
+  const [productsPage, setProductsPage] = useState(1);
+  const [categoriesPage, setCategoriesPage] = useState(1);
   const ITEMS_PER_PAGE = 10;
+  const CATALOG_ITEMS_PER_PAGE = 8;
 
   const [form, setForm] = useState<Product>(blankProduct);
   const [categoryForm, setCategoryForm] = useState<Category>(blankCategory);
@@ -398,6 +433,19 @@ export default function Admin() {
       console.error('Error loading permitted admin records', err);
     }
 
+    if (can('products')) {
+      try {
+        const reviewResponse = await fetch('/api/admin/product-reviews', {
+          cache: 'no-store',
+          headers: { Accept: 'application/json' },
+        });
+        const reviewData = (await reviewResponse.json().catch(() => ({}))) as { reviews?: ProductReview[] };
+        if (reviewResponse.ok && Array.isArray(reviewData.reviews)) setProductReviews(reviewData.reviews);
+      } catch (error) {
+        console.error('Error loading product reviews', error);
+      }
+    }
+
     if (adminUser?.role === 'super_admin') {
       try {
         const response = await fetch('/api/admin/users', {
@@ -425,6 +473,7 @@ export default function Admin() {
       id: form.id || Date.now().toString(),
       price: Number(form.price),
       stock: Number(form.stock),
+      sizes: form.type === 'product' ? Array.from(new Set(form.sizes || [])) : [],
     };
 
     await saveProduct(p);
@@ -434,9 +483,27 @@ export default function Admin() {
       targetType: 'product',
       targetId: String(p.id),
     });
-    showToast('✅ Product saved successfully!');
+    showToast(wasEditing ? 'Product updated successfully' : 'Product added successfully', 'success');
     setForm(blankProduct);
     load();
+  }
+
+  async function deleteProductReview(review: ProductReview) {
+    if (!confirm(`Delete ${review.customerName}'s review?`)) return;
+    try {
+      const response = await fetch(`/api/admin/product-reviews?id=${encodeURIComponent(review.id)}`, {
+        method: 'DELETE',
+        headers: { Accept: 'application/json' },
+      });
+      const data = (await response.json().catch(() => ({}))) as { ok?: boolean; message?: string };
+      if (!response.ok || data.ok !== true) throw new Error(data.message || 'Review could not be deleted.');
+      setProductReviews((current) => current.filter((item) => item.id !== review.id));
+      showToast('Product review deleted successfully', 'success');
+      await load();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Review could not be deleted.';
+      showToast(message, 'error');
+    }
   }
 
   async function uploadCategoryImage(e: React.ChangeEvent<HTMLInputElement>) {
@@ -476,6 +543,7 @@ export default function Admin() {
       targetType: 'category',
       targetId: String(newCategory.id),
     });
+    showToast(wasEditing ? 'Category updated successfully' : 'Category added successfully', 'success');
     setCategoryForm(blankCategory);
     load();
   }
@@ -494,6 +562,7 @@ export default function Admin() {
       targetType: 'category',
       targetId: String(id),
     });
+    showToast('Category deleted successfully', 'success');
     load();
   }
 
@@ -678,6 +747,8 @@ export default function Admin() {
       targetType: 'promotion',
       targetId: promotionId,
     });
+
+    showToast(wasEditing ? 'Promotion updated successfully' : 'Promotion created successfully', 'success');
 
     setCouponForm({
       id: '',
@@ -898,6 +969,26 @@ export default function Admin() {
 
   const totalCustomersPages = Math.ceil(filteredCustomers.length / ITEMS_PER_PAGE) || 1;
   const paginatedCustomers = filteredCustomers.slice((customersPage - 1) * ITEMS_PER_PAGE, customersPage * ITEMS_PER_PAGE);
+
+  const totalProductsPages = Math.ceil(products.length / CATALOG_ITEMS_PER_PAGE) || 1;
+  const paginatedProducts = products.slice(
+    (productsPage - 1) * CATALOG_ITEMS_PER_PAGE,
+    productsPage * CATALOG_ITEMS_PER_PAGE,
+  );
+
+  const totalCategoriesPages = Math.ceil(categories.length / CATALOG_ITEMS_PER_PAGE) || 1;
+  const paginatedCategories = categories.slice(
+    (categoriesPage - 1) * CATALOG_ITEMS_PER_PAGE,
+    categoriesPage * CATALOG_ITEMS_PER_PAGE,
+  );
+
+  useEffect(() => {
+    if (productsPage > totalProductsPages) setProductsPage(totalProductsPages);
+  }, [productsPage, totalProductsPages]);
+
+  useEffect(() => {
+    if (categoriesPage > totalCategoriesPages) setCategoriesPage(totalCategoriesPages);
+  }, [categoriesPage, totalCategoriesPages]);
 
   function getEstimatedDeliveryDate(order: AdminOrder) {
     if (order.estimatedDeliveryDate) {
@@ -1210,131 +1301,94 @@ export default function Admin() {
         <h2>JayLuxe</h2>
         <p className="admin-subtitle">Admin Dashboard</p>
 
-        <a href="#admin">🏠 Dashboard</a>
-        {can('orders') ? <a href="#orders">🧾 Orders</a> : null}
-        {can('customers') ? <a href="#customers">👥 Customers</a> : null}
-        {can('products') ? <a href="#products">📦 Products &amp; Services</a> : null}
-        {can('categories') ? <a href="#categories">🗂 Categories</a> : null}
-        {can('products') ? <a href="#inventory">📊 Inventory</a> : null}
-        {can('promotions') ? <a href="#coupons">🎟 Promotions &amp; Coupons</a> : null}
-        {can('bookings') ? <a href="#bookings">📅 Bookings</a> : null}
-        {can('testimonials') ? <a href="#testimonials-form">💬 Testimonials</a> : null}
-        {can('content') ? <a href="#transformations-form">Before &amp; After</a> : null}
-        {can('settings') ? <a href="#settings">⚙️ Store Settings</a> : null}
-        {can('reports') ? <Link href="/admin/reports">💹 Financial Reports</Link> : null}
-        {adminUser?.role === 'super_admin' ? <Link href="/admin/users">👤 Admin &amp; Staff</Link> : null}
-        {can('activity') ? <Link href="/admin/activity">🛡 Activity Log</Link> : null}
-        {can('orders') ? <a href="#contact-messages">✉️ Contact Messages</a> : null}
-        {can('orders') ? <a href="#sms-logs">📱 SMS Logs</a> : null}
+        <a href="#admin"><LayoutDashboard size={17} aria-hidden="true" /> Dashboard</a>
+        {can('orders') ? <a href="#orders"><ClipboardList size={17} aria-hidden="true" /> Orders</a> : null}
+        {can('customers') ? <a href="#customers"><UsersRound size={17} aria-hidden="true" /> Customers</a> : null}
+        {can('products') ? <a href="#products"><Boxes size={17} aria-hidden="true" /> Products &amp; Services</a> : null}
+        {can('categories') ? <a href="#categories"><Layers3 size={17} aria-hidden="true" /> Categories</a> : null}
+        {can('products') ? <a href="#inventory"><BarChart3 size={17} aria-hidden="true" /> Inventory</a> : null}
+        {can('promotions') ? <a href="#coupons"><TicketPercent size={17} aria-hidden="true" /> Promotions &amp; Coupons</a> : null}
+        {can('bookings') ? <a href="#bookings"><CalendarDays size={17} aria-hidden="true" /> Bookings</a> : null}
+        {can('testimonials') ? <a href="#testimonials-form"><MessageCircle size={17} aria-hidden="true" /> Testimonials</a> : null}
+        {can('content') ? <a href="#transformations-form"><Images size={17} aria-hidden="true" /> Before &amp; After</a> : null}
+        {can('settings') ? <a href="#settings"><Settings size={17} aria-hidden="true" /> Store Settings</a> : null}
+        {can('reports') ? <Link href="/admin/reports"><BarChart3 size={17} aria-hidden="true" /> Financial Reports</Link> : null}
+        {adminUser?.role === 'super_admin' ? <Link href="/admin/users"><UserCog size={17} aria-hidden="true" /> Admin &amp; Staff</Link> : null}
+        {can('activity') ? <Link href="/admin/activity"><Activity size={17} aria-hidden="true" /> Activity Log</Link> : null}
+        {can('orders') ? <a href="#contact-messages"><Mail size={17} aria-hidden="true" /> Contact Messages</a> : null}
+        {can('orders') ? <a href="#sms-logs"><Smartphone size={17} aria-hidden="true" /> SMS Logs</a> : null}
         <button
           type="button"
           className="admin-sidebar-logout"
           onClick={handleAdminLogout}
         >
-          🚪 Logout
+          <LogOut size={17} aria-hidden="true" /> Logout
         </button>
       </aside>
 
       <main className="admin-content">
+        <div className="admin-mobile-actionbar" aria-label="Admin mobile quick actions">
+          <a href="#products" title="Search products" aria-label="Search products"><Search size={18} aria-hidden="true" /></a>
+          <Link href="/wishlist" title="Wishlist" aria-label="Wishlist"><Heart size={18} aria-hidden="true" /></Link>
+          <Link href="/bridal" title="Bridal Package" aria-label="Bridal Package"><Gem size={18} aria-hidden="true" /></Link>
+          <Link href="/bridal/book" title="Book Bridal Consultation" aria-label="Book Bridal Consultation"><CalendarDays size={18} aria-hidden="true" /></Link>
+          <Link href="/gallery" title="Before & After" aria-label="Before & After"><Images size={18} aria-hidden="true" /></Link>
+          <Link href="/testimonials" title="Testimonials" aria-label="Testimonials"><MessageCircle size={18} aria-hidden="true" /></Link>
+          <Link href="/promotions" title="Promotions" aria-label="Promotions"><Tags size={18} aria-hidden="true" /></Link>
+        </div>
+
         <div className="topbar" id="admin">
           <div>
             <h1>Welcome Back {adminUser?.fullName || 'Admin'}</h1>
             <p>Manage JayLuxe products, services, categories, orders and bookings.</p>
           </div>
 
-<div
-  style={{
-    display: 'flex',
-    gap: 10,
-    alignItems: 'center',
-    flexWrap: 'wrap',
-  }}
->
-  <span
-    style={{
-      display: 'inline-flex',
-      alignItems: 'center',
-      gap: '8px',
-      padding: '10px 16px',
-      borderRadius: '999px',
-      fontWeight: 900,
-      fontSize: '14px',
-      background: storeMode === 'Live' ? '#dcfce7' : '#fef3c7',
-      color: storeMode === 'Live' ? '#166534' : '#92400e',
-      border:
-        storeMode === 'Live'
-          ? '1px solid #86efac'
-          : '1px solid #facc15',
-      boxShadow: '0 8px 20px rgba(0,0,0,0.08)',
-    }}
-  >
-    {storeMode === 'Live' ? '🟢 Live Mode' : '🟡 Maintenance Mode'}
-  </span>
-  <button className="btn" onClick={load}>
-    Refresh
-  </button>
-</div>
-
-  <input
-    className="input"
-    placeholder="Search..."
-    style={{ maxWidth: 120 }}
-  />
+          <div className="admin-topbar-controls">
+            <span className={`admin-store-status ${storeMode === 'Live' ? 'live' : 'maintenance'}`}>
+              {storeMode === 'Live' ? 'Live Mode' : 'Maintenance Mode'}
+            </span>
+            <button className="btn" onClick={load}>Refresh</button>
+          </div>
           
         </div>
 
-        <div className="stats-grid">
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.3 }} className="stat-card dark">
-            <h3>Total Revenue</h3>
-            <h1>{money(revenue)}</h1>
-          </motion.div>
-
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.3, delay: 0.1 }} className="stat-card">
-            <h3>Products</h3>
-            <h1>{products.length}</h1>
-          </motion.div>
-
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.3, delay: 0.2 }} className="stat-card">
-            <h3>Categories</h3>
-            <h1>{categories.length}</h1>
-          </motion.div>
-
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.3, delay: 0.3 }} className="stat-card">
-            <h3>Orders</h3>
-            <h1>{orders.length}</h1>
-          </motion.div>
+        <div className="stats-grid admin-dashboard-metrics" aria-label="Store overview metrics">
+          <motion.article initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.22 }} className="stat-card dark admin-metric-card">
+            <span className="admin-metric-icon"><BadgeDollarSign size={20} aria-hidden="true" /></span>
+            <div><h3>Total Revenue</h3><h1>{money(revenue)}</h1><p>Verified order value</p></div>
+          </motion.article>
+          <motion.article initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.22, delay: 0.04 }} className="stat-card admin-metric-card">
+            <span className="admin-metric-icon"><ShoppingBag size={20} aria-hidden="true" /></span>
+            <div><h3>Total Orders</h3><h1>{orders.length}</h1><p>All recorded orders</p></div>
+          </motion.article>
+          <motion.article initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.22, delay: 0.08 }} className="stat-card admin-metric-card">
+            <span className="admin-metric-icon"><Package2 size={20} aria-hidden="true" /></span>
+            <div><h3>Products</h3><h1>{products.length}</h1><p>Products and services</p></div>
+          </motion.article>
+          <motion.article initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.22, delay: 0.12 }} className="stat-card admin-metric-card">
+            <span className="admin-metric-icon"><UsersRound size={20} aria-hidden="true" /></span>
+            <div><h3>Customers</h3><h1>{customers.length}</h1><p>Known customer profiles</p></div>
+          </motion.article>
         </div>
 
         {adminUser?.role === 'super_admin' ? (
-          <section className="table-card" aria-labelledby="admin-team-overview-title">
+          <section className="table-card admin-team-overview" aria-labelledby="admin-team-overview-title">
             <div className="admin-section-title">
               <div>
                 <h2 id="admin-team-overview-title">Admin &amp; Staff Overview</h2>
-                <p>Live account, role, and access status across the JayLuxe administration team.</p>
+                <p>Compact access overview for the JayLuxe administration team.</p>
               </div>
               <Link className="btn" href="/admin/users">Manage Users</Link>
             </div>
-            <div className="stats-grid">
-              {[
-                ['Total Users', adminUserStats.totalUsers],
-                ['Active Users', adminUserStats.activeUsers],
-                ['Online Users', adminUserStats.onlineUsers],
-                ['Disabled Users', adminUserStats.disabledUsers],
-                ['Super Admins', adminUserStats.superAdmins],
-                ['Admins', adminUserStats.admins],
-                ['Staff Members', adminUserStats.staffMembers],
-              ].map(([label, value], index) => (
-                <motion.div
-                  key={String(label)}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.25, delay: index * 0.04 }}
-                  className="stat-card"
-                >
-                  <h3>{label}</h3>
-                  <h1>{value}</h1>
-                </motion.div>
-              ))}
+            <div className="admin-team-grid">
+              <article className="admin-team-card">
+                <span><ShieldCheck size={21} aria-hidden="true" /></span>
+                <div><small>Admins</small><strong>{adminUserStats.superAdmins + adminUserStats.admins}</strong><p>{adminUserStats.superAdmins} super admin{adminUserStats.superAdmins === 1 ? '' : 's'} · {adminUserStats.admins} admin{adminUserStats.admins === 1 ? '' : 's'}</p></div>
+              </article>
+              <article className="admin-team-card">
+                <span><UserCog size={21} aria-hidden="true" /></span>
+                <div><small>Staff</small><strong>{adminUserStats.staffMembers}</strong><p>{adminUserStats.disabledUsers} disabled account{adminUserStats.disabledUsers === 1 ? '' : 's'}</p></div>
+              </article>
             </div>
           </section>
         ) : null}
@@ -1667,61 +1721,33 @@ export default function Admin() {
           </motion.div>
         </div>
 
-        <section className="table-card">
-          <h2>All Categories</h2>
-
-          <table className="table">
-            <thead>
-              <tr>
-                <th>Image</th>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Status</th>
-                <th>Description</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {categories.map((c) => (
-                <tr key={String(c.id)}>
-                  <td>
-                    {c.image ? (
-                      <img
-                        src={c.image}
-                        alt={c.name}
-                        width={45}
-                        height={45}
-                        style={{ objectFit: 'cover', borderRadius: 10 }}
-                      />
-                    ) : (
-                      '—'
-                    )}
-                  </td>
-                  <td>{c.name}</td>
-                  <td>
-                    <span className="badge gold">{c.type}</span>
-                  </td>
-                  <td>
-                    <span className={c.active ? 'badge green' : 'badge red'}>
-                      {c.active ? 'Active' : 'Inactive'}
-                    </span>
-                  </td>
-                  <td>{c.description}</td>
-                  <td>
-                    <button onClick={() => editCategory(c)}>Edit</button>
-                    <button onClick={() => deleteCategory(c.id)}>Delete</button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <section className="table-card admin-categories-list">
+          <div className="admin-section-title"><div><h2>All Categories</h2><p>Manage category presentation and see how many products are assigned to each category.</p></div></div>
+          <div className="admin-table-scroll">
+            <table className="table">
+              <thead><tr><th>Category</th><th>Description</th><th>Type</th><th>Products</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody>
+                {paginatedCategories.map((c) => {
+                  const productCount = products.filter((product) => product.category === c.name).length;
+                  return <tr key={String(c.id)}>
+                    <td><div className="admin-product-cell">{c.image ? <img src={c.image} alt="" /> : <span className="admin-product-image-placeholder"><Layers3 size={18} aria-hidden="true" /></span>}<div><strong>{c.name}</strong><small>{c.slug || c.id}</small></div></div></td>
+                    <td className="admin-description-cell">{c.description || 'No category description provided.'}</td>
+                    <td><span className="badge gold">{c.type}</span></td>
+                    <td><strong>{productCount}</strong></td>
+                    <td><span className={c.active ? 'badge green' : 'badge red'}>{c.active ? 'Active' : 'Inactive'}</span></td>
+                    <td><div className="admin-row-actions"><button onClick={() => editCategory(c)}>Edit</button><button onClick={() => deleteCategory(c.id)}>Delete</button></div></td>
+                  </tr>;
+                })}
+              </tbody>
+            </table>
+          </div>
+          <AdminPagination page={categoriesPage} totalPages={totalCategoriesPages} onPageChange={setCategoriesPage} label="Categories" />
         </section>
 
         <section className="table-card" id="bridal-packages" hidden={!can('products')}>
           <div className="admin-section-title">
             <div>
-              <h2>👰 Bridal Packages</h2>
+              <h2>Bridal Packages</h2>
               <p>Manage the bridal packages offered on the homepage.</p>
             </div>
           </div>
@@ -1842,7 +1868,7 @@ export default function Admin() {
         <section className="table-card" id="bridal-gallery" hidden={!can('content')}>
           <div className="admin-section-title">
             <div>
-              <h2>👰 Bridal Gallery</h2>
+              <h2 className="admin-heading-with-icon"><Gem size={20} aria-hidden="true" /> Bridal Gallery</h2>
               <p>Manage the images in the bridal photo gallery.</p>
             </div>
           </div>
@@ -2053,7 +2079,7 @@ export default function Admin() {
         <section className="table-card" id="testimonials-form" hidden={!can('testimonials')}>
           <div className="admin-section-title">
             <div>
-              <h2>💬 Add/Edit Testimonial</h2>
+              <h2 className="admin-heading-with-icon"><MessageCircle size={20} aria-hidden="true" /> Add/Edit Testimonial</h2>
               <p>Manage customer testimonials for the homepage.</p>
             </div>
           </div>
@@ -2177,181 +2203,98 @@ export default function Admin() {
           )}
         </section>
 
-        <section className="table-card" id="products" hidden={!can('products')}>
-          <h2>Add / Edit Product or Service</h2>
-
-          <div className="admin-form-grid">
-            <input
-              className="input"
-              placeholder="Name"
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-            />
-
-            <input
-              className="input"
-              placeholder="Price"
-              type="number"
-              value={form.price}
-              onChange={(e) => setForm({ ...form, price: +e.target.value })}
-            />
-
-            <select
-              className="input"
-              value={form.category}
-              onChange={(e) => setForm({ ...form, category: e.target.value })}
-            >
-              <option value="">Select Category</option>
-              {categories
-                .filter((c) => c.active)
-                .map((cat) => (
-                  <option key={String(cat.id)} value={cat.name}>
-                    {cat.name}
-                  </option>
-                ))}
-            </select>
-
-            <select
-              className="input"
-              value={form.type}
-              onChange={(e) => setForm({ ...form, type: e.target.value as 'product' | 'service' })}
-            >
-              <option value="product">Product</option>
-              <option value="service">Service</option>
-            </select>
-
-            <div className="product-upload-box">
-  <label>Product Image</label>
-
-  <input
-    type="file"
-    accept="image/jpeg,image/png,image/webp"
-    disabled={isUploading}
-    onChange={async (e) => {
-      const file = e.target.files?.[0];
-      if (!file) return;
-
-      setIsUploading(true);
-      try {
-        const imageUrl = await uploadCatalogImage(file, 'products');
-        setForm((current) => ({ ...current, image: imageUrl }));
-        showToast('Product image uploaded.', 'success');
-      } catch (error) {
-        console.error('PRODUCT IMAGE UPLOAD ERROR:', error);
-        showToast(error instanceof Error ? error.message : 'Product image upload failed.', 'error');
-        e.target.value = '';
-      } finally {
-        setIsUploading(false);
-      }
-    }}
-  />
-
-  {form.image && (
-    <img
-      src={form.image}
-      alt="Preview"
-      className="product-preview"
-    />
-  )}
-</div>
-
-            <input
-              className="input"
-              placeholder="Stock"
-              type="number"
-              value={form.stock}
-              onChange={(e) => setForm({ ...form, stock: +e.target.value })}
-            />
-
-            <textarea
-              className="input"
-              placeholder="Description"
-              value={form.description}
-              onChange={(e) => setForm({ ...form, description: e.target.value })}
-            />
-
-            <label className="input" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <input
-                type="checkbox"
-                checked={form.featured || false}
-                onChange={(e) => setForm({ ...form, featured: e.target.checked })}
-              />
-              Featured
-            </label>
-
-            <label className="input" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <input
-                type="checkbox"
-                checked={form.active ?? true}
-                onChange={(e) => setForm({ ...form, active: e.target.checked })}
-              />
-              Active
-            </label>
+        <section className="table-card admin-catalog-editor" id="products" hidden={!can('products')}>
+          <div className="admin-section-title">
+            <div>
+              <h2>{form.id ? 'Edit Product or Service' : 'Add Product or Service'}</h2>
+              <p>Keep product information, pricing, inventory and status clearly separated.</p>
+            </div>
           </div>
 
-          {form.image && (
-            <img
-              src={form.image}
-              alt="Preview"
-              width={120}
-              style={{ marginTop: 10, borderRadius: 12 }}
-            />
-          )}
+          <div className="admin-product-form-sections">
+            <fieldset className="admin-form-section">
+              <legend>Product Information</legend>
+              <div className="admin-form-grid">
+                <label className="admin-field"><span>Name</span><input className="input" placeholder="Product name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /></label>
+                <label className="admin-field"><span>Category</span><select className="input" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}><option value="">Select Category</option>{categories.filter((c) => c.active).map((cat) => <option key={String(cat.id)} value={cat.name}>{cat.name}</option>)}</select></label>
+                <label className="admin-field"><span>Type</span><select className="input" value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value as 'product' | 'service', sizes: e.target.value === 'service' ? [] : form.sizes })}><option value="product">Product</option><option value="service">Service</option></select></label>
+                <label className="admin-field admin-field-wide"><span>Description</span><textarea className="input" rows={5} placeholder="Detailed product description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} /></label>
+                <div className="product-upload-box admin-field-wide">
+                  <label>Product Image</label>
+                  <input type="file" accept="image/jpeg,image/png,image/webp" disabled={isUploading} onChange={async (e) => { const file = e.target.files?.[0]; if (!file) return; setIsUploading(true); try { const imageUrl = await uploadCatalogImage(file, 'products'); setForm((current) => ({ ...current, image: imageUrl })); showToast('Product image uploaded.', 'success'); } catch (error) { console.error('PRODUCT IMAGE UPLOAD ERROR:', error); showToast(error instanceof Error ? error.message : 'Product image upload failed.', 'error'); e.target.value = ''; } finally { setIsUploading(false); } }} />
+                  {form.image ? <img src={form.image} alt="Product preview" className="product-preview" /> : <p className="admin-upload-note">JPEG, PNG or WebP. The current Firebase Storage system is preserved.</p>}
+                </div>
+              </div>
+            </fieldset>
 
-          <br />
-          <br />
+            <fieldset className="admin-form-section">
+              <legend>Pricing</legend>
+              <div className="admin-form-grid">
+                <label className="admin-field"><span>Selling Price</span><input className="input" placeholder="Price" type="number" min="0" value={form.price} onChange={(e) => setForm({ ...form, price: +e.target.value })} /></label>
+                <label className="admin-field"><span>Compare-at Price <small>Optional</small></span><input className="input" placeholder="Original price" type="number" min="0" value={form.oldPrice || ''} onChange={(e) => setForm({ ...form, oldPrice: e.target.value ? +e.target.value : undefined })} /></label>
+              </div>
+            </fieldset>
 
-          <button className="btn" onClick={submitProduct} disabled={isUploading}>
-            {isUploading ? 'Uploading image...' : 'Save Product / Service'}
-          </button>
+            <fieldset className="admin-form-section">
+              <legend>Inventory</legend>
+              <div className="admin-form-grid">
+                <label className="admin-field"><span>Stock Quantity</span><input className="input" placeholder="Stock" type="number" min="0" value={form.stock} onChange={(e) => setForm({ ...form, stock: +e.target.value })} /></label>
+                {form.type === 'product' ? <div className="admin-field admin-field-wide"><span>Available Sizes</span><div className="admin-size-picker">{PRODUCT_SIZE_OPTIONS.map((size) => { const selected = form.sizes?.includes(size) || false; return <label key={size} className={selected ? 'selected' : ''}><input type="checkbox" checked={selected} onChange={(e) => setForm({ ...form, sizes: e.target.checked ? Array.from(new Set([...(form.sizes || []), size])) : (form.sizes || []).filter((item) => item !== size) })} /><span>{size}</span></label>; })}</div><small className="admin-help-text">Sizes are optional. Existing products without sizes continue to work normally.</small></div> : null}
+              </div>
+            </fieldset>
+
+            <fieldset className="admin-form-section">
+              <legend>Status</legend>
+              <div className="admin-toggle-row">
+                <label><input type="checkbox" checked={form.featured || false} onChange={(e) => setForm({ ...form, featured: e.target.checked })} /><span>Featured</span></label>
+                <label><input type="checkbox" checked={form.active ?? true} onChange={(e) => setForm({ ...form, active: e.target.checked })} /><span>Active / available for sale</span></label>
+              </div>
+            </fieldset>
+          </div>
+
+          <div className="admin-form-actions">
+            <button className="btn" onClick={submitProduct} disabled={isUploading}>{isUploading ? 'Uploading image…' : form.id ? 'Update Product / Service' : 'Save Product / Service'}</button>
+            {form.id ? <button className="btn light" type="button" onClick={() => setForm(blankProduct)}>Cancel Edit</button> : null}
+          </div>
         </section>
 
         <section className="table-card" id="inventory" hidden={!can('products')}>
-          <h2>Inventory</h2>
+          <div className="admin-section-title"><div><h2>Products &amp; Inventory</h2><p>Review descriptions, pricing, sizes, stock and availability at a glance.</p></div></div>
+          <div className="admin-table-scroll">
+            <table className="table admin-products-table">
+              <thead><tr><th>Product</th><th>Description</th><th>Category</th><th>Price</th><th>Sizes</th><th>Availability</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody>
+                {paginatedProducts.map((p) => {
+                  const stock = Number(p.stock || 0);
+                  const stockLabel = stock <= 0 ? 'Out of Stock' : stock <= 5 ? 'Low Stock' : 'Available';
+                  const stockClass = stock <= 0 ? 'danger' : stock <= 5 ? 'warning' : 'success';
+                  return (
+                    <tr key={String(p.id)}>
+                      <td><div className="admin-product-cell">{p.image ? <img src={p.image} alt="" /> : <span className="admin-product-image-placeholder"><Package2 size={18} aria-hidden="true" /></span>}<div><strong>{p.name}</strong><small>{p.type}</small></div></div></td>
+                      <td className="admin-description-cell">{p.description || 'No description provided.'}</td>
+                      <td>{p.category || '—'}</td>
+                      <td><strong>{money(p.price)}</strong>{p.oldPrice && p.oldPrice > p.price ? <small className="admin-compare-price">{money(p.oldPrice)}</small> : null}</td>
+                      <td>{p.sizes?.length ? <div className="admin-size-list">{p.sizes.map((size) => <span key={size}>{size}</span>)}</div> : <span className="admin-muted">Not set</span>}</td>
+                      <td><span className={`admin-stock-status ${stockClass}`}><span aria-hidden="true" />{stockLabel}</span><small>{stock} in stock</small></td>
+                      <td><span className={`badge ${p.active === false ? 'red' : 'green'}`}>{p.active === false ? 'Inactive' : 'Active'}</span></td>
+                      <td><div className="admin-row-actions"><button onClick={() => { setForm({ ...p, sizes: p.sizes || [] }); document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' }); }}>Edit</button><button onClick={async () => { if (confirm(`Delete ${p.name}?`)) { await removeProduct(p.id); void recordAdminActivity({ action: 'Deleted Product', description: `Deleted product or service: ${p.name}.`, targetType: 'product', targetId: String(p.id) }); showToast('Product deleted successfully', 'success'); load(); } }}>Delete</button></div></td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+          <AdminPagination page={productsPage} totalPages={totalProductsPages} onPageChange={setProductsPage} label="Products" />
+        </section>
 
-          <table className="table">
-            <thead>
-              <tr>
-                <th>Product</th>
-                <th>Type</th>
-                <th>Category</th>
-                <th>Price</th>
-                <th>Stock</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {products.map((p) => (
-                <tr key={String(p.id)}>
-                  <td>{p.name}</td>
-                  <td>{p.type}</td>
-                  <td>{p.category}</td>
-                  <td>{money(p.price)}</td>
-                  <td>{p.stock}</td>
-                  <td>
-                    <button onClick={() => setForm(p)}>Edit</button>
-                    <button
-                      onClick={async () => {
-                        if (confirm(`Delete ${p.name}?`)) {
-                          await removeProduct(p.id);
-                          void recordAdminActivity({
-                            action: 'Deleted Product',
-                            description: `Deleted product or service: ${p.name}.`,
-                            targetType: 'product',
-                            targetId: String(p.id),
-                          });
-                          load();
-                        }
-                      }}
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <section className="table-card" id="product-reviews" hidden={!can('products')}>
+          <div className="admin-section-title"><div><h2>Product Reviews</h2><p>Customer product feedback is separate from general JayLuxe testimonials.</p></div><span className="badge gold">{productReviews.length} reviews</span></div>
+          <div className="admin-table-scroll">
+            <table className="table admin-reviews-table">
+              <thead><tr><th>Customer</th><th>Product</th><th>Rating</th><th>Review</th><th>Purchase</th><th>Date</th><th>Action</th></tr></thead>
+              <tbody>{productReviews.length ? productReviews.map((review) => <tr key={review.id}><td>{review.customerName}</td><td>{products.find((product) => product.id === review.productId)?.name || review.productId}</td><td>{review.rating}/5</td><td className="admin-description-cell">{review.review}</td><td>{review.verifiedPurchase ? <span className="badge green">Verified</span> : <span className="badge">Customer</span>}</td><td>{new Date(review.createdAt).toLocaleDateString('en-NG')}</td><td><button onClick={() => void deleteProductReview(review)}>Delete</button></td></tr>) : <tr><td colSpan={7} className="admin-empty-cell">No product reviews yet.</td></tr>}</tbody>
+            </table>
+          </div>
         </section>
 
         <section className="table-card" id="orders" hidden={!can('orders')}>
@@ -2921,6 +2864,7 @@ export default function Admin() {
                           targetType: 'promotion',
                           targetId: String(c.id),
                         });
+                        showToast('Promotion deleted successfully', 'success');
                         load();
                       }
                     }}>Delete</button>

@@ -16,6 +16,7 @@ export type Product = {
   featured?: boolean;
   bestseller?: boolean;
   stock?: number;
+  sizes?: string[];
   active?: boolean;
 };
 export type Category={id:string;name:string;slug?:string;type:'product'|'service';description?:string;image?:string;active?:boolean;createdAt?:string;};

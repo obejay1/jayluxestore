@@ -10,7 +10,10 @@ import {
   Truck,
   Shield,
   Headphones,
-  Clock,
+  Zap,
+  TrendingUp,
+  Gift,
+  Gem,
   Scissors,
   MessageCircle,
   Mail,
@@ -114,18 +117,6 @@ export default function Home() {
       ? activeProducts.filter((product) => product.isNew)
       : activeProducts
   ).slice(0, 8);
-  const bestSellers = (
-    activeProducts.filter((product) => product.bestseller).length > 0
-      ? activeProducts.filter((product) => product.bestseller)
-      : activeProducts
-  ).slice(0, 8);
-  const saleProducts = activeProducts
-    .filter((product) => {
-      const oldPrice = Number(product.oldPrice || 0);
-      return Number(product.discount || 0) > 0 || oldPrice > Number(product.price || 0);
-    })
-    .slice(0, 8);
-
   const categoryImage = (category: Category) => {
     if (category.image) return getSafeImageSource(category.image);
     const match = products.find(
@@ -202,29 +193,36 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="jj-promo-rail" aria-label="JayLuxe promotions">
-        <Link href="/flash-sale" className="jj-promo-featured">
-          <span><Clock size={16} aria-hidden="true" /> Limited-time offers</span>
-          <h2>Flash Sale</h2>
-          <p>Shop selected beauty, fashion and lifestyle favourites while promotional stock lasts.</p>
-          <strong>Shop the sale <ArrowRight size={17} aria-hidden="true" /></strong>
+      <section className="jl-home-promo-features" aria-label="JayLuxe promotional collections">
+        <Link href="/flash-sale" className="jl-home-promo-feature jl-home-promo-flash">
+          <span className="jl-home-promo-icon" aria-hidden="true">
+            <Zap size={30} strokeWidth={2.1} />
+          </span>
+          <span className="jl-home-promo-copy">
+            <strong>Flash Sale</strong>
+            <small>Limited Time</small>
+          </span>
         </Link>
 
-        <div className="jj-promo-pair">
-          <Link href="/promotions" className="jj-promo-compact">
-            <span>JayLuxe Offers</span>
-            <h3>Seasonal promotions</h3>
-            <p>Discover special offers, gift picks and curated luxury edits.</p>
-            <strong>View promotions <ArrowRight size={17} aria-hidden="true" /></strong>
-          </Link>
+        <Link href="/promotions" className="jl-home-promo-feature jl-home-promo-seasonal">
+          <span className="jl-home-promo-icon" aria-hidden="true">
+            <Gift size={30} strokeWidth={2.1} />
+          </span>
+          <span className="jl-home-promo-copy">
+            <strong>Seasonal Promotions</strong>
+            <small>Special Offers</small>
+          </span>
+        </Link>
 
-          <Link href="/best-sellers" className="jj-promo-compact">
-            <span>Customer favourites</span>
-            <h3>Best-selling pieces</h3>
-            <p>Explore the products our customers return to again and again.</p>
-            <strong>Shop best sellers <ArrowRight size={17} aria-hidden="true" /></strong>
-          </Link>
-        </div>
+        <Link href="/best-sellers" className="jl-home-promo-feature jl-home-promo-bestselling">
+          <span className="jl-home-promo-icon" aria-hidden="true">
+            <TrendingUp size={30} strokeWidth={2.1} />
+          </span>
+          <span className="jl-home-promo-copy">
+            <strong>Best Selling</strong>
+            <small>Trending Now</small>
+          </span>
+        </Link>
       </section>
 
       <section className="jj-categories">
@@ -283,29 +281,11 @@ export default function Home() {
         onQuickView={setQuickViewProduct}
       />
 
-      {saleProducts.length > 0 ? (
-        <ProductShowcase
-          eyebrow="Limited-Time Prices"
-          title="Flash Sale"
-          href="/flash-sale"
-          products={saleProducts}
-          onQuickView={setQuickViewProduct}
-        />
-      ) : null}
-
       <ProductShowcase
         eyebrow="Just Arrived"
         title="New Arrivals"
         href="/new-arrivals"
         products={newArrivals}
-        onQuickView={setQuickViewProduct}
-      />
-
-      <ProductShowcase
-        eyebrow="Customer Favourites"
-        title="Best Sellers"
-        href="/best-sellers"
-        products={bestSellers}
         onQuickView={setQuickViewProduct}
       />
 
@@ -321,7 +301,7 @@ export default function Home() {
           </div>
 
           <div className="jj-bridal-header">
-            <small>👰 Bridal Packages</small>
+            <small className="jj-icon-heading"><Gem size={16} aria-hidden="true" /> Bridal Packages</small>
             <h2>Choose Your Perfect Package</h2>
           </div>
 

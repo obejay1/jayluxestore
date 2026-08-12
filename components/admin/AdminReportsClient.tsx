@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { collection, getDocs } from 'firebase/firestore';
+import { useRouter } from 'next/navigation';
 import {
   Bar,
   BarChart,
@@ -20,8 +20,6 @@ import {
 } from 'recharts';
 
 import styles from '@/components/admin/AdminReportsClient.module.css';
-import { db } from '@/lib/firebase';
-import { useAdminAuth } from '@/lib/useAdminAuth';
 
 interface OrderItem {
   id?: string;
@@ -68,8 +66,27 @@ function normaliseStatus(status?: string) {
   return status || 'Processing';
 }
 
+type ReportsResponse = {
+  ok?: boolean;
+  message?: string;
+  code?: string;
+  orders?: OrderData[];
+  products?: ProductData[];
+  users?: UserData[];
+};
+
+async function readReportsResponse(response: Response): Promise<ReportsResponse> {
+  const text = await response.text();
+  if (!text) return {};
+  try {
+    return JSON.parse(text) as ReportsResponse;
+  } catch {
+    throw new Error('The reports service returned an invalid response.');
+  }
+}
+
 export default function AdminReportsClient() {
-  const { ready: adminReady } = useAdminAuth();
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [orders, setOrders] = useState<OrderData[]>([]);
@@ -84,25 +101,46 @@ export default function AdminReportsClient() {
     setLoading(true);
     setError('');
     try {
-      const [ordersSnap, usersSnap, productsSnap] = await Promise.all([
-        getDocs(collection(db, 'orders')),
-        getDocs(collection(db, 'users')),
-        getDocs(collection(db, 'products')),
-      ]);
-      setOrders(ordersSnap.docs.map((item) => ({ id: item.id, ...(item.data() as OrderData) })));
-      setUsers(usersSnap.docs.map((item) => ({ id: item.id, ...(item.data() as UserData) })));
-      setProducts(productsSnap.docs.map((item) => ({ id: item.id, ...(item.data() as ProductData) })));
+      const response = await fetch('/api/admin/reports', {
+        method: 'GET',
+        cache: 'no-store',
+        credentials: 'same-origin',
+        headers: { Accept: 'application/json' },
+      });
+      const data = await readReportsResponse(response);
+
+      if (response.status === 401) {
+        router.replace('/admin/login?error=expired');
+        router.refresh();
+        return;
+      }
+      if (response.status === 403) {
+        router.replace('/admin/access-denied');
+        router.refresh();
+        return;
+      }
+      if (!response.ok || data.ok !== true) {
+        throw new Error(data.message || 'Unable to load financial reports.');
+      }
+
+      setOrders(Array.isArray(data.orders) ? data.orders : []);
+      setUsers(Array.isArray(data.users) ? data.users : []);
+      setProducts(Array.isArray(data.products) ? data.products : []);
     } catch (loadError) {
       console.error('Error loading financial reports:', loadError);
-      setError('Reports could not be loaded. Check your connection and administrator permissions, then try again.');
+      setError(
+        loadError instanceof Error && loadError.message
+          ? loadError.message
+          : 'Unable to load financial reports. Please try again.',
+      );
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [router]);
 
   useEffect(() => {
-    if (adminReady) void fetchReportsData();
-  }, [adminReady, fetchReportsData]);
+    void fetchReportsData();
+  }, [fetchReportsData]);
 
   const filteredOrders = useMemo(() => {
     const now = new Date();
@@ -303,13 +341,6 @@ export default function AdminReportsClient() {
     }
   }
 
-  if (!adminReady || loading) {
-    return <div className={styles.state}><div className={styles.stateCard}><h2>Loading financial reports…</h2><p>Preparing the latest JayLuxe sales and inventory data.</p></div></div>;
-  }
-  if (error) {
-    return <div className={styles.state}><div className={styles.stateCard} role="alert"><h2>Reports are unavailable</h2><p>{error}</p><button type="button" onClick={() => void fetchReportsData()}>Try again</button></div></div>;
-  }
-
   const statusColours = ['#211b15', '#c39731', '#2f855a', '#b83232', '#2b6cb0', '#7b4bb7', '#64748b'];
   const statItems = [
     ['Total Revenue', money(analytics.totalRevenue), 'gold'],
@@ -330,6 +361,31 @@ export default function AdminReportsClient() {
       </header>
 
       <main className={styles.main}>
+        {loading ? (
+          <section className={styles.state} aria-live="polite">
+            <div className={styles.stateCard}>
+              <div className={styles.loadingBar} aria-hidden="true" />
+              <h2>Loading financial reports…</h2>
+              <p>Preparing the latest JayLuxe sales, customer and inventory data.</p>
+            </div>
+          </section>
+        ) : error ? (
+          <section className={styles.state}>
+            <div className={styles.stateCard} role="alert">
+              <h2>Unable to load financial reports</h2>
+              <p>{error}</p>
+              <button type="button" onClick={() => void fetchReportsData()}>Try again</button>
+            </div>
+          </section>
+        ) : (
+          <>
+        {orders.length === 0 && products.length === 0 && users.length === 0 ? (
+          <section className={styles.emptyNotice} role="status">
+            <strong>No report data available yet.</strong>
+            <span>Sales, customer and inventory summaries will appear here as JayLuxe data is created.</span>
+          </section>
+        ) : null}
+
         <section className={styles.toolbar} aria-label="Report filters and exports">
           <div className={styles.filters}>
             <div className={styles.field}>
@@ -370,6 +426,8 @@ export default function AdminReportsClient() {
         </section>
 
         <section className={styles.card}><div className={styles.cardHeader}><h2>Low Stock Products</h2></div><div className={styles.tableViewport}><table className={`${styles.table} ${styles.tableWide}`}><thead><tr><th>Product</th><th>Category</th><th>Type</th><th>Price</th><th>Stock</th></tr></thead><tbody>{analytics.lowStockProducts.length ? analytics.lowStockProducts.map((product) => <tr key={product.id || product.name}><td>{product.name || 'Unnamed Product'}</td><td>{product.category || 'N/A'}</td><td>{product.type || 'product'}</td><td>{money(Number(product.price || 0))}</td><td>{Number(product.stock || 0)}</td></tr>) : <tr><td colSpan={5} className={`${styles.emptyCell} ${styles.goodCell}`}>No low stock products. Inventory looks good.</td></tr>}</tbody></table></div></section>
+          </>
+        )}
       </main>
     </div>
   );

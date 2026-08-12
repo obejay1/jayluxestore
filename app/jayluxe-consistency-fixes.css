@@ -846,3 +846,15 @@ body .global-footer-newsletter p {
   }
 }
 
+
+/* Professional icon treatment for homepage commerce highlights. */
+.jj-icon-heading {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.jj-icon-heading > svg {
+  flex: 0 0 auto;
+  color: var(--jl-gold-rich, #9a711d);
+}

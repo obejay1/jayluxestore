@@ -141,6 +141,12 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    // Product reviews are served and written through trusted Next.js API routes.
+    // This prevents clients from spoofing ratings, verified-purchase flags or moderation state.
+    match /productReviews/{reviewId} {
+      allow read, write: if false;
+    }
+
     match /resendWebhookEvents/{eventId} {
       allow read: if isSuperAdmin();
       allow write: if false;

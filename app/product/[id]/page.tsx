@@ -6,7 +6,6 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
   AlertCircle,
-  CheckCircle2,
   ChevronLeft,
   Heart,
   LoaderCircle,
@@ -19,6 +18,7 @@ import {
 
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
+import ProductReviews from '@/components/ProductReviews';
 import ResponsiveImage from '@/components/ResponsiveImage';
 import {
   addRecentlyViewed,
@@ -31,6 +31,7 @@ import {
 import { showToast } from '@/lib/toast';
 import { PRODUCT_GRID_CLASSES } from '@/lib/layoutClasses';
 import type { Product } from '@/lib/types';
+import type { ProductReviewSummary } from '@/lib/productReviews';
 
 const QuickViewModal = dynamic(() => import('@/components/QuickViewModal'), {
   ssr: false,
@@ -54,6 +55,10 @@ export default function ProductDetailPage() {
   const [isZoomed, setIsZoomed] = useState(false);
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
   const [recentIds, setRecentIds] = useState<string[]>([]);
+
+  const handleReviewSummary = useCallback((summary: ProductReviewSummary) => {
+    setProduct((current) => current ? { ...current, rating: summary.averageRating, reviewCount: summary.reviewCount } : current);
+  }, []);
 
   const loadProduct = useCallback(async () => {
     setLoadState('loading');
@@ -149,6 +154,7 @@ export default function ProductDetailPage() {
   const images = [currentProduct.image, ...(currentProduct.gallery || [])].filter(Boolean);
   const rating = Math.max(0, Number(currentProduct.rating || 0));
   const reviewCount = Math.max(0, Number(currentProduct.reviewCount || 0));
+  const availableSizes = Array.isArray(currentProduct.sizes) ? currentProduct.sizes.filter(Boolean) : [];
   const stock = Math.max(0, Number(currentProduct.stock ?? 1));
   const wishlisted = wishlist.includes(currentProduct.id);
   const discount = currentProduct.discount || (
@@ -278,6 +284,18 @@ export default function ProductDetailPage() {
 
           <p className="jl-product-desc">{product.description || 'A premium JayLuxe piece selected for its beauty, quality and timeless appeal.'}</p>
 
+          {availableSizes.length ? (
+            <section className="jl-product-sizes" aria-labelledby="available-product-sizes">
+              <div>
+                <span className="jl-product-size-label" id="available-product-sizes">Available Sizes</span>
+                <small>Available for this product</small>
+              </div>
+              <div className="jl-product-size-list" aria-label={`Available sizes: ${availableSizes.join(', ')}`}>
+                {availableSizes.map((size) => <span key={size}>{size}</span>)}
+              </div>
+            </section>
+          ) : null}
+
           <div className="jl-product-benefits">
             <div><Truck size={20} aria-hidden="true" /><span><strong>Fast Delivery</strong><small>Across Nigeria</small></span></div>
             <div><Shield size={20} aria-hidden="true" /><span><strong>Authentic Quality</strong><small>Carefully selected</small></span></div>
@@ -337,11 +355,11 @@ export default function ProductDetailPage() {
             <div className="jl-spec-grid"><div><span>Product</span><strong>{product.name}</strong></div><div><span>Category</span><strong>{product.category || 'Luxury Collection'}</strong></div><div><span>SKU</span><strong>{product.sku || `JL-${product.id.slice(0, 8).toUpperCase()}`}</strong></div><div><span>Availability</span><strong>{stock > 0 ? `${stock} available` : 'Out of stock'}</strong></div><div><span>Quality</span><strong>JayLuxe selected</strong></div><div><span>Support</span><strong>Client care included</strong></div></div>
           )}
           {activeTab === 'reviews' && (
-            <div className="jl-product-reviews jl-product-review-empty">
-              <CheckCircle2 size={34} aria-hidden="true" />
-              <h2>No published reviews yet</h2>
-              <p>Verified customer reviews will appear here when they are available.</p>
-            </div>
+            <ProductReviews
+              productId={currentProduct.id}
+              productName={currentProduct.name}
+              onSummaryChange={handleReviewSummary}
+            />
           )}
           {activeTab === 'shipping' && (
             <div className="jl-tab-copy"><h2>Nationwide delivery</h2><p>Delivery options and fees are calculated during checkout based on the selected address. Estimated delivery timing is displayed before payment.</p><p>Orders are carefully packed and can be followed through the available order-status tools.</p></div>

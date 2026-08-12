@@ -166,19 +166,44 @@ export default function InvoicePage({ params }: { params: { id: string } }) {
   let watermarkColor = 'rgba(0, 0, 0, 0.05)';
 
   if (order.paymentStatus === 'Paid') {
-    watermarkText = 'PAID ✅';
+    watermarkText = 'PAID';
     watermarkColor = 'rgba(22, 163, 74, 0.05)'; // Green
   } else if (order.paymentStatus === 'Pending') {
-    watermarkText = 'PENDING ⏳';
+    watermarkText = 'PENDING';
     watermarkColor = 'rgba(217, 119, 6, 0.05)'; // Amber
   } else if (order.paymentStatus === 'Failed') {
-    watermarkText = 'FAILED ❌';
+    watermarkText = 'FAILED';
     watermarkColor = 'rgba(220, 38, 38, 0.05)'; // Red
   }
 
   return (
     <main className="invoice-page" style={{ minHeight: '100vh', background: '#F2ECE3', padding: '40px 20px', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
       <style dangerouslySetInnerHTML={{ __html: `
+        @media (max-width: 640px) {
+          .invoice-page { padding: 14px 10px !important; }
+          .invoice-toolbar { display: grid !important; grid-template-columns: 1fr 1fr; gap: 8px !important; }
+          .invoice-toolbar button { width: 100% !important; min-width: 0 !important; padding: 10px 8px !important; }
+          .invoice-toolbar button:last-child { grid-column: 1 / -1; }
+          .invoice-container { padding: 20px 14px !important; border-radius: 12px !important; overflow: hidden !important; }
+          .invoice-header-grid { display: grid !important; grid-template-columns: 1fr !important; gap: 16px !important; padding-bottom: 20px !important; margin-bottom: 20px !important; }
+          .invoice-header-grid > div { min-width: 0 !important; text-align: left !important; align-items: flex-start !important; }
+          .invoice-header-grid > div:nth-child(2) { display: none !important; }
+          .invoice-status-grid { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 8px !important; margin-bottom: 22px !important; }
+          .invoice-status-grid > div { min-width: 0 !important; padding: 10px !important; }
+          .invoice-status-grid span:last-child { overflow-wrap: anywhere !important; font-size: 13px !important; }
+          .invoice-customer-grid { grid-template-columns: 1fr !important; gap: 18px !important; margin-bottom: 24px !important; }
+          .invoice-items-table { margin-inline: -2px !important; margin-bottom: 24px !important; border: 1px solid #eee8de; border-radius: 10px; }
+          .invoice-items-table table { min-width: 520px !important; }
+          .invoice-items-table th, .invoice-items-table td { padding: 12px 9px !important; font-size: 12px !important; }
+          .invoice-summary-wrap { justify-content: stretch !important; }
+          .invoice-summary-wrap > div { max-width: none !important; width: 100% !important; }
+          .invoice-watermark { font-size: 72px !important; }
+          .invoice-barcode { justify-content: flex-start !important; overflow-x: auto !important; }
+        }
+        @media (max-width: 380px) {
+          .invoice-status-grid { grid-template-columns: 1fr !important; }
+          .invoice-container { padding-inline: 11px !important; }
+        }
         @media print {
           body { background: white !important; }
           .no-print { display: none !important; }
@@ -187,7 +212,7 @@ export default function InvoicePage({ params }: { params: { id: string } }) {
       `}} />
       
       <div className="invoice-toolbar no-print" style={{ maxWidth: 850, margin: '0 auto 20px', display: 'flex', gap: 12, justifyContent: 'flex-end', flexWrap: 'wrap' }}>
-        <button onClick={() => router.push('/admin')} style={{ padding: '10px 16px', background: '#fff', border: '1px solid #d1d5db', color: '#374151', borderRadius: 8, cursor: 'pointer', fontWeight: 600 }}>Back to Dashboard</button>
+        <button onClick={() => router.push('/account')} style={{ padding: '10px 16px', background: '#fff', border: '1px solid #d1d5db', color: '#374151', borderRadius: 8, cursor: 'pointer', fontWeight: 600 }}>My Account</button>
         <button onClick={handlePrint} style={{ padding: '10px 16px', background: '#fff', border: '1px solid #C8A24B', color: '#C8A24B', borderRadius: 8, cursor: 'pointer', fontWeight: 600 }}>Print Invoice</button>
         <button 
           onClick={handleDownloadPDF} 
@@ -224,7 +249,7 @@ export default function InvoicePage({ params }: { params: { id: string } }) {
         <div style={{ position: 'relative', zIndex: 1 }}>
         
         {/* Header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '2px solid #F8F6F2', paddingBottom: 30, marginBottom: 30, flexWrap: 'wrap', gap: 20 }}>
+        <div className="invoice-header-grid" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '2px solid #F8F6F2', paddingBottom: 30, marginBottom: 30, flexWrap: 'wrap', gap: 20 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
             <Image src="/logo.png" alt="JayLuxe logo" width={60} height={60} />
             <div>
@@ -264,7 +289,7 @@ export default function InvoicePage({ params }: { params: { id: string } }) {
         </div>
 
         {/* Status Section */}
-        <div style={{ display: 'flex', gap: 16, marginBottom: 30, flexWrap: 'wrap' }}>
+        <div className="invoice-status-grid" style={{ display: 'flex', gap: 16, marginBottom: 30, flexWrap: 'wrap' }}>
           <div style={{ padding: '8px 16px', background: '#F8F6F2', borderRadius: 8, border: '1px solid #E5E5E5' }}>
             <span style={{ color: '#777777', fontSize: 12, fontWeight: 600, display: 'block', marginBottom: 4 }}>Payment Method</span>
             <span style={{ color: '#111111', fontSize: 15, fontWeight: 700 }}>{order.paymentMethod || 'Credit Card'}</span>
@@ -284,7 +309,7 @@ export default function InvoicePage({ params }: { params: { id: string } }) {
         </div>
 
         {/* Customer Info */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 30, marginBottom: 40 }}>
+        <div className="invoice-customer-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 30, marginBottom: 40 }}>
           <div>
             <h3 style={{ margin: '0 0 12px', color: '#111111', fontSize: 16, borderBottom: '1px solid #F8F6F2', paddingBottom: 8 }}>Billed To</h3>
             <p style={{ margin: '4px 0', color: '#2B2B2B', fontWeight: 600 }}>{order.customerName || 'N/A'}</p>
@@ -298,7 +323,7 @@ export default function InvoicePage({ params }: { params: { id: string } }) {
         </div>
 
         {/* Products Table */}
-        <div style={{ marginBottom: 40, overflowX: 'auto' }}>
+        <div className="invoice-items-table" style={{ marginBottom: 40, overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: 600 }}>
             <thead>
               <tr>
@@ -337,7 +362,7 @@ export default function InvoicePage({ params }: { params: { id: string } }) {
         </div>
 
         {/* Payment Summary */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <div className="invoice-summary-wrap" style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <div style={{ width: '100%', maxWidth: 350 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 0', borderBottom: '1px solid #F8F6F2', color: '#444444', fontSize: 14 }}>
               <span>Subtotal</span>
