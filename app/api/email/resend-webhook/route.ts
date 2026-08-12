@@ -32,33 +32,6 @@ type ResendWebhookEvent = {
   };
 };
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null && !Array.isArray(value);
-}
-
-function normalizeResendWebhookEvent(value: unknown): ResendWebhookEvent {
-  if (!isRecord(value)) {
-    throw new Error('Unexpected Resend webhook payload.');
-  }
-
-  const rawData = isRecord(value.data) ? value.data : {};
-  const recipients = Array.isArray(rawData.to)
-    ? rawData.to.filter((recipient): recipient is string => typeof recipient === 'string')
-    : undefined;
-
-  return {
-    type: typeof value.type === 'string' ? value.type : undefined,
-    created_at: typeof value.created_at === 'string' ? value.created_at : undefined,
-    data: {
-      ...rawData,
-      email_id: typeof rawData.email_id === 'string' ? rawData.email_id : undefined,
-      to: recipients,
-      from: typeof rawData.from === 'string' ? rawData.from : undefined,
-      subject: typeof rawData.subject === 'string' ? rawData.subject : undefined,
-    },
-  };
-}
-
 function stringValue(value: unknown, maxLength = 1000) {
   return typeof value === 'string' ? value.trim().slice(0, maxLength) : '';
 }
@@ -93,25 +66,15 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  let verified: unknown;
+  let event: ResendWebhookEvent;
   try {
-    verified = await verifyResendWebhook({ payload, id, timestamp, signature });
+    const verified = await verifyResendWebhook({ payload, id, timestamp, signature });
+    event = verified as ResendWebhookEvent;
   } catch (error) {
     console.error('RESEND WEBHOOK SIGNATURE ERROR:', error);
     return NextResponse.json(
       { ok: false, message: 'Invalid webhook signature.' },
       { status: 401 },
-    );
-  }
-
-  let event: ResendWebhookEvent;
-  try {
-    event = normalizeResendWebhookEvent(verified);
-  } catch (error) {
-    console.error('RESEND WEBHOOK PAYLOAD ERROR:', error);
-    return NextResponse.json(
-      { ok: false, message: 'Invalid webhook payload.' },
-      { status: 400 },
     );
   }
 
