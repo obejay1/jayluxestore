@@ -149,7 +149,7 @@ export async function uploadCatalogImage(
 
   return new Promise<string>((resolve, reject) => {
     let settled = false;
-    let timeoutId: ReturnType<typeof window.setTimeout> | null = null;
+    let timeoutId: number | null = null;
     let unsubscribe: (() => void) | null = null;
 
     const cleanup = () => {
