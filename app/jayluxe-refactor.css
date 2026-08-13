@@ -640,7 +640,7 @@ body.jl-remove-hero-images .jl-main-content :is(
   align-items: start;
   gap: 24px;
   width: min(calc(100% - 40px), 1220px);
-  margin: 0 auto clamp(72px, 9vw, 120px);
+  margin: 0 auto clamp(28px, 4vw, 44px);
 }
 
 .jl-cart-items-card,
@@ -953,14 +953,14 @@ body.jl-remove-hero-images .jl-main-content :is(
 .global-footer-shell {
   width: min(calc(100% - 40px), 1280px);
   margin: 0 auto;
-  padding: clamp(58px, 8vw, 96px) 0 28px;
+  padding: clamp(32px, 5vw, 48px) 0 22px;
 }
 
 .global-footer-newsletter {
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(340px, 0.9fr);
   align-items: center;
-  gap: clamp(28px, 5vw, 70px);
+  gap: clamp(18px, 3vw, 34px);
   padding: clamp(26px, 4vw, 44px);
   border: 1px solid rgba(213, 173, 75, 0.24);
   border-radius: 24px;
@@ -1048,8 +1048,8 @@ body.jl-remove-hero-images .jl-main-content :is(
 .global-footer-grid {
   display: grid;
   grid-template-columns: minmax(220px, 1.35fr) repeat(4, minmax(130px, 0.8fr));
-  gap: clamp(26px, 4vw, 54px);
-  padding: clamp(52px, 7vw, 82px) 0;
+  gap: clamp(18px, 3vw, 34px);
+  padding: clamp(30px, 4vw, 46px) 0;
 }
 
 .global-footer-wordmark {

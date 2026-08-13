@@ -385,3 +385,112 @@
 .securityNote a:hover {
   text-decoration: underline;
 }
+
+/* PRODUCTION COMPACT ADMIN LOGIN */
+.page {
+  padding: clamp(12px, 2.5vw, 28px);
+}
+
+.card {
+  width: min(900px, 100%);
+  border-radius: 20px;
+}
+
+.brandPanel {
+  min-height: 440px;
+  padding: clamp(24px, 4vw, 42px);
+}
+
+.logoWrap {
+  width: 82px;
+  height: 82px;
+  margin-bottom: 16px;
+  border-radius: 17px;
+}
+
+.logo {
+  width: 70px;
+  height: 70px;
+}
+
+.brandEyebrow,
+.heading > span {
+  margin-bottom: 9px;
+  font-size: .62rem;
+}
+
+.brandPanel h1 {
+  font-size: clamp(2.25rem, 4.4vw, 3.3rem);
+}
+
+.brandPanel > p {
+  margin-top: 12px;
+  font-size: .68rem;
+  line-height: 1.5;
+}
+
+.trustNote {
+  margin-top: 22px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: .71rem;
+}
+
+.formPanel {
+  padding: clamp(24px, 4vw, 42px);
+}
+
+.heading h2 {
+  font-size: clamp(1.8rem, 3.6vw, 2.8rem);
+}
+
+.heading p {
+  margin-top: 10px;
+  font-size: .84rem;
+  line-height: 1.5;
+}
+
+.form {
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.pinField input,
+.submitButton {
+  min-height: 46px;
+  border-radius: 10px;
+}
+
+.pinField input {
+  padding-left: 44px;
+  font-size: .88rem;
+}
+
+.visibilityButton {
+  width: 36px;
+  height: 36px;
+}
+
+.submitButton {
+  padding: 10px 14px;
+  font-size: .8rem;
+}
+
+@media (max-width: 760px) {
+  .card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .brandPanel {
+    min-height: 0;
+    padding: 22px 18px;
+  }
+
+  .trustNote {
+    display: none;
+  }
+
+  .formPanel {
+    padding: 22px 18px;
+  }
+}

@@ -740,3 +740,221 @@
     flex: 1 1 100%;
   }
 }
+
+/* Production compact admin density + catalog upload UX */
+.admin-content {
+  padding-bottom: 40px !important;
+}
+
+.admin-content .stats-grid,
+.admin-secondary-metrics,
+.admin-staff-overview-grid,
+.admin-product-form-sections,
+.admin-form-grid {
+  gap: 10px !important;
+}
+
+.admin-content .stat-card,
+.admin-secondary-card,
+.admin-staff-card,
+.admin-form-section {
+  border-radius: 12px !important;
+}
+
+.admin-content .stat-card,
+.admin-secondary-card,
+.admin-staff-card {
+  padding: 12px !important;
+  min-height: 82px !important;
+}
+
+.admin-content .stat-card h1,
+.admin-content .stat-card strong,
+.admin-secondary-card strong,
+.admin-staff-card strong {
+  font-size: clamp(1.1rem, 2vw, 1.45rem) !important;
+  line-height: 1.1 !important;
+}
+
+.admin-content .stat-card h3,
+.admin-secondary-card span,
+.admin-staff-card span {
+  font-size: .66rem !important;
+}
+
+.admin-form-section {
+  padding: 12px !important;
+  margin: 0 !important;
+}
+
+.admin-form-section legend {
+  padding: 0 5px !important;
+  font-size: .76rem !important;
+  font-weight: 850 !important;
+}
+
+.admin-field {
+  gap: 5px !important;
+}
+
+.admin-field > span,
+.admin-image-upload-heading label {
+  font-size: .69rem !important;
+  font-weight: 850 !important;
+}
+
+.admin-help-text,
+.admin-upload-note,
+.admin-image-empty {
+  margin: 4px 0 0 !important;
+  color: #756d61;
+  font-size: .65rem !important;
+  line-height: 1.4 !important;
+}
+
+.admin-image-upload {
+  display: grid;
+  gap: 9px;
+  padding: 11px !important;
+  border: 1px solid #e5ded1;
+  border-radius: 12px;
+  background: #fbfaf7;
+}
+
+.admin-image-upload-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.admin-image-upload-heading > div:first-child {
+  min-width: 0;
+}
+
+.admin-image-file-input {
+  width: 100%;
+  min-height: 38px;
+  margin: 0 !important;
+  padding: 6px !important;
+  border: 1px dashed #cfc4b3 !important;
+  border-radius: 9px !important;
+  background: #fff !important;
+  font-size: .68rem !important;
+}
+
+.admin-image-file-input::file-selector-button {
+  min-height: 30px;
+  margin-right: 8px;
+  padding: 5px 9px;
+  border: 0;
+  border-radius: 7px;
+  background: #17140f;
+  color: #fff;
+  font: inherit;
+  font-size: .65rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.admin-image-file-input:disabled,
+.admin-image-replace[aria-disabled='true'] {
+  cursor: not-allowed !important;
+  opacity: .55 !important;
+  pointer-events: none;
+}
+
+.admin-image-preview-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.admin-image-preview-actions .btn,
+.admin-image-replace {
+  min-height: 32px !important;
+  padding: 6px 9px !important;
+  font-size: .64rem !important;
+  cursor: pointer;
+}
+
+.admin-upload-progress {
+  display: grid;
+  gap: 5px;
+  color: #5f574c;
+  font-size: .67rem;
+  font-weight: 750;
+}
+
+.admin-upload-progress progress {
+  width: 100%;
+  height: 7px;
+  overflow: hidden;
+  border: 0;
+  border-radius: 999px;
+  accent-color: var(--jl-gold-rich, #9a711d);
+}
+
+.admin-image-preview {
+  display: block;
+  width: min(100%, 220px) !important;
+  max-height: 180px !important;
+  margin: 0 !important;
+  border: 1px solid #e1d7c7;
+  border-radius: 10px !important;
+  object-fit: cover !important;
+  aspect-ratio: 4 / 3;
+  background: #f2eee7;
+}
+
+.admin-image-empty {
+  display: grid;
+  place-items: center;
+  min-height: 58px;
+  padding: 9px;
+  border: 1px dashed #ddd3c4;
+  border-radius: 9px;
+  text-align: center;
+}
+
+.admin-content .admin-form-actions {
+  gap: 8px !important;
+  margin-top: 10px !important;
+}
+
+.admin-table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 700px) {
+  .admin-content {
+    padding: 12px 10px 34px !important;
+  }
+
+  .admin-content .topbar {
+    padding: 10px 11px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .admin-content .admin-section-title {
+    margin: 16px 0 8px !important;
+  }
+
+  .admin-image-upload-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-image-preview-actions {
+    justify-content: flex-start;
+  }
+
+  .admin-image-preview {
+    width: 100% !important;
+    max-height: 170px !important;
+  }
+}

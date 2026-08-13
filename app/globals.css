@@ -9705,3 +9705,25 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--gold);
 }
+
+/* JayLuxe production compact design tokens — shared across storefront and admin. */
+:root {
+  --jl-space-1: 4px;
+  --jl-space-2: 8px;
+  --jl-space-3: 12px;
+  --jl-space-4: 16px;
+  --jl-space-5: 24px;
+  --jl-space-6: 32px;
+  --jl-section-space: clamp(24px, 3.6vw, 40px);
+  --jl-card-pad: clamp(12px, 1.8vw, 18px);
+  --jl-control-h: 42px;
+  --jl-content-max: 1240px;
+  --jl-content-gutter: clamp(14px, 3vw, 28px);
+  --jl-compact-radius: 14px;
+  --jl-compact-radius-sm: 10px;
+  --jl-type-page: clamp(1.5rem, 3.2vw, 2.25rem);
+  --jl-type-section: clamp(1.15rem, 2.2vw, 1.6rem);
+  --jl-type-card: clamp(.86rem, 1.25vw, 1rem);
+  --jl-type-body: clamp(.78rem, 1vw, .92rem);
+  --jl-type-meta: clamp(.68rem, .85vw, .78rem);
+}

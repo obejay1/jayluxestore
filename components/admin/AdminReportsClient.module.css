@@ -269,3 +269,35 @@
   from { transform: translateX(0); }
   to { transform: translateX(122%); }
 }
+
+/* Production compact report density */
+.header { padding: 12px clamp(12px, 2.4vw, 24px); gap: 12px; }
+.headerCopy h1 { font-size: clamp(1.15rem, 1.8vw, 1.45rem); }
+.headerCopy p { font-size: .75rem; }
+.backLink { min-height: 36px; padding: 7px 10px; border-radius: 9px; font-size: .72rem; }
+.main { padding: clamp(12px, 2vw, 22px); }
+.toolbar { gap: 12px; margin-bottom: 14px; padding: 12px; border-radius: 13px; }
+.field select, .field input, .exportButton { min-height: 40px; padding: 8px 10px; border-radius: 9px; }
+.statsGrid { gap: 10px; margin-bottom: 14px; }
+.statCard, .card { border-radius: 13px; }
+.statCard { padding: 12px; }
+.statCard strong { margin-top: 5px; font-size: clamp(1.1rem, 1.9vw, 1.5rem); }
+.twoColumn, .twoColumnEqual { gap: 12px; margin-bottom: 12px; }
+.card { padding: clamp(11px, 1.6vw, 16px); }
+.cardHeader { margin-bottom: 10px; }
+.chart { height: clamp(220px, 30vw, 290px); }
+.table th, .table td { padding: 9px 9px; font-size: .72rem; }
+.table th { font-size: .62rem; }
+.state { min-height: 42vh; padding: 18px; }
+.stateCard { padding: 18px; border-radius: 13px; }
+.emptyNotice { margin-bottom: 12px; padding: 11px 13px; border-radius: 11px; }
+
+@media (max-width: 700px) {
+  .header { padding: 10px; }
+  .main { padding: 9px; }
+  .toolbar { padding: 10px; gap: 9px; }
+  .statsGrid { gap: 8px; }
+  .statCard { padding: 10px; }
+  .card { padding: 10px; border-radius: 12px; }
+  .chart { height: 230px; }
+}

@@ -525,8 +525,8 @@ export default function Admin() {
     } catch (error) {
       console.error('CATEGORY IMAGE UPLOAD ERROR:', error);
       showToast(error instanceof Error ? error.message : 'Category image upload failed.', 'error');
-      e.target.value = '';
     } finally {
+      e.target.value = '';
       setIsUploading(false);
       setCatalogUploadProgress({ kind: null, percent: 0 });
     }
@@ -547,8 +547,8 @@ export default function Admin() {
     } catch (error) {
       console.error('PRODUCT IMAGE UPLOAD ERROR:', error);
       showToast(error instanceof Error ? error.message : 'Product image upload failed.', 'error');
-      e.target.value = '';
     } finally {
+      e.target.value = '';
       setIsUploading(false);
       setCatalogUploadProgress({ kind: null, percent: 0 });
     }
@@ -1709,18 +1709,34 @@ export default function Admin() {
               <option value="inactive">Inactive</option>
             </select>
 
-            <div className="category-upload-box">
-              <label>Category Image</label>
-              <input type="file" accept="image/jpeg,image/png,image/webp" disabled={isUploading} onChange={uploadCategoryImage} />
-              {catalogUploadProgress.kind === 'categories' ? <p className="admin-upload-status" role="status">Uploading image… {catalogUploadProgress.percent}%</p> : <p className="admin-upload-note">JPEG, PNG or WebP, up to 8 MB.</p>}
+            <div className="category-upload-box admin-image-upload">
+              <div className="admin-image-upload-heading">
+                <div>
+                  <label htmlFor="category-image-upload">Category Image</label>
+                  <p className="admin-upload-note">JPEG, PNG or WebP, up to 8 MB.</p>
+                </div>
+                {categoryForm.image ? (
+                  <div className="admin-image-preview-actions">
+                    <label className="btn light admin-image-replace" htmlFor="category-image-upload" aria-disabled={isUploading}>Replace image</label>
+                    <button className="btn light" type="button" disabled={isUploading} onClick={() => setCategoryForm((current) => ({ ...current, image: '' }))}>Remove image</button>
+                  </div>
+                ) : null}
+              </div>
+              <input id="category-image-upload" className="admin-image-file-input" type="file" accept="image/jpeg,image/png,image/webp" disabled={isUploading} onChange={uploadCategoryImage} />
+              {catalogUploadProgress.kind === 'categories' ? (
+                <div className="admin-upload-progress" role="status" aria-live="polite">
+                  <span>Uploading image… {catalogUploadProgress.percent}%</span>
+                  <progress max="100" value={catalogUploadProgress.percent}>{catalogUploadProgress.percent}%</progress>
+                </div>
+              ) : null}
 
-              {categoryForm.image && (
+              {categoryForm.image ? (
                 <img
                   src={categoryForm.image}
                   alt="Category Preview"
-                  className="category-preview"
+                  className="category-preview admin-image-preview"
                 />
-              )}
+              ) : <p className="admin-image-empty">Choose an image to add a category thumbnail.</p>}
             </div>
 
             <textarea
@@ -2267,11 +2283,27 @@ export default function Admin() {
                 <label className="admin-field"><span>Category</span><select className="input" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}><option value="">Select Category</option>{categories.filter((c) => c.active).map((cat) => <option key={String(cat.id)} value={cat.name}>{cat.name}</option>)}</select></label>
                 <label className="admin-field"><span>Type</span><select className="input" value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value as 'product' | 'service', sizes: e.target.value === 'service' ? [] : form.sizes })}><option value="product">Product</option><option value="service">Service</option></select></label>
                 <label className="admin-field admin-field-wide"><span>Description</span><textarea className="input" rows={5} placeholder="Detailed product description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} /></label>
-                <div className="product-upload-box admin-field-wide">
-                  <label>Product Image</label>
-                  <input type="file" accept="image/jpeg,image/png,image/webp" disabled={isUploading} onChange={uploadProductImage} />
-                  {catalogUploadProgress.kind === 'products' ? <p className="admin-upload-status" role="status">Uploading image… {catalogUploadProgress.percent}%</p> : null}
-                  {form.image ? <img src={form.image} alt="Product preview" className="product-preview" /> : <p className="admin-upload-note">JPEG, PNG or WebP, up to 8 MB. Images are stored in Firebase Storage.</p>}
+                <div className="product-upload-box admin-field-wide admin-image-upload">
+                  <div className="admin-image-upload-heading">
+                    <div>
+                      <label htmlFor="product-image-upload">Product Image</label>
+                      <p className="admin-upload-note">JPEG, PNG or WebP, up to 8 MB. Images are stored in Firebase Storage.</p>
+                    </div>
+                    {form.image ? (
+                      <div className="admin-image-preview-actions">
+                        <label className="btn light admin-image-replace" htmlFor="product-image-upload" aria-disabled={isUploading}>Replace image</label>
+                        <button className="btn light" type="button" disabled={isUploading} onClick={() => setForm((current) => ({ ...current, image: '' }))}>Remove image</button>
+                      </div>
+                    ) : null}
+                  </div>
+                  <input id="product-image-upload" className="admin-image-file-input" type="file" accept="image/jpeg,image/png,image/webp" disabled={isUploading} onChange={uploadProductImage} />
+                  {catalogUploadProgress.kind === 'products' ? (
+                    <div className="admin-upload-progress" role="status" aria-live="polite">
+                      <span>Uploading image… {catalogUploadProgress.percent}%</span>
+                      <progress max="100" value={catalogUploadProgress.percent}>{catalogUploadProgress.percent}%</progress>
+                    </div>
+                  ) : null}
+                  {form.image ? <img src={form.image} alt="Product preview" className="product-preview admin-image-preview" /> : <p className="admin-image-empty">Choose an image to add a storefront product thumbnail.</p>}
                 </div>
               </div>
             </fieldset>

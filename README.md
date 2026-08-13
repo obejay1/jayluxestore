@@ -350,3 +350,26 @@ Wishlist notifications are intentionally not enabled yet because the current wis
 8. Configure the Resend webhook and use Resend test events to confirm `providerStatus` updates in `emailEvents`.
 9. Confirm the production domain and sender addresses are verified before live customer email testing.
 10. Run `npm run lint`, `npx tsc --noEmit --incremental false`, and `npm run build` before production deployment.
+
+## Production UI + Firebase Storage checklist (2026-08-13)
+
+JayLuxe keeps catalog images in the existing Firebase Storage bucket and stores the returned HTTPS download URL in the existing product/category `image` field.
+
+Before testing Admin image uploads in production:
+
+1. Confirm the Firebase project is on the Blaze plan. Cloud Storage for Firebase requires Blaze to maintain bucket access as of February 3, 2026.
+2. In Firebase Console → Storage → Files, copy the exact default bucket name into `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`. The client normalizes an accidental `gs://` prefix, but the value must still belong to the same Firebase project used by the other `NEXT_PUBLIC_FIREBASE_*` settings.
+3. Deploy `storage.rules` with `firebase deploy --only storage` and sign out/in to refresh admin custom claims.
+4. Product/category uploads remain restricted to JPG/PNG/WebP, maximum 8 MB, under `products/*` and `categories/*`.
+5. The Admin upload UI reports progress, preserves the existing saved image when a replacement fails, and exposes Firebase error codes in DevTools instead of remaining indefinitely on “Uploading image…”.
+
+Verification commands:
+
+```bash
+node scripts/verify-production-ui-storage.mjs
+node scripts/verify-mobile-layout.mjs
+node scripts/verify-admin-dashboard-refactor.mjs
+npm run lint
+npx tsc --noEmit --incremental false
+npm run build
+```

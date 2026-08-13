@@ -634,7 +634,7 @@ a {
 .jl-promotions-hero {
   width: min(calc(100% - 36px), var(--jl-content));
   margin: 0 auto;
-  padding: clamp(64px, 9vw, 112px) 0 clamp(44px, 6vw, 76px);
+  padding: clamp(32px, 5vw, 54px) 0 clamp(24px, 4vw, 40px);
   text-align: center;
 }
 
@@ -667,15 +667,15 @@ a {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 20px;
   width: min(calc(100% - 36px), var(--jl-content));
-  margin: 0 auto clamp(76px, 9vw, 120px);
+  margin: 0 auto clamp(32px, 5vw, 52px);
 }
 
 .jl-promo-card {
   position: relative;
   display: flex;
   flex-direction: column;
-  min-height: 300px;
-  padding: clamp(26px, 4vw, 42px);
+  min-height: 0;
+  padding: clamp(16px, 2.5vw, 24px);
   overflow: hidden;
   border: 1px solid var(--jl-line);
   border-radius: var(--jl-radius-lg);
@@ -735,7 +735,7 @@ a {
 
 .jl-promo-products {
   width: min(calc(100% - 36px), var(--jl-content));
-  margin: 0 auto clamp(80px, 10vw, 130px);
+  margin: 0 auto clamp(32px, 5vw, 52px);
 }
 
 /* =========================================================

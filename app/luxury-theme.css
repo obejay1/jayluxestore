@@ -243,8 +243,8 @@
 
 
 
-.jj-bridal { padding: 0 24px 94px !important; background: var(--jl-cream) !important; }
-.jj-bridal-banner { width: min(1280px, 100%); min-height: 420px !important; margin: 0 auto 74px !important; overflow: hidden; border-radius: 0 0 20px 20px !important; }
+.jj-bridal { padding: 0 24px 40px !important; background: var(--jl-cream) !important; }
+.jj-bridal-banner { width: min(1280px, 100%); min-height: 420px !important; margin: 0 auto 36px !important; overflow: hidden; border-radius: 0 0 20px 20px !important; }
 .jj-bridal-banner-overlay { background: linear-gradient(90deg, rgba(17,17,17,.84), rgba(17,17,17,.2)) !important; }
 .jj-bridal-banner-content { max-width: 650px !important; padding: clamp(28px, 6vw, 74px) !important; }
 .jj-bridal-banner-content h2 { color: var(--jl-white) !important; font-size: clamp(2.4rem, 5vw, 4.7rem) !important; line-height: 1 !important; font-weight: 500 !important; }
@@ -260,7 +260,7 @@
 .jj-btn-book:hover { background: var(--jl-gold) !important; }
 .jj-bridal-extras { width: min(1180px, 100%); margin-inline: auto; }
 
-.jj-transformations { padding: 92px 24px !important; background: var(--jl-black) !important; }
+.jj-transformations { padding: 40px 24px !important; background: var(--jl-black) !important; }
 
 .jj-view-all-dark { color: var(--jl-white) !important; }
 .jj-transformations-grid { width: min(1180px, 100%); margin-inline: auto; gap: 22px !important; }
@@ -270,20 +270,20 @@
 .jj-transformation-content p { color: rgba(255,255,255,.68) !important; }
 .jj-transformation-category { color: var(--jl-gold) !important; }
 
-.jj-testimonials { padding: 92px 24px !important; background: var(--jl-ivory) !important; }
+.jj-testimonials { padding: 40px 24px !important; background: var(--jl-ivory) !important; }
 .jj-testimonials-grid { width: min(1180px, 100%); margin-inline: auto; gap: 22px !important; }
-.jj-testimonial-card { padding: 32px !important; border: 1px solid var(--jl-border) !important; border-radius: 16px !important; background: var(--jl-white) !important; box-shadow: var(--jl-shadow-soft) !important; }
+.jj-testimonial-card { padding: 18px !important; border: 1px solid var(--jl-border) !important; border-radius: 16px !important; background: var(--jl-white) !important; box-shadow: var(--jl-shadow-soft) !important; }
 .jj-testimonial-rating .star-icon.filled { color: var(--jl-gold) !important; fill: var(--jl-gold) !important; }
 .jj-testimonial-card blockquote { color: var(--jl-charcoal) !important; font-family: Georgia, serif; font-size: 1.08rem !important; line-height: 1.7 !important; }
 .jj-testimonial-customer span { color: var(--jl-muted) !important; }
 
-.jj-services { padding: 104px 24px !important; background: linear-gradient(135deg, var(--jl-ivory), var(--jl-cream)) !important; }
+.jj-services { padding: 40px 24px !important; background: linear-gradient(135deg, var(--jl-ivory), var(--jl-cream)) !important; }
 .jj-services > div { width: min(900px, 100%); margin-inline: auto; text-align: center; }
 .jj-services small { color: var(--jl-gold-rich) !important; letter-spacing: .12em; text-transform: uppercase; }
-.jj-services h2 { margin: 12px 0 18px !important; color: var(--jl-black) !important; font-size: clamp(2.5rem, 5vw, 4.5rem) !important; line-height: 1 !important; font-weight: 500 !important; }
+.jj-services h2 { margin: 12px 0 18px !important; color: var(--jl-black) !important; font-size: clamp(1.75rem, 3.8vw, 2.8rem) !important; line-height: 1 !important; font-weight: 500 !important; }
 .jj-services p { max-width: 700px; margin-inline: auto; color: var(--jl-text) !important; line-height: 1.8 !important; }
 
-.jj-contact { padding: 82px 24px !important; background: var(--jl-white) !important; }
+.jj-contact { padding: 40px 24px !important; background: var(--jl-white) !important; }
 .jj-contact h2 { color: var(--jl-black) !important; font-size: clamp(2rem, 4vw, 3.2rem) !important; font-weight: 500 !important; }
 .jj-contact > p { color: var(--jl-text) !important; }
 .jj-contact-grid { width: min(920px, 100%); margin-inline: auto; gap: 12px !important; }
@@ -302,11 +302,11 @@
 .global-footer-newsletter {
   display: grid;
   grid-template-columns: 1.1fr .9fr;
-  gap: 48px;
+  gap: 28px;
   align-items: center;
   width: min(1180px, calc(100% - 40px));
   margin-inline: auto;
-  padding: 54px 0;
+  padding: 34px 0;
   border-bottom: 1px solid rgba(255,255,255,.12);
 }
 .global-footer-newsletter > div > span { display: inline-flex; align-items: center; gap: 8px; color: var(--jl-gold); font-size: .72rem; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }

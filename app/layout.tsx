@@ -10,10 +10,10 @@ import './jayluxe-redesign.css';
 import './jayluxe-refactor.css';
 import './jayluxe-mobile.css';
 import './jayluxe-mobile-polish.css';
-import './jayluxe-card-system.css';
 import './jayluxe-consistency-fixes.css';
 import './jayluxe-production-stability.css';
 import './jayluxe-feature-update.css';
+import './jayluxe-card-system.css';
 
 import GoogleAnalytics from '@/components/GoogleAnalytics';
 import HeroImageController from '@/components/HeroImageController';
