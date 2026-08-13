@@ -19,7 +19,7 @@ service firebase.storage {
       return request.resource == null || (
         request.resource.contentType != null
         && request.resource.contentType.matches('image/(jpeg|png|webp)')
-        && request.resource.size < 8 * 1024 * 1024
+        && request.resource.size <= 8 * 1024 * 1024
       );
     }
 

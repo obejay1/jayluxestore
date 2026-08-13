@@ -1983,7 +1983,7 @@ a {
 .jj-category-card {
   display: flex;
   min-width: 0;
-  min-height: 330px;
+  min-height: 0;
   flex-direction: column;
   overflow: hidden;
   border: 1px solid var(--jl-line);
@@ -4671,7 +4671,18 @@ textarea:disabled {
   }
 
   .jl-account-overview {
-    grid-template-columns: 1fr !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px;
+  }
+
+  .jl-account-overview article,
+  .jl-account-overview > a {
+    min-height: 82px;
+    padding: 13px;
+  }
+
+  .jl-account-overview strong {
+    font-size: 0.82rem;
   }
 
   .jl-account-profile-bar {
@@ -4681,6 +4692,12 @@ textarea:disabled {
 
   .jl-account-profile-bar button {
     width: 100%;
+  }
+}
+
+@media (max-width: 299px) {
+  .jl-account-overview {
+    grid-template-columns: 1fr !important;
   }
 }
 /* =========================================================

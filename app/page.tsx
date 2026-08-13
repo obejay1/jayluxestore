@@ -59,7 +59,7 @@ function ProductShowcase({
   if (products.length === 0) return null;
 
   return (
-    <section className="jj-products jj-product-showcase" id={id}>
+    <section className="jj-products jj-product-showcase jl-home-product-showcase" id={id}>
       <div className="jj-section-header">
         <div>
           <small>{eyebrow}</small>
@@ -225,7 +225,7 @@ export default function Home() {
         </Link>
       </section>
 
-      <section className="jj-categories">
+      <section className="jj-categories jl-home-category-section">
         <div className="jj-section-header jj-section-header-centered">
           <div>
             <small>Curated Departments</small>
@@ -465,11 +465,11 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="jj-contact">
+      <section className="jj-contact jl-home-help-section">
         <h2>Need help with an order or service booking?</h2>
         <p>Contact JayLuxe customer service for orders, delivery, products and bookings.</p>
 
-        <div className="jj-contact-grid">
+        <div className="jj-contact-grid jl-home-help-grid">
           <a href={OFFICIAL_EMAIL_LINK}>
             <Mail aria-hidden="true" />
             <span>{OFFICIAL_EMAIL}</span>

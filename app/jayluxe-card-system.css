@@ -56,7 +56,7 @@
 ) {
   display: grid !important;
   grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  grid-auto-rows: 1fr !important;
+  grid-auto-rows: auto !important;
   align-items: stretch !important;
   gap: 12px !important;
   width: 100% !important;
@@ -1008,7 +1008,7 @@
 .jl-responsive-gallery-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  grid-auto-rows: 1fr;
+  grid-auto-rows: auto;
   align-items: stretch;
   gap: 12px;
   min-width: 0;
@@ -1037,3 +1037,358 @@
     gap: 20px;
   }
 }
+
+
+/* =========================================================
+   JAYLUXE MOBILE COMPACT CARD + HOMEPAGE FLOW REPAIR
+   Keeps the existing components/data, but gives mobile one
+   predictable responsive source of truth.
+========================================================= */
+
+/* Natural-height category cards: the legacy theme used a 330px minimum. */
+.jj-category-card,
+.jl-category-page-card {
+  min-height: 0 !important;
+}
+
+/* Shared gallery cards join the same compact visual language. */
+.jl-gallery-card {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid rgba(48, 39, 27, 0.1);
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 12px 32px rgba(32, 26, 18, 0.07);
+}
+
+.jl-gallery-image {
+  position: relative;
+  width: 100%;
+  min-height: 0 !important;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: #f4efe7;
+}
+
+.jl-gallery-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.jl-gallery-card-body {
+  min-width: 0;
+}
+
+.jl-gallery-card-body h3,
+.jl-gallery-card-body p,
+.jj-category-content strong,
+.jj-category-content small,
+.lux-product-info h3,
+.jl-unified-service-body h3,
+.jl-unified-service-body > p {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 767px) {
+  /* Homepage sections size to their real content; no viewport/fixed-height spacers. */
+  .jl-home-category-section,
+  .jl-home-product-showcase,
+  .jl-home-help-section {
+    min-height: 0 !important;
+    height: auto !important;
+  }
+
+  .jl-home-category-section,
+  .jl-home-product-showcase {
+    padding-block: 24px !important;
+  }
+
+  .jl-home-category-section .jj-section-header,
+  .jl-home-product-showcase .jj-section-header {
+    margin-bottom: 14px !important;
+  }
+
+  .jl-home-category-section .jj-section-header small,
+  .jl-home-product-showcase .jj-section-header small {
+    font-size: 0.62rem !important;
+    letter-spacing: 0.1em !important;
+  }
+
+  .jl-home-category-section .jj-section-header h2,
+  .jl-home-product-showcase .jj-section-header h2 {
+    margin-top: 5px !important;
+    font-size: clamp(1.65rem, 8.6vw, 2.35rem) !important;
+    line-height: 1.05 !important;
+  }
+
+  .jl-home-product-showcase .jj-section-header > a {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    min-height: 0 !important;
+    padding: 7px 0 !important;
+    font-size: 0.72rem !important;
+  }
+
+  /* Categories: 2 columns across normal phone widths and natural row height. */
+  .jj-category-grid,
+  .jl-responsive-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    grid-auto-rows: auto !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+  }
+
+  .jj-category-card {
+    height: 100% !important;
+    min-height: 0 !important;
+  }
+
+  .jj-category-image {
+    min-height: 0 !important;
+    height: auto !important;
+    aspect-ratio: 4 / 3 !important;
+  }
+
+  .jj-category-content {
+    padding: 10px !important;
+  }
+
+  .jj-category-content strong {
+    min-height: 2.5em !important;
+    font-size: 0.78rem !important;
+    line-height: 1.25 !important;
+  }
+
+  .jj-category-content small {
+    min-height: 2.7em;
+    margin-top: 4px !important;
+    font-size: 0.62rem !important;
+    line-height: 1.35 !important;
+  }
+
+  .jj-category-explore {
+    padding-top: 8px !important;
+    font-size: 0.63rem !important;
+  }
+
+  /* Product cards: same treatment on homepage, Shop, wishlist and related products. */
+  .lux-product-card {
+    min-height: 0 !important;
+    border-radius: 12px !important;
+  }
+
+  .lux-product-image {
+    min-height: 0 !important;
+    aspect-ratio: 4 / 5 !important;
+  }
+
+  .lux-product-info {
+    height: auto !important;
+    padding: 9px !important;
+  }
+
+  .lux-product-category {
+    margin-bottom: 4px !important;
+    font-size: 0.52rem !important;
+  }
+
+  .lux-product-info h3 {
+    min-height: 2.55em !important;
+    margin-bottom: 6px !important;
+    font-size: 0.76rem !important;
+    line-height: 1.28 !important;
+  }
+
+  .lux-product-rating-row {
+    min-height: 16px !important;
+    margin-bottom: 6px !important;
+  }
+
+  .lux-product-pricing {
+    min-width: 0;
+    margin-bottom: 7px !important;
+  }
+
+  .lux-product-price {
+    font-size: 0.84rem !important;
+  }
+
+  .lux-product-old-price {
+    font-size: 0.62rem !important;
+  }
+
+  .lux-product-add-btn {
+    min-height: 40px !important;
+    padding: 7px 5px !important;
+    border-radius: 9px !important;
+    font-size: 0.59rem !important;
+    line-height: 1.15 !important;
+  }
+
+  /* Services share the same compact rhythm while keeping booking callbacks intact. */
+  .jl-unified-service-card {
+    min-height: 0 !important;
+    border-radius: 12px;
+  }
+
+  .jl-unified-service-media {
+    min-height: 0 !important;
+    aspect-ratio: 4 / 3;
+  }
+
+  .jl-unified-service-body {
+    padding: 10px !important;
+  }
+
+  .jl-unified-service-body h3 {
+    min-height: 2.55em;
+    margin-bottom: 6px;
+    font-size: 0.82rem;
+    line-height: 1.28;
+  }
+
+  .jl-unified-service-body > p {
+    min-height: 3.9em;
+    margin-bottom: 9px;
+    font-size: 0.66rem;
+    line-height: 1.35;
+    -webkit-line-clamp: 3;
+  }
+
+  .jl-unified-service-price {
+    gap: 2px;
+    margin-bottom: 8px;
+    padding-top: 8px;
+  }
+
+  .jl-unified-service-body button {
+    min-height: 40px;
+    padding: 7px 5px;
+    border-radius: 9px;
+    font-size: 0.63rem;
+  }
+
+  /* Gallery: two compact tiles per row; card detail remains accessible. */
+  .jl-responsive-gallery-grid,
+  .jl-gallery-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    grid-auto-rows: auto !important;
+    gap: 10px !important;
+  }
+
+  .jl-gallery-card {
+    min-height: 0 !important;
+    border-radius: 12px;
+  }
+
+  .jl-gallery-image {
+    min-height: 0 !important;
+    aspect-ratio: 4 / 3 !important;
+  }
+
+  .jl-gallery-card-body {
+    padding: 10px !important;
+  }
+
+  .jl-gallery-card-body h3 {
+    display: -webkit-box;
+    min-height: 2.5em;
+    margin-bottom: 5px !important;
+    overflow: hidden;
+    font-size: 0.78rem !important;
+    line-height: 1.25 !important;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .jl-gallery-card-body p {
+    display: -webkit-box;
+    min-height: 3.7em;
+    margin-bottom: 8px !important;
+    overflow: hidden;
+    font-size: 0.64rem !important;
+    line-height: 1.3 !important;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+
+  .jl-gallery-card-body button {
+    min-height: 38px !important;
+    padding: 7px 8px !important;
+    font-size: 0.62rem !important;
+  }
+
+  /* Homepage support/booking block: compact cards instead of a tall loose section. */
+  .jl-home-help-section {
+    margin-bottom: 40px !important;
+    padding: 26px 14px !important;
+    border-radius: 18px !important;
+  }
+
+  .jl-home-help-section h2 {
+    margin: 0 auto 8px !important;
+    font-size: clamp(1.55rem, 8vw, 2.2rem) !important;
+    line-height: 1.05 !important;
+  }
+
+  .jl-home-help-section > p {
+    max-width: 560px;
+    margin: 0 auto 14px !important;
+    font-size: 0.76rem !important;
+    line-height: 1.5 !important;
+  }
+
+  .jl-home-help-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 9px !important;
+    margin-bottom: 12px !important;
+  }
+
+  .jl-home-help-grid a {
+    min-width: 0;
+    min-height: 70px;
+    padding: 10px !important;
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px !important;
+    text-align: center;
+  }
+
+  .jl-home-help-grid a span {
+    min-width: 0;
+    max-width: 100%;
+    font-size: 0.62rem;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+
+  .jl-home-help-grid svg {
+    width: 19px;
+    height: 19px;
+  }
+
+  .jl-home-help-section .jj-whatsapp {
+    min-height: 40px;
+    padding: 8px 12px !important;
+    font-size: 0.68rem;
+  }
+}
+
+@media (max-width: 340px) {
+  .jj-category-grid,
+  .jl-responsive-card-grid,
+  .jl-responsive-gallery-grid,
+  .jl-gallery-grid {
+    gap: 7px !important;
+  }
+
+  .jj-category-content,
+  .lux-product-info,
+  .jl-unified-service-body,
+  .jl-gallery-card-body {
+    padding: 8px !important;
+  }
+}
+

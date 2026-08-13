@@ -315,6 +315,10 @@ export default function Admin() {
   const [galleryImageFile, setGalleryImageFile] = useState<string | null>(null);
   const [galleryImageCaption, setGalleryImageCaption] = useState('');
   const [isUploading, setIsUploading] = useState(false);
+  const [catalogUploadProgress, setCatalogUploadProgress] = useState<{
+    kind: 'products' | 'categories' | null;
+    percent: number;
+  }>({ kind: null, percent: 0 });
 
   const [couponForm, setCouponForm] = useState({
     id: '',
@@ -511,8 +515,11 @@ export default function Admin() {
     if (!file) return;
 
     setIsUploading(true);
+    setCatalogUploadProgress({ kind: 'categories', percent: 0 });
     try {
-      const imageUrl = await uploadCatalogImage(file, 'categories');
+      const imageUrl = await uploadCatalogImage(file, 'categories', {
+        onProgress: (percent) => setCatalogUploadProgress({ kind: 'categories', percent }),
+      });
       setCategoryForm((prev) => ({ ...prev, image: imageUrl }));
       showToast('Category image uploaded.', 'success');
     } catch (error) {
@@ -521,6 +528,29 @@ export default function Admin() {
       e.target.value = '';
     } finally {
       setIsUploading(false);
+      setCatalogUploadProgress({ kind: null, percent: 0 });
+    }
+  }
+
+  async function uploadProductImage(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    setCatalogUploadProgress({ kind: 'products', percent: 0 });
+    try {
+      const imageUrl = await uploadCatalogImage(file, 'products', {
+        onProgress: (percent) => setCatalogUploadProgress({ kind: 'products', percent }),
+      });
+      setForm((current) => ({ ...current, image: imageUrl }));
+      showToast('Product image uploaded.', 'success');
+    } catch (error) {
+      console.error('PRODUCT IMAGE UPLOAD ERROR:', error);
+      showToast(error instanceof Error ? error.message : 'Product image upload failed.', 'error');
+      e.target.value = '';
+    } finally {
+      setIsUploading(false);
+      setCatalogUploadProgress({ kind: null, percent: 0 });
     }
   }
 
@@ -864,6 +894,7 @@ export default function Admin() {
   }
 
   const revenue = orders.reduce((sum, order) => sum + Number(order.total || 0), 0);
+  const averageOrderValue = orders.length > 0 ? revenue / orders.length : 0;
   const activeCategories = categories.filter((c) => c.active).length;
   const productCategories = categories.filter((c) => c.type === 'product').length;
   const serviceCategories = categories.filter((c) => c.type === 'service').length;
@@ -1297,34 +1328,40 @@ export default function Admin() {
 
   return (
     <div className="admin-layout">
-      <aside className="sidebar">
-        <h2>JayLuxe</h2>
-        <p className="admin-subtitle">Admin Dashboard</p>
+      <header className="admin-dashboard-nav-shell">
+        <a className="admin-dashboard-nav-brand" href="#admin" aria-label="JayLuxe Admin dashboard home">
+          <strong>JayLuxe</strong>
+          <small>Administration</small>
+        </a>
 
-        <a href="#admin"><LayoutDashboard size={17} aria-hidden="true" /> Dashboard</a>
-        {can('orders') ? <a href="#orders"><ClipboardList size={17} aria-hidden="true" /> Orders</a> : null}
-        {can('customers') ? <a href="#customers"><UsersRound size={17} aria-hidden="true" /> Customers</a> : null}
-        {can('products') ? <a href="#products"><Boxes size={17} aria-hidden="true" /> Products &amp; Services</a> : null}
-        {can('categories') ? <a href="#categories"><Layers3 size={17} aria-hidden="true" /> Categories</a> : null}
-        {can('products') ? <a href="#inventory"><BarChart3 size={17} aria-hidden="true" /> Inventory</a> : null}
-        {can('promotions') ? <a href="#coupons"><TicketPercent size={17} aria-hidden="true" /> Promotions &amp; Coupons</a> : null}
-        {can('bookings') ? <a href="#bookings"><CalendarDays size={17} aria-hidden="true" /> Bookings</a> : null}
-        {can('testimonials') ? <a href="#testimonials-form"><MessageCircle size={17} aria-hidden="true" /> Testimonials</a> : null}
-        {can('content') ? <a href="#transformations-form"><Images size={17} aria-hidden="true" /> Before &amp; After</a> : null}
-        {can('settings') ? <a href="#settings"><Settings size={17} aria-hidden="true" /> Store Settings</a> : null}
-        {can('reports') ? <Link href="/admin/reports"><BarChart3 size={17} aria-hidden="true" /> Financial Reports</Link> : null}
-        {adminUser?.role === 'super_admin' ? <Link href="/admin/users"><UserCog size={17} aria-hidden="true" /> Admin &amp; Staff</Link> : null}
-        {can('activity') ? <Link href="/admin/activity"><Activity size={17} aria-hidden="true" /> Activity Log</Link> : null}
-        {can('orders') ? <a href="#contact-messages"><Mail size={17} aria-hidden="true" /> Contact Messages</a> : null}
-        {can('orders') ? <a href="#sms-logs"><Smartphone size={17} aria-hidden="true" /> SMS Logs</a> : null}
+        <nav className="admin-dashboard-nav" aria-label="Administrator dashboard navigation">
+          <a href="#admin"><LayoutDashboard size={16} aria-hidden="true" /> Dashboard</a>
+          {can('orders') ? <a href="#orders"><ClipboardList size={16} aria-hidden="true" /> Orders</a> : null}
+          {can('customers') ? <a href="#customers"><UsersRound size={16} aria-hidden="true" /> Customers</a> : null}
+          {can('products') ? <a href="#products"><Boxes size={16} aria-hidden="true" /> Products</a> : null}
+          {can('categories') ? <a href="#categories"><Layers3 size={16} aria-hidden="true" /> Categories</a> : null}
+          {can('products') ? <a href="#inventory"><BarChart3 size={16} aria-hidden="true" /> Inventory</a> : null}
+          {can('promotions') ? <a href="#coupons"><TicketPercent size={16} aria-hidden="true" /> Promotions</a> : null}
+          {can('bookings') ? <a href="#bookings"><CalendarDays size={16} aria-hidden="true" /> Bookings</a> : null}
+          {can('testimonials') ? <a href="#testimonials-form"><MessageCircle size={16} aria-hidden="true" /> Testimonials</a> : null}
+          {can('content') ? <a href="#transformations-form"><Images size={16} aria-hidden="true" /> Before &amp; After</a> : null}
+          {can('settings') ? <a href="#settings"><Settings size={16} aria-hidden="true" /> Settings</a> : null}
+          {can('reports') ? <Link href="/admin/reports"><BarChart3 size={16} aria-hidden="true" /> Reports</Link> : null}
+          {adminUser?.role === 'super_admin' ? <Link href="/admin/users"><UserCog size={16} aria-hidden="true" /> Admin &amp; Staff</Link> : null}
+          {can('activity') ? <Link href="/admin/activity"><Activity size={16} aria-hidden="true" /> Activity</Link> : null}
+          {can('orders') ? <a href="#contact-messages"><Mail size={16} aria-hidden="true" /> Messages</a> : null}
+          {can('orders') ? <a href="#sms-logs"><Smartphone size={16} aria-hidden="true" /> SMS</a> : null}
+        </nav>
+
         <button
           type="button"
-          className="admin-sidebar-logout"
+          className="admin-dashboard-nav-logout"
           onClick={handleAdminLogout}
+          aria-label="Log out of JayLuxe administration"
         >
-          <LogOut size={17} aria-hidden="true" /> Logout
+          <LogOut size={16} aria-hidden="true" /> <span>Logout</span>
         </button>
-      </aside>
+      </header>
 
       <main className="admin-content">
         <div className="admin-mobile-actionbar" aria-label="Admin mobile quick actions">
@@ -1352,23 +1389,30 @@ export default function Admin() {
           
         </div>
 
-        <div className="stats-grid admin-dashboard-metrics" aria-label="Store overview metrics">
+        <div className="stats-grid admin-dashboard-metrics" aria-label="Primary financial metrics">
           <motion.article initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.22 }} className="stat-card dark admin-metric-card">
-            <span className="admin-metric-icon"><BadgeDollarSign size={20} aria-hidden="true" /></span>
+            <span className="admin-metric-icon"><BadgeDollarSign size={19} aria-hidden="true" /></span>
             <div><h3>Total Revenue</h3><h1>{money(revenue)}</h1><p>Verified order value</p></div>
           </motion.article>
           <motion.article initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.22, delay: 0.04 }} className="stat-card admin-metric-card">
-            <span className="admin-metric-icon"><ShoppingBag size={20} aria-hidden="true" /></span>
+            <span className="admin-metric-icon"><ShoppingBag size={19} aria-hidden="true" /></span>
             <div><h3>Total Orders</h3><h1>{orders.length}</h1><p>All recorded orders</p></div>
           </motion.article>
           <motion.article initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.22, delay: 0.08 }} className="stat-card admin-metric-card">
-            <span className="admin-metric-icon"><Package2 size={20} aria-hidden="true" /></span>
-            <div><h3>Products</h3><h1>{products.length}</h1><p>Products and services</p></div>
+            <span className="admin-metric-icon"><BarChart3 size={19} aria-hidden="true" /></span>
+            <div><h3>Average Order Value</h3><h1>{money(averageOrderValue)}</h1><p>Revenue per recorded order</p></div>
           </motion.article>
-          <motion.article initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.22, delay: 0.12 }} className="stat-card admin-metric-card">
-            <span className="admin-metric-icon"><UsersRound size={20} aria-hidden="true" /></span>
-            <div><h3>Customers</h3><h1>{customers.length}</h1><p>Known customer profiles</p></div>
-          </motion.article>
+        </div>
+
+        <div className="admin-operational-metrics" aria-label="Operational metrics">
+          <article>
+            <span><Package2 size={17} aria-hidden="true" /></span>
+            <div><small>Products &amp; Services</small><strong>{products.length}</strong></div>
+          </article>
+          <article>
+            <span><UsersRound size={17} aria-hidden="true" /></span>
+            <div><small>Customers</small><strong>{customers.length}</strong></div>
+          </article>
         </div>
 
         {adminUser?.role === 'super_admin' ? (
@@ -1376,19 +1420,22 @@ export default function Admin() {
             <div className="admin-section-title">
               <div>
                 <h2 id="admin-team-overview-title">Admin &amp; Staff Overview</h2>
-                <p>Compact access overview for the JayLuxe administration team.</p>
+                <p>Access, staffing and user management in one compact view.</p>
               </div>
-              <Link className="btn" href="/admin/users">Manage Users</Link>
             </div>
             <div className="admin-team-grid">
               <article className="admin-team-card">
-                <span><ShieldCheck size={21} aria-hidden="true" /></span>
-                <div><small>Admins</small><strong>{adminUserStats.superAdmins + adminUserStats.admins}</strong><p>{adminUserStats.superAdmins} super admin{adminUserStats.superAdmins === 1 ? '' : 's'} · {adminUserStats.admins} admin{adminUserStats.admins === 1 ? '' : 's'}</p></div>
+                <span><ShieldCheck size={20} aria-hidden="true" /></span>
+                <div><small>Admin Overview</small><strong>{adminUserStats.superAdmins + adminUserStats.admins}</strong><p>{adminUserStats.superAdmins} super admin{adminUserStats.superAdmins === 1 ? '' : 's'} · {adminUserStats.admins} admin{adminUserStats.admins === 1 ? '' : 's'}</p></div>
               </article>
               <article className="admin-team-card">
-                <span><UserCog size={21} aria-hidden="true" /></span>
-                <div><small>Staff</small><strong>{adminUserStats.staffMembers}</strong><p>{adminUserStats.disabledUsers} disabled account{adminUserStats.disabledUsers === 1 ? '' : 's'}</p></div>
+                <span><UserCog size={20} aria-hidden="true" /></span>
+                <div><small>Staff Overview</small><strong>{adminUserStats.staffMembers}</strong><p>{adminUserStats.disabledUsers} disabled account{adminUserStats.disabledUsers === 1 ? '' : 's'}</p></div>
               </article>
+              <Link className="admin-team-card admin-team-action-card" href="/admin/users">
+                <span><UsersRound size={20} aria-hidden="true" /></span>
+                <div><small>Manage Users</small><strong>Open</strong><p>Add, edit, disable and review administrator or staff access.</p></div>
+              </Link>
             </div>
           </section>
         ) : null}
@@ -1665,6 +1712,7 @@ export default function Admin() {
             <div className="category-upload-box">
               <label>Category Image</label>
               <input type="file" accept="image/jpeg,image/png,image/webp" disabled={isUploading} onChange={uploadCategoryImage} />
+              {catalogUploadProgress.kind === 'categories' ? <p className="admin-upload-status" role="status">Uploading image… {catalogUploadProgress.percent}%</p> : <p className="admin-upload-note">JPEG, PNG or WebP, up to 8 MB.</p>}
 
               {categoryForm.image && (
                 <img
@@ -1687,7 +1735,7 @@ export default function Admin() {
 
           <div style={{ display: 'flex', gap: 12, marginTop: 16 }}>
             <button className="btn" onClick={submitCategory} disabled={isUploading}>
-              {isUploading ? 'Uploading image...' : (categoryForm.id ? 'Update Category' : 'Save Category')}
+              {catalogUploadProgress.kind === 'categories' ? `Uploading image… ${catalogUploadProgress.percent}%` : (categoryForm.id ? 'Update Category' : 'Save Category')}
             </button>
 
             <button
@@ -2221,8 +2269,9 @@ export default function Admin() {
                 <label className="admin-field admin-field-wide"><span>Description</span><textarea className="input" rows={5} placeholder="Detailed product description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} /></label>
                 <div className="product-upload-box admin-field-wide">
                   <label>Product Image</label>
-                  <input type="file" accept="image/jpeg,image/png,image/webp" disabled={isUploading} onChange={async (e) => { const file = e.target.files?.[0]; if (!file) return; setIsUploading(true); try { const imageUrl = await uploadCatalogImage(file, 'products'); setForm((current) => ({ ...current, image: imageUrl })); showToast('Product image uploaded.', 'success'); } catch (error) { console.error('PRODUCT IMAGE UPLOAD ERROR:', error); showToast(error instanceof Error ? error.message : 'Product image upload failed.', 'error'); e.target.value = ''; } finally { setIsUploading(false); } }} />
-                  {form.image ? <img src={form.image} alt="Product preview" className="product-preview" /> : <p className="admin-upload-note">JPEG, PNG or WebP. The current Firebase Storage system is preserved.</p>}
+                  <input type="file" accept="image/jpeg,image/png,image/webp" disabled={isUploading} onChange={uploadProductImage} />
+                  {catalogUploadProgress.kind === 'products' ? <p className="admin-upload-status" role="status">Uploading image… {catalogUploadProgress.percent}%</p> : null}
+                  {form.image ? <img src={form.image} alt="Product preview" className="product-preview" /> : <p className="admin-upload-note">JPEG, PNG or WebP, up to 8 MB. Images are stored in Firebase Storage.</p>}
                 </div>
               </div>
             </fieldset>
@@ -2253,7 +2302,7 @@ export default function Admin() {
           </div>
 
           <div className="admin-form-actions">
-            <button className="btn" onClick={submitProduct} disabled={isUploading}>{isUploading ? 'Uploading image…' : form.id ? 'Update Product / Service' : 'Save Product / Service'}</button>
+            <button className="btn" onClick={submitProduct} disabled={isUploading}>{catalogUploadProgress.kind === 'products' ? `Uploading image… ${catalogUploadProgress.percent}%` : form.id ? 'Update Product / Service' : 'Save Product / Service'}</button>
             {form.id ? <button className="btn light" type="button" onClick={() => setForm(blankProduct)}>Cancel Edit</button> : null}
           </div>
         </section>

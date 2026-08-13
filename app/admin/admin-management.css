@@ -591,3 +591,238 @@
   .amu-pagination { align-items: stretch; flex-direction: column; }
   .amu-pagination > div .amu-button { flex: 1; }
 }
+
+/* 2026 compact admin typography and density alignment */
+.amu-topbar {
+  min-height: 64px;
+  gap: 14px;
+  padding-block: 8px;
+}
+
+.amu-brand > span:first-child {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+}
+
+.amu-brand strong,
+.amu-account strong {
+  font-size: .82rem;
+}
+
+.amu-brand small,
+.amu-account small {
+  margin-top: 2px;
+  font-size: .58rem;
+}
+
+.amu-nav {
+  gap: 4px;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-inline: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+.amu-nav a {
+  flex: 0 0 auto;
+  gap: 6px;
+  min-height: 36px;
+  padding: 7px 10px;
+  border-radius: 9px;
+  font-size: .72rem;
+  white-space: nowrap;
+}
+
+.amu-account button {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+}
+
+.amu-container {
+  padding: clamp(18px, 2.8vw, 32px) clamp(14px, 3vw, 36px) 64px;
+}
+
+.amu-heading {
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.amu-heading p {
+  margin-bottom: 5px;
+  font-size: .62rem;
+  letter-spacing: .11em;
+}
+
+.amu-heading h1 {
+  font-size: clamp(1.35rem, 2.2vw, 1.55rem);
+  line-height: 1.08;
+}
+
+.amu-heading span {
+  max-width: 720px;
+  margin-top: 7px;
+  font-size: .76rem;
+  line-height: 1.5;
+}
+
+.amu-button {
+  min-height: 36px;
+  padding: 7px 11px;
+  border-radius: 9px;
+  font-size: .72rem;
+}
+
+.amu-stats {
+  gap: 9px;
+  margin-bottom: 14px;
+}
+
+.amu-stat,
+.amu-card {
+  border-radius: 13px;
+}
+
+.amu-stat {
+  padding: 12px;
+}
+
+.amu-stat span {
+  font-size: .62rem;
+}
+
+.amu-stat strong {
+  margin-top: 5px;
+  font-size: 1.35rem;
+}
+
+.amu-card {
+  padding: clamp(13px, 1.8vw, 18px);
+}
+
+.amu-toolbar {
+  gap: 9px;
+  margin-bottom: 13px;
+}
+
+.amu-field {
+  gap: 5px;
+}
+
+.amu-field label {
+  font-size: .62rem;
+}
+
+.amu-field input,
+.amu-field select,
+.amu-field textarea {
+  min-height: 40px;
+  padding: 8px 10px;
+  border-radius: 9px;
+  font-size: .78rem;
+}
+
+.amu-table-wrap {
+  border-radius: 11px;
+}
+
+.amu-table th,
+.amu-table td {
+  padding: 9px 10px;
+}
+
+.amu-table th {
+  font-size: .61rem;
+}
+
+.amu-table td {
+  font-size: .74rem;
+}
+
+.amu-badge {
+  padding: 5px 8px;
+  font-size: .64rem;
+}
+
+.amu-icon-button {
+  min-height: 32px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  font-size: .66rem;
+}
+
+.amu-pagination {
+  gap: 10px;
+  margin-top: 12px;
+  font-size: .72rem;
+}
+
+.amu-modal {
+  border-radius: 16px;
+}
+
+.amu-modal-header,
+.amu-modal-footer {
+  gap: 12px;
+  padding: 14px 16px;
+}
+
+.amu-modal-header h2 {
+  font-size: 1.15rem;
+}
+
+.amu-modal-body {
+  padding: 16px;
+}
+
+.amu-form-grid {
+  gap: 10px;
+}
+
+.amu-message {
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  font-size: .74rem;
+}
+
+.amu-empty {
+  padding: 28px 16px;
+  font-size: .76rem;
+}
+
+@media (max-width: 1120px) {
+  .amu-topbar {
+    grid-template-columns: auto 1fr;
+  }
+
+  .amu-nav {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-content: flex-start;
+    width: 100%;
+    padding-bottom: 3px;
+  }
+}
+
+@media (max-width: 720px) {
+  .amu-topbar {
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+    padding-inline: 12px;
+  }
+
+  .amu-account > span {
+    display: none;
+  }
+
+  .amu-heading {
+    gap: 10px;
+  }
+
+  .amu-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

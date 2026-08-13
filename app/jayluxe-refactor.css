@@ -587,7 +587,7 @@ body.jl-remove-hero-images .jl-main-content :is(
 @media (max-width: 760px) {
   .jj-home > section:not(.jj-hero):not(.jj-trust) {
     width: min(calc(100% - 24px), var(--jl-content));
-    margin-top: 56px;
+    margin-top: 36px;
   }
 
   .jj-hero {
@@ -614,8 +614,6 @@ body.jl-remove-hero-images .jl-main-content :is(
 }
 
 @media (max-width: 420px) {
-  .jj-category-grid,
-  .jj-product-grid,
   .jj-bridal-grid,
   .jj-transformations-grid,
   .jj-testimonials-grid {
