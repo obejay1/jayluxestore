@@ -9726,4 +9726,8 @@ body {
   --jl-type-card: clamp(.86rem, 1.25vw, 1rem);
   --jl-type-body: clamp(.78rem, 1vw, .92rem);
   --jl-type-meta: clamp(.68rem, .85vw, .78rem);
+  --jl-hero-functional-min: clamp(170px, 22vw, 240px);
+  --jl-hero-marketing-min: clamp(280px, 36vw, 420px);
+  --jl-hero-pad: clamp(28px, 4.5vw, 48px);
+  --jl-panel-pad: clamp(14px, 2vw, 20px);
 }

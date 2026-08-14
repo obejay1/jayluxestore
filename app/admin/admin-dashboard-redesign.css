@@ -958,3 +958,46 @@
     max-height: 170px !important;
   }
 }
+
+
+/* =========================================================
+   JAYLUXE ADMIN DENSITY AUTHORITY
+   Final compact SaaS density without altering admin logic.
+========================================================= */
+.admin-content {
+  padding-bottom: 40px !important;
+}
+
+.admin-content :is(.btn, button:not(.admin-dashboard-nav-logout), input:not([type="checkbox"]):not([type="radio"]), select) {
+  min-height: 40px;
+}
+
+.admin-content :is(.table-card, .stat-card, .admin-team-overview, .settings-card, .form-card) {
+  border-radius: 12px !important;
+}
+
+.admin-content :is(.table-card, .admin-team-overview, .settings-card, .form-card) {
+  padding: clamp(12px, 1.6vw, 18px) !important;
+}
+
+.admin-content :is(.grid, .stats-grid, .admin-dashboard-metrics, .admin-team-grid, .admin-operational-metrics) {
+  gap: 10px !important;
+}
+
+@media (max-width: 700px) {
+  .admin-content {
+    padding: 12px 10px 32px !important;
+  }
+
+  .admin-content .topbar {
+    padding: 10px 12px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .admin-content .table-card,
+  .admin-content .admin-team-overview,
+  .admin-content .settings-card,
+  .admin-content .form-card {
+    padding: 12px !important;
+  }
+}

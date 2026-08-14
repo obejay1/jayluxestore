@@ -492,7 +492,7 @@
 .jl-bridal-booking-shell {
   width: min(calc(100% - 32px), 1180px);
   margin: 0 auto;
-  padding: clamp(34px, 5vw, 68px) 0 clamp(70px, 8vw, 110px);
+  padding: var(--jl-section-space) 0;
 }
 
 .jl-bridal-booking-shell .jl-bridal-booking-back {
@@ -1959,5 +1959,442 @@
   .jl-policy-content > section,
   .jl-policy-help {
     padding: 12px !important;
+  }
+}
+
+/* =========================================================
+   JAYLUXE GLOBAL DENSITY AUTHORITY
+   Final shared UI rhythm for storefront, customer and
+   editorial routes. Imported last; business logic untouched.
+========================================================= */
+
+/* Bounded page content: prevent desktop stretch without changing route data. */
+:is(
+  .jj-products,
+  .jj-categories,
+  .jj-transformations,
+  .jj-testimonials,
+  .jj-services,
+  .jj-contact,
+  .jl-shop-toolbar,
+  .jl-shop-section,
+  .jl-product-wrap,
+  .jl-product-tabs,
+  .jl-related-products,
+  .wishlist-content,
+  .jl-cart-layout,
+  .jl-account-content,
+  .jl-order-container,
+  .jl-gallery-section,
+  .jl-services-list-section,
+  .jl-contact-layout,
+  .jl-about-story,
+  .jl-category-page-grid,
+  .jl-policy-layout
+) {
+  max-width: var(--jl-content-max) !important;
+}
+
+/* Functional heroes: short, informative, no viewport-sized dead space. */
+:is(
+  .wishlist-hero,
+  .jl-account-hero,
+  .jl-cart-hero,
+  .jl-checkout-hero,
+  .jl-order-hero,
+  .jl-policy-hero
+) {
+  min-height: var(--jl-hero-functional-min) !important;
+  padding-block: var(--jl-hero-pad) !important;
+  padding-inline: var(--jl-content-gutter) !important;
+}
+
+/* Marketing/editorial heroes retain visual presence, but stay restrained. */
+:is(
+  .jj-hero,
+  .jl-shop-hero,
+  .jl-services-hero,
+  .jl-gallery-hero,
+  .jl-editorial-hero,
+  .jl-bridal-booking-hero
+) {
+  min-height: var(--jl-hero-marketing-min) !important;
+}
+
+:is(
+  .jj-hero-content,
+  .jl-shop-hero-content,
+  .jl-services-hero-content,
+  .jl-gallery-hero-content,
+  .jl-editorial-hero,
+  .jl-bridal-booking-hero
+) {
+  padding-top: var(--jl-hero-pad) !important;
+  padding-bottom: var(--jl-hero-pad) !important;
+}
+
+:is(
+  .jj-hero-content h1,
+  .jl-shop-hero h1,
+  .jl-services-hero h1,
+  .jl-gallery-hero h1,
+  .jl-editorial-hero h1,
+  .jl-bridal-booking-hero h1
+) {
+  font-size: clamp(2.15rem, 5.1vw, 4.35rem) !important;
+  line-height: 1 !important;
+  margin-top: var(--jl-space-3) !important;
+  margin-bottom: var(--jl-space-3) !important;
+}
+
+:is(
+  .wishlist-hero h1,
+  .jl-account-hero h1,
+  .jl-cart-hero h1,
+  .jl-checkout-hero h1,
+  .jl-order-hero h1,
+  .jl-policy-hero h1
+) {
+  font-size: clamp(1.8rem, 4vw, 3rem) !important;
+  line-height: 1.05 !important;
+  margin-block: var(--jl-space-2) !important;
+}
+
+:is(
+  .jj-hero-content p,
+  .jl-shop-hero p,
+  .jl-services-hero p,
+  .jl-gallery-hero p,
+  .jl-editorial-hero p,
+  .jl-bridal-booking-hero p,
+  .wishlist-hero p,
+  .jl-account-hero p,
+  .jl-cart-hero p,
+  .jl-checkout-hero p
+) {
+  font-size: clamp(.82rem, 1.2vw, .96rem) !important;
+  line-height: 1.55 !important;
+}
+
+/* Natural section rhythm across major route families. */
+:is(
+  .jj-products,
+  .jj-categories,
+  .jj-transformations,
+  .jj-testimonials,
+  .jj-services,
+  .jj-contact,
+  .jl-shop-section,
+  .jl-related-products,
+  .wishlist-content,
+  .jl-account-content,
+  .jl-order-container,
+  .jl-gallery-section,
+  .jl-services-list-section,
+  .jl-booking-section,
+  .jl-about-story,
+  .jl-contact-layout,
+  .jl-category-page-grid,
+  .jl-bridal-intro,
+  .jl-bridal-packages,
+  .jl-bridal-showcase,
+  .jl-bridal-compare,
+  .jl-bridal-faq,
+  .jl-bridal-final-cta,
+  .jl-bridal-booking-wrap,
+  .jl-policy-layout
+) {
+  padding-top: var(--jl-section-space) !important;
+  padding-bottom: var(--jl-section-space) !important;
+}
+
+/* Remove legacy overlap tricks from common commerce surfaces. */
+.jl-shop-toolbar,
+.jl-cart-layout,
+.jl-checkout-layout {
+  margin-top: var(--jl-space-5) !important;
+}
+
+/* Shared compact panels/cards. */
+:is(
+  .jl-cart-items-card,
+  .jl-cart-summary-card,
+  .jl-form-card,
+  .jl-auth-card,
+  .jl-contact-details,
+  .jl-contact-form,
+  .jl-contact-info-card,
+  .jl-booking-summary,
+  .jl-booking-form,
+  .jl-order-history-item,
+  .jl-order-info-card,
+  .jl-order-summary,
+  .jl-policy-content > section,
+  .jl-policy-help,
+  .wishlist-empty
+) {
+  padding: var(--jl-panel-pad) !important;
+  border-radius: var(--jl-compact-radius) !important;
+}
+
+:is(
+  .jl-cart-items-list,
+  .jl-summary-items,
+  .jl-account-overview,
+  .jl-order-history,
+  .jl-contact-info-grid,
+  .jl-contact-form-grid,
+  .jl-booking-form,
+  .jl-gallery-grid,
+  .jl-services-grid,
+  .jl-services-featured-grid,
+  .jl-category-page-grid,
+  .jl-product-grid,
+  .jl-related-grid,
+  .jj-product-grid,
+  .jj-category-grid
+) {
+  gap: clamp(8px, 1.5vw, 16px) !important;
+}
+
+/* Inputs and actions: compact but retain practical touch targets. */
+:is(
+  .jl-auth-form input,
+  .jl-auth-input,
+  .jl-form-group input,
+  .jl-form-group select,
+  .jl-contact-form input,
+  .jl-contact-form select,
+  .jl-booking-form input,
+  .jl-booking-form select,
+  .jl-shop-search-panel input,
+  .jl-services-search input,
+  .jl-gallery-search input
+) {
+  min-height: var(--jl-control-h) !important;
+  padding: 8px 11px !important;
+  font-size: var(--jl-type-body) !important;
+}
+
+:is(
+  .jl-auth-form textarea,
+  .jl-form-group textarea,
+  .jl-contact-form textarea,
+  .jl-booking-form textarea
+) {
+  min-height: 84px !important;
+  padding: 9px 11px !important;
+}
+
+:is(
+  .jj-btn,
+  .jl-services-btn,
+  .jl-gallery-btn,
+  .jl-cart-checkout-button,
+  .jl-auth-submit,
+  .jl-place-order-btn,
+  .wishlist-add-all,
+  .wishlist-shop-link,
+  .jl-pagination button
+) {
+  min-height: var(--jl-control-h) !important;
+  padding: 8px 13px !important;
+  font-size: .76rem !important;
+}
+
+/* Product detail density without reducing image clarity. */
+.jl-product-wrap {
+  gap: clamp(18px, 3vw, 32px) !important;
+  padding-top: var(--jl-section-space) !important;
+  padding-bottom: var(--jl-section-space) !important;
+}
+
+.jl-product-info {
+  gap: var(--jl-space-3) !important;
+}
+
+.jl-product-tab-buttons button {
+  padding: 12px 16px !important;
+}
+
+.jl-product-tab-content {
+  min-height: 0 !important;
+  padding: var(--jl-panel-pad) !important;
+  line-height: 1.6 !important;
+}
+
+.jl-related-head {
+  margin-bottom: var(--jl-space-4) !important;
+}
+
+/* Account/order/wishlist states should size to content rather than mimic full pages. */
+:is(
+  .wishlist-empty,
+  .jl-cart-state,
+  .jl-account-empty-orders,
+  .jl-product-not-found
+) {
+  min-height: 220px !important;
+  padding: var(--jl-space-5) !important;
+}
+
+/* Auth: desktop remains split-screen, but inner content is materially denser. */
+.jl-auth-aside {
+  padding: clamp(28px, 5vw, 56px) !important;
+}
+
+.jl-auth-card {
+  padding: clamp(18px, 3vw, 26px) !important;
+}
+
+.jl-auth-card h2 {
+  font-size: clamp(1.65rem, 3vw, 2.1rem) !important;
+}
+
+.jl-auth-intro,
+.jl-auth-switch {
+  margin-bottom: var(--jl-space-4) !important;
+}
+
+/* Header/footer density. */
+.jl-header-main {
+  min-height: 56px !important;
+  padding-block: 6px !important;
+}
+
+.global-footer-shell {
+  padding-top: var(--jl-section-space) !important;
+}
+
+.global-footer-grid {
+  padding-top: 0 !important;
+  padding-bottom: var(--jl-space-5) !important;
+  gap: clamp(16px, 2.5vw, 28px) !important;
+}
+
+/* Mobile-specific density: keep required two-column systems and natural flow. */
+@media (max-width: 700px) {
+  :is(
+    .jj-hero,
+    .jl-shop-hero,
+    .jl-services-hero,
+    .jl-gallery-hero,
+    .jl-editorial-hero,
+    .jl-bridal-booking-hero
+  ) {
+    min-height: clamp(230px, 68vw, 310px) !important;
+  }
+
+  :is(
+    .wishlist-hero,
+    .jl-account-hero,
+    .jl-cart-hero,
+    .jl-checkout-hero,
+    .jl-order-hero,
+    .jl-policy-hero
+  ) {
+    min-height: 0 !important;
+    padding: 26px 14px !important;
+  }
+
+  :is(
+    .jj-products,
+    .jj-categories,
+    .jj-transformations,
+    .jj-testimonials,
+    .jj-services,
+    .jj-contact,
+    .jl-shop-section,
+    .jl-related-products,
+    .wishlist-content,
+    .jl-account-content,
+    .jl-order-container,
+    .jl-gallery-section,
+    .jl-services-list-section,
+    .jl-booking-section,
+    .jl-about-story,
+    .jl-contact-layout,
+    .jl-category-page-grid,
+    .jl-policy-layout
+  ) {
+    width: min(calc(100% - 24px), var(--jl-content-max)) !important;
+    padding-top: clamp(22px, 6vw, 30px) !important;
+    padding-bottom: clamp(22px, 6vw, 30px) !important;
+  }
+
+  .jl-account-overview,
+  .jj-product-grid,
+  .jj-category-grid,
+  .jl-shop-grid,
+  .wishlist-grid,
+  .jl-gallery-grid,
+  .jl-category-page-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  :is(
+    .jl-cart-items-card,
+    .jl-cart-summary-card,
+    .jl-form-card,
+    .jl-auth-card,
+    .jl-contact-details,
+    .jl-contact-form,
+    .jl-contact-info-card,
+    .jl-booking-summary,
+    .jl-booking-form,
+    .jl-order-history-item,
+    .jl-order-info-card,
+    .jl-order-summary,
+    .jl-policy-content > section,
+    .jl-policy-help,
+    .wishlist-empty
+  ) {
+    padding: 12px !important;
+  }
+
+  .jl-auth-page {
+    min-height: 0 !important;
+  }
+
+  .jl-auth-aside {
+    min-height: 240px !important;
+    padding: 28px 16px !important;
+  }
+
+  .jl-auth-panel {
+    padding: 18px 12px 28px !important;
+  }
+
+  .global-footer-shell {
+    padding-top: 26px !important;
+  }
+}
+
+@media (max-width: 340px) {
+  .jl-account-overview,
+  .jj-product-grid,
+  .jj-category-grid,
+  .jl-shop-grid,
+  .wishlist-grid,
+  .jl-gallery-grid,
+  .jl-category-page-grid {
+    gap: 7px !important;
+  }
+}
+
+/* Compact system/account state surfaces that do not use the ordinary card classes. */
+:is(.jl-account-state, .jl-system-page) {
+  min-height: 220px !important;
+  margin: var(--jl-section-space) auto !important;
+  padding: var(--jl-space-5) !important;
+  border-radius: var(--jl-compact-radius) !important;
+}
+
+@media (max-width: 700px) {
+  :is(.jl-account-state, .jl-system-page) {
+    width: min(calc(100% - 24px), 720px) !important;
+    min-height: 180px !important;
+    margin: 24px auto !important;
+    padding: 18px 14px !important;
   }
 }

@@ -1,7 +1,7 @@
 .shell {
   min-width: 0;
   width: 100%;
-  min-height: 100vh;
+  min-height: 0;
   background: #f6f4ef;
   color: #1f1b16;
 }
@@ -15,7 +15,7 @@
   justify-content: space-between;
   gap: 16px;
   min-width: 0;
-  padding: 18px clamp(14px, 3vw, 32px);
+  padding: 12px clamp(12px, 2.5vw, 24px);
   border-bottom: 1px solid rgba(63, 48, 27, 0.1);
   background: rgba(255, 253, 249, 0.96);
 }
@@ -39,17 +39,17 @@
   width: min(1500px, 100%);
   min-width: 0;
   margin: 0 auto;
-  padding: clamp(16px, 2.6vw, 32px);
+  padding: clamp(12px, 2vw, 22px);
 }
 
 .toolbar {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 18px;
+  gap: 12px;
   min-width: 0;
-  margin-bottom: 22px;
-  padding: 18px;
+  margin-bottom: 16px;
+  padding: 14px;
   border: 1px solid rgba(63, 48, 27, 0.1);
   border-radius: 18px;
   background: #fffdfa;
@@ -83,7 +83,7 @@
 .field input {
   width: 100%;
   min-width: 0;
-  min-height: 44px;
+  min-height: 40px;
   padding: 10px 12px;
   border: 1px solid #d8d0c4;
   border-radius: 11px;
@@ -94,7 +94,7 @@
 }
 
 .exportButton {
-  min-height: 44px;
+  min-height: 40px;
   padding: 10px 14px;
   border: 1px solid #282119;
   border-radius: 11px;
@@ -111,9 +111,9 @@
 .statsGrid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 14px;
+  gap: 10px;
   min-width: 0;
-  margin-bottom: 22px;
+  margin-bottom: 16px;
 }
 
 .statCard,

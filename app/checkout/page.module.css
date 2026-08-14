@@ -4,7 +4,7 @@
   min-height: 100vh;
   overflow-x: hidden;
   padding-bottom:
-    calc(100px + env(safe-area-inset-bottom));
+    calc(48px + env(safe-area-inset-bottom));
   background: #f7f4ee;
   color: #181511;
 }
@@ -14,8 +14,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 320px;
-  padding: 72px 24px 100px;
+  min-height: 220px;
+  padding: 36px 20px;
   background:
     radial-gradient(
       circle at top left,
@@ -44,7 +44,7 @@
   margin: 0;
   color: #ffffff;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(2.8rem, 7vw, 5.5rem);
+  font-size: clamp(2rem, 5vw, 3.6rem);
   font-weight: 500;
   line-height: 0.98;
   letter-spacing: -0.045em;
@@ -52,7 +52,7 @@
 
 .hero p {
   max-width: 650px;
-  margin: 20px auto 0;
+  margin: 12px auto 0;
   color: rgba(255, 255, 255, 0.76);
   font-size: clamp(0.96rem, 1.7vw, 1.08rem);
   line-height: 1.75;
@@ -64,14 +64,14 @@
     minmax(0, 1.35fr)
     minmax(340px, 0.8fr);
   align-items: start;
-  gap: 24px;
+  gap: 18px;
   width: min(calc(100% - 40px), 1240px);
-  margin: -58px auto 100px;
+  margin: 24px auto 40px;
 }
 
 .mainColumn {
   display: grid;
-  gap: 22px;
+  gap: 16px;
   min-width: 0;
 }
 
@@ -87,12 +87,12 @@
 }
 
 .card {
-  padding: clamp(24px, 4vw, 42px);
+  padding: clamp(16px, 2.4vw, 22px);
 }
 
 .cardHeading,
 .summaryHeading {
-  margin-bottom: 28px;
+  margin-bottom: 16px;
 }
 
 .cardHeading > span,
@@ -111,7 +111,7 @@
   margin: 0;
   color: #1b1814;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(2rem, 3.4vw, 3rem);
+  font-size: clamp(1.35rem, 2.4vw, 2rem);
   font-weight: 500;
   line-height: 1.08;
   letter-spacing: -0.035em;
@@ -121,7 +121,7 @@
   display: grid;
   grid-template-columns:
     repeat(2, minmax(0, 1fr));
-  gap: 20px;
+  gap: 12px;
 }
 
 .formGroup {
@@ -149,7 +149,7 @@
   display: block;
   width: 100%;
   min-width: 0;
-  min-height: 54px;
+  min-height: 42px;
   margin: 0;
   padding: 0 16px;
   border: 1px solid #ded8ce;
@@ -194,9 +194,9 @@
   justify-content: center;
   width: 100%;
   min-width: 0;
-  min-height: 122px;
+  min-height: 94px;
   margin: 0;
-  padding: 18px;
+  padding: 14px;
   overflow: hidden;
   border: 1px solid #ded8ce;
   border-radius: 15px;
@@ -320,7 +320,7 @@
 .summary {
   position: sticky;
   top: 100px;
-  padding: clamp(24px, 3.5vw, 34px);
+  padding: clamp(16px, 2.4vw, 22px);
 }
 
 .summaryItems {
@@ -345,7 +345,7 @@
 .summaryImageWrap {
   position: relative;
   width: 72px;
-  height: 72px;
+  height: 60px;
   overflow: hidden;
   border-radius: 12px;
   background: #f0ebe3;
@@ -502,7 +502,7 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-  min-height: 56px;
+  min-height: 44px;
   margin-top: 22px;
   padding: 14px 20px;
   border: 1px solid #1d1915;
@@ -600,8 +600,8 @@
 
 @media (max-width: 640px) {
   .hero {
-    min-height: 270px;
-    padding: 56px 18px 82px;
+    min-height: 0;
+    padding: 30px 16px;
   }
 
   .hero h1 {
@@ -616,7 +616,7 @@
   .layout {
     width: calc(100% - 24px);
     margin-top: -42px;
-    margin-bottom: 80px;
+    margin-bottom: 40px;
     gap: 16px;
   }
 
@@ -626,11 +626,11 @@
   }
 
   .card {
-    padding: 22px 18px;
+    padding: 16px 14px;
   }
 
   .summary {
-    padding: 22px 18px;
+    padding: 16px 14px;
   }
 
   .cardHeading,
@@ -654,7 +654,7 @@
   }
 
   .formGroup input {
-    min-height: 52px;
+    min-height: 42px;
   }
 
   /* Keep Paystack and OPay beside one another. */
@@ -665,7 +665,7 @@
   }
 
   .paymentOption {
-    min-height: 126px;
+    min-height: 92px;
     padding: 13px;
   }
 
@@ -734,7 +734,7 @@
   }
 
   .paymentOption {
-    min-height: 132px;
+    min-height: 96px;
     padding: 11px;
   }
 
@@ -789,7 +789,7 @@
   .layout {
     width: calc(100% - 32px);
     max-width: 620px;
-    margin: 18px auto 72px;
+    margin: 16px auto 40px;
     gap: 18px;
   }
 
@@ -809,7 +809,7 @@
   .card,
   .summary {
     width: 100%;
-    padding: 22px 18px;
+    padding: 16px 14px;
   }
 
   .formGroup input,
