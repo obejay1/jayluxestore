@@ -18,12 +18,17 @@ service firebase.storage {
     function isAllowedImage() {
       return request.resource == null || (
         request.resource.contentType != null
-        && request.resource.contentType.matches('image/(jpeg|png|webp)')
+        && request.resource.contentType.matches('image/(jpeg|png|webp|gif)')
         && request.resource.size <= 8 * 1024 * 1024
       );
     }
 
     match /products/{fileName} {
+      allow read: if true;
+      allow write: if hasPermission('products') && isAllowedImage();
+    }
+
+    match /services/{fileName} {
       allow read: if true;
       allow write: if hasPermission('products') && isAllowedImage();
     }
@@ -44,6 +49,11 @@ service firebase.storage {
     }
 
     match /transformations/{allPaths=**} {
+      allow read: if true;
+      allow write: if hasPermission('content') && isAllowedImage();
+    }
+
+    match /bridal-gallery/{fileName} {
       allow read: if true;
       allow write: if hasPermission('content') && isAllowedImage();
     }

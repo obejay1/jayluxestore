@@ -22,6 +22,7 @@ import {
   Mail,
   Package,
   Printer,
+  RefreshCw,
   ShoppingCart,
   CheckCircle2,
   Circle,
@@ -779,8 +780,10 @@ export default function AccountPage() {
                   type="button"
                   onClick={() => firebaseUser.email && void loadCustomerOrders(firebaseUser.email)}
                   disabled={ordersLoading}
+                  aria-label="Refresh order history"
                 >
-                  Refresh orders
+                  <RefreshCw size={14} aria-hidden="true" />
+                  Refresh
                 </button>
               </div>
 

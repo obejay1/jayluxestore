@@ -1,8 +1,6 @@
 'use client';
 
-import { initializeApp, getApps } from 'firebase/app';
 import {
-  getFirestore,
   collection,
   getDocs,
   setDoc,
@@ -14,6 +12,7 @@ import {
 } from 'firebase/firestore';
 
 import { Product, Order, Session, Category } from './types';
+import { db } from './firebase';
 import { seedProducts } from './seed';
 
 export const defaultCategories: Category[] = [
@@ -95,20 +94,6 @@ export const defaultCategories: Category[] = [
     active: true,
   },
 ];
-
-const cfg = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
-};
-
-const hasFirebase = !!cfg.apiKey && !!cfg.projectId;
-const app = hasFirebase && !getApps().length ? initializeApp(cfg) : getApps()[0];
-const db = app ? getFirestore(app) : null;
 
 export const money = (n: number) => '₦' + Number(n || 0).toLocaleString('en-NG');
 

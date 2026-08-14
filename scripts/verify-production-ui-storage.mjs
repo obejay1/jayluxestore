@@ -9,7 +9,9 @@ const expect = (condition, message) => { if (!condition) failures.push(message);
 const globals = read('app/globals.css');
 const cardSystem = read('app/jayluxe-card-system.css');
 const layout = read('app/layout.tsx');
-const uploader = read('lib/catalogImages.ts');
+const catalogWrapper = read('lib/catalogImages.ts');
+const uploader = read('lib/adminImageUpload.ts');
+const adminImageUpload = read('components/admin/AdminImageUpload.tsx');
 const firebaseClient = read('lib/firebase.ts');
 const adminPage = read('app/admin/(protected)/page.tsx');
 const rules = read('storage.rules');
@@ -32,19 +34,20 @@ expect(firebaseClient.includes('normalizeStorageBucket'), 'Firebase client must 
 expect(firebaseClient.includes('gs:\\/\\/'), 'Firebase client must strip a gs:// prefix from the configured bucket');
 expect(uploader.includes('uploadBytesResumable'), 'Catalog uploader must use uploadBytesResumable');
 expect(uploader.includes('getDownloadURL'), 'Catalog uploader must use getDownloadURL');
-expect(/maxUploadRetryTime\s*=/.test(uploader), 'Catalog uploader must align Firebase maxUploadRetryTime below the outer timeout');
+expect(/maxUploadRetryTime\s*=/.test(uploader), 'Shared uploader must align Firebase max upload retry time below the outer timeout');
 expect(uploader.includes('unsubscribe'), 'Catalog uploader must unsubscribe state listeners when settled');
-expect(uploader.includes('task.cancel()'), 'Catalog uploader must cancel a stalled upload task');
+expect(/task\?\.cancel\(\)|task\.cancel\(\)/.test(uploader), 'Shared uploader must cancel a stalled upload task');
 expect(uploader.includes('storage/unauthorized'), 'Catalog uploader must map storage/unauthorized');
 expect(uploader.includes('storage/quota-exceeded'), 'Catalog uploader must map storage/quota-exceeded');
 expect(uploader.includes('storage/bucket-not-found'), 'Catalog uploader must map storage/bucket-not-found');
 expect(uploader.includes('storage/retry-limit-exceeded'), 'Catalog uploader must map storage/retry-limit-exceeded');
 expect(uploader.includes('Firebase Storage bucket:'), 'Catalog uploader must include non-secret bucket context in console diagnostics');
 
-expect(adminPage.includes('admin-image-preview-actions'), 'Admin image UX needs compact preview replace/remove controls');
-expect(adminPage.includes('Remove image'), 'Admin image UX needs an explicit Remove image action');
-expect(adminPage.includes('Replace image'), 'Admin image UX needs an explicit Replace image label/action');
-expect(adminPage.includes('finally {') && adminPage.includes('setIsUploading(false)'), 'Admin upload handlers must always reset uploading state in finally');
+expect(catalogWrapper.includes('uploadAdminImage'), 'Legacy catalog uploader must delegate to the shared admin uploader');
+expect(adminImageUpload.includes('admin-image-preview-actions'), 'Admin image UX needs compact preview replace/remove controls');
+expect(adminImageUpload.includes('Remove image'), 'Admin image UX needs an explicit Remove image action');
+expect(adminImageUpload.includes('Replace image'), 'Admin image UX needs an explicit Replace image label/action');
+expect(adminImageUpload.includes('finally {') && adminImageUpload.includes('onUploadingChange?.(false)'), 'Shared admin upload component must always reset uploading state in finally');
 
 expect(rules.includes("match /products/{fileName}"), 'Storage rules must preserve products path');
 expect(rules.includes("match /categories/{fileName}"), 'Storage rules must preserve categories path');

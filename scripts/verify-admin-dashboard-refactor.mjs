@@ -9,6 +9,8 @@ const files = {
   adminCss: read('app/admin/admin-dashboard-redesign.css'),
   managementCss: read('app/admin/admin-management.css'),
   catalog: read('lib/catalogImages.ts'),
+  uploader: read('lib/adminImageUpload.ts'),
+  uploadComponent: read('components/admin/AdminImageUpload.tsx'),
   storageRules: read('storage.rules'),
   invoice: read('app/invoice/[id]/page.tsx'),
   siteChrome: read('components/SiteChrome.tsx'),
@@ -30,13 +32,14 @@ check(files.admin.includes('admin-operational-metrics'), 'Products and Customers
 check(files.admin.includes('Manage Users') && files.admin.includes('admin-team-action-card'), 'Manage Users must be inside the team overview grid.');
 check(files.adminCss.includes('grid-template-columns: repeat(3, minmax(0, 1fr))'), 'Admin CSS must contain a three-column grid for primary/team layouts.');
 
-check(files.catalog.includes('uploadBytesResumable'), 'Catalog uploader must use uploadBytesResumable.');
-check(files.catalog.includes('onProgress'), 'Catalog uploader must expose progress reporting.');
-check(files.catalog.includes('.cancel()'), 'Catalog uploader must cancel stalled uploads.');
-check(files.catalog.includes('UPLOAD_TIMEOUT_MS'), 'Catalog uploader must have a finite timeout.');
-check(files.catalog.includes('getDownloadURL'), 'Catalog uploader must return a durable download URL.');
-check(files.catalog.includes('storageBucket'), 'Catalog uploader must validate Firebase Storage bucket configuration.');
-check(files.admin.includes('catalogUploadProgress'), 'Admin UI must surface catalog image upload progress.');
+check(files.catalog.includes('uploadAdminImage'), 'Catalog compatibility wrapper must delegate to the shared uploader.');
+check(files.uploader.includes('uploadBytesResumable'), 'Shared admin uploader must use uploadBytesResumable.');
+check(files.uploader.includes('onProgress'), 'Shared admin uploader must expose progress reporting.');
+check(files.uploader.includes('.cancel()'), 'Shared admin uploader must cancel stalled uploads.');
+check(files.uploader.includes('ADMIN_IMAGE_UPLOAD_TIMEOUT_MS'), 'Shared admin uploader must have a finite timeout.');
+check(files.uploader.includes('getDownloadURL'), 'Shared admin uploader must return a durable download URL.');
+check(files.uploader.includes('storageBucket'), 'Shared admin uploader must validate Firebase Storage bucket configuration.');
+check(files.uploadComponent.includes('admin-upload-progress'), 'Admin upload component must surface image upload progress.');
 check(files.storageRules.includes('request.resource.size <= 8 * 1024 * 1024'), 'Storage rules must allow the same 8 MB boundary as client validation.');
 
 check(files.managementCss.includes('.amu-heading h1') && files.managementCss.includes('font-size: clamp(1.35rem'), 'Dedicated admin page title typography must be compact.');

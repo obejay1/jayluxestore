@@ -7,12 +7,6 @@ import {
   setDoc,
   updateDoc,
 } from 'firebase/firestore';
-import {
-  getDownloadURL,
-  getStorage,
-  ref,
-  uploadBytes,
-} from 'firebase/storage';
 import { db } from '@/lib/firebase';
 
 export type Testimonial = {
@@ -60,20 +54,6 @@ function cleanTestimonial(id: string, data: Partial<Testimonial>): Testimonial {
     createdAt: data.createdAt || new Date().toISOString(),
     featured: Boolean(data.featured),
   };
-}
-
-export async function uploadTestimonialPhoto(file: File): Promise<string> {
-  const storage = getStorage();
-
-  const safeName = file.name
-    .toLowerCase()
-    .replace(/[^a-z0-9.-]/g, '-');
-
-  const filePath = `testimonials/${Date.now()}-${safeName}`;
-  const imageRef = ref(storage, filePath);
-
-  const snapshot = await uploadBytes(imageRef, file);
-  return getDownloadURL(snapshot.ref);
 }
 
 export async function getTestimonials(): Promise<Testimonial[]> {
@@ -146,11 +126,9 @@ export async function toggleTestimonialFeatured(
 
 /* Extra aliases in case your admin page uses these names */
 export async function saveTestimonial(
-  item: Partial<Testimonial>,
-  imageFile?: string | File | null
+  item: Partial<Testimonial>
 ): Promise<void> {
-  let image = item.image || item.customerPhoto || '';
-  if (typeof imageFile === 'string' && imageFile) image = imageFile;
+  const image = item.image || item.customerPhoto || '';
   const review = item.review || item.testimonial || '';
   const payload = {
     customerName: item.customerName || '',

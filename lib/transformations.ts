@@ -6,12 +6,6 @@ import {
   getDocs,
   updateDoc,
 } from 'firebase/firestore';
-import {
-  getDownloadURL,
-  getStorage,
-  ref,
-  uploadBytes,
-} from 'firebase/storage';
 import { db } from '@/lib/firebase';
 import { Transformation } from '@/lib/types';
 export type { Transformation } from '@/lib/types';
@@ -53,23 +47,6 @@ function formatTransformation(
     featured: Boolean(data.featured),
     createdAt: data.createdAt || new Date().toISOString(),
   };
-}
-
-export async function uploadTransformationImage(
-  file: File,
-  side: 'before' | 'after'
-): Promise<string> {
-  const storage = getStorage();
-
-  const safeName = file.name
-    .toLowerCase()
-    .replace(/[^a-z0-9.-]/g, '-');
-
-  const filePath = `transformations/${side}/${Date.now()}-${safeName}`;
-  const imageRef = ref(storage, filePath);
-
-  const snapshot = await uploadBytes(imageRef, file);
-  return getDownloadURL(snapshot.ref);
 }
 
 export async function getTransformations(): Promise<Transformation[]> {
@@ -137,15 +114,13 @@ export async function toggleTransformationFeatured(
 }
 
 export async function saveTransformation(
-  item: Transformation,
-  beforeImageFile?: string | null,
-  afterImageFile?: string | null
+  item: Transformation
 ): Promise<void> {
   const payload = {
     title: item.title || '',
     category: item.category || '',
-    beforeImage: beforeImageFile || item.beforeImage || '',
-    afterImage: afterImageFile || item.afterImage || '',
+    beforeImage: item.beforeImage || '',
+    afterImage: item.afterImage || '',
     description: item.description || '',
     featured: Boolean(item.featured),
     createdAt: item.createdAt || new Date().toISOString(),

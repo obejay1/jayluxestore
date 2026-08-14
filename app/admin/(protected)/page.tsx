@@ -69,7 +69,7 @@ import { Product, Order, Category } from '@/lib/types';
 import type { ProductReview } from '@/lib/productReviews';
 import { showToast } from '@/lib/toast';
 import { recordAdminActivity } from '@/lib/adminActivityClient';
-import { uploadCatalogImage } from '@/lib/catalogImages';
+import AdminImageUpload from '@/components/admin/AdminImageUpload';
 import AdminPagination from '@/components/admin/AdminPagination';
 
 
@@ -182,13 +182,9 @@ const blankTransformation: Omit<Transformation, 'createdAt'> = {
 
 type TransformationFormState = {
   data: Omit<Transformation, 'createdAt'>;
-  beforeImageFile: string | null;
-  afterImageFile: string | null;
 };
 
-const blankTransformationForm: TransformationFormState = {
-  data: blankTransformation, beforeImageFile: null, afterImageFile: null
-};
+const blankTransformationForm: TransformationFormState = { data: blankTransformation };
 
 const blankTestimonial: Omit<Testimonial, 'createdAt'> = {
   id: '',
@@ -201,10 +197,9 @@ const blankTestimonial: Omit<Testimonial, 'createdAt'> = {
 
 type TestimonialFormState = {
   data: Omit<Testimonial, 'createdAt'>;
-  imageFile: string | null;
 };
 
-const blankTestimonialForm: TestimonialFormState = { data: blankTestimonial, imageFile: null };
+const blankTestimonialForm: TestimonialFormState = { data: blankTestimonial };
 
 type UserDoc = {
   id: string;
@@ -315,10 +310,6 @@ export default function Admin() {
   const [galleryImageFile, setGalleryImageFile] = useState<string | null>(null);
   const [galleryImageCaption, setGalleryImageCaption] = useState('');
   const [isUploading, setIsUploading] = useState(false);
-  const [catalogUploadProgress, setCatalogUploadProgress] = useState<{
-    kind: 'products' | 'categories' | null;
-    percent: number;
-  }>({ kind: null, percent: 0 });
 
   const [couponForm, setCouponForm] = useState({
     id: '',
@@ -510,50 +501,6 @@ export default function Admin() {
     }
   }
 
-  async function uploadCategoryImage(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setIsUploading(true);
-    setCatalogUploadProgress({ kind: 'categories', percent: 0 });
-    try {
-      const imageUrl = await uploadCatalogImage(file, 'categories', {
-        onProgress: (percent) => setCatalogUploadProgress({ kind: 'categories', percent }),
-      });
-      setCategoryForm((prev) => ({ ...prev, image: imageUrl }));
-      showToast('Category image uploaded.', 'success');
-    } catch (error) {
-      console.error('CATEGORY IMAGE UPLOAD ERROR:', error);
-      showToast(error instanceof Error ? error.message : 'Category image upload failed.', 'error');
-    } finally {
-      e.target.value = '';
-      setIsUploading(false);
-      setCatalogUploadProgress({ kind: null, percent: 0 });
-    }
-  }
-
-  async function uploadProductImage(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setIsUploading(true);
-    setCatalogUploadProgress({ kind: 'products', percent: 0 });
-    try {
-      const imageUrl = await uploadCatalogImage(file, 'products', {
-        onProgress: (percent) => setCatalogUploadProgress({ kind: 'products', percent }),
-      });
-      setForm((current) => ({ ...current, image: imageUrl }));
-      showToast('Product image uploaded.', 'success');
-    } catch (error) {
-      console.error('PRODUCT IMAGE UPLOAD ERROR:', error);
-      showToast(error instanceof Error ? error.message : 'Product image upload failed.', 'error');
-    } finally {
-      e.target.value = '';
-      setIsUploading(false);
-      setCatalogUploadProgress({ kind: null, percent: 0 });
-    }
-  }
-
   async function submitCategory() {
     const wasEditing = Boolean(categoryForm.id);
     if (!categoryForm.name.trim()) {
@@ -626,17 +573,6 @@ export default function Admin() {
     document.getElementById('bridal-packages')?.scrollIntoView({ behavior: 'smooth' });
   }
 
-  function handleGalleryImageSelect(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setGalleryImageFile(reader.result as string);
-    };
-    reader.readAsDataURL(file);
-  }
-
   async function handleGalleryImageUpload() {
     if (!galleryImageFile) {
       alert('Please select an image to upload.');
@@ -661,28 +597,15 @@ export default function Admin() {
     }
   }
 
-  function handleTransformationImageSelect(e: React.ChangeEvent<HTMLInputElement>, type: 'before' | 'after') {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setTransformationForm(prev => ({
-        ...prev,
-        [`${type}ImageFile`]: reader.result as string,
-      }));
-    };
-    reader.readAsDataURL(file);
-  }
-
   async function submitTransformation() {
-    const { data, beforeImageFile, afterImageFile } = transformationForm;
+    const { data } = transformationForm;
     const wasEditing = Boolean(data.id);
     if (!data.title || !data.category) {
       alert('Please enter a title and select a category.');
       return;
     }
-    if (!data.id && (!beforeImageFile || !afterImageFile)) {
-      alert('Please upload both a "before" and "after" image for new transformations.');
+    if (!data.beforeImage || !data.afterImage) {
+      alert('Please upload both a "before" and "after" image.');
       return;
     }
 
@@ -692,7 +615,7 @@ export default function Admin() {
         ...data,
         id: data.id || Date.now().toString(),
       };
-      await saveTransformation(transformationToSave, beforeImageFile, afterImageFile);
+      await saveTransformation(transformationToSave);
       void recordAdminActivity({
         action: wasEditing ? 'Edited Transformation' : 'Added Transformation',
         description: `${wasEditing ? 'Updated' : 'Created'} before-and-after transformation: ${transformationToSave.title}.`,
@@ -703,29 +626,20 @@ export default function Admin() {
       setTransformationForm(blankTransformationForm);
       load();
     } catch (error) {
-      showToast('Failed to save transformation.', 'error');
+      console.error('TRANSFORMATION SAVE ERROR:', error);
+      showToast(error instanceof Error ? error.message : 'Failed to save transformation.', 'error');
     } finally {
       setIsUploading(false);
     }
   }
 
   function editTransformation(t: Transformation) {
-    setTransformationForm({ data: t, beforeImageFile: null, afterImageFile: null });
+    setTransformationForm({ data: t });
     document.getElementById('transformations-form')?.scrollIntoView({ behavior: 'smooth' });
   }
 
-  function handleTestimonialImageSelect(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setTestimonialForm(prev => ({ ...prev, imageFile: reader.result as string }));
-    };
-    reader.readAsDataURL(file);
-  }
-
   async function submitTestimonial() {
-    const { data, imageFile } = testimonialForm;
+    const { data } = testimonialForm;
     const wasEditing = Boolean(data.id);
     if (!data.customerName || !data.testimonial) {
       alert('Please enter customer name and testimonial text.');
@@ -739,7 +653,7 @@ export default function Admin() {
         id: data.id || Date.now().toString(),
         rating: Number(data.rating),
       };
-      await saveTestimonial(testimonialToSave, imageFile);
+      await saveTestimonial(testimonialToSave);
       void recordAdminActivity({
         action: wasEditing ? 'Edited Testimonial' : 'Added Testimonial',
         description: `${wasEditing ? 'Updated' : 'Created'} testimonial for ${testimonialToSave.customerName}.`,
@@ -750,14 +664,15 @@ export default function Admin() {
       setTestimonialForm(blankTestimonialForm);
       load();
     } catch (error) {
-      showToast('Failed to save testimonial.', 'error');
+      console.error('TESTIMONIAL SAVE ERROR:', error);
+      showToast(error instanceof Error ? error.message : 'Failed to save testimonial.', 'error');
     } finally {
       setIsUploading(false);
     }
   }
 
   function editTestimonial(t: Testimonial) {
-    setTestimonialForm({ data: t, imageFile: null });
+    setTestimonialForm({ data: t });
     document.getElementById('testimonials-form')?.scrollIntoView({ behavior: 'smooth' });
   }
 
@@ -1709,35 +1624,17 @@ export default function Admin() {
               <option value="inactive">Inactive</option>
             </select>
 
-            <div className="category-upload-box admin-image-upload">
-              <div className="admin-image-upload-heading">
-                <div>
-                  <label htmlFor="category-image-upload">Category Image</label>
-                  <p className="admin-upload-note">JPEG, PNG or WebP, up to 8 MB.</p>
-                </div>
-                {categoryForm.image ? (
-                  <div className="admin-image-preview-actions">
-                    <label className="btn light admin-image-replace" htmlFor="category-image-upload" aria-disabled={isUploading}>Replace image</label>
-                    <button className="btn light" type="button" disabled={isUploading} onClick={() => setCategoryForm((current) => ({ ...current, image: '' }))}>Remove image</button>
-                  </div>
-                ) : null}
-              </div>
-              <input id="category-image-upload" className="admin-image-file-input" type="file" accept="image/jpeg,image/png,image/webp" disabled={isUploading} onChange={uploadCategoryImage} />
-              {catalogUploadProgress.kind === 'categories' ? (
-                <div className="admin-upload-progress" role="status" aria-live="polite">
-                  <span>Uploading image… {catalogUploadProgress.percent}%</span>
-                  <progress max="100" value={catalogUploadProgress.percent}>{catalogUploadProgress.percent}%</progress>
-                </div>
-              ) : null}
-
-              {categoryForm.image ? (
-                <img
-                  src={categoryForm.image}
-                  alt="Category Preview"
-                  className="category-preview admin-image-preview"
-                />
-              ) : <p className="admin-image-empty">Choose an image to add a category thumbnail.</p>}
-            </div>
+            <AdminImageUpload
+              kind="categories"
+              label="Category Image"
+              value={categoryForm.image || ''}
+              disabled={isUploading}
+              onUploadingChange={setIsUploading}
+              onUploaded={(url) => setCategoryForm((current) => ({ ...current, image: url }))}
+              onRemove={() => setCategoryForm((current) => ({ ...current, image: '' }))}
+              previewAlt="Category preview"
+              emptyText="Choose an image to add a category thumbnail."
+            />
 
             <textarea
               className="input"
@@ -1751,7 +1648,7 @@ export default function Admin() {
 
           <div style={{ display: 'flex', gap: 12, marginTop: 16 }}>
             <button className="btn" onClick={submitCategory} disabled={isUploading}>
-              {catalogUploadProgress.kind === 'categories' ? `Uploading image… ${catalogUploadProgress.percent}%` : (categoryForm.id ? 'Update Category' : 'Save Category')}
+              {categoryForm.id ? 'Update Category' : 'Save Category'}
             </button>
 
             <button
@@ -1938,12 +1835,18 @@ export default function Admin() {
           </div>
 
           <div className="admin-form-grid">
-            <div className="category-upload-box" style={{ gridColumn: '1 / -1' }}>
-              <label>Upload New Image</label>
-              <input type="file" accept="image/*" onChange={handleGalleryImageSelect} />
-              {galleryImageFile && (
-                <img src={galleryImageFile} alt="Preview" className="category-preview" style={{ marginTop: 12, width: 150, height: 150 }} />
-              )}
+            <div style={{ gridColumn: '1 / -1' }}>
+              <AdminImageUpload
+                kind="bridal-gallery"
+                label="Upload New Image"
+                value={galleryImageFile || ''}
+                disabled={isUploading}
+                onUploadingChange={setIsUploading}
+                onUploaded={setGalleryImageFile}
+                onRemove={() => setGalleryImageFile(null)}
+                previewAlt="Bridal gallery preview"
+                emptyText="Choose a bridal gallery image."
+              />
             </div>
             <input
               className="input"
@@ -1956,7 +1859,7 @@ export default function Admin() {
 
           <div style={{ marginTop: 16 }}>
             <button className="btn" onClick={handleGalleryImageUpload} disabled={isUploading || !galleryImageFile}>
-              {isUploading ? 'Uploading...' : 'Upload to Gallery'}
+              {isUploading ? 'Saving...' : 'Save to Gallery'}
             </button>
           </div>
         </section>
@@ -2027,28 +1930,38 @@ export default function Admin() {
               onChange={(e) => setTransformationForm(p => ({ ...p, data: { ...p.data, description: e.target.value } }))}
               style={{ gridColumn: '1 / -1' }}
             />
-            <div className="category-upload-box">
-              <label>Before Image</label>
-              <input type="file" accept="image/*" onChange={(e) => handleTransformationImageSelect(e, 'before')} />
-              {(transformationForm.beforeImageFile || transformationForm.data.beforeImage) && (
-                <img
-                  src={transformationForm.beforeImageFile || transformationForm.data.beforeImage}
-                  alt="Before preview"
-                  className="category-preview"
-                />
-              )}
-            </div>
-            <div className="category-upload-box">
-              <label>After Image</label>
-              <input type="file" accept="image/*" onChange={(e) => handleTransformationImageSelect(e, 'after')} />
-              {(transformationForm.afterImageFile || transformationForm.data.afterImage) && (
-                <img
-                  src={transformationForm.afterImageFile || transformationForm.data.afterImage}
-                  alt="After preview"
-                  className="category-preview"
-                />
-              )}
-            </div>
+            <AdminImageUpload
+              kind="transformation-before"
+              label="Before Image"
+              value={transformationForm.data.beforeImage}
+              disabled={isUploading}
+              onUploadingChange={setIsUploading}
+              onUploaded={(url) => setTransformationForm((current) => ({
+                ...current,
+                data: { ...current.data, beforeImage: url },
+              }))}
+              onRemove={() => setTransformationForm((current) => ({
+                ...current,
+                data: { ...current.data, beforeImage: '' },
+              }))}
+              previewAlt="Before transformation preview"
+            />
+            <AdminImageUpload
+              kind="transformation-after"
+              label="After Image"
+              value={transformationForm.data.afterImage}
+              disabled={isUploading}
+              onUploadingChange={setIsUploading}
+              onUploaded={(url) => setTransformationForm((current) => ({
+                ...current,
+                data: { ...current.data, afterImage: url },
+              }))}
+              onRemove={() => setTransformationForm((current) => ({
+                ...current,
+                data: { ...current.data, afterImage: '' },
+              }))}
+              previewAlt="After transformation preview"
+            />
             <label className="input" style={{ display: 'flex', alignItems: 'center', gap: 8, gridColumn: '1 / -1' }}>
               <input
                 type="checkbox"
@@ -2173,17 +2086,25 @@ export default function Admin() {
               onChange={(e) => setTestimonialForm(p => ({ ...p, data: { ...p.data, testimonial: e.target.value } }))}
               style={{ gridColumn: '1 / -1', minHeight: '100px' }}
             />
-            <div className="category-upload-box" style={{ gridColumn: '1 / -1' }}>
-              <label>Optional: Customer Image</label>
-              <input type="file" accept="image/*" onChange={handleTestimonialImageSelect} />
-              {(testimonialForm.imageFile || testimonialForm.data.image) && (
-                <img
-                  src={testimonialForm.imageFile || testimonialForm.data.image}
-                  alt="Customer preview"
-                  className="category-preview"
-                  style={{ width: 100, height: 100, borderRadius: '50%' }}
-                />
-              )}
+            <div style={{ gridColumn: '1 / -1' }}>
+              <AdminImageUpload
+                kind="testimonials"
+                label="Optional: Customer Image"
+                value={testimonialForm.data.image || testimonialForm.data.customerPhoto || ''}
+                disabled={isUploading}
+                onUploadingChange={setIsUploading}
+                onUploaded={(url) => setTestimonialForm((current) => ({
+                  ...current,
+                  data: { ...current.data, image: url, customerPhoto: url },
+                }))}
+                onRemove={() => setTestimonialForm((current) => ({
+                  ...current,
+                  data: { ...current.data, image: '', customerPhoto: '' },
+                }))}
+                previewAlt="Customer preview"
+                previewClassName="admin-image-preview-round"
+                emptyText="Choose an optional customer photo."
+              />
             </div>
             <label className="input" style={{ display: 'flex', alignItems: 'center', gap: 8, gridColumn: '1 / -1' }}>
               <input
@@ -2283,27 +2204,18 @@ export default function Admin() {
                 <label className="admin-field"><span>Category</span><select className="input" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}><option value="">Select Category</option>{categories.filter((c) => c.active).map((cat) => <option key={String(cat.id)} value={cat.name}>{cat.name}</option>)}</select></label>
                 <label className="admin-field"><span>Type</span><select className="input" value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value as 'product' | 'service', sizes: e.target.value === 'service' ? [] : form.sizes })}><option value="product">Product</option><option value="service">Service</option></select></label>
                 <label className="admin-field admin-field-wide"><span>Description</span><textarea className="input" rows={5} placeholder="Detailed product description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} /></label>
-                <div className="product-upload-box admin-field-wide admin-image-upload">
-                  <div className="admin-image-upload-heading">
-                    <div>
-                      <label htmlFor="product-image-upload">Product Image</label>
-                      <p className="admin-upload-note">JPEG, PNG or WebP, up to 8 MB. Images are stored in Firebase Storage.</p>
-                    </div>
-                    {form.image ? (
-                      <div className="admin-image-preview-actions">
-                        <label className="btn light admin-image-replace" htmlFor="product-image-upload" aria-disabled={isUploading}>Replace image</label>
-                        <button className="btn light" type="button" disabled={isUploading} onClick={() => setForm((current) => ({ ...current, image: '' }))}>Remove image</button>
-                      </div>
-                    ) : null}
-                  </div>
-                  <input id="product-image-upload" className="admin-image-file-input" type="file" accept="image/jpeg,image/png,image/webp" disabled={isUploading} onChange={uploadProductImage} />
-                  {catalogUploadProgress.kind === 'products' ? (
-                    <div className="admin-upload-progress" role="status" aria-live="polite">
-                      <span>Uploading image… {catalogUploadProgress.percent}%</span>
-                      <progress max="100" value={catalogUploadProgress.percent}>{catalogUploadProgress.percent}%</progress>
-                    </div>
-                  ) : null}
-                  {form.image ? <img src={form.image} alt="Product preview" className="product-preview admin-image-preview" /> : <p className="admin-image-empty">Choose an image to add a storefront product thumbnail.</p>}
+                <div className="admin-field-wide">
+                  <AdminImageUpload
+                    kind={form.type === 'service' ? 'services' : 'products'}
+                    label={form.type === 'service' ? 'Service Image' : 'Product Image'}
+                    value={form.image || ''}
+                    disabled={isUploading}
+                    onUploadingChange={setIsUploading}
+                    onUploaded={(url) => setForm((current) => ({ ...current, image: url }))}
+                    onRemove={() => setForm((current) => ({ ...current, image: '' }))}
+                    previewAlt={form.type === 'service' ? 'Service preview' : 'Product preview'}
+                    emptyText={form.type === 'service' ? 'Choose an image for this service.' : 'Choose an image to add a storefront product thumbnail.'}
+                  />
                 </div>
               </div>
             </fieldset>
@@ -2334,7 +2246,7 @@ export default function Admin() {
           </div>
 
           <div className="admin-form-actions">
-            <button className="btn" onClick={submitProduct} disabled={isUploading}>{catalogUploadProgress.kind === 'products' ? `Uploading image… ${catalogUploadProgress.percent}%` : form.id ? 'Update Product / Service' : 'Save Product / Service'}</button>
+            <button className="btn" onClick={submitProduct} disabled={isUploading}>{form.id ? 'Update Product / Service' : 'Save Product / Service'}</button>
             {form.id ? <button className="btn light" type="button" onClick={() => setForm(blankProduct)}>Cancel Edit</button> : null}
           </div>
         </section>

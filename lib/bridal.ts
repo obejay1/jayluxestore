@@ -6,12 +6,6 @@ import {
   getDocs,
   updateDoc,
 } from 'firebase/firestore';
-import {
-  getDownloadURL,
-  getStorage,
-  ref,
-  uploadBytes,
-} from 'firebase/storage';
 import { db } from '@/lib/firebase';
 import { BridalPackage } from '@/lib/types';
 export type { BridalPackage } from '@/lib/types';
@@ -46,20 +40,6 @@ function formatBridalPackage(
     featured: Boolean(data.featured),
     createdAt: data.createdAt || new Date().toISOString(),
   };
-}
-
-export async function uploadBridalPackageImage(file: File): Promise<string> {
-  const storage = getStorage();
-
-  const safeName = file.name
-    .toLowerCase()
-    .replace(/[^a-z0-9.-]/g, '-');
-
-  const filePath = `bridal-packages/${Date.now()}-${safeName}`;
-  const imageRef = ref(storage, filePath);
-
-  const snapshot = await uploadBytes(imageRef, file);
-  return getDownloadURL(snapshot.ref);
 }
 
 export async function getBridalPackages(): Promise<BridalPackage[]> {
