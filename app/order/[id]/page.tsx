@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useParams, useSearchParams } from 'next/navigation';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -14,9 +13,9 @@ import {
 } from 'lucide-react';
 
 import Footer from '@/components/Footer';
+import ResponsiveImage from '@/components/ResponsiveImage';
 import PageHeroIcon from '@/components/PageHeroIcon';
 import { auth } from '@/lib/firebase';
-import { getSafeImageSource, isLegacyDataImageSource } from '@/lib/images';
 import { money } from '@/lib/store';
 import type { Order } from '@/lib/types';
 
@@ -188,9 +187,8 @@ export default function OrderConfirmationPage() {
 
                   return (
                     <article className="jl-order-item" key={`${item.id || item.name}-${index}`}>
-                      <Image
-                        src={getSafeImageSource(item.image)}
-                        unoptimized={isLegacyDataImageSource(item.image)}
+                      <ResponsiveImage
+                        src={item.image}
                         alt={item.name || 'JayLuxe product'}
                         width={64}
                         height={64}

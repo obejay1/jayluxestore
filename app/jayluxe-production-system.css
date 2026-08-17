@@ -1,0 +1,1747 @@
+/* =========================================================
+   JAYLUXE PRODUCTION DESIGN SYSTEM — 2026-08-16
+   Final shared density/responsive layer. Imported last.
+========================================================= */
+
+:root {
+  --jl-space-1: 4px;
+  --jl-space-2: 8px;
+  --jl-space-3: 12px;
+  --jl-space-4: 16px;
+  --jl-space-5: 20px;
+  --jl-space-6: 24px;
+  --jl-space-8: 32px;
+  --jl-space-10: 40px;
+  --jl-container: 1280px;
+  --jl-gutter: clamp(16px, 3vw, 24px);
+  --jl-control-h: 42px;
+  --jl-control-h-sm: 38px;
+  --jl-radius-sm: 10px;
+  --jl-radius-md: 14px;
+  --jl-radius-lg: 18px;
+  --jl-card-pad: clamp(12px, 1.8vw, 18px);
+  --jl-section-y: clamp(24px, 4vw, 40px);
+  --jl-major-y: clamp(28px, 5vw, 40px);
+  --jl-shadow-soft: 0 10px 28px rgba(29, 23, 15, 0.07);
+  --jl-shadow-card: 0 14px 34px rgba(29, 23, 15, 0.09);
+  --jl-border: rgba(53, 43, 30, 0.11);
+  --jl-gold-soft: #f5eddc;
+}
+
+html {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-x: clip;
+  scroll-padding-top: 96px;
+}
+
+body {
+  width: 100%;
+  max-width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  overflow-x: clip;
+  text-rendering: optimizeLegibility;
+  -webkit-text-size-adjust: 100%;
+}
+
+body,
+button,
+input,
+select,
+textarea {
+  font-size: 15px;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  max-width: 100%;
+}
+
+img,
+picture,
+video,
+canvas {
+  height: auto;
+}
+
+:where(main, section, article, aside, header, footer, nav, div, form, fieldset) {
+  min-width: 0;
+}
+
+:where(button, a, input, select, textarea) {
+  -webkit-tap-highlight-color: transparent;
+}
+
+:where(button, [role='button'], a) {
+  touch-action: manipulation;
+}
+
+/* ---------- Shared page containers ---------- */
+:where(
+  .jj-products,
+  .jj-categories,
+  .jj-bridal,
+  .jj-transformations,
+  .jj-testimonials,
+  .jj-services,
+  .jj-contact,
+  .jl-shop-section,
+  .jl-category-page-section,
+  .jl-services-section,
+  .jl-gallery-section,
+  .jl-cart-layout,
+  .jl-account-content,
+  .jl-account-overview,
+  .jl-checkout-layout,
+  .jl-related-products,
+  .global-footer-shell
+) {
+  width: min(var(--jl-container), calc(100% - (2 * var(--jl-gutter)))) !important;
+  margin-inline: auto !important;
+}
+
+:where(
+  .jj-products,
+  .jj-categories,
+  .jj-bridal,
+  .jj-transformations,
+  .jj-testimonials,
+  .jj-services,
+  .jj-contact,
+  .jl-shop-section,
+  .jl-category-page-section,
+  .jl-services-section,
+  .jl-gallery-section,
+  .jl-related-products
+) {
+  padding-block: var(--jl-section-y) !important;
+}
+
+/* ---------- Typography ---------- */
+:where(.jj-section-header h2, .jl-section-title, .jl-shop-section h2, .jl-account-content h2) {
+  font-size: clamp(1.25rem, 2.4vw, 1.55rem) !important;
+  line-height: 1.12 !important;
+}
+
+:where(.page-title, .jl-page-title, .jl-shop-hero h1, .jl-cart-hero h1, .jl-account-hero h1, .jl-checkout-hero h1) {
+  font-size: clamp(1.75rem, 4.5vw, 2.25rem) !important;
+  line-height: 1.04 !important;
+}
+
+:where(.lux-product-card h3, .jl-unified-service-card h3) {
+  font-size: clamp(0.84rem, 2vw, 0.98rem) !important;
+  line-height: 1.3 !important;
+}
+
+:where(p, li, label, input, textarea, select) {
+  line-height: 1.5;
+}
+
+/* ---------- Header density ---------- */
+.jl-site-header.jl-compact-header,
+.jl-site-header {
+  position: sticky;
+  top: 0;
+  z-index: 80;
+}
+
+.jl-announcement-bar {
+  min-height: 28px !important;
+  padding: 5px var(--jl-gutter) !important;
+  font-size: 0.72rem !important;
+}
+
+.jl-header-main {
+  width: min(var(--jl-container), calc(100% - (2 * var(--jl-gutter)))) !important;
+  min-height: 58px !important;
+  margin-inline: auto !important;
+  padding-block: 7px !important;
+  gap: var(--jl-space-3) !important;
+}
+
+.jl-header-logo {
+  width: 38px !important;
+  height: 38px !important;
+}
+
+.jl-header-brand-copy strong {
+  font-size: 1.03rem !important;
+}
+
+.jl-header-brand-copy small {
+  font-size: 0.62rem !important;
+}
+
+.jl-header-nav {
+  gap: clamp(8px, 1.2vw, 16px) !important;
+}
+
+.jl-header-nav > a,
+.jl-nav-group-trigger {
+  min-height: 36px !important;
+  font-size: 0.76rem !important;
+}
+
+.jl-header-icon {
+  width: 38px !important;
+  height: 38px !important;
+}
+
+/* ---------- Homepage flow ---------- */
+.jj-hero {
+  min-height: clamp(390px, 64svh, 600px) !important;
+}
+
+.jj-hero-content {
+  width: min(720px, calc(100% - (2 * var(--jl-gutter)))) !important;
+}
+
+.jj-hero-content h1 {
+  font-size: clamp(2rem, 7vw, 4.25rem) !important;
+  line-height: 0.98 !important;
+}
+
+.jj-hero-content p {
+  margin-top: var(--jl-space-3) !important;
+  font-size: clamp(0.9rem, 1.8vw, 1.05rem) !important;
+}
+
+.jj-hero-buttons {
+  margin-top: var(--jl-space-5) !important;
+  gap: var(--jl-space-3) !important;
+}
+
+.jj-benefits,
+.jj-promo-rail {
+  margin-block: 0 !important;
+}
+
+.jj-section-header {
+  margin-bottom: var(--jl-space-5) !important;
+  gap: var(--jl-space-3) !important;
+}
+
+.jj-section-header small {
+  font-size: 0.68rem !important;
+}
+
+.jj-bridal-header,
+.jj-contact-header {
+  margin-bottom: var(--jl-space-5) !important;
+}
+
+:where(.jj-bridal-grid, .jj-transformations-grid, .jj-testimonials-grid, .jj-contact-grid) {
+  gap: var(--jl-space-4) !important;
+}
+
+/* ---------- Product/category/service grids ---------- */
+:where(
+  .jl-responsive-card-grid,
+  .jj-product-grid,
+  .jl-shop-grid,
+  .wishlist-grid,
+  .jl-related-grid,
+  .jl-product-grid,
+  .product-grid,
+  .jj-category-grid,
+  .jl-category-page-grid,
+  .jl-services-featured-grid,
+  .jl-services-grid,
+  .jl-bridal-grid
+) {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+:where(
+  .jl-responsive-card-grid,
+  .jj-product-grid,
+  .jl-shop-grid,
+  .wishlist-grid,
+  .jl-related-grid,
+  .jl-product-grid,
+  .product-grid,
+  .jj-category-grid,
+  .jl-category-page-grid,
+  .jl-services-featured-grid,
+  .jl-services-grid,
+  .jl-bridal-grid
+) > * {
+  min-width: 0 !important;
+}
+
+.jl-responsive-gallery-grid,
+.jj-transformations-grid,
+.jj-testimonials-grid,
+.admin-gallery-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+}
+
+/* ---------- Product cards ---------- */
+.lux-product-card.jl-product-card-compact,
+.lux-product-card {
+  border: 1px solid var(--jl-border) !important;
+  border-radius: var(--jl-radius-md) !important;
+  box-shadow: var(--jl-shadow-soft) !important;
+}
+
+.lux-product-image {
+  aspect-ratio: 4 / 5 !important;
+}
+
+.lux-product-info {
+  padding: 11px 12px 12px !important;
+  gap: 5px !important;
+}
+
+.lux-product-category {
+  margin: 0 !important;
+  font-size: 0.62rem !important;
+  letter-spacing: 0.08em !important;
+}
+
+.lux-product-title-link h3 {
+  min-height: 2.55em !important;
+  margin: 0 !important;
+}
+
+.lux-product-rating-row {
+  min-height: 17px !important;
+  margin: 2px 0 3px !important;
+  gap: 4px !important;
+}
+
+.lux-product-price {
+  font-size: 0.96rem !important;
+}
+
+.lux-product-old-price {
+  font-size: 0.72rem !important;
+}
+
+.lux-product-add-btn {
+  min-height: 38px !important;
+  padding: 8px 10px !important;
+  border-radius: 10px !important;
+  font-size: 0.76rem !important;
+  gap: 6px !important;
+}
+
+.lux-product-wishlist {
+  width: 36px !important;
+  height: 36px !important;
+}
+
+.lux-product-badges {
+  gap: 4px !important;
+}
+
+.lux-badge {
+  padding: 5px 7px !important;
+  font-size: 0.58rem !important;
+}
+
+/* ---------- Category/service cards ---------- */
+.jj-category-card,
+.jl-category-page-card,
+.jl-unified-service-card.jl-service-card-compact,
+.jl-unified-service-card {
+  border-radius: var(--jl-radius-md) !important;
+  box-shadow: var(--jl-shadow-soft) !important;
+}
+
+.jj-category-content,
+.jl-category-page-copy,
+.jl-unified-service-body {
+  padding: 12px !important;
+}
+
+.jl-unified-service-body {
+  gap: 7px !important;
+}
+
+.jl-unified-service-body h3 {
+  min-height: 2.5em !important;
+  margin: 0 !important;
+}
+
+.jl-unified-service-body p {
+  margin: 0 !important;
+  font-size: 0.78rem !important;
+  line-height: 1.5 !important;
+}
+
+.jl-unified-service-price {
+  margin-top: auto !important;
+  padding-top: var(--jl-space-2) !important;
+}
+
+.jl-unified-service-body button {
+  min-height: 38px !important;
+  margin-top: var(--jl-space-2) !important;
+  padding: 8px 12px !important;
+}
+
+/* ---------- Generic controls/cards ---------- */
+:where(.btn, .jl-button, .admin-content button:not(.admin-dashboard-nav-logout)) {
+  min-height: var(--jl-control-h-sm) !important;
+  padding: 8px 14px !important;
+  border-radius: var(--jl-radius-sm) !important;
+  font-size: 0.82rem !important;
+}
+
+:where(.input, .admin-content input:not([type='checkbox']):not([type='radio']), .admin-content select) {
+  min-height: var(--jl-control-h) !important;
+  padding: 9px 12px !important;
+  border-radius: var(--jl-radius-sm) !important;
+  font-size: 0.86rem !important;
+}
+
+:where(.admin-content textarea, .input:is(textarea)) {
+  min-height: 84px !important;
+  padding: 10px 12px !important;
+}
+
+:where(.card, .table-card, .jl-form-card, .jl-checkout-summary, .jl-cart-items-card, .jl-cart-summary-card, .jl-auth-card) {
+  border-radius: var(--jl-radius-lg) !important;
+  box-shadow: var(--jl-shadow-soft) !important;
+}
+
+/* ---------- Cart / checkout / auth / account ---------- */
+.jl-cart-hero,
+.jl-checkout-hero,
+.jl-account-hero {
+  min-height: 150px !important;
+  padding: var(--jl-space-8) var(--jl-gutter) !important;
+}
+
+.jl-cart-layout,
+.jl-checkout-layout {
+  gap: var(--jl-space-5) !important;
+  padding-block: var(--jl-space-6) var(--jl-major-y) !important;
+}
+
+.jl-form-card,
+.jl-checkout-summary,
+.jl-cart-items-card,
+.jl-cart-summary-card {
+  padding: var(--jl-card-pad) !important;
+}
+
+.jl-form-grid {
+  gap: var(--jl-space-3) !important;
+}
+
+.jl-checkout-main {
+  gap: var(--jl-space-4) !important;
+}
+
+.jl-checkout-coupon {
+  margin-top: var(--jl-space-4) !important;
+  padding-top: var(--jl-space-4) !important;
+}
+
+.jl-account-overview {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: var(--jl-space-3) !important;
+  padding-block: var(--jl-space-6) 0 !important;
+}
+
+.jl-account-overview > :is(article, a) {
+  min-height: 82px !important;
+  padding: 12px 14px !important;
+  gap: 10px !important;
+  border-radius: var(--jl-radius-md) !important;
+}
+
+.jl-account-overview small {
+  font-size: 0.66rem !important;
+}
+
+.jl-account-overview strong {
+  font-size: 0.88rem !important;
+}
+
+.jl-account-content {
+  padding-block: var(--jl-space-6) var(--jl-major-y) !important;
+}
+
+.jl-account-profile-bar,
+.jl-order-history-header {
+  gap: var(--jl-space-3) !important;
+  margin-bottom: var(--jl-space-4) !important;
+}
+
+.jl-auth-page {
+  min-height: 100vh !important;
+  min-height: 100dvh !important;
+}
+
+.jl-auth-aside {
+  min-height: 100vh !important;
+  min-height: 100dvh !important;
+  padding: clamp(28px, 5vw, 52px) !important;
+}
+
+.jl-auth-panel {
+  padding: var(--jl-space-6) var(--jl-gutter) !important;
+}
+
+.jl-auth-card {
+  width: min(100%, 520px) !important;
+  padding: clamp(18px, 3vw, 28px) !important;
+}
+
+.jl-auth-form {
+  gap: var(--jl-space-3) !important;
+}
+
+/* ---------- Footer ---------- */
+.global-footer-pro.jl-compact-footer,
+.global-footer-pro {
+  margin-top: var(--jl-major-y) !important;
+}
+
+.global-footer-shell {
+  padding-block: var(--jl-space-8) calc(var(--jl-space-5) + env(safe-area-inset-bottom)) !important;
+}
+
+.global-footer-newsletter {
+  gap: var(--jl-space-5) !important;
+  padding-bottom: var(--jl-space-6) !important;
+  margin-bottom: var(--jl-space-6) !important;
+}
+
+.global-footer-newsletter h2 {
+  font-size: clamp(1.25rem, 2.8vw, 1.75rem) !important;
+  margin-block: 5px 7px !important;
+}
+
+.global-footer-grid {
+  gap: clamp(18px, 3vw, 28px) !important;
+}
+
+.global-footer-brand p,
+.global-footer-links a,
+.global-footer-bottom {
+  font-size: 0.8rem !important;
+}
+
+.global-footer-links h3 {
+  margin-bottom: 10px !important;
+  font-size: 0.82rem !important;
+}
+
+.global-footer-links ul {
+  gap: 6px !important;
+}
+
+.global-footer-bottom {
+  margin-top: var(--jl-space-6) !important;
+  padding-top: var(--jl-space-4) !important;
+}
+
+/* ---------- Admin density ---------- */
+.admin-layout,
+.admin-dashboard {
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+.admin-dashboard-nav-shell {
+  min-height: 54px !important;
+  padding: 6px max(10px, var(--jl-gutter)) !important;
+  gap: var(--jl-space-2) !important;
+}
+
+.admin-dashboard-nav {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  gap: 3px !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+
+.admin-dashboard-nav a {
+  min-height: 34px !important;
+  padding: 7px 9px !important;
+  white-space: nowrap !important;
+  font-size: 0.7rem !important;
+}
+
+.admin-dashboard-nav-brand {
+  min-width: max-content !important;
+}
+
+.admin-content {
+  width: min(1440px, calc(100% - (2 * var(--jl-gutter)))) !important;
+  margin-inline: auto !important;
+  padding: var(--jl-space-5) 0 var(--jl-major-y) !important;
+}
+
+.admin-content .topbar {
+  margin-bottom: var(--jl-space-4) !important;
+  gap: var(--jl-space-3) !important;
+}
+
+.admin-content .topbar h1 {
+  font-size: clamp(1.35rem, 2.5vw, 1.85rem) !important;
+}
+
+.admin-content .topbar p {
+  margin-top: 4px !important;
+  font-size: 0.8rem !important;
+}
+
+.admin-content :where(.stats-grid, .admin-grid) {
+  gap: var(--jl-space-3) !important;
+}
+
+.admin-content .stat-card,
+.admin-content .table-card,
+.admin-content .admin-form-section,
+.admin-content .admin-overview-card {
+  padding: var(--jl-card-pad) !important;
+  border-radius: var(--jl-radius-md) !important;
+}
+
+.admin-content .stat-card {
+  min-height: 104px !important;
+}
+
+.admin-content .stat-card h1 {
+  font-size: clamp(1.35rem, 2.8vw, 1.9rem) !important;
+}
+
+.admin-content .stat-card h3,
+.admin-content .table-card h2,
+.admin-section-title h2 {
+  font-size: clamp(0.98rem, 1.8vw, 1.2rem) !important;
+}
+
+.admin-section-title {
+  margin-bottom: var(--jl-space-4) !important;
+  gap: var(--jl-space-3) !important;
+}
+
+.admin-section-title p {
+  margin-top: 4px !important;
+  font-size: 0.76rem !important;
+}
+
+.admin-form-grid {
+  gap: var(--jl-space-3) !important;
+}
+
+.admin-product-form-sections {
+  gap: var(--jl-space-4) !important;
+}
+
+.admin-form-section {
+  margin: 0 !important;
+}
+
+.admin-form-section legend {
+  padding-inline: var(--jl-space-2) !important;
+  font-size: 0.74rem !important;
+}
+
+.admin-table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.admin-content .table th,
+.admin-content .table td {
+  padding: 9px 10px !important;
+  font-size: 0.76rem !important;
+}
+
+.admin-content .table th {
+  font-size: 0.68rem !important;
+}
+
+.admin-content .badge {
+  padding: 5px 8px !important;
+  font-size: 0.62rem !important;
+}
+
+.admin-gallery-grid {
+  gap: var(--jl-space-3) !important;
+}
+
+.admin-gallery-item {
+  border-radius: var(--jl-radius-md) !important;
+  overflow: hidden !important;
+}
+
+/* ---------- Reusable Cloudinary upload field ---------- */
+.admin-image-upload-field {
+  grid-column: 1 / -1;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--jl-border);
+  border-radius: var(--jl-radius-md);
+  background: #fbfaf7;
+}
+
+.admin-image-upload-field__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--jl-space-3);
+  margin-bottom: var(--jl-space-3);
+}
+
+.admin-image-upload-field__header label {
+  color: #231f1a;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.admin-image-upload-field__header p {
+  max-width: 680px;
+  margin: 3px 0 0;
+  color: #777064;
+  font-size: 0.7rem;
+  line-height: 1.45;
+}
+
+.admin-image-upload-field__actions {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 7px;
+}
+
+.admin-image-upload-field__actions .btn,
+.admin-image-upload-field__replace {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 34px !important;
+  padding: 6px 9px !important;
+  cursor: pointer;
+}
+
+.admin-image-upload-field__replace[aria-disabled='true'] {
+  pointer-events: none;
+  opacity: 0.55;
+}
+
+.admin-image-upload-field__input {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.admin-image-upload-field__dropzone {
+  display: grid;
+  place-items: center;
+  gap: 5px;
+  min-height: 112px;
+  padding: 14px;
+  border: 1px dashed #cfc4b0;
+  border-radius: 12px;
+  background: #fff;
+  color: #735b27;
+  text-align: center;
+  cursor: pointer;
+}
+
+.admin-image-upload-field__dropzone strong {
+  color: #2c261e;
+  font-size: 0.8rem;
+}
+
+.admin-image-upload-field__dropzone span {
+  max-width: 100%;
+  overflow: hidden;
+  color: #7b7469;
+  font-size: 0.68rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-image-upload-field__dropzone.is-disabled {
+  cursor: wait;
+  opacity: 0.72;
+}
+
+.admin-image-upload-field__preview-wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 150px) minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-image-upload-field__preview {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid var(--jl-border);
+  background: #f0ece5;
+}
+
+.admin-image-upload-field[data-shape='square'] .admin-image-upload-field__preview {
+  aspect-ratio: 1 / 1;
+}
+
+.admin-image-upload-field[data-shape='portrait'] .admin-image-upload-field__preview {
+  aspect-ratio: 4 / 5;
+}
+
+.admin-image-upload-field[data-shape='circle'] .admin-image-upload-field__preview {
+  width: 96px;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+}
+
+.admin-image-upload-field__meta {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  color: #746d63;
+  font-size: 0.7rem;
+}
+
+.admin-image-upload-field__meta span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-image-upload-field__progress {
+  display: grid;
+  gap: 6px;
+  margin-top: 10px;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.admin-image-upload-field__progress progress {
+  width: 100%;
+  height: 7px;
+  accent-color: #b58a2b;
+}
+
+.admin-image-upload-field__error {
+  margin: 9px 0 0;
+  padding: 8px 10px;
+  border-radius: 9px;
+  background: #fff0ed;
+  color: #a12b20;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.admin-image-upload-field__spinner {
+  animation: jl-upload-spin 0.8s linear infinite;
+}
+
+@keyframes jl-upload-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ---------- Fixed mobile navigation / Safari safe areas ---------- */
+.mobile-bottom-nav,
+.jl-mobile-bottom-nav,
+.bottom-nav {
+  padding-bottom: env(safe-area-inset-bottom) !important;
+  height: calc(58px + env(safe-area-inset-bottom)) !important;
+}
+
+.jl-main-content {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* ---------- Breakpoints ---------- */
+@media (min-width: 768px) {
+  :where(
+    .jl-responsive-card-grid,
+    .jj-product-grid,
+    .jl-shop-grid,
+    .wishlist-grid,
+    .jl-related-grid,
+    .jl-product-grid,
+    .product-grid,
+    .jj-category-grid,
+    .jl-category-page-grid,
+    .jl-services-featured-grid,
+    .jl-services-grid,
+    .jl-bridal-grid
+  ) {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 16px !important;
+  }
+
+  .jl-responsive-gallery-grid,
+  .jj-transformations-grid,
+  .jj-testimonials-grid,
+  .admin-gallery-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 16px !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  :where(
+    .jl-responsive-card-grid,
+    .jj-product-grid,
+    .jl-shop-grid,
+    .wishlist-grid,
+    .jl-related-grid,
+    .jl-product-grid,
+    .product-grid,
+    .jj-category-grid,
+    .jl-category-page-grid,
+    .jl-services-featured-grid,
+    .jl-services-grid,
+    .jl-bridal-grid
+  ) {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 18px !important;
+  }
+
+  .jl-responsive-gallery-grid,
+  .jj-transformations-grid,
+  .jj-testimonials-grid,
+  .admin-gallery-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 18px !important;
+  }
+}
+
+@media (min-width: 1280px) {
+  :root { --jl-gutter: 24px; }
+}
+
+@media (min-width: 1440px) {
+  .admin-content {
+    width: min(1440px, calc(100% - 48px)) !important;
+  }
+}
+
+@media (max-width: 1023px) {
+  .jl-header-nav {
+    display: none !important;
+  }
+
+  .jl-account-overview {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .global-footer-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 767px) {
+  :root {
+    --jl-gutter: 16px;
+    --jl-section-y: 24px;
+    --jl-major-y: 32px;
+  }
+
+  body {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .jl-announcement-bar {
+    min-height: 26px !important;
+    padding-block: 4px !important;
+  }
+
+  .jl-announcement-bar span {
+    display: none !important;
+  }
+
+  .jl-header-main {
+    min-height: 54px !important;
+    padding-block: 6px !important;
+  }
+
+  .jl-header-logo {
+    width: 34px !important;
+    height: 34px !important;
+  }
+
+  .jl-header-brand-copy small {
+    display: none !important;
+  }
+
+  .jl-header-icon {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  .jj-hero {
+    min-height: clamp(360px, 61svh, 520px) !important;
+  }
+
+  .jj-hero-buttons {
+    gap: 8px !important;
+  }
+
+  .jj-hero-buttons a,
+  .jj-hero-buttons button {
+    min-height: 40px !important;
+    padding: 9px 13px !important;
+  }
+
+  .lux-product-info {
+    padding: 9px 9px 10px !important;
+  }
+
+  .lux-product-rating-row svg {
+    width: 11px !important;
+    height: 11px !important;
+  }
+
+  .lux-product-rating-row small {
+    font-size: 0.6rem !important;
+  }
+
+  .lux-product-add-btn {
+    min-height: 36px !important;
+    font-size: 0.7rem !important;
+  }
+
+  .jl-cart-layout,
+  .jl-checkout-layout {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 14px !important;
+  }
+
+  .jl-account-overview {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+
+  .jl-account-overview > :is(article, a) {
+    min-height: 76px !important;
+    padding: 10px !important;
+  }
+
+  .jl-account-overview > :is(article, a) svg {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  .jl-auth-page {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .jl-auth-aside {
+    display: none !important;
+  }
+
+  .jl-auth-panel {
+    min-height: calc(100dvh - 82px) !important;
+    padding: 20px 16px 32px !important;
+  }
+
+  .global-footer-newsletter {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .global-footer-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 20px 14px !important;
+  }
+
+  .global-footer-brand {
+    grid-column: 1 / -1;
+  }
+
+  .admin-dashboard-nav-shell {
+    position: sticky !important;
+    top: 0 !important;
+    min-height: 48px !important;
+    padding: 5px 8px !important;
+  }
+
+  .admin-dashboard-nav-brand small {
+    display: none !important;
+  }
+
+  .admin-dashboard-nav a {
+    min-height: 32px !important;
+    padding: 6px 8px !important;
+    font-size: 0.66rem !important;
+  }
+
+  .admin-content {
+    width: min(100% - 24px, 100%) !important;
+    padding-top: 14px !important;
+  }
+
+  .admin-content .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+
+  .admin-content .stat-card {
+    min-height: 92px !important;
+    padding: 11px !important;
+  }
+
+  .admin-form-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .admin-field-wide,
+  .admin-image-upload-field {
+    grid-column: 1 / -1 !important;
+  }
+
+  .admin-image-upload-field__header {
+    flex-direction: column;
+  }
+
+  .admin-image-upload-field__actions {
+    justify-content: flex-start;
+  }
+
+  .admin-image-upload-field__preview-wrap {
+    grid-template-columns: 92px minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 414px) {
+  :where(
+    .jl-responsive-card-grid,
+    .jj-product-grid,
+    .jl-shop-grid,
+    .wishlist-grid,
+    .jl-related-grid,
+    .jl-product-grid,
+    .product-grid,
+    .jj-category-grid,
+    .jl-category-page-grid,
+    .jl-services-featured-grid,
+    .jl-services-grid,
+    .jl-bridal-grid
+  ) {
+    gap: 10px !important;
+  }
+
+  .global-footer-grid {
+    gap: 18px 12px !important;
+  }
+}
+
+@media (max-width: 359px) {
+  .jl-header-brand-copy strong {
+    font-size: 0.92rem !important;
+  }
+
+  .jl-header-actions {
+    gap: 2px !important;
+  }
+
+  .lux-product-add-btn svg {
+    display: none;
+  }
+
+  .admin-content {
+    width: min(100% - 16px, 100%) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Checkout page shell density */
+.checkout-page-pro,
+.jl-checkout-page {
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+/* ---------- Public inner-page density consolidation ---------- */
+:where(
+  .jl-editorial-page,
+  .jl-services-page,
+  .jl-gallery-page,
+  .jl-shop-page,
+  .jl-promotions-page,
+  .jl-product-page,
+  .jl-order-page,
+  .jl-bridal-page,
+  .jl-bridal-booking-page,
+  .wishlist-page
+) {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+  overflow-x: clip !important;
+}
+
+:where(
+  .jl-editorial-hero,
+  .jl-services-hero,
+  .jl-gallery-hero,
+  .jl-shop-hero,
+  .jl-promotions-hero,
+  .jl-order-hero,
+  .wishlist-hero,
+  .jl-bridal-booking-hero
+) {
+  min-height: 150px !important;
+  padding: var(--jl-space-8) var(--jl-gutter) !important;
+}
+
+:where(
+  .jl-editorial-hero-content,
+  .jl-services-hero-content,
+  .jl-gallery-hero-content,
+  .jl-shop-hero-content,
+  .jl-order-container,
+  .wishlist-content,
+  .jl-services-list-section,
+  .jl-services-featured,
+  .jl-services-categories,
+  .jl-services-trust,
+  .jl-services-final-cta,
+  .jl-promotions-grid,
+  .jl-product-wrap,
+  .jl-product-tabs,
+  .jl-product-benefits,
+  .jl-bridal-intro,
+  .jl-bridal-showcase,
+  .jl-bridal-compare,
+  .jl-bridal-faq,
+  .jl-bridal-final-cta,
+  .jl-bridal-booking-shell
+) {
+  width: min(var(--jl-container), calc(100% - (2 * var(--jl-gutter)))) !important;
+  margin-inline: auto !important;
+}
+
+:where(
+  .jl-services-featured,
+  .jl-services-list-section,
+  .jl-services-categories,
+  .jl-services-trust,
+  .jl-services-final-cta,
+  .jl-gallery-section,
+  .jl-promotions-grid,
+  .jl-product-wrap,
+  .jl-product-tabs,
+  .jl-product-benefits,
+  .jl-bridal-intro,
+  .jl-bridal-showcase,
+  .jl-bridal-compare,
+  .jl-bridal-faq,
+  .jl-bridal-final-cta
+) {
+  padding-block: var(--jl-section-y) !important;
+  margin-block: 0 !important;
+}
+
+:where(
+  .jl-editorial-page section,
+  .jl-services-page section,
+  .jl-gallery-page section,
+  .jl-promotions-page section,
+  .jl-bridal-page section
+) + section {
+  margin-top: 0 !important;
+}
+
+:where(
+  .jl-services-toolbar,
+  .jl-gallery-toolbar,
+  .jl-shop-toolbar,
+  .jl-shop-controls,
+  .jl-shop-result-bar,
+  .wishlist-header,
+  .jl-related-head,
+  .jl-services-section-head,
+  .jl-gallery-heading
+) {
+  gap: var(--jl-space-3) !important;
+  margin-bottom: var(--jl-space-4) !important;
+}
+
+:where(
+  .jl-services-toolbar,
+  .jl-gallery-toolbar,
+  .jl-shop-toolbar,
+  .jl-shop-search-panel,
+  .jl-gallery-search,
+  .jl-services-search
+) {
+  min-height: 42px !important;
+}
+
+:where(
+  .jl-editorial-hero h1,
+  .jl-services-hero h1,
+  .jl-gallery-hero h1,
+  .jl-promotions-hero h1,
+  .wishlist-hero h1,
+  .jl-order-hero h1,
+  .jl-bridal-booking-hero h1
+) {
+  font-size: clamp(1.8rem, 4.8vw, 2.5rem) !important;
+  line-height: 1.05 !important;
+  margin-bottom: var(--jl-space-2) !important;
+}
+
+:where(
+  .jl-editorial-hero p,
+  .jl-services-hero p,
+  .jl-gallery-hero p,
+  .jl-promotions-hero p,
+  .wishlist-hero p,
+  .jl-order-hero p
+) {
+  max-width: 680px !important;
+  margin-block: 0 !important;
+  font-size: 0.9rem !important;
+}
+
+:where(.jl-promo-card, .jl-contact-info-card, .jl-order-info-card, .jl-order-summary, .jl-booking-section) {
+  padding: var(--jl-card-pad) !important;
+  border-radius: var(--jl-radius-lg) !important;
+  box-shadow: var(--jl-shadow-soft) !important;
+}
+
+.jl-promotions-grid,
+.jl-contact-info-grid,
+.jl-order-details-grid,
+.jl-faq-grid,
+.jl-values-grid,
+.jl-testimonial-page-grid {
+  gap: var(--jl-space-4) !important;
+}
+
+/* Product detail: premium, but without oversized empty bands. */
+.jl-product-wrap {
+  gap: clamp(18px, 3vw, 32px) !important;
+  padding-top: var(--jl-space-6) !important;
+  padding-bottom: var(--jl-space-6) !important;
+}
+
+.jl-product-gallery,
+.jl-product-info,
+.jl-product-purchase-box {
+  min-width: 0 !important;
+}
+
+.jl-product-info h1 {
+  font-size: clamp(1.55rem, 3vw, 2.15rem) !important;
+  line-height: 1.08 !important;
+  margin-bottom: var(--jl-space-2) !important;
+}
+
+.jl-product-price-row,
+.jl-product-rating,
+.jl-product-meta-grid,
+.jl-product-sizes,
+.jl-product-actions {
+  margin-block: var(--jl-space-3) !important;
+  gap: var(--jl-space-3) !important;
+}
+
+.jl-product-purchase-box {
+  padding: var(--jl-card-pad) !important;
+  border-radius: var(--jl-radius-lg) !important;
+}
+
+.jl-product-thumbs {
+  gap: var(--jl-space-2) !important;
+  margin-top: var(--jl-space-2) !important;
+}
+
+.jl-product-tab-buttons {
+  gap: var(--jl-space-2) !important;
+  margin-bottom: var(--jl-space-4) !important;
+}
+
+.jl-product-tab-buttons button {
+  min-height: var(--jl-control-h-sm) !important;
+  padding: 7px 12px !important;
+  font-size: 0.78rem !important;
+}
+
+/* Orders and booking surfaces. */
+:where(.jl-order-history, .jl-order-items, .jl-summary-items) {
+  gap: var(--jl-space-3) !important;
+}
+
+:where(.jl-order-history-item, .jl-summary-item, .jl-order-item-info) {
+  padding: 10px 12px !important;
+  border-radius: var(--jl-radius-md) !important;
+}
+
+.jl-order-container,
+.jl-bridal-booking-shell {
+  padding-block: var(--jl-space-6) var(--jl-major-y) !important;
+}
+
+.jl-booking-layout,
+.jl-contact-layout {
+  gap: var(--jl-space-5) !important;
+}
+
+.jl-booking-section {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* ---------- Admin management pages shared density ---------- */
+.amu-page,
+.amu-container {
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+  overflow-x: clip !important;
+}
+
+.amu-container {
+  width: min(1440px, calc(100% - (2 * var(--jl-gutter)))) !important;
+  margin-inline: auto !important;
+  padding: var(--jl-space-5) 0 var(--jl-major-y) !important;
+}
+
+.amu-topbar {
+  min-height: 52px !important;
+  padding: 7px var(--jl-gutter) !important;
+  gap: var(--jl-space-3) !important;
+}
+
+.amu-brand,
+.amu-account,
+.amu-toolbar,
+.amu-actions {
+  gap: var(--jl-space-2) !important;
+}
+
+.amu-nav {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  gap: 4px !important;
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+.amu-nav a {
+  min-height: 34px !important;
+  padding: 7px 9px !important;
+  white-space: nowrap !important;
+  font-size: 0.72rem !important;
+}
+
+.amu-heading {
+  margin-bottom: var(--jl-space-4) !important;
+}
+
+.amu-heading h1 {
+  font-size: clamp(1.35rem, 2.8vw, 1.9rem) !important;
+}
+
+.amu-heading p {
+  margin-top: 4px !important;
+  font-size: 0.8rem !important;
+}
+
+.amu-stats,
+.amu-form-grid,
+.amu-detail-grid {
+  gap: var(--jl-space-3) !important;
+}
+
+.amu-stat,
+.amu-card {
+  padding: var(--jl-card-pad) !important;
+  border-radius: var(--jl-radius-md) !important;
+  box-shadow: var(--jl-shadow-soft) !important;
+}
+
+.amu-stat {
+  min-height: 92px !important;
+}
+
+.amu-stat strong {
+  font-size: clamp(1.25rem, 2.6vw, 1.75rem) !important;
+}
+
+.amu-field input,
+.amu-field select,
+.amu-field textarea {
+  min-height: var(--jl-control-h) !important;
+  padding: 9px 11px !important;
+  font-size: 0.84rem !important;
+}
+
+.amu-field textarea {
+  min-height: 84px !important;
+}
+
+.amu-button,
+.amu-icon-button {
+  min-height: var(--jl-control-h-sm) !important;
+  padding: 8px 12px !important;
+  font-size: 0.78rem !important;
+}
+
+.amu-table-wrap {
+  max-width: 100% !important;
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+.amu-table th,
+.amu-table td {
+  padding: 9px 10px !important;
+  font-size: 0.76rem !important;
+}
+
+.amu-modal-body,
+.amu-modal-header,
+.amu-modal-footer {
+  padding: var(--jl-space-4) !important;
+}
+
+.amu-modal {
+  width: min(620px, calc(100% - 24px)) !important;
+  max-height: min(86dvh, 760px) !important;
+  overflow-y: auto !important;
+}
+
+@media (max-width: 767px) {
+  :where(
+    .jl-editorial-hero,
+    .jl-services-hero,
+    .jl-gallery-hero,
+    .jl-shop-hero,
+    .jl-promotions-hero,
+    .jl-order-hero,
+    .wishlist-hero,
+    .jl-bridal-booking-hero
+  ) {
+    min-height: 124px !important;
+    padding: var(--jl-space-6) var(--jl-gutter) !important;
+  }
+
+  .jl-product-wrap {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: var(--jl-space-4) !important;
+    padding-top: var(--jl-space-4) !important;
+  }
+
+  .jl-product-info h1 {
+    font-size: clamp(1.4rem, 7vw, 1.8rem) !important;
+  }
+
+  .jl-booking-layout,
+  .jl-contact-layout,
+  .jl-order-details-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: var(--jl-space-4) !important;
+  }
+
+  .amu-container {
+    width: min(100% - 24px, 100%) !important;
+    padding-top: 14px !important;
+  }
+
+  .amu-topbar {
+    min-height: 48px !important;
+    padding-inline: 12px !important;
+  }
+
+  .amu-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+
+  .amu-form-grid,
+  .amu-detail-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}
+
+.admin-product-gallery-upload-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--jl-space-3);
+}
+
+.admin-product-gallery-upload-grid .admin-image-upload-field {
+  grid-column: auto;
+  padding: 10px;
+}
+
+.admin-product-gallery-upload-grid .admin-image-upload-field__header {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.admin-product-gallery-upload-grid .admin-image-upload-field__actions {
+  justify-content: flex-start;
+  margin-top: 8px;
+}
+
+.admin-product-gallery-upload-grid .admin-image-upload-field__preview-wrap {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (max-width: 767px) {
+  .admin-product-gallery-upload-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---------- Invoice screen density (print rules remain authoritative) ---------- */
+@media screen {
+  .invoice-page {
+    min-height: 100dvh !important;
+    padding: var(--jl-space-6) var(--jl-gutter) !important;
+  }
+
+  .invoice-toolbar {
+    width: min(850px, 100%) !important;
+    margin: 0 auto var(--jl-space-3) !important;
+    gap: var(--jl-space-2) !important;
+  }
+
+  .invoice-toolbar button {
+    min-height: var(--jl-control-h-sm) !important;
+    padding: 7px 12px !important;
+    font-size: 0.78rem !important;
+  }
+
+  .invoice-container {
+    width: min(850px, 100%) !important;
+    padding: clamp(18px, 3vw, 30px) !important;
+    border-radius: var(--jl-radius-lg) !important;
+  }
+
+  .invoice-container :where(h1, h2, h3, p) {
+    margin-top: 0 !important;
+  }
+
+  .invoice-container table th,
+  .invoice-container table td {
+    padding: 8px 9px !important;
+    font-size: 0.78rem !important;
+  }
+}
+
+/* ---------- Editorial/policy pages ---------- */
+.jl-policy-hero,
+.jl-policy-layout {
+  width: min(var(--jl-container), calc(100% - (2 * var(--jl-gutter)))) !important;
+  margin-inline: auto !important;
+}
+
+.jl-policy-hero {
+  padding-block: var(--jl-space-8) var(--jl-space-6) !important;
+  text-align: center;
+}
+
+.jl-policy-hero h1 {
+  margin: 7px 0 8px !important;
+  font-size: clamp(1.8rem, 4.6vw, 2.45rem) !important;
+}
+
+.jl-policy-hero p {
+  max-width: 720px !important;
+  margin: 0 auto !important;
+  font-size: 0.9rem !important;
+}
+
+.jl-policy-layout {
+  gap: var(--jl-space-5) !important;
+  padding-bottom: var(--jl-major-y) !important;
+}
+
+.jl-policy-nav,
+.jl-policy-content > section,
+.jl-policy-help {
+  padding: var(--jl-card-pad) !important;
+  border-radius: var(--jl-radius-md) !important;
+}
+
+.jl-policy-content {
+  gap: var(--jl-space-4) !important;
+}
+
+.jl-policy-content > section h2,
+.jl-policy-help h2 {
+  margin-bottom: var(--jl-space-2) !important;
+  font-size: clamp(1rem, 2vw, 1.2rem) !important;
+}
+
+@media (max-width: 767px) {
+  .jl-policy-hero {
+    padding-block: var(--jl-space-6) var(--jl-space-4) !important;
+  }
+
+  .jl-policy-layout {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: var(--jl-space-4) !important;
+  }
+
+  .jl-policy-nav {
+    position: static !important;
+  }
+}
+
+.admin-content .table-card,
+.admin-content .modal-content,
+.jl-compare-table-wrap {
+  max-width: 100% !important;
+}
+
+.admin-content .table-card,
+.jl-compare-table-wrap {
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+.admin-content .table,
+.amu-table,
+.invoice-items-table {
+  max-width: 100% !important;
+}

@@ -12,6 +12,7 @@ export type GalleryImage = {
   title?: string;
   image?: string;
   imageUrl?: string;
+  publicId?: string;
   category?: string;
   description?: string;
   caption?: string;
@@ -30,6 +31,7 @@ function cleanGalleryImage(
     title: data.title || '',
     image: data.image || data.imageUrl || '',
     imageUrl: data.imageUrl || data.image || '',
+    publicId: data.publicId || '',
     category: data.category || '',
     description: data.description || data.caption || '',
     caption: data.caption || data.description || '',
@@ -63,6 +65,7 @@ export async function addBridalGalleryImage(
     title: item.title || item.caption || '',
     image: item.image || item.imageUrl || '',
     imageUrl: item.imageUrl || item.image || '',
+    publicId: item.publicId || '',
     category: item.category || '',
     description: item.description || item.caption || '',
     caption: item.caption || item.description || '',

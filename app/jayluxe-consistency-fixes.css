@@ -248,7 +248,7 @@ body .global-footer-newsletter p {
     inset: 0 !important;
     z-index: 9999 !important;
     display: block !important;
-    width: 100vw !important;
+    width: 100% !important;
     height: 100vh !important;
     height: 100dvh !important;
     visibility: hidden !important;

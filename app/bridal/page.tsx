@@ -19,6 +19,7 @@ import {
   type BridalPackage,
 } from '@/lib/bridal';
 import Footer from '@/components/Footer';
+import ResponsiveImage from '@/components/ResponsiveImage';
 import { getSafeImageSource } from '@/lib/images';
 import PageHeroIcon from '@/components/PageHeroIcon';
 import { BRIDAL_GRID_CLASSES } from '@/lib/layoutClasses';
@@ -123,9 +124,9 @@ export default function BridalPage() {
         <div className="jl-bridal-hero-inner">
           <motion.div
             className="jl-bridal-hero-content"
-            initial={{ opacity: 0, y: 24 }}
+            initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
+            transition={{ duration: 0.4 }}
           >
             <PageHeroIcon icon={Crown} label="Bridal packages" />
             <span className="jl-bridal-badge">
@@ -257,15 +258,15 @@ export default function BridalPage() {
                       ? 'jl-bridal-card popular'
                       : 'jl-bridal-card'
                   }
-                  initial={{ opacity: 0, y: 28 }}
+                  initial={{ opacity: 0, y: 8 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{
                     once: true,
                     amount: 0.25,
                   }}
                   transition={{
-                    duration: 0.55,
-                    delay: index * 0.08,
+                    duration: 0.42,
+                    delay: index * 0.06,
                   }}
                 >
                   {isPopular && (
@@ -275,7 +276,7 @@ export default function BridalPage() {
                   )}
 
                   <div className="jl-bridal-card-image">
-                    <Image
+                    <ResponsiveImage
                       src={packageImage}
                       alt={`${packageName} bridal package`}
                       fill

@@ -21,7 +21,7 @@ export default function ServiceCard({
   featured = false,
 }: ServiceCardProps) {
   return (
-    <article className="jl-unified-service-card">
+    <article className="jl-unified-service-card jl-service-card-compact">
       <div className="jl-unified-service-media">
         <ResponsiveImage
           src={service.image}

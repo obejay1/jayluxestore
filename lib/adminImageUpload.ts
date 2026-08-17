@@ -1,17 +1,5 @@
 'use client';
 
-import { getIdToken } from 'firebase/auth';
-import {
-  getDownloadURL,
-  getStorage,
-  ref,
-  uploadBytesResumable,
-  type StorageError,
-  type UploadTask,
-} from 'firebase/storage';
-
-import app, { auth } from '@/lib/firebase';
-
 export type AdminImageKind =
   | 'products'
   | 'services'
@@ -34,8 +22,6 @@ export type AdminImageUploadController = {
 export const MAX_ADMIN_IMAGE_BYTES = 8 * 1024 * 1024;
 export const ADMIN_IMAGE_UPLOAD_TIMEOUT_MS = 90_000;
 
-const FIREBASE_RETRY_HEADROOM_MS = 10_000;
-const MIN_FIREBASE_RETRY_MS = 15_000;
 const ALLOWED_IMAGE_TYPES = new Set([
   'image/jpeg',
   'image/png',
@@ -43,14 +29,20 @@ const ALLOWED_IMAGE_TYPES = new Set([
   'image/gif',
 ]);
 
-const STORAGE_PREFIX: Record<AdminImageKind, string> = {
-  products: 'products',
-  services: 'services',
-  categories: 'categories',
-  testimonials: 'testimonials',
-  'transformation-before': 'transformations/before',
-  'transformation-after': 'transformations/after',
-  'bridal-gallery': 'bridal-gallery',
+const MAX_COMPRESSED_DIMENSION = 2000;
+const COMPRESS_THRESHOLD_BYTES = 2 * 1024 * 1024;
+const JPEG_QUALITY = 0.82;
+const WEBP_QUALITY = 0.82;
+const PNG_QUALITY = 0.9;
+
+const CLOUDINARY_FOLDER: Record<AdminImageKind, string> = {
+  products: 'jayluxe/products',
+  services: 'jayluxe/services',
+  categories: 'jayluxe/categories',
+  testimonials: 'jayluxe/testimonials',
+  'transformation-before': 'jayluxe/transformations/before',
+  'transformation-after': 'jayluxe/transformations/after',
+  'bridal-gallery': 'jayluxe/bridal-gallery',
 };
 
 export class AdminImageUploadError extends Error {
@@ -63,103 +55,12 @@ export class AdminImageUploadError extends Error {
   }
 }
 
-function safeFileName(name: string) {
-  const clean = name
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9._-]+/g, '-')
-    .replace(/-+/g, '-')
-    .replace(/^-|-$/g, '');
-
-  return clean || 'image';
-}
-
-function uniqueFileName(file: File) {
-  const suffix = Math.random().toString(36).slice(2, 10);
-  return `${Date.now()}-${suffix}-${safeFileName(file.name)}`;
-}
-
-function storageErrorCode(error: unknown) {
-  return typeof error === 'object' && error && 'code' in error
-    ? String((error as StorageError).code || '')
-    : '';
-}
-
-function normalizedUploadError(error: unknown) {
-  if (error instanceof AdminImageUploadError) return error;
-
-  const code = storageErrorCode(error);
-
-  switch (code) {
-    case 'storage/unauthenticated':
-      return new AdminImageUploadError(
-        'Your Firebase administrator session is missing or expired. Sign in again and retry the image upload.',
-        code,
-      );
-    case 'storage/unauthorized':
-      return new AdminImageUploadError(
-        'Firebase Storage rejected this image. Confirm this administrator has permission for this section and that the latest Storage Rules are deployed.',
-        code,
-      );
-    case 'storage/canceled':
-      return new AdminImageUploadError('The image upload was cancelled.', code);
-    case 'storage/retry-limit-exceeded':
-      return new AdminImageUploadError(
-        'The image upload could not complete after repeated network attempts. Check your connection and try again.',
-        code,
-      );
-    case 'storage/quota-exceeded':
-      return new AdminImageUploadError(
-        'Firebase Storage quota or billing access is unavailable. Check Firebase Usage/Billing and retry.',
-        code,
-      );
-    case 'storage/invalid-checksum':
-      return new AdminImageUploadError(
-        'The uploaded image failed Firebase integrity validation. Select the image again and retry.',
-        code,
-      );
-    case 'storage/object-not-found':
-      return new AdminImageUploadError(
-        'Firebase could not find the uploaded image object. Retry the upload.',
-        code,
-      );
-    case 'storage/bucket-not-found':
-      return new AdminImageUploadError(
-        'The configured Firebase Storage bucket could not be found. Verify NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET in Vercel against Firebase Console → Storage.',
-        code,
-      );
-    case 'storage/no-default-bucket':
-    case 'storage/invalid-default-bucket':
-      return new AdminImageUploadError(
-        'Firebase Storage does not have a valid default bucket. Copy the exact bucket name from Firebase Console → Storage into NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET and redeploy.',
-        code,
-      );
-    case 'storage/unauthorized-app':
-      return new AdminImageUploadError(
-        'Firebase rejected this web app for Storage access. Verify that the Firebase web-app configuration and Storage bucket belong to the same project.',
-        code,
-      );
-    case 'storage/project-not-found':
-      return new AdminImageUploadError(
-        'The Firebase project for this upload could not be found. Verify the production Firebase project configuration.',
-        code,
-      );
-    case 'storage/server-file-wrong-size':
-      return new AdminImageUploadError(
-        'Firebase reported an incomplete image upload. Retry on a stable connection.',
-        code,
-      );
-    case 'storage/unknown':
-      return new AdminImageUploadError(
-        'Firebase Storage returned an unknown error. Check the browser console/network response for the underlying Firebase message.',
-        code,
-      );
-    default:
-      return new AdminImageUploadError(
-        error instanceof Error ? error.message : 'Image upload failed. Please try again.',
-        code || undefined,
-      );
-  }
+function isAbortError(error: unknown) {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    (error as { name?: string }).name === 'AbortError'
+  );
 }
 
 function validateFile(file: File) {
@@ -176,8 +77,153 @@ function validateFile(file: File) {
   }
 }
 
-function createCanceledError() {
-  return new AdminImageUploadError('The image upload was cancelled.', 'storage/canceled');
+function loadImageObject(file: File): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const objectUrl = URL.createObjectURL(file);
+    const image = new Image();
+    image.onload = () => {
+      URL.revokeObjectURL(objectUrl);
+      resolve(image);
+    };
+    image.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      reject(new AdminImageUploadError('The selected image could not be read. Please choose another image.'));
+    };
+    image.src = objectUrl;
+  });
+}
+
+function encodeBlob(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result || ''));
+    reader.onerror = () =>
+      reject(new AdminImageUploadError('The selected image could not be read. Please choose another image.'));
+    reader.readAsDataURL(blob);
+  });
+}
+
+function canvasToBlob(canvas: HTMLCanvasElement, type: string, quality: number): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    canvas.toBlob(
+      (blob) => {
+        if (blob) resolve(blob);
+        else reject(new AdminImageUploadError('The image could not be compressed. Please choose another image.'));
+      },
+      type,
+      quality,
+    );
+  });
+}
+
+/**
+ * Compresses and downscales very large images client-side before upload so
+ * e-commerce uploads stay small without destroying visible quality. GIFs are
+ * passed through untouched to preserve animation.
+ */
+async function prepareImageDataUrl(file: File): Promise<string> {
+  if (file.type === 'image/gif' || file.size <= COMPRESS_THRESHOLD_BYTES) {
+    return encodeBlob(file);
+  }
+
+  const image = await loadImageObject(file);
+  const needsScaling = Math.max(image.naturalWidth, image.naturalHeight) > MAX_COMPRESSED_DIMENSION;
+  if (!needsScaling) {
+    return encodeBlob(file);
+  }
+
+  const scale = Math.min(1, MAX_COMPRESSED_DIMENSION / Math.max(image.naturalWidth, image.naturalHeight));
+  const width = Math.max(1, Math.round(image.naturalWidth * scale));
+  const height = Math.max(1, Math.round(image.naturalHeight * scale));
+
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  const context = canvas.getContext('2d');
+  if (!context) {
+    throw new AdminImageUploadError('The image could not be processed. Please choose another image.');
+  }
+  context.drawImage(image, 0, 0, width, height);
+
+  const outputType =
+    file.type === 'image/png' ? 'image/png' : file.type === 'image/webp' ? 'image/webp' : 'image/jpeg';
+  const quality =
+    outputType === 'image/png' ? PNG_QUALITY : outputType === 'image/webp' ? WEBP_QUALITY : JPEG_QUALITY;
+
+  const compressed = await canvasToBlob(canvas, outputType, quality);
+  if (compressed.size >= file.size) {
+    return encodeBlob(file);
+  }
+  return encodeBlob(compressed);
+}
+
+async function sendUploadRequest(
+  dataUrl: string,
+  folder: string,
+  timeoutMs: number,
+  signal: AbortSignal,
+): Promise<string> {
+  let response: Response;
+  try {
+    response = await fetch('/api/upload', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ image: dataUrl, folder }),
+      signal,
+      cache: 'no-store',
+    });
+  } catch (error) {
+    if (isAbortError(error)) {
+      throw new AdminImageUploadError(
+        `Image upload exceeded ${Math.round(timeoutMs / 1000)} seconds. Check your connection and try again.`,
+        'jayluxe/upload-timeout',
+      );
+    }
+    throw new AdminImageUploadError(
+      'Could not reach the upload service. Check your connection and try again.',
+      'jayluxe/network-error',
+    );
+  }
+
+  const text = await response.text().catch(() => '');
+  let body: { url?: unknown; message?: unknown; code?: unknown } = {};
+  if (text) {
+    try {
+      body = JSON.parse(text) as { url?: unknown; message?: unknown; code?: unknown };
+    } catch {
+      body = {};
+    }
+  }
+
+  const message =
+    typeof body.message === 'string' && body.message
+      ? body.message
+      : 'Image upload failed. Please try again.';
+
+  if (response.status === 401) {
+    throw new AdminImageUploadError(
+      'Your administrator session has expired. Sign in again and retry the image upload.',
+      'jayluxe/unauthenticated',
+    );
+  }
+  if (response.status === 403) {
+    throw new AdminImageUploadError(
+      'This administrator account does not have permission to upload images.',
+      'jayluxe/forbidden',
+    );
+  }
+  if (!response.ok) {
+    throw new AdminImageUploadError(message, body.code ? String(body.code) : `jayluxe/http-${response.status}`);
+  }
+
+  const url = typeof body.url === 'string' ? body.url.trim() : '';
+  if (!url || !/^https:\/\//i.test(url)) {
+    throw new AdminImageUploadError(
+      'The upload service returned an invalid image URL. Please try again.',
+      'jayluxe/invalid-response',
+    );
+  }
+  return url;
 }
 
 export function startAdminImageUpload(
@@ -185,141 +231,54 @@ export function startAdminImageUpload(
   kind: AdminImageKind,
   options: AdminImageUploadOptions = {},
 ): AdminImageUploadController {
-  let task: UploadTask | null = null;
-  let cancelled = false;
+  let aborted = false;
 
   const cancel = () => {
-    cancelled = true;
-    try {
-      task?.cancel();
-    } catch {
-      // Cancellation is best effort; the promise still settles through the guard below.
-    }
+    aborted = true;
   };
 
   const promise = (async () => {
     validateFile(file);
 
-    const currentUser = auth.currentUser;
-    if (!currentUser) {
-      throw new AdminImageUploadError(
-        'Your Firebase administrator session is missing or expired. Sign in again and retry the image upload.',
-        'storage/unauthenticated',
-      );
-    }
-
-    // Force a fresh token so Storage Rules receive current admin role/permissions.
-    await getIdToken(currentUser, true);
-    if (cancelled) throw createCanceledError();
-
-    const storage = getStorage(app);
-    const bucket = storage.app.options.storageBucket;
-    if (!bucket) {
-      throw new AdminImageUploadError(
-        'Firebase Storage is not configured. Verify NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET in the production environment.',
-        'jayluxe/storage-not-configured',
-      );
-    }
-
     const timeoutMs = Math.max(25_000, options.timeoutMs ?? ADMIN_IMAGE_UPLOAD_TIMEOUT_MS);
-    const retryMs = Math.max(
-      MIN_FIREBASE_RETRY_MS,
-      Math.min(timeoutMs - FIREBASE_RETRY_HEADROOM_MS, 60_000),
-    );
-    storage.maxUploadRetryTime = retryMs;
 
-    const imageRef = ref(storage, `${STORAGE_PREFIX[kind]}/${uniqueFileName(file)}`);
-    task = uploadBytesResumable(imageRef, file, {
-      contentType: file.type,
-      cacheControl: 'public,max-age=31536000,immutable',
-    });
+    const progressTimer = window.setInterval(() => {
+      options.onProgress?.(90);
+    }, 600);
+    const clearProgressTimer = () => window.clearInterval(progressTimer);
 
-    console.info('[JayLuxe admin image upload] Firebase Storage bucket:', bucket, {
-      projectId: storage.app.options.projectId || 'unknown',
-      kind,
-      path: imageRef.fullPath,
-      fileType: file.type,
-      fileSize: file.size,
-    });
+    try {
+      options.onProgress?.(5);
+      const dataUrl = await prepareImageDataUrl(file);
+      if (aborted) throw new AdminImageUploadError('The image upload was cancelled.', 'jayluxe/cancelled');
 
-    return await new Promise<string>((resolve, reject) => {
-      let settled = false;
-      let timeoutId: number | null = null;
-      let unsubscribe: (() => void) | null = null;
+      options.onProgress?.(40);
 
-      const cleanup = () => {
-        if (timeoutId !== null) {
-          window.clearTimeout(timeoutId);
-          timeoutId = null;
-        }
-        unsubscribe?.();
-        unsubscribe = null;
-      };
+      const controller = new AbortController();
+      const timeoutId = window.setTimeout(() => controller.abort(), timeoutMs);
 
-      const rejectOnce = (error: unknown) => {
-        if (settled) return;
-        settled = true;
-        cleanup();
-        const normalized = normalizedUploadError(error);
-        console.error('[JayLuxe admin image upload] Firebase upload failed', {
-          code: normalized.code || storageErrorCode(error) || 'unknown',
-          message: normalized.message,
-          bucket,
-          kind,
-          path: imageRef.fullPath,
-        });
-        reject(normalized);
-      };
-
-      const resolveOnce = (url: string) => {
-        if (settled) return;
-        settled = true;
-        cleanup();
-        options.onProgress?.(100);
-        resolve(url);
-      };
-
-      timeoutId = window.setTimeout(() => {
-        if (settled) return;
-        const timeoutError = new AdminImageUploadError(
-          `Image upload exceeded ${Math.round(timeoutMs / 1000)} seconds. Check your connection, Firebase Storage bucket, authentication, and deployed Storage Rules.`,
-          'jayluxe/upload-timeout',
+      try {
+        const url = await sendUploadRequest(
+          dataUrl,
+          CLOUDINARY_FOLDER[kind],
+          timeoutMs,
+          controller.signal,
         );
-        cancel();
-        rejectOnce(timeoutError);
-      }, timeoutMs);
-
-      unsubscribe = task!.on(
-        'state_changed',
-        (snapshot) => {
-          if (settled || cancelled) return;
-          const progress = snapshot.totalBytes > 0
-            ? Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100)
-            : 0;
-          options.onProgress?.(Math.min(99, Math.max(0, progress)));
-        },
-        rejectOnce,
-        async () => {
-          try {
-            if (cancelled) {
-              rejectOnce(createCanceledError());
-              return;
-            }
-            const url = await getDownloadURL(task!.snapshot.ref);
-            resolveOnce(url);
-          } catch (error) {
-            rejectOnce(error);
-          }
-        },
-      );
-
-      if (cancelled) {
-        cancel();
-        rejectOnce(createCanceledError());
+        if (aborted) throw new AdminImageUploadError('The image upload was cancelled.', 'jayluxe/cancelled');
+        options.onProgress?.(100);
+        return url;
+      } finally {
+        window.clearTimeout(timeoutId);
       }
-    });
+    } finally {
+      clearProgressTimer();
+    }
   })().catch((error) => {
-    throw normalizedUploadError(error);
+    throw error instanceof AdminImageUploadError
+      ? error
+      : new AdminImageUploadError(
+          error instanceof Error ? error.message : 'Image upload failed. Please try again.',
+        );
   });
 
   return { promise, cancel };

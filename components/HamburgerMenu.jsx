@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 
 import styles from './HamburgerMenu.module.css';
@@ -19,18 +19,43 @@ const NAVIGATION_ITEMS = [
 
 export default function HamburgerMenu({ className = '' }) {
   const [isOpen, setIsOpen] = useState(false);
+  const wrapperRef = useRef(null);
+  const buttonRef = useRef(null);
 
   const toggle = () => setIsOpen((open) => !open);
   const close = () => setIsOpen(false);
 
+  useEffect(() => {
+    if (!isOpen) return undefined;
+
+    function handlePointerDown(event) {
+      if (!wrapperRef.current?.contains(event.target)) close();
+    }
+
+    function handleKeyDown(event) {
+      if (event.key === 'Escape') {
+        close();
+        buttonRef.current?.focus();
+      }
+    }
+
+    document.addEventListener('pointerdown', handlePointerDown);
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen]);
 
   return (
-    <div className={`${styles.wrapper} ${className}`.trim()}>
+    <div ref={wrapperRef} className={`${styles.wrapper} ${className}`.trim()}>
       <button
+        ref={buttonRef}
         type="button"
         className={`${styles.hamburgerBtn} ${isOpen ? styles.open : ''}`}
         onClick={toggle}
-        aria-label="Toggle menu"
+        aria-label={isOpen ? 'Close menu' : 'Open menu'}
         aria-expanded={isOpen}
         aria-controls="jayluxe-hamburger-menu"
       >

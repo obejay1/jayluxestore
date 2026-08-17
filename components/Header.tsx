@@ -125,7 +125,7 @@ export default function Header({
   }
 
   return (
-    <header className="jl-site-header">
+    <header className="jl-site-header jl-compact-header">
       <div className="jl-announcement-bar">
         <span>Curated luxury for beauty, fashion and lifestyle</span>
         <Link href="/promotions">View current offers</Link>

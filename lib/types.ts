@@ -7,7 +7,9 @@ export type Product = {
   type: 'product' | 'service';
   description?: string;
   image: string;
+  imagePublicId?: string;
   gallery?: string[];
+  galleryPublicIds?: string[];
   sku?: string;
   rating?: number;
   reviewCount?: number;
@@ -19,7 +21,7 @@ export type Product = {
   sizes?: string[];
   active?: boolean;
 };
-export type Category={id:string;name:string;slug?:string;type:'product'|'service';description?:string;image?:string;active?:boolean;createdAt?:string;};
+export type Category={id:string;name:string;slug?:string;type:'product'|'service';description?:string;image?:string;imagePublicId?:string;active?:boolean;createdAt?:string;};
 export type Order={
 	id:string;
 	userId?:string;
@@ -82,6 +84,7 @@ export type BridalPackage = {
   title?: string;
   description: string;
   image: string;
+  imagePublicId?: string;
   price: number;
   features: string[];
   duration?: string;
@@ -95,7 +98,9 @@ export type Transformation = {
   title: string;
   category: string;
   beforeImage: string;
+  beforeImagePublicId?: string;
   afterImage: string;
+  afterImagePublicId?: string;
   description: string;
   featured: boolean;
   createdAt?: string;

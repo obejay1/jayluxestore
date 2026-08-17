@@ -1,27 +1,35 @@
 'use client';
 
 import {
-  ADMIN_IMAGE_UPLOAD_TIMEOUT_MS,
-  MAX_ADMIN_IMAGE_BYTES,
+  MAX_UPLOAD_IMAGE_BYTES,
   uploadAdminImage,
-  type AdminImageUploadOptions,
-} from '@/lib/adminImageUpload';
+  type ImageUploadOptions,
+} from '@/lib/imageUpload';
 
 export type CatalogImageKind = 'products' | 'categories';
-export type CatalogImageUploadOptions = AdminImageUploadOptions;
 
-export const MAX_CATALOG_IMAGE_BYTES = MAX_ADMIN_IMAGE_BYTES;
-export const UPLOAD_TIMEOUT_MS = ADMIN_IMAGE_UPLOAD_TIMEOUT_MS;
+export type CatalogImageUploadOptions = {
+  onProgress?: (progress: number) => void;
+  timeoutMs?: number;
+};
+
+export const MAX_CATALOG_IMAGE_BYTES = MAX_UPLOAD_IMAGE_BYTES;
+export const UPLOAD_TIMEOUT_MS = 120_000;
 
 /**
- * Backward-compatible catalog wrapper. New admin upload UI uses
- * `AdminImageUpload` directly, while any older callers still receive the same
- * Promise<string> API through the single shared Firebase Storage uploader.
+ * Backwards-compatible catalog helper. New UI uses the shared admin upload
+ * field directly, but callers can still upload a product/category image here.
  */
-export function uploadCatalogImage(
+export async function uploadCatalogImage(
   file: File,
   kind: CatalogImageKind,
   options: CatalogImageUploadOptions = {},
 ): Promise<string> {
-  return uploadAdminImage(file, kind, options);
+  const uploadOptions: ImageUploadOptions = {
+    folder: kind === 'products' ? 'jayluxe/products' : 'jayluxe/categories',
+    onProgress: options.onProgress,
+    timeoutMs: options.timeoutMs,
+  };
+  const result = await uploadAdminImage(file, uploadOptions);
+  return result.url;
 }

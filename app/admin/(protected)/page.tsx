@@ -69,8 +69,10 @@ import { Product, Order, Category } from '@/lib/types';
 import type { ProductReview } from '@/lib/productReviews';
 import { showToast } from '@/lib/toast';
 import { recordAdminActivity } from '@/lib/adminActivityClient';
-import AdminImageUpload from '@/components/admin/AdminImageUpload';
 import AdminPagination from '@/components/admin/AdminPagination';
+import AdminImageUploadField from '@/components/admin/AdminImageUploadField';
+import ResponsiveImage from '@/components/ResponsiveImage';
+import { deleteAdminImage } from '@/lib/imageUpload';
 
 
 type AdminOrder = Omit<Order, 'items'> & {
@@ -137,6 +139,9 @@ const blankProduct: Product = {
   type: 'product',
   description: '',
   image: '',
+  imagePublicId: '',
+  gallery: [],
+  galleryPublicIds: [],
   stock: 1,
   sizes: [],
   featured: false,
@@ -182,9 +187,13 @@ const blankTransformation: Omit<Transformation, 'createdAt'> = {
 
 type TransformationFormState = {
   data: Omit<Transformation, 'createdAt'>;
+  beforeImageFile: string | null;
+  afterImageFile: string | null;
 };
 
-const blankTransformationForm: TransformationFormState = { data: blankTransformation };
+const blankTransformationForm: TransformationFormState = {
+  data: blankTransformation, beforeImageFile: null, afterImageFile: null
+};
 
 const blankTestimonial: Omit<Testimonial, 'createdAt'> = {
   id: '',
@@ -197,9 +206,10 @@ const blankTestimonial: Omit<Testimonial, 'createdAt'> = {
 
 type TestimonialFormState = {
   data: Omit<Testimonial, 'createdAt'>;
+  imageFile: string | null;
 };
 
-const blankTestimonialForm: TestimonialFormState = { data: blankTestimonial };
+const blankTestimonialForm: TestimonialFormState = { data: blankTestimonial, imageFile: null };
 
 type UserDoc = {
   id: string;
@@ -308,8 +318,43 @@ export default function Admin() {
   const [transformationForm, setTransformationForm] = useState<TransformationFormState>(blankTransformationForm);
   const [testimonialForm, setTestimonialForm] = useState<TestimonialFormState>(blankTestimonialForm);
   const [galleryImageFile, setGalleryImageFile] = useState<string | null>(null);
+  const [galleryImagePublicId, setGalleryImagePublicId] = useState('');
   const [galleryImageCaption, setGalleryImageCaption] = useState('');
-  const [isUploading, setIsUploading] = useState(false);
+  const [activeUploads, setActiveUploads] = useState<Record<string, boolean>>({});
+  const [savingGallery, setSavingGallery] = useState(false);
+  const [savingTransformation, setSavingTransformation] = useState(false);
+  const [savingTestimonial, setSavingTestimonial] = useState(false);
+
+  const markUploadActive = useCallback((key: string, uploading: boolean) => {
+    setActiveUploads((current) => ({ ...current, [key]: uploading }));
+  }, []);
+
+  const uploadActive = useCallback(
+    (...keys: string[]) => keys.some((key) => Boolean(activeUploads[key])),
+    [activeUploads],
+  );
+
+
+  const cleanupCloudinaryImages = useCallback(async (...publicIds: Array<string | undefined>) => {
+    const ids = Array.from(new Set(publicIds.map((value) => value?.trim()).filter(Boolean) as string[]));
+    await Promise.allSettled(ids.map((publicId) => deleteAdminImage(publicId)));
+  }, []);
+
+
+  const setProductGalleryImage = useCallback((index: number, url: string, publicId?: string) => {
+    setForm((current) => {
+      const gallery = [...(current.gallery || [])];
+      const galleryPublicIds = [...(current.galleryPublicIds || [])];
+
+      gallery[index] = url;
+      galleryPublicIds[index] = publicId || (url ? galleryPublicIds[index] || '' : '');
+
+      while (gallery.length && !gallery[gallery.length - 1]) gallery.pop();
+      while (galleryPublicIds.length > gallery.length) galleryPublicIds.pop();
+
+      return { ...current, gallery, galleryPublicIds };
+    });
+  }, []);
 
   const [couponForm, setCouponForm] = useState({
     id: '',
@@ -471,7 +516,16 @@ export default function Admin() {
       sizes: form.type === 'product' ? Array.from(new Set(form.sizes || [])) : [],
     };
 
+    const previousProduct = wasEditing ? products.find((item) => item.id === form.id) : undefined;
     await saveProduct(p);
+    if (previousProduct?.imagePublicId && previousProduct.imagePublicId !== p.imagePublicId) {
+      void cleanupCloudinaryImages(previousProduct.imagePublicId);
+    }
+    const nextGalleryIds = new Set((p.galleryPublicIds || []).filter(Boolean));
+    const replacedGalleryIds = (previousProduct?.galleryPublicIds || []).filter(
+      (publicId) => publicId && !nextGalleryIds.has(publicId),
+    );
+    if (replacedGalleryIds.length) void cleanupCloudinaryImages(...replacedGalleryIds);
     void recordAdminActivity({
       action: wasEditing ? 'Edited Product' : 'Added Product',
       description: `${wasEditing ? 'Updated' : 'Created'} product or service: ${p.name}.`,
@@ -513,7 +567,11 @@ export default function Admin() {
       id: categoryForm.id || Date.now().toString(),
     };
 
+    const previousCategory = wasEditing ? categories.find((item) => item.id === categoryForm.id) : undefined;
     await saveCategory(newCategory);
+    if (previousCategory?.imagePublicId && previousCategory.imagePublicId !== newCategory.imagePublicId) {
+      void cleanupCloudinaryImages(previousCategory.imagePublicId);
+    }
     void recordAdminActivity({
       action: wasEditing ? 'Edited Category' : 'Added Category',
       description: `${wasEditing ? 'Updated' : 'Created'} category: ${newCategory.name}.`,
@@ -532,7 +590,9 @@ export default function Admin() {
 
   async function deleteCategory(id: string) {
     if (!confirm('Delete this category?')) return;
+    const category = categories.find((item) => item.id === id);
     await removeCategory(id);
+    void cleanupCloudinaryImages(category?.imagePublicId);
     void recordAdminActivity({
       action: 'Deleted Category',
       description: `Deleted category ${id}.`,
@@ -556,7 +616,11 @@ export default function Admin() {
       price: Number(bridalPackageForm.price),
     };
 
+    const previousPackage = wasEditing ? bridalPackages.find((item) => item.id === bridalPackageForm.id) : undefined;
     await saveBridalPackage(newPackage);
+    if (previousPackage?.imagePublicId && previousPackage.imagePublicId !== newPackage.imagePublicId) {
+      void cleanupCloudinaryImages(previousPackage.imagePublicId);
+    }
     void recordAdminActivity({
       action: wasEditing ? 'Edited Bridal Package' : 'Added Bridal Package',
       description: `${wasEditing ? 'Updated' : 'Created'} bridal package: ${newPackage.name}.`,
@@ -578,9 +642,15 @@ export default function Admin() {
       alert('Please select an image to upload.');
       return;
     }
-    setIsUploading(true);
+    setSavingGallery(true);
     try {
-      await addBridalGalleryImage(galleryImageFile, galleryImageCaption);
+      await addBridalGalleryImage({
+        image: galleryImageFile,
+        imageUrl: galleryImageFile,
+        publicId: galleryImagePublicId,
+        caption: galleryImageCaption,
+        description: galleryImageCaption,
+      });
       void recordAdminActivity({
         action: 'Added Gallery Image',
         description: `Added a bridal gallery image${galleryImageCaption ? `: ${galleryImageCaption}` : '.'}`,
@@ -588,34 +658,44 @@ export default function Admin() {
       });
       showToast('Image uploaded to bridal gallery!', 'success');
       setGalleryImageFile(null);
+      setGalleryImagePublicId('');
       setGalleryImageCaption('');
       load();
     } catch (error) {
       showToast('Image upload failed.', 'error');
     } finally {
-      setIsUploading(false);
+      setSavingGallery(false);
     }
   }
 
   async function submitTransformation() {
-    const { data } = transformationForm;
+    const { data, beforeImageFile, afterImageFile } = transformationForm;
     const wasEditing = Boolean(data.id);
     if (!data.title || !data.category) {
       alert('Please enter a title and select a category.');
       return;
     }
-    if (!data.beforeImage || !data.afterImage) {
-      alert('Please upload both a "before" and "after" image.');
+    if (!data.id && (!beforeImageFile || !afterImageFile)) {
+      alert('Please upload both a "before" and "after" image for new transformations.');
       return;
     }
 
-    setIsUploading(true);
+    setSavingTransformation(true);
     try {
       const transformationToSave = {
         ...data,
         id: data.id || Date.now().toString(),
       };
-      await saveTransformation(transformationToSave);
+      const previousTransformation = wasEditing
+        ? transformations.find((item) => item.id === data.id)
+        : undefined;
+      await saveTransformation(transformationToSave, beforeImageFile, afterImageFile);
+      if (previousTransformation?.beforeImagePublicId && previousTransformation.beforeImagePublicId !== transformationToSave.beforeImagePublicId) {
+        void cleanupCloudinaryImages(previousTransformation.beforeImagePublicId);
+      }
+      if (previousTransformation?.afterImagePublicId && previousTransformation.afterImagePublicId !== transformationToSave.afterImagePublicId) {
+        void cleanupCloudinaryImages(previousTransformation.afterImagePublicId);
+      }
       void recordAdminActivity({
         action: wasEditing ? 'Edited Transformation' : 'Added Transformation',
         description: `${wasEditing ? 'Updated' : 'Created'} before-and-after transformation: ${transformationToSave.title}.`,
@@ -626,34 +706,39 @@ export default function Admin() {
       setTransformationForm(blankTransformationForm);
       load();
     } catch (error) {
-      console.error('TRANSFORMATION SAVE ERROR:', error);
-      showToast(error instanceof Error ? error.message : 'Failed to save transformation.', 'error');
+      showToast('Failed to save transformation.', 'error');
     } finally {
-      setIsUploading(false);
+      setSavingTransformation(false);
     }
   }
 
   function editTransformation(t: Transformation) {
-    setTransformationForm({ data: t });
+    setTransformationForm({ data: t, beforeImageFile: null, afterImageFile: null });
     document.getElementById('transformations-form')?.scrollIntoView({ behavior: 'smooth' });
   }
 
   async function submitTestimonial() {
-    const { data } = testimonialForm;
+    const { data, imageFile } = testimonialForm;
     const wasEditing = Boolean(data.id);
     if (!data.customerName || !data.testimonial) {
       alert('Please enter customer name and testimonial text.');
       return;
     }
 
-    setIsUploading(true);
+    setSavingTestimonial(true);
     try {
       const testimonialToSave = {
         ...data,
         id: data.id || Date.now().toString(),
         rating: Number(data.rating),
       };
-      await saveTestimonial(testimonialToSave);
+      const previousTestimonial = wasEditing
+        ? testimonials.find((item) => item.id === data.id)
+        : undefined;
+      await saveTestimonial(testimonialToSave, imageFile);
+      if (previousTestimonial?.imagePublicId && previousTestimonial.imagePublicId !== testimonialToSave.imagePublicId) {
+        void cleanupCloudinaryImages(previousTestimonial.imagePublicId);
+      }
       void recordAdminActivity({
         action: wasEditing ? 'Edited Testimonial' : 'Added Testimonial',
         description: `${wasEditing ? 'Updated' : 'Created'} testimonial for ${testimonialToSave.customerName}.`,
@@ -664,15 +749,14 @@ export default function Admin() {
       setTestimonialForm(blankTestimonialForm);
       load();
     } catch (error) {
-      console.error('TESTIMONIAL SAVE ERROR:', error);
-      showToast(error instanceof Error ? error.message : 'Failed to save testimonial.', 'error');
+      showToast('Failed to save testimonial.', 'error');
     } finally {
-      setIsUploading(false);
+      setSavingTestimonial(false);
     }
   }
 
   function editTestimonial(t: Testimonial) {
-    setTestimonialForm({ data: t });
+    setTestimonialForm({ data: t, imageFile: null });
     document.getElementById('testimonials-form')?.scrollIntoView({ behavior: 'smooth' });
   }
 
@@ -1624,15 +1708,18 @@ export default function Admin() {
               <option value="inactive">Inactive</option>
             </select>
 
-            <AdminImageUpload
-              kind="categories"
+            <AdminImageUploadField
+              id="category-image-upload"
               label="Category Image"
-              value={categoryForm.image || ''}
-              disabled={isUploading}
-              onUploadingChange={setIsUploading}
-              onUploaded={(url) => setCategoryForm((current) => ({ ...current, image: url }))}
-              onRemove={() => setCategoryForm((current) => ({ ...current, image: '' }))}
-              previewAlt="Category preview"
+              value={categoryForm.image}
+              folder="jayluxe/categories"
+              shape="landscape"
+              onUploadingChange={(uploading) => markUploadActive('category', uploading)}
+              onChange={(url, result) => setCategoryForm((current) => ({
+                ...current,
+                image: url,
+                imagePublicId: result?.publicId || (url ? current.imagePublicId : ''),
+              }))}
               emptyText="Choose an image to add a category thumbnail."
             />
 
@@ -1647,8 +1734,8 @@ export default function Admin() {
           </div>
 
           <div style={{ display: 'flex', gap: 12, marginTop: 16 }}>
-            <button className="btn" onClick={submitCategory} disabled={isUploading}>
-              {categoryForm.id ? 'Update Category' : 'Save Category'}
+            <button className="btn" onClick={submitCategory} disabled={uploadActive('category')}>
+              {uploadActive('category') ? 'Uploading category image…' : (categoryForm.id ? 'Update Category' : 'Save Category')}
             </button>
 
             <button
@@ -1661,22 +1748,22 @@ export default function Admin() {
         </section>
 
         <div className="stats-grid">
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.3 }} className="stat-card">
+          <motion.div initial={{ opacity: 0, scale: 0.98 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.3 }} className="stat-card">
             <h3>Total Categories</h3>
             <h1>{categories.length}</h1>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.3, delay: 0.1 }} className="stat-card">
+          <motion.div initial={{ opacity: 0, scale: 0.98 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.3, delay: 0.06 }} className="stat-card">
             <h3>Product Categories</h3>
             <h1>{productCategories}</h1>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.3, delay: 0.2 }} className="stat-card">
+          <motion.div initial={{ opacity: 0, scale: 0.98 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.3, delay: 0.12 }} className="stat-card">
             <h3>Service Categories</h3>
             <h1>{serviceCategories}</h1>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.3, delay: 0.3 }} className="stat-card">
+          <motion.div initial={{ opacity: 0, scale: 0.98 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.3, delay: 0.18 }} className="stat-card">
             <h3>Active Categories</h3>
             <h1>{activeCategories}</h1>
           </motion.div>
@@ -1691,7 +1778,7 @@ export default function Admin() {
                 {paginatedCategories.map((c) => {
                   const productCount = products.filter((product) => product.category === c.name).length;
                   return <tr key={String(c.id)}>
-                    <td><div className="admin-product-cell">{c.image ? <img src={c.image} alt="" /> : <span className="admin-product-image-placeholder"><Layers3 size={18} aria-hidden="true" /></span>}<div><strong>{c.name}</strong><small>{c.slug || c.id}</small></div></div></td>
+                    <td><div className="admin-product-cell">{c.image ? <ResponsiveImage src={c.image} alt="" width={56} height={56} sizes="56px" /> : <span className="admin-product-image-placeholder"><Layers3 size={18} aria-hidden="true" /></span>}<div><strong>{c.name}</strong><small>{c.slug || c.id}</small></div></div></td>
                     <td className="admin-description-cell">{c.description || 'No category description provided.'}</td>
                     <td><span className="badge gold">{c.type}</span></td>
                     <td><strong>{productCount}</strong></td>
@@ -1728,18 +1815,31 @@ export default function Admin() {
               onChange={(e) => setBridalPackageForm({ ...bridalPackageForm, price: Number(e.target.value) })}
             />
             <textarea
-              className="input"
+              className="input admin-field-wide"
               placeholder="Features (one per line)"
               value={bridalPackageForm.features.join('\n')}
               onChange={(e) => setBridalPackageForm({ ...bridalPackageForm, features: e.target.value.split('\n') })}
-              style={{ gridColumn: '1 / -1' }}
             />
             <textarea
-              className="input"
+              className="input admin-field-wide"
               placeholder="Description (optional)"
               value={bridalPackageForm.description}
               onChange={(e) => setBridalPackageForm({ ...bridalPackageForm, description: e.target.value })}
-              style={{ gridColumn: '1 / -1' }}
+            />
+            <AdminImageUploadField
+              id="bridal-package-image-upload"
+              label="Package Image"
+              value={bridalPackageForm.image}
+              folder="jayluxe/bridal-packages"
+              shape="portrait"
+              className="admin-field-wide"
+              onUploadingChange={(uploading) => markUploadActive('bridal-package', uploading)}
+              onChange={(url, result) => setBridalPackageForm((current) => ({
+                ...current,
+                image: url,
+                imagePublicId: result?.publicId || (url ? current.imagePublicId : ''),
+              }))}
+              emptyText="Choose a bridal package image."
             />
             <label className="input" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <input
@@ -1760,8 +1860,8 @@ export default function Admin() {
           </div>
 
           <div style={{ display: 'flex', gap: 12, marginTop: 16 }}>
-            <button className="btn" onClick={submitBridalPackage}>
-              {bridalPackageForm.id ? 'Update Package' : 'Save Package'}
+            <button className="btn" onClick={submitBridalPackage} disabled={uploadActive('bridal-package')}>
+              {uploadActive('bridal-package') ? 'Uploading package image…' : (bridalPackageForm.id ? 'Update Package' : 'Save Package')}
             </button>
             <button className="btn light" onClick={() => setBridalPackageForm(blankBridalPackage)}>
               Clear Form
@@ -1807,6 +1907,7 @@ export default function Admin() {
                       <button onClick={async () => {
                         if (confirm(`Delete ${pkg.name}?`)) {
                           await removeBridalPackage(pkg.id);
+                          void cleanupCloudinaryImages(pkg.imagePublicId);
                           void recordAdminActivity({
                             action: 'Deleted Bridal Package',
                             description: `Deleted bridal package: ${pkg.name}.`,
@@ -1835,31 +1936,35 @@ export default function Admin() {
           </div>
 
           <div className="admin-form-grid">
-            <div style={{ gridColumn: '1 / -1' }}>
-              <AdminImageUpload
-                kind="bridal-gallery"
-                label="Upload New Image"
-                value={galleryImageFile || ''}
-                disabled={isUploading}
-                onUploadingChange={setIsUploading}
-                onUploaded={setGalleryImageFile}
-                onRemove={() => setGalleryImageFile(null)}
-                previewAlt="Bridal gallery preview"
-                emptyText="Choose a bridal gallery image."
-              />
-            </div>
+            <AdminImageUploadField
+              id="bridal-gallery-image-upload"
+              label="Upload New Image"
+              value={galleryImageFile}
+              folder="jayluxe/bridal-gallery"
+              shape="wide"
+              className="admin-field-wide"
+              onUploadingChange={(uploading) => markUploadActive('bridal-gallery', uploading)}
+              onChange={(url, result) => {
+                const nextPublicId = result?.publicId || (url ? galleryImagePublicId : '');
+                if (galleryImagePublicId && galleryImagePublicId !== nextPublicId) {
+                  void cleanupCloudinaryImages(galleryImagePublicId);
+                }
+                setGalleryImageFile(url || null);
+                setGalleryImagePublicId(nextPublicId);
+              }}
+              emptyText="Choose an image for the bridal gallery."
+            />
             <input
-              className="input"
+              className="input admin-field-wide"
               placeholder="Optional: Image Caption"
               value={galleryImageCaption}
               onChange={(e) => setGalleryImageCaption(e.target.value)}
-              style={{ gridColumn: '1 / -1' }}
             />
           </div>
 
           <div style={{ marginTop: 16 }}>
-            <button className="btn" onClick={handleGalleryImageUpload} disabled={isUploading || !galleryImageFile}>
-              {isUploading ? 'Saving...' : 'Save to Gallery'}
+            <button className="btn" onClick={handleGalleryImageUpload} disabled={savingGallery || uploadActive('bridal-gallery') || !galleryImageFile}>
+              {uploadActive('bridal-gallery') ? 'Uploading image…' : savingGallery ? 'Saving gallery item…' : 'Add to Gallery'}
             </button>
           </div>
         </section>
@@ -1872,13 +1977,14 @@ export default function Admin() {
             <div className="admin-gallery-grid">
               {bridalGalleryImages.map(image => (
                 <div key={image.id} className="admin-gallery-item">
-                  <img src={image.imageUrl} alt={image.caption || 'Bridal gallery image'} />
+                  <ResponsiveImage src={image.imageUrl} alt={image.caption || 'Bridal gallery image'} width={280} height={158} sizes="(max-width: 600px) 46vw, 180px" />
                   <div className="admin-gallery-overlay">
                     <p>{image.caption}</p>
                     <button onClick={async () => {
                       if (confirm('Delete this image from the gallery?')) {
                         try {
                           await removeBridalGalleryImage(image);
+                          void cleanupCloudinaryImages(image.publicId);
                           void recordAdminActivity({
                             action: 'Deleted Gallery Image',
                             description: `Deleted bridal gallery image${image.caption ? `: ${image.caption}` : '.'}`,
@@ -1924,45 +2030,46 @@ export default function Admin() {
               {transformationCategories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
             </select>
             <textarea
-              className="input"
+              className="input admin-field-wide"
               placeholder="Optional: Description of the work done"
               value={transformationForm.data.description}
               onChange={(e) => setTransformationForm(p => ({ ...p, data: { ...p.data, description: e.target.value } }))}
-              style={{ gridColumn: '1 / -1' }}
             />
-            <AdminImageUpload
-              kind="transformation-before"
+            <AdminImageUploadField
+              id="transformation-before-image-upload"
               label="Before Image"
-              value={transformationForm.data.beforeImage}
-              disabled={isUploading}
-              onUploadingChange={setIsUploading}
-              onUploaded={(url) => setTransformationForm((current) => ({
+              value={transformationForm.beforeImageFile ?? transformationForm.data.beforeImage}
+              folder="jayluxe/transformations/before"
+              shape="wide"
+              onUploadingChange={(uploading) => markUploadActive('transformation-before', uploading)}
+              onChange={(url, result) => setTransformationForm((current) => ({
                 ...current,
-                data: { ...current.data, beforeImage: url },
+                beforeImageFile: url,
+                data: {
+                  ...current.data,
+                  beforeImagePublicId: result?.publicId || (url ? current.data.beforeImagePublicId : ''),
+                },
               }))}
-              onRemove={() => setTransformationForm((current) => ({
-                ...current,
-                data: { ...current.data, beforeImage: '' },
-              }))}
-              previewAlt="Before transformation preview"
+              emptyText="Choose the before image."
             />
-            <AdminImageUpload
-              kind="transformation-after"
+            <AdminImageUploadField
+              id="transformation-after-image-upload"
               label="After Image"
-              value={transformationForm.data.afterImage}
-              disabled={isUploading}
-              onUploadingChange={setIsUploading}
-              onUploaded={(url) => setTransformationForm((current) => ({
+              value={transformationForm.afterImageFile ?? transformationForm.data.afterImage}
+              folder="jayluxe/transformations/after"
+              shape="wide"
+              onUploadingChange={(uploading) => markUploadActive('transformation-after', uploading)}
+              onChange={(url, result) => setTransformationForm((current) => ({
                 ...current,
-                data: { ...current.data, afterImage: url },
+                afterImageFile: url,
+                data: {
+                  ...current.data,
+                  afterImagePublicId: result?.publicId || (url ? current.data.afterImagePublicId : ''),
+                },
               }))}
-              onRemove={() => setTransformationForm((current) => ({
-                ...current,
-                data: { ...current.data, afterImage: '' },
-              }))}
-              previewAlt="After transformation preview"
+              emptyText="Choose the after image."
             />
-            <label className="input" style={{ display: 'flex', alignItems: 'center', gap: 8, gridColumn: '1 / -1' }}>
+            <label className="input admin-field-wide" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <input
                 type="checkbox"
                 checked={transformationForm.data.featured}
@@ -1973,8 +2080,8 @@ export default function Admin() {
           </div>
 
           <div style={{ display: 'flex', gap: 12, marginTop: 16 }}>
-            <button className="btn" onClick={submitTransformation} disabled={isUploading}>
-              {isUploading ? 'Saving...' : (transformationForm.data.id ? 'Update Transformation' : 'Save Transformation')}
+            <button className="btn" onClick={submitTransformation} disabled={savingTransformation || uploadActive('transformation-before', 'transformation-after')}>
+              {uploadActive('transformation-before', 'transformation-after') ? 'Uploading transformation image…' : savingTransformation ? 'Saving…' : (transformationForm.data.id ? 'Update Transformation' : 'Save Transformation')}
             </button>
             <button className="btn light" onClick={() => setTransformationForm(blankTransformationForm)}>
               Clear Form
@@ -2002,21 +2109,23 @@ export default function Admin() {
                 {transformations.map(t => (
                   <tr key={t.id}>
                     <td>
-                      <img
+                      <ResponsiveImage
                         src={t.beforeImage}
                         alt="Before"
-                        width={70}
-                        height={70}
-                        style={{ objectFit: 'cover', borderRadius: 10 }}
+                        width={56}
+                        height={56}
+                        sizes="56px"
+                        style={{ objectFit: 'cover', borderRadius: 8 }}
                       />
                     </td>
                     <td>
-                      <img
+                      <ResponsiveImage
                         src={t.afterImage}
                         alt="After"
-                        width={70}
-                        height={70}
-                        style={{ objectFit: 'cover', borderRadius: 10 }}
+                        width={56}
+                        height={56}
+                        sizes="56px"
+                        style={{ objectFit: 'cover', borderRadius: 8 }}
                       />
                     </td>
                     <td>{t.title}</td>
@@ -2030,6 +2139,7 @@ export default function Admin() {
                         if (confirm(`Delete transformation: "${t.title}"?`)) {
                           try {
                             await removeTransformation(t);
+                            void cleanupCloudinaryImages(t.beforeImagePublicId, t.afterImagePublicId);
                             void recordAdminActivity({
                               action: 'Deleted Transformation',
                               description: `Deleted transformation: ${t.title}.`,
@@ -2080,33 +2190,31 @@ export default function Admin() {
               <option value={1}>1 Star</option>
             </select>
             <textarea
-              className="input"
+              className="input admin-field-wide"
               placeholder="Testimonial text..."
               value={testimonialForm.data.testimonial}
               onChange={(e) => setTestimonialForm(p => ({ ...p, data: { ...p.data, testimonial: e.target.value } }))}
-              style={{ gridColumn: '1 / -1', minHeight: '100px' }}
+              style={{ minHeight: '100px' }}
             />
-            <div style={{ gridColumn: '1 / -1' }}>
-              <AdminImageUpload
-                kind="testimonials"
-                label="Optional: Customer Image"
-                value={testimonialForm.data.image || testimonialForm.data.customerPhoto || ''}
-                disabled={isUploading}
-                onUploadingChange={setIsUploading}
-                onUploaded={(url) => setTestimonialForm((current) => ({
-                  ...current,
-                  data: { ...current.data, image: url, customerPhoto: url },
-                }))}
-                onRemove={() => setTestimonialForm((current) => ({
-                  ...current,
-                  data: { ...current.data, image: '', customerPhoto: '' },
-                }))}
-                previewAlt="Customer preview"
-                previewClassName="admin-image-preview-round"
-                emptyText="Choose an optional customer photo."
-              />
-            </div>
-            <label className="input" style={{ display: 'flex', alignItems: 'center', gap: 8, gridColumn: '1 / -1' }}>
+            <AdminImageUploadField
+              id="testimonial-image-upload"
+              label="Optional: Customer Image"
+              value={testimonialForm.imageFile ?? testimonialForm.data.image}
+              folder="jayluxe/testimonials"
+              shape="landscape"
+              className="admin-field-wide"
+              onUploadingChange={(uploading) => markUploadActive('testimonial', uploading)}
+              onChange={(url, result) => setTestimonialForm((current) => ({
+                ...current,
+                imageFile: url,
+                data: {
+                  ...current.data,
+                  imagePublicId: result?.publicId || (url ? current.data.imagePublicId : ''),
+                },
+              }))}
+              emptyText="Choose an optional customer photo."
+            />
+            <label className="input admin-field-wide" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <input
                 type="checkbox"
                 checked={testimonialForm.data.featured}
@@ -2117,8 +2225,8 @@ export default function Admin() {
           </div>
 
           <div style={{ display: 'flex', gap: 12, marginTop: 16 }}>
-            <button className="btn" onClick={submitTestimonial} disabled={isUploading}>
-              {isUploading ? 'Saving...' : (testimonialForm.data.id ? 'Update Testimonial' : 'Save Testimonial')}
+            <button className="btn" onClick={submitTestimonial} disabled={savingTestimonial || uploadActive('testimonial')}>
+              {uploadActive('testimonial') ? 'Uploading customer image…' : savingTestimonial ? 'Saving…' : (testimonialForm.data.id ? 'Update Testimonial' : 'Save Testimonial')}
             </button>
             <button className="btn light" onClick={() => setTestimonialForm(blankTestimonialForm)}>
               Clear Form
@@ -2145,11 +2253,13 @@ export default function Admin() {
                 {testimonials.map(t => (
                   <tr key={t.id}>
                     <td style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                      <img
-                        src={t.image || '/jayluxe-logo.png'}
+                      <ResponsiveImage
+                        src={t.image}
+                        fallbackSrc="/jayluxe-logo.png"
                         alt={t.customerName}
                         width={40}
                         height={40}
+                        sizes="40px"
                         style={{ objectFit: 'cover', borderRadius: '50%' }}
                       />
                       <strong>{t.customerName}</strong>
@@ -2165,6 +2275,7 @@ export default function Admin() {
                         if (confirm(`Delete testimonial from "${t.customerName}"?`)) {
                           try {
                             await removeTestimonial(t);
+                            void cleanupCloudinaryImages(t.imagePublicId);
                             void recordAdminActivity({
                               action: 'Deleted Testimonial',
                               description: `Deleted testimonial from ${t.customerName}.`,
@@ -2204,18 +2315,36 @@ export default function Admin() {
                 <label className="admin-field"><span>Category</span><select className="input" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}><option value="">Select Category</option>{categories.filter((c) => c.active).map((cat) => <option key={String(cat.id)} value={cat.name}>{cat.name}</option>)}</select></label>
                 <label className="admin-field"><span>Type</span><select className="input" value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value as 'product' | 'service', sizes: e.target.value === 'service' ? [] : form.sizes })}><option value="product">Product</option><option value="service">Service</option></select></label>
                 <label className="admin-field admin-field-wide"><span>Description</span><textarea className="input" rows={5} placeholder="Detailed product description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} /></label>
-                <div className="admin-field-wide">
-                  <AdminImageUpload
-                    kind={form.type === 'service' ? 'services' : 'products'}
-                    label={form.type === 'service' ? 'Service Image' : 'Product Image'}
-                    value={form.image || ''}
-                    disabled={isUploading}
-                    onUploadingChange={setIsUploading}
-                    onUploaded={(url) => setForm((current) => ({ ...current, image: url }))}
-                    onRemove={() => setForm((current) => ({ ...current, image: '' }))}
-                    previewAlt={form.type === 'service' ? 'Service preview' : 'Product preview'}
-                    emptyText={form.type === 'service' ? 'Choose an image for this service.' : 'Choose an image to add a storefront product thumbnail.'}
-                  />
+                <AdminImageUploadField
+                  id="product-image-upload"
+                  label="Product Image"
+                  value={form.image}
+                  folder={form.type === 'service' ? 'jayluxe/services' : 'jayluxe/products'}
+                  shape={form.type === 'service' ? 'landscape' : 'portrait'}
+                  className="admin-field-wide"
+                  onUploadingChange={(uploading) => markUploadActive('product', uploading)}
+                  onChange={(url, result) => setForm((current) => ({
+                    ...current,
+                    image: url,
+                    imagePublicId: result?.publicId || (url ? current.imagePublicId : ''),
+                  }))}
+                  emptyText="Choose an image to add a storefront product thumbnail."
+                />
+                <div className="admin-product-gallery-upload-grid admin-field-wide">
+                  {[0, 1, 2].map((index) => (
+                    <AdminImageUploadField
+                      key={index}
+                      id={`product-gallery-image-${index + 1}`}
+                      label={`Additional Image ${index + 1}`}
+                      value={form.gallery?.[index] || ''}
+                      folder={form.type === 'service' ? 'jayluxe/services' : 'jayluxe/products'}
+                      shape={form.type === 'service' ? 'landscape' : 'portrait'}
+                      onUploadingChange={(uploading) => markUploadActive(`product-gallery-${index}`, uploading)}
+                      onChange={(url, result) => setProductGalleryImage(index, url, result?.publicId)}
+                      description="Optional product gallery image. Uploads independently from the other image slots."
+                      emptyText="Choose an optional gallery image."
+                    />
+                  ))}
                 </div>
               </div>
             </fieldset>
@@ -2246,7 +2375,7 @@ export default function Admin() {
           </div>
 
           <div className="admin-form-actions">
-            <button className="btn" onClick={submitProduct} disabled={isUploading}>{form.id ? 'Update Product / Service' : 'Save Product / Service'}</button>
+            <button className="btn" onClick={submitProduct} disabled={uploadActive('product', 'product-gallery-0', 'product-gallery-1', 'product-gallery-2')}>{uploadActive('product', 'product-gallery-0', 'product-gallery-1', 'product-gallery-2') ? 'Uploading product image…' : form.id ? 'Update Product / Service' : 'Save Product / Service'}</button>
             {form.id ? <button className="btn light" type="button" onClick={() => setForm(blankProduct)}>Cancel Edit</button> : null}
           </div>
         </section>
@@ -2263,14 +2392,14 @@ export default function Admin() {
                   const stockClass = stock <= 0 ? 'danger' : stock <= 5 ? 'warning' : 'success';
                   return (
                     <tr key={String(p.id)}>
-                      <td><div className="admin-product-cell">{p.image ? <img src={p.image} alt="" /> : <span className="admin-product-image-placeholder"><Package2 size={18} aria-hidden="true" /></span>}<div><strong>{p.name}</strong><small>{p.type}</small></div></div></td>
+                      <td><div className="admin-product-cell">{p.image ? <ResponsiveImage src={p.image} alt="" width={56} height={56} sizes="56px" /> : <span className="admin-product-image-placeholder"><Package2 size={18} aria-hidden="true" /></span>}<div><strong>{p.name}</strong><small>{p.type}</small></div></div></td>
                       <td className="admin-description-cell">{p.description || 'No description provided.'}</td>
                       <td>{p.category || '—'}</td>
                       <td><strong>{money(p.price)}</strong>{p.oldPrice && p.oldPrice > p.price ? <small className="admin-compare-price">{money(p.oldPrice)}</small> : null}</td>
                       <td>{p.sizes?.length ? <div className="admin-size-list">{p.sizes.map((size) => <span key={size}>{size}</span>)}</div> : <span className="admin-muted">Not set</span>}</td>
                       <td><span className={`admin-stock-status ${stockClass}`}><span aria-hidden="true" />{stockLabel}</span><small>{stock} in stock</small></td>
                       <td><span className={`badge ${p.active === false ? 'red' : 'green'}`}>{p.active === false ? 'Inactive' : 'Active'}</span></td>
-                      <td><div className="admin-row-actions"><button onClick={() => { setForm({ ...p, sizes: p.sizes || [] }); document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' }); }}>Edit</button><button onClick={async () => { if (confirm(`Delete ${p.name}?`)) { await removeProduct(p.id); void recordAdminActivity({ action: 'Deleted Product', description: `Deleted product or service: ${p.name}.`, targetType: 'product', targetId: String(p.id) }); showToast('Product deleted successfully', 'success'); load(); } }}>Delete</button></div></td>
+                      <td><div className="admin-row-actions"><button onClick={() => { setForm({ ...p, sizes: p.sizes || [] }); document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' }); }}>Edit</button><button onClick={async () => { if (confirm(`Delete ${p.name}?`)) { await removeProduct(p.id); void cleanupCloudinaryImages(p.imagePublicId, ...(p.galleryPublicIds || [])); void recordAdminActivity({ action: 'Deleted Product', description: `Deleted product or service: ${p.name}.`, targetType: 'product', targetId: String(p.id) }); showToast('Product deleted successfully', 'success'); load(); } }}>Delete</button></div></td>
                     </tr>
                   );
                 })}
@@ -2943,7 +3072,7 @@ export default function Admin() {
       </main>
 
       {selectedCustomer && (
-        <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 20 }}>
+        <div className="modal-overlay" style={{ position: 'fixed', inset: 0, width: '100%', minHeight: '100dvh', background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 16 }}>
           <div className="modal-content table-card" style={{ maxWidth: 800, width: '100%', maxHeight: '90vh', overflowY: 'auto', background: '#fff' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>

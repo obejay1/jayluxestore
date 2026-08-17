@@ -15,6 +15,9 @@ const required = [
   'PAYSTACK_SECRET_KEY',
   'RESEND_API_KEY',
   'TERMII_API_KEY',
+  'NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME',
+  'CLOUDINARY_API_KEY',
+  'CLOUDINARY_API_SECRET',
 ];
 
 const missing = required.filter((name) => !process.env[name]?.trim());

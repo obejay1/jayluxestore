@@ -8,12 +8,14 @@ import {
   updateDoc,
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import { uploadAdminImage } from '@/lib/imageUpload';
 
 export type Testimonial = {
   id: string;
   customerName: string;
   customerPhoto?: string;
   image?: string;
+  imagePublicId?: string;
   rating: number;
   review?: string;
   testimonial?: string;
@@ -26,6 +28,7 @@ export type TestimonialFormData = {
   customerName: string;
   customerPhoto?: string;
   image?: string;
+  imagePublicId?: string;
   rating: number;
   review?: string;
   testimonial?: string;
@@ -47,6 +50,7 @@ function cleanTestimonial(id: string, data: Partial<Testimonial>): Testimonial {
     customerName: data.customerName || '',
     customerPhoto: data.customerPhoto || data.image || '',
     image: data.image || data.customerPhoto || '',
+    imagePublicId: data.imagePublicId || '',
     rating: cleanRating(Number(data.rating || 5)),
     review: data.review || data.testimonial || '',
     testimonial: data.testimonial || data.review || '',
@@ -54,6 +58,11 @@ function cleanTestimonial(id: string, data: Partial<Testimonial>): Testimonial {
     createdAt: data.createdAt || new Date().toISOString(),
     featured: Boolean(data.featured),
   };
+}
+
+export async function uploadTestimonialPhoto(file: File): Promise<string> {
+  const result = await uploadAdminImage(file, { folder: 'jayluxe/testimonials' });
+  return result.url;
 }
 
 export async function getTestimonials(): Promise<Testimonial[]> {
@@ -86,6 +95,7 @@ export async function addTestimonial(
     customerName: data.customerName.trim(),
     customerPhoto: data.customerPhoto || data.image || '',
     image: data.image || data.customerPhoto || '',
+    imagePublicId: data.imagePublicId || '',
     rating: cleanRating(Number(data.rating || 5)),
     review: (data.review || data.testimonial || '').trim(),
     testimonial: (data.testimonial || data.review || '').trim(),
@@ -126,14 +136,17 @@ export async function toggleTestimonialFeatured(
 
 /* Extra aliases in case your admin page uses these names */
 export async function saveTestimonial(
-  item: Partial<Testimonial>
+  item: Partial<Testimonial>,
+  imageFile?: string | File | null
 ): Promise<void> {
-  const image = item.image || item.customerPhoto || '';
+  let image = item.image || item.customerPhoto || '';
+  if (typeof imageFile === 'string') image = imageFile;
   const review = item.review || item.testimonial || '';
   const payload = {
     customerName: item.customerName || '',
     customerPhoto: image,
     image,
+    imagePublicId: item.imagePublicId || '',
     rating: cleanRating(Number(item.rating || 5)),
     review,
     testimonial: review,

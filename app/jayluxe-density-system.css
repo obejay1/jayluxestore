@@ -1,0 +1,1479 @@
+/* ============================================================================
+   JAYLUXE DESIGN SYSTEM — GLOBAL DENSITY, SPACING & TYPOGRAPHY
+   Authoritative design-system layer. Loaded last so it wins the cascade.
+
+   Spacing scale
+   4px  micro    |  8px  compact   |  12px  normal  |  16px  primary
+   20px larger   |  24px section   |  32px  major   |  40px  exceptional
+
+   Container: 1280px max, 16px inline padding on mobile.
+   ========================================================================== */
+
+:root {
+  --jl-container: 1280px;
+  --jl-content-max: 1280px;
+  --jl-page-gutter: clamp(12px, 2.4vw, 24px);
+  --jl-section-space: clamp(20px, 2.6vw, 28px);
+  --jl-section-space-lg: clamp(28px, 3.6vw, 40px);
+
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-7: 32px;
+  --sp-8: 40px;
+
+  --jl-radius: 14px;
+  --jl-radius-sm: 10px;
+  --jl-radius-lg: 18px;
+
+  --jl-control-height: 42px;
+  --jl-btn-height: 42px;
+  --jl-header-height: 60px;
+  --jl-card-padding: 16px;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* ---------- iOS input zoom prevention ---------- */
+input,
+select,
+textarea {
+  font-size: 16px;
+}
+
+/* ---------- Safari sticky / viewport hardening ---------- */
+.jl-site-header,
+.admin-dashboard-nav-shell,
+.amu-topbar {
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+}
+
+:is(.quick-view-modal-overlay, .modal-overlay, .jl-modal-overlay) {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* ============================================================================
+   HEADER
+   ========================================================================== */
+.jl-announcement-bar {
+  padding: 6px 14px !important;
+  font-size: 0.72rem !important;
+  line-height: 1.35 !important;
+}
+
+.jl-header-main {
+  min-height: var(--jl-header-height) !important;
+  gap: clamp(12px, 2vw, 24px) !important;
+  width: min(var(--jl-container), calc(100% - (2 * var(--jl-page-gutter)))) !important;
+}
+
+.jl-header-logo {
+  width: 36px !important;
+  height: 36px !important;
+}
+
+.jl-header-brand-copy strong {
+  font-size: clamp(1.1rem, 1.8vw, 1.3rem) !important;
+}
+
+.jl-header-brand-copy small {
+  margin-top: 3px !important;
+  font-size: 0.52rem !important;
+}
+
+.jl-header-nav {
+  gap: 2px !important;
+}
+
+.jl-header-nav > a,
+.jl-nav-group-trigger {
+  padding: 7px 10px !important;
+  font-size: 0.82rem !important;
+}
+
+.jl-header-icon {
+  min-width: 36px !important;
+  min-height: 36px !important;
+}
+
+.jl-header-icon > svg {
+  width: 19px !important;
+  height: 19px !important;
+}
+
+/* ============================================================================
+   PAGE SHELLS & CONTAINERS
+   ========================================================================== */
+.jl-main-content {
+  min-width: 0;
+}
+
+:is(
+  .jl-page-hero,
+  .jl-category-hero,
+  .jl-gallery-hero,
+  .jl-services-hero,
+  .jl-shop-hero
+) {
+  padding-block: clamp(20px, 3vw, 32px) !important;
+}
+
+/* ============================================================================
+   HOMEPAGE
+   ========================================================================== */
+.jj-hero {
+  min-height: clamp(300px, 44vh, 440px) !important;
+}
+
+.jj-hero-content {
+  padding-block: clamp(26px, 4vw, 44px) !important;
+}
+
+.jj-hero-content h1 {
+  margin: 14px 0 12px !important;
+  font-size: clamp(2.1rem, 5vw, 3.6rem) !important;
+  line-height: 1 !important;
+}
+
+.jj-hero-content p {
+  font-size: clamp(0.9rem, 1.4vw, 1.02rem) !important;
+  line-height: 1.6 !important;
+}
+
+.jj-hero-buttons {
+  gap: 10px !important;
+  margin-top: 16px !important;
+}
+
+.jj-badge {
+  padding: 6px 12px !important;
+  font-size: 0.64rem !important;
+}
+
+.jj-trust {
+  margin: -34px auto 0 !important;
+}
+
+.jj-trust > div {
+  padding: 16px 20px !important;
+}
+
+.jj-trust h3 {
+  margin: 5px 0 2px !important;
+  font-size: 0.92rem !important;
+}
+
+.jj-trust p {
+  font-size: 0.78rem !important;
+}
+
+.jl-home-promo-features {
+  gap: clamp(10px, 1.6vw, 14px) !important;
+  padding: clamp(18px, 2.6vw, 24px) var(--jl-page-gutter) 0 !important;
+}
+
+.jl-home-promo-feature {
+  gap: 10px !important;
+  padding: 12px 16px !important;
+}
+
+.jl-home-promo-icon {
+  width: 38px !important;
+  height: 38px !important;
+  flex: 0 0 auto;
+}
+
+.jl-home-promo-copy strong {
+  font-size: 0.88rem !important;
+}
+
+.jl-home-promo-copy small {
+  font-size: 0.7rem !important;
+}
+
+.jj-products,
+.jj-categories {
+  padding-block: var(--jl-section-space) !important;
+  width: min(var(--jl-container), calc(100% - (2 * var(--jl-page-gutter)))) !important;
+}
+
+.jj-section-header {
+  margin-bottom: clamp(12px, 1.8vw, 18px) !important;
+  gap: 14px !important;
+}
+
+.jj-section-header small {
+  font-size: 0.64rem !important;
+}
+
+.jj-section-header h2,
+.jj-categories > h2,
+.jl-home-product-showcase .jj-section-header h2 {
+  margin: 4px 0 0 !important;
+  font-size: clamp(1.35rem, 3vw, 2rem) !important;
+  line-height: 1.1 !important;
+}
+
+.jj-section-header > a {
+  font-size: 0.82rem !important;
+  gap: 6px !important;
+}
+
+.jj-category-card {
+  border-radius: var(--jl-radius) !important;
+}
+
+.jj-category-content {
+  padding: 10px 12px !important;
+}
+
+.jj-category-content strong {
+  font-size: 0.9rem !important;
+}
+
+.jj-category-content small {
+  font-size: 0.72rem !important;
+  margin-top: 2px !important;
+}
+
+.jj-category-explore {
+  margin-top: 6px !important;
+  font-size: 0.74rem !important;
+}
+
+/* Bridal */
+.jj-bridal {
+  padding: 0 var(--jl-page-gutter) var(--jl-section-space) !important;
+}
+
+.jj-bridal-banner {
+  min-height: 260px !important;
+  margin: 0 auto var(--jl-section-space) !important;
+  border-radius: 0 0 var(--jl-radius-lg) var(--jl-radius-lg) !important;
+}
+
+.jj-bridal-banner-content {
+  padding: clamp(16px, 3vw, 30px) !important;
+}
+
+.jj-bridal-banner-content h2 {
+  font-size: clamp(1.6rem, 4vw, 2.8rem) !important;
+  margin: 0 0 8px !important;
+}
+
+.jj-bridal-banner-content p {
+  margin: 0 !important;
+  font-size: 0.95rem !important;
+}
+
+.jj-bridal-header {
+  margin-bottom: 14px !important;
+}
+
+.jj-bridal-header h2 {
+  font-size: clamp(1.35rem, 3vw, 2.1rem) !important;
+  margin: 4px 0 0 !important;
+}
+
+.jj-bridal-grid {
+  gap: 16px !important;
+  width: min(var(--jl-container), 100%) !important;
+}
+
+.jj-bridal-card {
+  padding: 18px !important;
+  border-radius: var(--jl-radius) !important;
+}
+
+.jj-bridal-card-header h3 {
+  font-size: 1.05rem !important;
+  margin: 0 !important;
+}
+
+.jj-bridal-card-header {
+  gap: 8px !important;
+}
+
+.jj-bridal-price {
+  font-size: 1.05rem !important;
+  margin: 4px 0 0 !important;
+}
+
+.jj-bridal-desc {
+  font-size: 0.85rem !important;
+  margin: 8px 0 !important;
+}
+
+.jj-bridal-features {
+  gap: 7px !important;
+  margin: 10px 0 14px !important;
+}
+
+.jj-bridal-features li {
+  font-size: 0.84rem !important;
+}
+
+.jj-bridal-extras {
+  width: min(var(--jl-container), 100%) !important;
+  margin-top: var(--jl-section-space) !important;
+}
+
+/* Transformations / testimonials / services / contact */
+.jj-transformations,
+.jj-testimonials,
+.jj-services,
+.jj-contact {
+  padding: var(--jl-section-space) var(--jl-page-gutter) !important;
+}
+
+.jj-transformations-grid,
+.jj-testimonials-grid {
+  gap: 14px !important;
+  width: min(var(--jl-container), 100%) !important;
+}
+
+.jj-transformation-content {
+  padding: 12px 14px !important;
+}
+
+.jj-transformation-content h3 {
+  font-size: 0.98rem !important;
+  margin: 4px 0 !important;
+}
+
+.jj-transformation-content p {
+  font-size: 0.8rem !important;
+  margin: 0 !important;
+  line-height: 1.5 !important;
+}
+
+.jj-transformation-category {
+  font-size: 0.68rem !important;
+}
+
+.jj-testimonial-card {
+  padding: 14px !important;
+  border-radius: var(--jl-radius) !important;
+}
+
+.jj-testimonial-card blockquote {
+  font-size: 0.92rem !important;
+  line-height: 1.55 !important;
+  margin: 8px 0 !important;
+}
+
+.jj-testimonial-customer img {
+  width: 38px !important;
+  height: 38px !important;
+}
+
+.jj-testimonial-customer strong {
+  font-size: 0.88rem !important;
+}
+
+.jj-testimonial-customer span {
+  font-size: 0.72rem !important;
+}
+
+.jj-services h2 {
+  margin: 8px 0 10px !important;
+  font-size: clamp(1.4rem, 3.2vw, 2.2rem) !important;
+}
+
+.jj-services p {
+  font-size: 0.92rem !important;
+  line-height: 1.6 !important;
+  margin-bottom: 16px !important;
+}
+
+.jj-contact h2 {
+  font-size: clamp(1.4rem, 3.2vw, 2.2rem) !important;
+  margin: 0 0 6px !important;
+}
+
+.jj-contact > p {
+  margin: 0 0 14px !important;
+  font-size: 0.92rem !important;
+}
+
+.jj-contact-grid {
+  gap: 10px !important;
+}
+
+.jj-contact-grid a {
+  padding: 10px 14px !important;
+  font-size: 0.88rem !important;
+}
+
+/* ============================================================================
+   BUTTONS & CONTROLS
+   ========================================================================== */
+.jj-btn {
+  min-height: var(--jl-btn-height) !important;
+  padding: 10px 18px !important;
+  border-radius: 10px !important;
+  font-size: 0.9rem !important;
+}
+
+.btn,
+.lux-product-add-btn,
+.jl-auth-submit,
+.jl-add-cart,
+.jl-qty-btn,
+.btn-book,
+.btn-booking {
+  min-height: var(--jl-btn-height) !important;
+  padding: 9px 16px !important;
+  font-size: 0.88rem !important;
+  border-radius: 10px !important;
+}
+
+input[type='text'],
+input[type='email'],
+input[type='password'],
+input[type='tel'],
+input[type='number'],
+input[type='search'],
+input[type='date'],
+select,
+textarea {
+  min-height: var(--jl-control-height) !important;
+  padding: 9px 12px !important;
+  font-size: 0.92rem !important;
+  border-radius: 10px !important;
+}
+
+textarea {
+  min-height: 84px !important;
+}
+
+/* ============================================================================
+   PRODUCT CARDS
+   ========================================================================== */
+.lux-product-card {
+  border-radius: var(--jl-radius) !important;
+}
+
+.lux-product-info {
+  padding: 10px 12px 12px !important;
+  gap: 6px !important;
+}
+
+.lux-product-category {
+  font-size: 0.64rem !important;
+  margin: 0 !important;
+}
+
+.lux-product-title-link h3 {
+  font-size: 0.86rem !important;
+  line-height: 1.35 !important;
+  min-height: 2.3em !important;
+  margin: 0 !important;
+}
+
+.lux-product-rating-row {
+  gap: 6px !important;
+  margin: 0 !important;
+}
+
+.lux-product-rating-row small {
+  font-size: 0.66rem !important;
+}
+
+.lux-product-pricing {
+  margin-top: 2px !important;
+  gap: 6px !important;
+  align-items: baseline !important;
+}
+
+.lux-product-price {
+  font-size: 0.95rem !important;
+  margin: 0 !important;
+}
+
+.lux-product-old-price {
+  font-size: 0.74rem !important;
+  margin: 0 !important;
+}
+
+.lux-product-add-btn {
+  min-height: 34px !important;
+  margin-top: 8px !important;
+  gap: 6px !important;
+  font-size: 0.78rem !important;
+  border-radius: 8px !important;
+}
+
+.lux-product-add-btn > svg {
+  width: 15px !important;
+  height: 15px !important;
+}
+
+.lux-product-wishlist {
+  width: 32px !important;
+  height: 32px !important;
+  top: 8px !important;
+  right: 8px !important;
+}
+
+.lux-product-badges {
+  gap: 5px !important;
+  top: 8px !important;
+  left: 8px !important;
+}
+
+.lux-badge {
+  min-height: 22px !important;
+  padding: 4px 8px !important;
+  font-size: 0.58rem !important;
+}
+
+/* ============================================================================
+   ACCOUNT PAGE
+   ========================================================================== */
+.jl-account-hero {
+  padding: clamp(18px, 3vw, 28px) var(--jl-page-gutter) !important;
+}
+
+.jl-account-hero h1 {
+  font-size: clamp(1.5rem, 3.2vw, 2.1rem) !important;
+  margin: 8px 0 4px !important;
+}
+
+.jl-account-hero p {
+  font-size: 0.88rem !important;
+  margin: 0 !important;
+}
+
+.jl-account-overview {
+  gap: 10px !important;
+  padding: 0 var(--jl-page-gutter) var(--jl-section-space) !important;
+}
+
+.jl-account-overview > :is(article, a) {
+  gap: 10px !important;
+  padding: 12px 14px !important;
+  border-radius: var(--jl-radius) !important;
+}
+
+.jl-account-overview > :is(article, a) > svg {
+  width: 18px !important;
+  height: 18px !important;
+}
+
+.jl-account-overview small {
+  font-size: 0.68rem !important;
+}
+
+.jl-account-overview strong {
+  font-size: 0.9rem !important;
+}
+
+.jl-account-content {
+  padding: 0 var(--jl-page-gutter) var(--jl-section-space) !important;
+}
+
+.jl-account-profile-bar {
+  padding: 10px 14px !important;
+  border-radius: var(--jl-radius) !important;
+  gap: 12px !important;
+}
+
+.jl-account-profile-bar button {
+  min-height: 36px !important;
+  padding: 7px 12px !important;
+  font-size: 0.82rem !important;
+}
+
+.jl-order-history {
+  margin-top: var(--jl-section-space) !important;
+}
+
+.jl-order-history-header {
+  margin-bottom: 14px !important;
+}
+
+.jl-order-history-header h2 {
+  font-size: 1.35rem !important;
+  margin: 3px 0 0 !important;
+}
+
+.jl-order-history-item {
+  padding: 14px !important;
+  border-radius: var(--jl-radius) !important;
+  gap: 10px !important;
+  margin-bottom: 10px !important;
+}
+
+.jl-account-tracking {
+  margin-top: 6px !important;
+}
+
+.jl-account-tracking-steps {
+  gap: 4px !important;
+  margin-top: 8px !important;
+}
+
+.jl-account-empty-orders {
+  padding: 24px 16px !important;
+}
+
+.jl-auth-content {
+  padding-top: 4px !important;
+}
+
+/* ---------- Auth (account, login, register, forgot password) ---------- */
+.jl-auth-aside {
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: clamp(26px, 5vw, 56px) !important;
+}
+
+.jl-auth-aside h1 {
+  margin: 0 0 10px !important;
+  font-size: clamp(2.2rem, 4.6vw, 3.6rem) !important;
+  line-height: 1.02 !important;
+}
+
+.jl-auth-aside p {
+  font-size: 0.94rem !important;
+  line-height: 1.65 !important;
+  margin: 0 !important;
+}
+
+.jl-auth-panel {
+  padding: clamp(18px, 3vw, 28px) !important;
+}
+
+.jl-auth-card h2 {
+  font-size: clamp(1.4rem, 2.8vw, 1.9rem) !important;
+  margin: 6px 0 !important;
+}
+
+.jl-auth-intro {
+  margin-bottom: 16px !important;
+  font-size: 0.9rem !important;
+}
+
+.jl-auth-form {
+  gap: 12px !important;
+}
+
+.jl-auth-form input {
+  min-height: var(--jl-control-height) !important;
+  font-size: 0.92rem !important;
+}
+
+.jl-auth-form button {
+  min-height: var(--jl-btn-height) !important;
+  font-size: 0.9rem !important;
+}
+
+.jl-auth-switch {
+  margin-top: 14px !important;
+  font-size: 0.85rem !important;
+}
+
+.jl-remember-row {
+  gap: 10px !important;
+}
+
+.jl-auth-card {
+  padding: clamp(18px, 3vw, 26px) !important;
+  border-radius: var(--jl-radius-lg) !important;
+}
+
+.jl-auth-intro {
+  padding: clamp(18px, 3vw, 28px) !important;
+}
+
+.jl-auth-intro h2 {
+  font-size: clamp(1.5rem, 3.4vw, 2.2rem) !important;
+  margin: 8px 0 !important;
+}
+
+.jl-auth-benefits {
+  gap: 10px !important;
+  margin-top: 16px !important;
+}
+
+.jl-auth-benefits > div {
+  gap: 10px !important;
+  padding: 10px 12px !important;
+}
+
+.jl-auth-form {
+  gap: 12px !important;
+}
+
+.jl-auth-form label > span {
+  font-size: 0.78rem !important;
+  margin-bottom: 5px !important;
+}
+
+.jl-auth-input {
+  border-radius: 10px !important;
+}
+
+.jl-auth-input input {
+  min-height: 42px !important;
+  font-size: 0.92rem !important;
+}
+
+.jl-auth-submit {
+  margin-top: 4px !important;
+}
+
+/* ============================================================================
+   CART / CHECKOUT / ORDER
+   ========================================================================== */
+:is(.jl-cart-page, .jl-checkout-page, .jl-order-page, .jl-wishlist-page) {
+  padding-bottom: var(--jl-section-space) !important;
+}
+
+:is(.jl-cart-page, .jl-checkout-page) .jl-section-heading {
+  margin: var(--jl-section-space) 0 14px !important;
+}
+
+:is(.jl-cart-page, .jl-checkout-page) .jl-section-heading h1,
+:is(.jl-cart-page, .jl-checkout-page) .jl-section-heading h2 {
+  font-size: clamp(1.4rem, 3vw, 1.9rem) !important;
+}
+
+.jl-cart-item,
+.jl-checkout-card,
+.jl-checkout-summary-card,
+.jl-order-card,
+.jl-wishlist-item {
+  padding: 12px 14px !important;
+  border-radius: var(--jl-radius) !important;
+}
+
+.wishlist-hero {
+  padding: clamp(20px, 3vw, 30px) var(--jl-page-gutter) !important;
+}
+
+.wishlist-icon {
+  width: 48px !important;
+  height: 48px !important;
+  margin-bottom: 10px !important;
+}
+
+.wishlist-label {
+  margin-bottom: 6px !important;
+}
+
+/* ============================================================================
+   PRODUCT DETAIL PAGE
+   ========================================================================== */
+.jl-product-wrap {
+  max-width: var(--jl-container) !important;
+  padding: clamp(18px, 2.6vw, 28px) var(--jl-page-gutter) !important;
+  gap: clamp(16px, 2.4vw, 28px) !important;
+}
+
+.jl-product-main-image {
+  min-height: clamp(320px, 52vh, 560px) !important;
+  border-radius: var(--jl-radius-lg) !important;
+}
+
+.jl-product-main-image img,
+.jl-product-placeholder {
+  height: clamp(320px, 52vh, 560px) !important;
+}
+
+.jl-product-heart {
+  width: 40px !important;
+  height: 40px !important;
+  top: 12px !important;
+  right: 12px !important;
+}
+
+.jl-product-thumbs {
+  padding-top: 10px !important;
+}
+
+.jl-product-thumbs button {
+  width: 64px !important;
+  height: 64px !important;
+  border-radius: var(--jl-radius) !important;
+}
+
+.jl-product-info {
+  padding: clamp(18px, 3vw, 30px) !important;
+  border-radius: var(--jl-radius-lg) !important;
+}
+
+.jl-product-purchase-box {
+  padding: 14px !important;
+  border-radius: var(--jl-radius) !important;
+}
+
+.jl-product-qty {
+  margin-bottom: 12px !important;
+}
+
+.jl-product-actions button {
+  padding: 12px 16px !important;
+  font-size: 0.88rem !important;
+}
+
+.jl-product-tabs {
+  border-radius: var(--jl-radius-lg) !important;
+}
+
+.jl-product-tab-buttons button {
+  padding: 11px !important;
+  font-size: 0.85rem !important;
+}
+
+.jl-product-tab-content {
+  padding: 16px !important;
+}
+
+.jl-related-products {
+  padding: var(--jl-section-space) var(--jl-page-gutter) 0 !important;
+}
+
+.jl-related-head {
+  margin-bottom: clamp(12px, 1.8vw, 18px) !important;
+}
+
+.jl-related-head h2 {
+  margin: 4px 0 0 !important;
+  font-size: clamp(1.35rem, 3vw, 2rem) !important;
+}
+
+/* ============================================================================
+   SHOP / GALLERY / SERVICES / BRIDAL HEADERS
+   ========================================================================== */
+:is(.jl-shop-header, .jl-gallery-header, .jl-services-header, .jl-bridal-header, .jl-category-header, .wishlist-header) {
+  margin-bottom: 14px !important;
+}
+
+:is(.jl-shop-header, .jl-gallery-header, .jl-services-header, .jl-bridal-header, .jl-category-header) h1,
+:is(.jl-shop-header, .jl-gallery-header, .jl-services-header, .jl-bridal-header, .jl-category-header) h2,
+.wishlist-header h2 {
+  font-size: clamp(1.4rem, 3.2vw, 2rem) !important;
+  margin: 4px 0 0 !important;
+}
+
+/* ============================================================================
+   QUICK VIEW MODAL
+   ========================================================================== */
+.quick-view-image {
+  min-height: 380px !important;
+}
+
+.quick-view-details {
+  padding: 28px 26px 24px !important;
+}
+
+.quick-view-details h2 {
+  font-size: clamp(1.4rem, 3vw, 2rem) !important;
+  margin: 6px 0 8px !important;
+}
+
+.quick-view-price-row {
+  margin-bottom: 12px !important;
+}
+
+.quick-view-assurances {
+  gap: 8px !important;
+  margin: 14px 0 !important;
+}
+
+.quick-view-assurances div {
+  padding: 9px 11px !important;
+  font-size: 0.78rem !important;
+}
+
+.quick-view-qty {
+  margin: 8px 0 14px !important;
+}
+
+/* ============================================================================
+   FOOTER
+   ========================================================================== */
+.global-footer-newsletter {
+  padding: 24px 0 !important;
+  gap: 20px !important;
+  width: min(var(--jl-container), calc(100% - (2 * var(--jl-page-gutter)))) !important;
+}
+
+.global-footer-newsletter h2 {
+  margin: 8px 0 4px !important;
+  font-size: clamp(1.35rem, 2.8vw, 2rem) !important;
+}
+
+.global-footer-newsletter p {
+  font-size: 0.85rem !important;
+}
+
+.global-footer-shell {
+  width: min(var(--jl-container), calc(100% - (2 * var(--jl-page-gutter)))) !important;
+}
+
+.global-footer-grid {
+  gap: clamp(16px, 3vw, 32px) !important;
+  padding: 24px 0 !important;
+}
+
+.global-footer-links h3 {
+  font-size: 0.78rem !important;
+  margin-bottom: 8px !important;
+}
+
+.global-footer-links ul {
+  gap: 6px !important;
+}
+
+.global-footer-links a {
+  font-size: 0.82rem !important;
+}
+
+.global-footer-brand p {
+  font-size: 0.84rem !important;
+  line-height: 1.55 !important;
+}
+
+.global-footer-bottom {
+  padding: 12px 0 !important;
+  font-size: 0.76rem !important;
+}
+
+/* ============================================================================
+   ADMIN — main dashboard
+   ========================================================================== */
+.admin-content {
+  width: min(var(--jl-container), 100%) !important;
+  padding: 14px var(--jl-page-gutter) 28px !important;
+}
+
+.admin-content > h1,
+.admin-dashboard-title {
+  font-size: clamp(1.2rem, 2.4vw, 1.6rem) !important;
+  margin-bottom: 10px !important;
+}
+
+.admin-dashboard-nav-shell {
+  min-height: 54px !important;
+}
+
+.stat-card {
+  padding: 12px 14px !important;
+  border-radius: var(--jl-radius) !important;
+  min-height: 0 !important;
+}
+
+.stat-card h3 {
+  font-size: 0.72rem !important;
+  margin: 0 0 2px !important;
+}
+
+.stat-card h1 {
+  font-size: clamp(1.1rem, 2vw, 1.5rem) !important;
+  margin: 0 !important;
+}
+
+.table-card {
+  padding: 14px !important;
+  border-radius: var(--jl-radius) !important;
+  margin-bottom: 14px !important;
+}
+
+.admin-section-title {
+  margin-bottom: 10px !important;
+}
+
+.admin-section-title h2 {
+  font-size: clamp(1.05rem, 1.8vw, 1.3rem) !important;
+  margin: 0 !important;
+}
+
+.admin-section-title p {
+  font-size: 0.78rem !important;
+  margin: 2px 0 0 !important;
+}
+
+.admin-form-grid {
+  gap: 12px !important;
+}
+
+.admin-form-grid .input,
+.admin-form-grid input,
+.admin-form-grid select,
+.admin-form-grid textarea {
+  min-height: 40px !important;
+  font-size: 0.86rem !important;
+}
+
+.admin-form-grid textarea {
+  min-height: 76px !important;
+}
+
+.admin-table-scroll table {
+  font-size: 0.82rem !important;
+}
+
+.admin-table-scroll th,
+.admin-table-scroll td {
+  padding: 8px 10px !important;
+}
+
+.admin-row-actions button,
+.admin-table-scroll button {
+  min-height: 30px !important;
+  padding: 5px 10px !important;
+  font-size: 0.76rem !important;
+}
+
+.admin-product-cell img,
+.admin-product-cell .admin-product-image-placeholder {
+  width: 38px !important;
+  height: 38px !important;
+}
+
+.admin-image-upload {
+  padding: 12px !important;
+  border-radius: var(--jl-radius) !important;
+  gap: 10px !important;
+}
+
+.admin-image-upload-heading {
+  gap: 10px !important;
+}
+
+.admin-image-upload-heading label {
+  font-size: 0.88rem !important;
+}
+
+.admin-upload-note {
+  font-size: 0.74rem !important;
+  margin-top: 2px !important;
+}
+
+.admin-image-preview {
+  max-height: 180px !important;
+  border-radius: 10px !important;
+}
+
+.admin-image-file-input {
+  min-height: 36px !important;
+  font-size: 0.8rem !important;
+  padding: 6px !important;
+}
+
+.admin-image-empty {
+  padding: 14px !important;
+  font-size: 0.8rem !important;
+}
+
+.admin-upload-progress {
+  gap: 8px !important;
+  padding: 8px 10px !important;
+}
+
+.admin-gallery-grid {
+  gap: 10px !important;
+}
+
+.admin-gallery-item img {
+  border-radius: 10px !important;
+}
+
+.admin-modal {
+  padding: 18px !important;
+  border-radius: var(--jl-radius-lg) !important;
+}
+
+.badge {
+  padding: 3px 8px !important;
+  font-size: 0.68rem !important;
+  border-radius: 999px !important;
+}
+
+/* ---------- Admin management pages (AdminPageFrame) ---------- */
+.amu-topbar {
+  min-height: 56px !important;
+  gap: 12px !important;
+}
+
+.amu-nav a {
+  min-height: 34px !important;
+  padding: 6px 11px !important;
+  font-size: 0.78rem !important;
+}
+
+.amu-account button {
+  width: 36px !important;
+  height: 36px !important;
+}
+
+.amu-content,
+.amu-page > main,
+.admin-frame-content {
+  padding: 14px var(--jl-page-gutter) 28px !important;
+  width: min(var(--jl-container), 100%) !important;
+  margin-inline: auto !important;
+}
+
+.amu-content h1 {
+  font-size: clamp(1.2rem, 2.4vw, 1.6rem) !important;
+  margin-bottom: 10px !important;
+}
+
+.amu-card {
+  padding: 14px !important;
+  border-radius: var(--jl-radius) !important;
+}
+
+/* ============================================================================
+   SHARED PAGE HEROES (gallery / services / bridal / promotions / categories)
+   ========================================================================== */
+.jl-gallery-hero {
+  min-height: clamp(300px, 42vh, 430px) !important;
+}
+
+.jl-gallery-back {
+  margin-bottom: 24px !important;
+}
+
+.jl-gallery-stats {
+  margin: -38px auto 48px !important;
+  gap: 12px !important;
+}
+
+.jl-gallery-stats div {
+  padding: 16px 12px !important;
+  border-radius: var(--jl-radius) !important;
+}
+
+.jl-gallery-stats strong {
+  font-size: 22px !important;
+}
+
+.jl-gallery-section {
+  padding-bottom: 56px !important;
+}
+
+.jl-gallery-heading {
+  margin-bottom: 24px !important;
+}
+
+.jl-gallery-heading h2 {
+  margin: 8px 0 !important;
+  font-size: clamp(1.6rem, 3vw, 2.2rem) !important;
+}
+
+.jl-gallery-heading p,
+.jl-services-section-head p {
+  font-size: 0.92rem !important;
+  line-height: 1.6 !important;
+}
+
+.jl-gallery-toolbar {
+  margin-bottom: 24px !important;
+}
+
+.jl-gallery-cta {
+  margin-bottom: 56px !important;
+  padding: clamp(28px, 4vw, 44px) clamp(20px, 3vw, 30px) !important;
+  border-radius: var(--jl-radius-lg) !important;
+}
+
+.jl-gallery-cta h2 {
+  font-size: clamp(1.6rem, 3.2vw, 2.4rem) !important;
+}
+
+.jl-gallery-cta p {
+  margin-bottom: 20px !important;
+}
+
+.jl-services-hero {
+  min-height: clamp(300px, 42vh, 430px) !important;
+}
+
+.jl-services-back {
+  margin-bottom: 24px !important;
+}
+
+.jl-services-trust {
+  margin: -38px auto 48px !important;
+  gap: 12px !important;
+}
+
+.jl-services-trust div {
+  padding: 16px 14px !important;
+  border-radius: var(--jl-radius) !important;
+}
+
+.jl-services-featured,
+.jl-services-list-section,
+.jl-booking-section {
+  padding-bottom: 56px !important;
+}
+
+.jl-services-section-head {
+  margin-bottom: 24px !important;
+}
+
+.jl-services-section-head h2 {
+  margin: 8px 0 !important;
+  font-size: clamp(1.6rem, 3vw, 2.2rem) !important;
+}
+
+.jl-services-featured-grid,
+.jl-services-grid {
+  gap: 20px !important;
+}
+
+.jl-bridal-page .jl-bridal-hero {
+  min-height: clamp(320px, 46vh, 460px) !important;
+}
+
+.jl-bridal-page .jl-bridal-hero-inner {
+  padding-block: clamp(28px, 4vw, 44px) !important;
+}
+
+.jl-bridal-page .jl-bridal-back {
+  margin-bottom: 22px !important;
+}
+
+.jl-bridal-intro {
+  margin-bottom: 22px !important;
+}
+
+.jl-bridal-intro h2 {
+  margin: 8px 0 !important;
+  font-size: clamp(1.6rem, 3vw, 2.2rem) !important;
+}
+
+.jl-bridal-faq,
+.jl-bridal-page .jl-bridal-faq {
+  width: min(var(--jl-container), calc(100% - (2 * var(--jl-page-gutter)))) !important;
+  padding: 28px 0 !important;
+}
+
+.jl-promotions-hero {
+  padding-top: clamp(24px, 3.4vw, 40px) !important;
+}
+
+.jl-promotions-grid,
+.jl-promo-products {
+  margin-bottom: clamp(24px, 3.6vw, 44px) !important;
+}
+
+.jl-editorial-hero {
+  min-height: clamp(220px, 26vh, 320px) !important;
+  padding: clamp(22px, 3vw, 36px) var(--jl-page-gutter) !important;
+}
+
+.jl-category-page-grid {
+  padding-block: clamp(20px, 2.8vw, 32px) !important;
+}
+
+.jl-contact-layout {
+  padding-block: clamp(24px, 4vw, 40px) !important;
+}
+
+.jl-contact-details,
+.jl-contact-form {
+  border-radius: var(--jl-radius-lg) !important;
+}
+
+.jl-contact-details {
+  padding: clamp(18px, 3vw, 26px) !important;
+}
+
+/* ============================================================================
+   BRIDAL BOOKING PAGE
+   ========================================================================== */
+.jl-bridal-booking-hero {
+  padding: clamp(28px, 4vw, 44px) 6% !important;
+}
+
+.jl-bridal-booking-hero h1 {
+  font-size: clamp(2rem, 4.6vw, 3.2rem) !important;
+  margin: 12px auto !important;
+}
+
+.jl-bridal-booking-hero p {
+  font-size: 0.95rem !important;
+  line-height: 1.6 !important;
+}
+
+.jl-bridal-booking-back {
+  margin-bottom: 20px !important;
+}
+
+.jl-bridal-booking-wrap {
+  width: min(var(--jl-container), calc(100% - (2 * var(--jl-page-gutter)))) !important;
+  margin: -36px auto 56px !important;
+  gap: 20px !important;
+}
+
+.jl-bridal-booking-card {
+  padding: 18px !important;
+  border-radius: var(--jl-radius-lg) !important;
+}
+
+.jl-bridal-booking-card h2 {
+  font-size: clamp(1.35rem, 2.6vw, 1.7rem) !important;
+  margin: 12px 0 6px !important;
+}
+
+.jl-bridal-booking-card strong {
+  font-size: 1.35rem !important;
+  margin-bottom: 10px !important;
+}
+
+.jl-bridal-booking-card p {
+  line-height: 1.55 !important;
+}
+
+.jl-bridal-booking-card ul {
+  margin: 14px 0 !important;
+  gap: 8px !important;
+}
+
+/* ============================================================================
+   ADMIN DASHBOARD — metrics grid compaction
+   ========================================================================== */
+.stats-grid {
+  gap: 14px !important;
+  margin-block: 14px !important;
+}
+
+/* ============================================================================
+   MODALS & MISC
+   ========================================================================== */
+.modal-overlay,
+.jl-modal-overlay {
+  padding: 14px !important;
+}
+
+:is(.modal, .jl-modal, .modal-card, .admin-modal) {
+  max-height: calc(100dvh - 28px);
+}
+
+.jl-skip-link {
+  top: 8px !important;
+  left: 8px !important;
+}
+
+/* ============================================================================
+   TYPOGRAPHY BASELINE
+   ========================================================================== */
+.jl-page-title,
+.page-title {
+  font-size: clamp(1.5rem, 3.4vw, 2.2rem) !important;
+  line-height: 1.15 !important;
+  margin: 0 !important;
+}
+
+:where(h1, h2, h3, h4, h5, h6) {
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+/* ============================================================================
+   MOBILE SAFARI & RESPONSIVE HARDENING
+   ========================================================================== */
+@media (max-width: 639px) {
+  .jl-header-main {
+    min-height: 56px !important;
+  }
+
+  .jl-header-logo {
+    width: 32px !important;
+    height: 32px !important;
+  }
+
+  .jj-trust {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+
+  .jj-trust > div {
+    padding: 12px 8px !important;
+    text-align: center !important;
+  }
+
+  .jj-trust h3 {
+    font-size: 0.78rem !important;
+  }
+
+  .jj-trust p {
+    font-size: 0.66rem !important;
+  }
+
+  .jj-bridal-extras-links,
+  .jj-bridal-testimonial {
+    gap: 10px !important;
+  }
+
+  .jl-account-overview {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .global-footer-newsletter {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+
+  .global-footer-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .quick-view-modal {
+    grid-template-columns: 1fr !important;
+    max-height: calc(100dvh - 28px);
+  }
+
+  .quick-view-image {
+    min-height: 220px !important;
+    max-height: 38vh;
+  }
+}
+
+@media (min-width: 640px) and (max-width: 1023px) {
+  .global-footer-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+/* Never allow horizontal overflow on small screens */
+@media (max-width: 767px) {
+  :is(.admin-table-scroll, .jl-order-table-wrap, .table-wrap) {
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  :is(img, svg, video, canvas) {
+    max-width: 100% !important;
+  }
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

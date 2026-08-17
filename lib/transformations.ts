@@ -7,6 +7,7 @@ import {
   updateDoc,
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import { uploadAdminImage } from '@/lib/imageUpload';
 import { Transformation } from '@/lib/types';
 export type { Transformation } from '@/lib/types';
 
@@ -28,7 +29,9 @@ export type TransformationFormData = {
   title: string;
   category: string;
   beforeImage: string;
+  beforeImagePublicId?: string;
   afterImage: string;
+  afterImagePublicId?: string;
   description: string;
   featured: boolean;
 };
@@ -42,11 +45,23 @@ function formatTransformation(
     title: data.title || '',
     category: data.category || '',
     beforeImage: data.beforeImage || '',
+    beforeImagePublicId: data.beforeImagePublicId || '',
     afterImage: data.afterImage || '',
+    afterImagePublicId: data.afterImagePublicId || '',
     description: data.description || '',
     featured: Boolean(data.featured),
     createdAt: data.createdAt || new Date().toISOString(),
   };
+}
+
+export async function uploadTransformationImage(
+  file: File,
+  side: 'before' | 'after'
+): Promise<string> {
+  const result = await uploadAdminImage(file, {
+    folder: side === 'before' ? 'jayluxe/transformations/before' : 'jayluxe/transformations/after',
+  });
+  return result.url;
 }
 
 export async function getTransformations(): Promise<Transformation[]> {
@@ -79,7 +94,9 @@ export async function addTransformation(
     title: data.title.trim(),
     category: data.category.trim(),
     beforeImage: data.beforeImage,
+    beforeImagePublicId: data.beforeImagePublicId || '',
     afterImage: data.afterImage,
+    afterImagePublicId: data.afterImagePublicId || '',
     description: data.description.trim(),
     featured: Boolean(data.featured),
     createdAt: new Date().toISOString(),
@@ -114,13 +131,17 @@ export async function toggleTransformationFeatured(
 }
 
 export async function saveTransformation(
-  item: Transformation
+  item: Transformation,
+  beforeImageFile?: string | null,
+  afterImageFile?: string | null
 ): Promise<void> {
   const payload = {
     title: item.title || '',
     category: item.category || '',
-    beforeImage: item.beforeImage || '',
-    afterImage: item.afterImage || '',
+    beforeImage: beforeImageFile ?? item.beforeImage ?? '',
+    beforeImagePublicId: item.beforeImagePublicId || '',
+    afterImage: afterImageFile ?? item.afterImage ?? '',
+    afterImagePublicId: item.afterImagePublicId || '',
     description: item.description || '',
     featured: Boolean(item.featured),
     createdAt: item.createdAt || new Date().toISOString(),

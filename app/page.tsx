@@ -8,17 +8,18 @@ import { ReactCompareSlider, ReactCompareSliderImage } from 'react-compare-slide
 import {
   ArrowRight,
   Truck,
-  Shield,
-  Headphones,
+  Package,
+  Phone,
   Zap,
   TrendingUp,
   Gift,
   Gem,
   Scissors,
+  Images,
   MessageCircle,
   Mail,
 } from 'lucide-react';
-import { getSafeImageSource } from '@/lib/images';
+import { getResponsiveDeliverySource, getSafeImageSource } from '@/lib/images';
 import {
   CATEGORY_GRID_CLASSES,
   PRODUCT_GRID_CLASSES,
@@ -27,6 +28,7 @@ import { getProducts, getCategories } from '@/lib/store';
 import { getTestimonials, Testimonial } from '@/lib/testimonials';
 import { Product, Category, BridalPackage, Transformation } from '@/lib/types';
 import ProductCard from '@/components/ProductCard';
+import ResponsiveImage from '@/components/ResponsiveImage';
 import QuickViewModal from '@/components/QuickViewModal';
 import Footer from '@/components/Footer';
 import { getBridalPackages } from '@/lib/bridal';
@@ -34,7 +36,6 @@ import { getFeaturedTransformations } from '@/lib/transformations';
 import {
   OFFICIAL_EMAIL,
   OFFICIAL_EMAIL_LINK,
-  OFFICIAL_WHATSAPP_DISPLAY,
   OFFICIAL_WHATSAPP_URL,
 } from '@/lib/contact';
 
@@ -70,14 +71,14 @@ function ProductShowcase({
         </Link>
       </div>
 
-      <div className={`jj-product-grid ${PRODUCT_GRID_CLASSES}`}>
+      <div className={`jj-product-grid ${PRODUCT_GRID_CLASSES} jl-home-product-carousel`}>
         {products.map((product, index) => (
           <motion.div
             key={product.id}
-            initial={{ opacity: 0, y: 24 }}
+            initial={{ opacity: 0, y: 8 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-40px' }}
-            transition={{ duration: 0.45, delay: index * 0.05 }}
+            viewport={{ once: true, margin: '-24px' }}
+            transition={{ duration: 0.4, delay: index * 0.05 }}
           >
             <ProductCard p={product} onQuickView={onQuickView} />
           </motion.div>
@@ -146,9 +147,9 @@ export default function Home() {
 
         <motion.div 
           className="jj-hero-content"
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
+          transition={{ duration: 0.42, ease: 'easeOut' }}
         >
           <div className="jj-badge">
             Premium Beauty & Lifestyle
@@ -173,56 +174,90 @@ export default function Home() {
         </motion.div>
       </section>
 
-      <section className="jj-trust">
-        <div>
-          <Truck />
+      <section className="jj-trust" aria-label="JayLuxe service promises">
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.38 }}
+        >
+          <span className="jl-trust-icon jl-trust-icon-delivery" aria-hidden="true"><Truck /></span>
           <h3>Fast Delivery</h3>
           <p>Across Nigeria</p>
-        </div>
+        </motion.div>
 
-        <div>
-          <Shield />
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.38, delay: 0.06 }}
+        >
+          <span className="jl-trust-icon jl-trust-icon-quality" aria-hidden="true"><Package /></span>
           <h3>Quality Products</h3>
           <p>Trusted & reliable</p>
-        </div>
+        </motion.div>
 
-        <div>
-          <Headphones />
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.38, delay: 0.12 }}
+        >
+          <span className="jl-trust-icon jl-trust-icon-support" aria-hidden="true"><Phone /></span>
           <h3>Customer Support</h3>
           <p>We are here for you</p>
+        </motion.div>
+      </section>
+
+
+      <section className="jl-discover-more" aria-labelledby="discover-more-title">
+        <div className="jj-section-header">
+          <div>
+            <small>Explore JayLuxe</small>
+            <h2 id="discover-more-title">Discover More</h2>
+          </div>
+        </div>
+        <div className="jl-discover-grid" aria-label="Discover more JayLuxe experiences">
+          <Link href="/services" className="jl-discover-card">
+            <span className="jl-discover-icon" aria-hidden="true"><Scissors /></span>
+            <span><strong>Beauty Services</strong><small>Book polished care for every occasion</small></span>
+            <ArrowRight aria-hidden="true" />
+          </Link>
+          <Link href="/bridal" className="jl-discover-card">
+            <span className="jl-discover-icon" aria-hidden="true"><Gem /></span>
+            <span><strong>Bridal Experience</strong><small>Explore packages and consultation options</small></span>
+            <ArrowRight aria-hidden="true" />
+          </Link>
+          <Link href="/gallery" className="jl-discover-card">
+            <span className="jl-discover-icon" aria-hidden="true"><Images /></span>
+            <span><strong>Transformation Gallery</strong><small>See real JayLuxe beauty results</small></span>
+            <ArrowRight aria-hidden="true" />
+          </Link>
         </div>
       </section>
 
-      <section className="jl-home-promo-features" aria-label="JayLuxe promotional collections">
-        <Link href="/flash-sale" className="jl-home-promo-feature jl-home-promo-flash">
-          <span className="jl-home-promo-icon" aria-hidden="true">
-            <Zap size={30} strokeWidth={2.1} />
-          </span>
-          <span className="jl-home-promo-copy">
-            <strong>Flash Sale</strong>
-            <small>Limited Time</small>
-          </span>
-        </Link>
-
-        <Link href="/promotions" className="jl-home-promo-feature jl-home-promo-seasonal">
-          <span className="jl-home-promo-icon" aria-hidden="true">
-            <Gift size={30} strokeWidth={2.1} />
-          </span>
-          <span className="jl-home-promo-copy">
-            <strong>Seasonal Promotions</strong>
-            <small>Special Offers</small>
-          </span>
-        </Link>
-
-        <Link href="/best-sellers" className="jl-home-promo-feature jl-home-promo-bestselling">
-          <span className="jl-home-promo-icon" aria-hidden="true">
-            <TrendingUp size={30} strokeWidth={2.1} />
-          </span>
-          <span className="jl-home-promo-copy">
-            <strong>Best Selling</strong>
-            <small>Trending Now</small>
-          </span>
-        </Link>
+      <section className="jj-home-promotions" aria-labelledby="home-promotions-title">
+        <div className="jj-section-header">
+          <div>
+            <small>Current edits</small>
+            <h2 id="home-promotions-title">Promotions &amp; Popular Picks</h2>
+          </div>
+          <Link href="/promotions">View All <ArrowRight size={16} aria-hidden="true" /></Link>
+        </div>
+        <div className="jl-home-promo-features" aria-label="JayLuxe promotional collections">
+          <Link href="/flash-sale" className="jl-home-promo-feature jl-home-promo-flash">
+            <span className="jl-home-promo-icon" aria-hidden="true"><Zap size={26} strokeWidth={2.1} /></span>
+            <span className="jl-home-promo-copy"><strong>Flash Sale</strong><small>Limited Time</small></span>
+          </Link>
+          <Link href="/promotions" className="jl-home-promo-feature jl-home-promo-seasonal">
+            <span className="jl-home-promo-icon" aria-hidden="true"><Gift size={26} strokeWidth={2.1} /></span>
+            <span className="jl-home-promo-copy"><strong>Seasonal Promotions</strong><small>Special Offers</small></span>
+          </Link>
+          <Link href="/best-sellers" className="jl-home-promo-feature jl-home-promo-bestselling">
+            <span className="jl-home-promo-icon" aria-hidden="true"><TrendingUp size={26} strokeWidth={2.1} /></span>
+            <span className="jl-home-promo-copy"><strong>Best Selling</strong><small>Trending Now</small></span>
+          </Link>
+        </div>
       </section>
 
       <section className="jj-categories jl-home-category-section">
@@ -245,7 +280,7 @@ export default function Home() {
               className="jj-category-card"
             >
               <span className="jj-category-image">
-                <Image
+                <ResponsiveImage
                   src={categoryImage(category)}
                   alt=""
                   fill
@@ -253,9 +288,6 @@ export default function Home() {
                   className="jj-category-image-element"
                 />
                 <span className="jj-category-image-overlay" />
-                <span className="jj-category-label">
-                  {category.type === 'service' ? 'Service' : 'Collection'}
-                </span>
               </span>
               <span className="jj-category-content">
                 <strong>{category.name}</strong>
@@ -273,6 +305,14 @@ export default function Home() {
       </section>
 
       <ProductShowcase
+        eyebrow="Just Arrived"
+        title="New Arrivals"
+        href="/new-arrivals"
+        products={newArrivals}
+        onQuickView={setQuickViewProduct}
+      />
+
+      <ProductShowcase
         id="products"
         eyebrow="Curated by JayLuxe"
         title="Featured Products"
@@ -281,13 +321,20 @@ export default function Home() {
         onQuickView={setQuickViewProduct}
       />
 
-      <ProductShowcase
-        eyebrow="Just Arrived"
-        title="New Arrivals"
-        href="/new-arrivals"
-        products={newArrivals}
-        onQuickView={setQuickViewProduct}
-      />
+      <section className="jj-services">
+        <div>
+          <small>Professional Services</small>
+          <h2>Beauty Services Made for Every Occasion</h2>
+          <p>
+            Book professional hair styling, makeup, gele styling, beauty consultation,
+            bridal beauty services and special occasion styling.
+          </p>
+
+          <Link href="/services" className="jj-btn jj-btn-gold">
+            Explore Services <Scissors size={18} />
+          </Link>
+        </div>
+      </section>
 
       {bridalPackages.length > 0 && (
         <section className="jj-bridal">
@@ -310,10 +357,10 @@ export default function Home() {
               <motion.div
                 key={pkg.id}
                 className={`jj-bridal-card ${pkg.popular ? 'popular' : ''}`}
-                initial={{ opacity: 0, y: 50 }}
+                initial={{ opacity: 0, y: 8 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.6, delay: index * 0.15 }}
+                viewport={{ once: true, amount: 0.15 }}
+                transition={{ duration: 0.4, delay: index * 0.06 }}
               >
                 {pkg.popular && <div className="jj-popular-badge">Most Popular</div>}
                 <div className="jj-bridal-card-header">
@@ -324,7 +371,7 @@ export default function Home() {
                 </div>
                 <p className="jj-bridal-desc">{pkg.description || ''}</p>
                 <ul className="jj-bridal-features">
-                  {pkg.features.map((feature, i) => (
+                  {pkg.features.slice(0, 4).map((feature, i) => (
                     <li key={i}>
                       <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
                       {feature}
@@ -335,7 +382,7 @@ export default function Home() {
                   href={`/bridal?package=${encodeURIComponent(pkg.title || pkg.name || '')}`}
                   className="jj-btn jj-btn-book"
                 >
-                  Book {(pkg.title || pkg.name || 'Bridal').split(' ')[0]} Package
+                  Book Package
                 </Link>
               </motion.div>
             ))}
@@ -343,15 +390,15 @@ export default function Home() {
 
           <div className="jj-bridal-extras">
             <div className="jj-bridal-extras-links">
-              <Link href="/bridal">
-                <h3>Compare All Packages</h3>
-                <p>See a full feature comparison</p>
-                <ArrowRight />
+              <Link href="/bridal" className="jj-bridal-compare-cta">
+                <h3>Compare all bridal packages</h3>
+                <p>See pricing, services and features side by side.</p>
+                <ArrowRight aria-hidden="true" />
               </Link>
-              <Link href="/gallery">
-                <h3>Before & After Gallery</h3>
-                <p>See our bridal transformations</p>
-                <ArrowRight />
+              <Link href="/gallery" className="jj-bridal-gallery-cta">
+                <h3>Before &amp; After Gallery</h3>
+                <p>Explore real JayLuxe bridal transformations.</p>
+                <ArrowRight aria-hidden="true" />
               </Link>
             </div>
             <div className="jj-bridal-testimonial">
@@ -382,15 +429,15 @@ export default function Home() {
               <motion.div
                 key={t.id}
                 className="jj-transformation-card"
-                initial={{ opacity: 0, y: 40 }}
+                initial={{ opacity: 0, y: 8 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.6, delay: index * 0.15 }}
+                viewport={{ once: true, margin: '-24px' }}
+                transition={{ duration: 0.4, delay: index * 0.06 }}
               >
                 <div className="jj-transformation-slider">
                   <ReactCompareSlider
-                    itemOne={<ReactCompareSliderImage src={t.beforeImage} alt="Before" style={{ objectFit: 'cover' }} />}
-                    itemTwo={<ReactCompareSliderImage src={t.afterImage} alt="After" style={{ objectFit: 'cover' }} />}
+                    itemOne={<ReactCompareSliderImage src={getResponsiveDeliverySource(t.beforeImage, 960)} alt="Before" style={{ objectFit: 'cover' }} />}
+                    itemTwo={<ReactCompareSliderImage src={getResponsiveDeliverySource(t.afterImage, 960)} alt="After" style={{ objectFit: 'cover' }} />}
                   />
                   <div className="jj-image-label before">Before</div>
                   <div className="jj-image-label after">After</div>
@@ -414,15 +461,15 @@ export default function Home() {
               <h2>What Our Customers Say</h2>
             </div>
           </div>
-          <div className="jj-testimonials-grid">
+          <div className="jj-testimonials-grid jl-home-testimonial-carousel">
             {testimonials.map((t, index) => (
               <motion.div
                 key={t.id}
                 className="jj-testimonial-card"
-                initial={{ opacity: 0, y: 40 }}
+                initial={{ opacity: 0, y: 8 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.6, delay: index * 0.15 }}
+                viewport={{ once: true, margin: '-24px' }}
+                transition={{ duration: 0.4, delay: index * 0.06 }}
               >
                 <div className="jj-testimonial-rating">
                   {Array.from({ length: 5 }).map((_, i) => (
@@ -433,8 +480,9 @@ export default function Home() {
                 </div>
                 <blockquote>&quot;{t.testimonial}&quot;</blockquote>
                 <div className="jj-testimonial-customer">
-                  <Image
-                    src={getSafeImageSource(t.image, '/jayluxe-logo.png')}
+                  <ResponsiveImage
+                    src={t.image}
+                    fallbackSrc="/jayluxe-logo.png"
                     alt={t.customerName}
                     width={48}
                     height={48}
@@ -450,20 +498,6 @@ export default function Home() {
         </section>
       )}
 
-      <section className="jj-services">
-        <div>
-          <small>Professional Services</small>
-          <h2>Beauty Services Made for Every Occasion</h2>
-          <p>
-            Book professional hair styling, makeup, gele styling, beauty consultation,
-            bridal beauty services and special occasion styling.
-          </p>
-
-          <Link href="/services" className="jj-btn jj-btn-gold">
-            Explore Services <Scissors size={18} />
-          </Link>
-        </div>
-      </section>
 
       <section className="jj-contact jl-home-help-section">
         <h2>Need help with an order or service booking?</h2>
@@ -475,14 +509,6 @@ export default function Home() {
             <span>{OFFICIAL_EMAIL}</span>
           </a>
 
-          <a
-            href={OFFICIAL_WHATSAPP_URL}
-            target="_blank"
-            rel="noreferrer"
-          >
-            <MessageCircle aria-hidden="true" />
-            <span>WhatsApp: {OFFICIAL_WHATSAPP_DISPLAY}</span>
-          </a>
         </div>
 
         <a

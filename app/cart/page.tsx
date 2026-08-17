@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -8,9 +7,9 @@ import { Minus, Plus, ShoppingBag, Trash2 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 import Footer from '@/components/Footer';
+import ResponsiveImage from '@/components/ResponsiveImage';
 import PageHeroIcon from '@/components/PageHeroIcon';
 import { trackEvent } from '@/lib/analytics';
-import { getSafeImageSource, isLegacyDataImageSource } from '@/lib/images';
 import { getCart, getProducts, setCart } from '@/lib/store';
 import type { Product } from '@/lib/types';
 
@@ -170,9 +169,8 @@ export default function CartPage() {
                       className="jl-cart-item-image"
                       aria-label={`View ${item.name}`}
                     >
-                      <Image
-                        src={getSafeImageSource(item.image)}
-                        unoptimized={isLegacyDataImageSource(item.image)}
+                      <ResponsiveImage
+                        src={item.image}
                         alt={item.name}
                         fill
                         sizes="(max-width: 640px) 84px, 112px"

@@ -1,13 +1,17 @@
 import fs from 'node:fs';
 
-const source = fs.readFileSync(new URL('../lib/adminImageUpload.ts', import.meta.url), 'utf8');
+const source = fs.readFileSync(new URL('../lib/imageUpload.ts', import.meta.url), 'utf8');
 
-if (/ReturnType<\s*typeof\s+window\.setTimeout\s*>/.test(source)) {
-  throw new Error('adminImageUpload.ts still derives timeoutId from merged Window/global setTimeout types; use an explicit browser timer id type instead.');
+if (!source.includes('XMLHttpRequest')) {
+  throw new Error('imageUpload.ts must use XMLHttpRequest for browser upload progress and timeout support.');
 }
 
-if (!/let\s+timeoutId:\s*number\s*\|\s*null\s*=\s*null/.test(source)) {
-  throw new Error('adminImageUpload.ts must type the window.setTimeout handle as number | null.');
+if (!/xhr\.timeout\s*=/.test(source)) {
+  throw new Error('imageUpload.ts must configure a finite XHR timeout.');
 }
 
-console.log('Catalog image browser timer typing verification passed.');
+if (!source.includes('xhr.ontimeout')) {
+  throw new Error('imageUpload.ts must surface upload timeout errors.');
+}
+
+console.log('Cloudinary browser timeout verification passed.');

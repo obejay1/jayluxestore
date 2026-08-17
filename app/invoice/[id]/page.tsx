@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import ResponsiveImage from '@/components/ResponsiveImage';
 import { onAuthStateChanged } from 'firebase/auth';
 import { OFFICIAL_EMAIL } from '@/lib/contact';
 import { auth } from '@/lib/firebase';
 import { PRODUCTION_SITE_URL } from '@/lib/site';
-import { getSafeImageSource, isLegacyDataImageSource } from '@/lib/images';
 import type { Order } from '@/lib/types';
 import { QRCodeSVG } from 'qrcode.react';
 import Barcode from 'react-barcode';
@@ -338,7 +338,7 @@ export default function InvoicePage({ params }: { params: { id: string } }) {
                 <tr key={i} style={{ borderBottom: '1px solid #F8F6F2' }}>
                   <td style={{ padding: '16px 12px', display: 'flex', alignItems: 'center', gap: 12 }}>
                     {item.image ? (
-                      <Image src={getSafeImageSource(item.image)} unoptimized={isLegacyDataImageSource(item.image)} alt={item.name || 'JayLuxe product'} width={48} height={48} style={{ objectFit: 'cover', borderRadius: 8, background: '#F8F6F2' }} />
+                      <ResponsiveImage src={item.image} alt={item.name || 'JayLuxe product'} width={48} height={48} sizes="48px" style={{ objectFit: 'cover', borderRadius: 8, background: '#F8F6F2' }} />
                     ) : (
                       <div style={{ width: 48, height: 48, background: '#F8F6F2', borderRadius: 8 }} />
                     )}

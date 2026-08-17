@@ -79,7 +79,7 @@ export default function Footer() {
   }
 
   return (
-    <footer className="global-footer-pro">
+    <footer className="global-footer-pro jl-compact-footer">
       <div className="global-footer-shell">
         <section
           className="global-footer-newsletter"

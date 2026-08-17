@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { Quote, Star } from 'lucide-react';
 import Footer from '@/components/Footer';
 import PageHeroIcon from '@/components/PageHeroIcon';
+import ResponsiveImage from '@/components/ResponsiveImage';
 import { getTestimonials, Testimonial } from '@/lib/testimonials';
 
 const fallback: Testimonial[] = [
@@ -30,11 +31,16 @@ export default function TestimonialsPage() {
 
       <section className="jl-testimonial-page-grid">
         {items.map((item) => (
-          <article key={item.id}>
-            <Quote size={27} />
-            <div className="jl-testimonial-stars">{Array.from({ length: 5 }).map((_, index) => <Star key={index} size={17} fill={index < item.rating ? 'currentColor' : 'none'} />)}</div>
+          <article key={item.id} className="jl-testimonial-page-card">
+            <div className="jl-testimonial-page-top">
+              <Quote size={22} aria-hidden="true" />
+              <div className="jl-testimonial-stars" aria-label={`${item.rating} out of 5 stars`}>{Array.from({ length: 5 }).map((_, index) => <Star key={index} size={15} fill={index < item.rating ? 'currentColor' : 'none'} />)}</div>
+            </div>
             <blockquote>“{item.testimonial || item.review}”</blockquote>
-            <footer><strong>{item.customerName}</strong><span>{item.productOrService || 'Verified JayLuxe Customer'}</span></footer>
+            <footer>
+              <ResponsiveImage src={item.image} fallbackSrc="/jayluxe-logo.png" alt={item.customerName} width={44} height={44} />
+              <span><strong>{item.customerName}</strong><small>{item.productOrService || 'Verified JayLuxe Customer'}</small></span>
+            </footer>
           </article>
         ))}
       </section>

@@ -124,6 +124,10 @@ export default function PromotionsPage() {
           Explore flash sales, seasonal edits and limited-time promotions across
           beauty, fashion, bridal and lifestyle collections.
         </p>
+        <div className="jl-promotions-hero-actions">
+          <Link href="/flash-sale">Shop Flash Sale <ArrowRight size={16} aria-hidden="true" /></Link>
+          <Link href="/shop" className="secondary">Browse Collection</Link>
+        </div>
       </section>
 
       <section className="jl-promotions-grid" aria-label="Current promotions">
@@ -134,7 +138,7 @@ export default function PromotionsPage() {
             <motion.article
               key={promotion.title}
               className={`jl-promo-card ${promotion.featured ? 'featured' : ''}`}
-              initial={{ opacity: 0, y: 28 }}
+              initial={{ opacity: 0, y: 8 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.45, delay: index * 0.06 }}

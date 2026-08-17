@@ -1,7 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
@@ -55,6 +55,7 @@ export default function ProductDetailPage() {
   const [isZoomed, setIsZoomed] = useState(false);
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
   const [recentIds, setRecentIds] = useState<string[]>([]);
+  const touchStartX = useRef<number | null>(null);
 
   const handleReviewSummary = useCallback((summary: ProductReviewSummary) => {
     setProduct((current) => current ? { ...current, rating: summary.averageRating, reviewCount: summary.reviewCount } : current);
@@ -196,6 +197,22 @@ export default function ProductDetailPage() {
     });
   }
 
+  function handleTouchStart(event: React.TouchEvent<HTMLDivElement>) {
+    touchStartX.current = event.touches[0]?.clientX ?? null;
+  }
+
+  function handleTouchEnd(event: React.TouchEvent<HTMLDivElement>) {
+    if (touchStartX.current === null || images.length < 2) return;
+    const endX = event.changedTouches[0]?.clientX ?? touchStartX.current;
+    const delta = endX - touchStartX.current;
+    touchStartX.current = null;
+    if (Math.abs(delta) < 42) return;
+    setActiveImage((current) => {
+      if (delta < 0) return (current + 1) % images.length;
+      return (current - 1 + images.length) % images.length;
+    });
+  }
+
   return (
     <main className="jl-product-page">
       {quickViewProduct && <QuickViewModal product={quickViewProduct} onClose={() => setQuickViewProduct(null)} />}
@@ -207,6 +224,8 @@ export default function ProductDetailPage() {
             onMouseMove={handleMouseMove}
             onMouseEnter={() => setIsZoomed(true)}
             onMouseLeave={() => setIsZoomed(false)}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
           >
             <ResponsiveImage
               src={images[activeImage]}
@@ -282,8 +301,6 @@ export default function ProductDetailPage() {
             {discount > 0 && <span className="jl-product-discount">Save {discount}%</span>}
           </div>
 
-          <p className="jl-product-desc">{product.description || 'A premium JayLuxe piece selected for its beauty, quality and timeless appeal.'}</p>
-
           {availableSizes.length ? (
             <section className="jl-product-sizes" aria-labelledby="available-product-sizes">
               <div>
@@ -296,10 +313,10 @@ export default function ProductDetailPage() {
             </section>
           ) : null}
 
-          <div className="jl-product-benefits">
+          <div className="jl-product-benefits" aria-label="Purchase assurances">
             <div><Truck size={20} aria-hidden="true" /><span><strong>Fast Delivery</strong><small>Across Nigeria</small></span></div>
-            <div><Shield size={20} aria-hidden="true" /><span><strong>Authentic Quality</strong><small>Carefully selected</small></span></div>
-            <div><RotateCcw size={20} aria-hidden="true" /><span><strong>Client Care</strong><small>Support when needed</small></span></div>
+            <div><Shield size={20} aria-hidden="true" /><span><strong>Secure Checkout</strong><small>Protected payment</small></span></div>
+            <div><RotateCcw size={20} aria-hidden="true" /><span><strong>Easy Returns</strong><small>Client-care support</small></span></div>
           </div>
 
           <div className="jl-product-purchase-box">
@@ -319,7 +336,14 @@ export default function ProductDetailPage() {
               </button>
             </div>
           </div>
+
+          <p className="jl-product-desc">{product.description || 'A premium JayLuxe piece selected for its beauty, quality and timeless appeal.'}</p>
         </div>
+      </div>
+
+      <div className="jl-mobile-sticky-cart" aria-label="Mobile product purchase">
+        <div><small>{currentProduct.name}</small><strong>₦{currentProduct.price.toLocaleString('en-NG')}</strong></div>
+        <button type="button" onClick={handleAddToCart} disabled={stock <= 0}>{stock <= 0 ? 'Out of Stock' : 'Add to Cart'}</button>
       </div>
 
       <section className="jl-product-tabs" aria-label="Product information">
@@ -371,7 +395,7 @@ export default function ProductDetailPage() {
       </section>
 
       <ProductRail title="Related Products" products={relatedProducts} onQuickView={setQuickViewProduct} />
-      <ProductRail title="Recommended for You" products={recommendedProducts} onQuickView={setQuickViewProduct} />
+      <ProductRail title="Recommended for You" products={recommendedProducts} onQuickView={setQuickViewProduct} recommended viewAllHref="/shop" />
       <ProductRail title="Recently Viewed" products={recentlyViewedProducts} onQuickView={setQuickViewProduct} />
 
       <Footer />
@@ -379,12 +403,29 @@ export default function ProductDetailPage() {
   );
 }
 
-function ProductRail({ title, products, onQuickView }: { title: string; products: Product[]; onQuickView: (product: Product) => void }) {
+function ProductRail({
+  title,
+  products,
+  onQuickView,
+  recommended = false,
+  viewAllHref,
+}: {
+  title: string;
+  products: Product[];
+  onQuickView: (product: Product) => void;
+  recommended?: boolean;
+  viewAllHref?: string;
+}) {
   if (!products.length) return null;
   return (
-    <section className="jl-related-products">
-      <div className="jl-related-head"><p>Discover more</p><h2 className="font-serif">{title}</h2></div>
-      <div className={`jl-related-grid ${PRODUCT_GRID_CLASSES}`}>{products.map((item) => <ProductCard p={item} key={item.id} onQuickView={onQuickView} />)}</div>
+    <section className={`jl-related-products${recommended ? ' jl-recommended-products' : ''}`}>
+      <div className="jl-related-head">
+        <div><p>Discover more</p><h2 className="font-serif">{title}</h2></div>
+        {viewAllHref ? <Link href={viewAllHref} className="jl-related-view-all">View All</Link> : null}
+      </div>
+      <div className={`jl-related-grid ${PRODUCT_GRID_CLASSES}${recommended ? ' jl-recommended-grid' : ''}`}>
+        {products.map((item) => <ProductCard p={item} key={item.id} onQuickView={onQuickView} />)}
+      </div>
     </section>
   );
 }

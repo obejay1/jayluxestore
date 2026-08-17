@@ -7,6 +7,7 @@ import {
   updateDoc,
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import { uploadAdminImage } from '@/lib/imageUpload';
 import { BridalPackage } from '@/lib/types';
 export type { BridalPackage } from '@/lib/types';
 
@@ -16,6 +17,7 @@ export type BridalPackageFormData = {
   title: string;
   description: string;
   image: string;
+  imagePublicId?: string;
   price: number;
   features: string[];
   duration?: string;
@@ -33,6 +35,7 @@ function formatBridalPackage(
     name: data.name || data.title || '',
     description: data.description || '',
     image: data.image || '',
+    imagePublicId: data.imagePublicId || '',
     price: Number(data.price || 0),
     features: Array.isArray(data.features) ? data.features : [],
     duration: data.duration || '',
@@ -40,6 +43,11 @@ function formatBridalPackage(
     featured: Boolean(data.featured),
     createdAt: data.createdAt || new Date().toISOString(),
   };
+}
+
+export async function uploadBridalPackageImage(file: File): Promise<string> {
+  const result = await uploadAdminImage(file, { folder: 'jayluxe/bridal-packages' });
+  return result.url;
 }
 
 export async function getBridalPackages(): Promise<BridalPackage[]> {
@@ -61,6 +69,7 @@ export async function addBridalPackage(
     title: data.title.trim(),
     description: data.description.trim(),
     image: data.image,
+    imagePublicId: data.imagePublicId || '',
     price: Number(data.price || 0),
     features: data.features || [],
     duration: data.duration?.trim() || '',

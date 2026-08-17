@@ -1,12 +1,11 @@
 'use client';
 
 import { useEffect, useId, useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import FocusLock from 'react-focus-lock';
 import { ArrowUpRight, Heart, Shield, ShoppingBag, Truck, X } from 'lucide-react';
 
-import { DEFAULT_PRODUCT_IMAGE, getSafeImageSource, isLegacyDataImageSource } from '@/lib/images';
+import ResponsiveImage from '@/components/ResponsiveImage';
 import type { Product } from '@/lib/types';
 import { addToCart, getWishlist, toggleWishlist } from '@/lib/store';
 import { showToast } from '@/lib/toast';
@@ -22,13 +21,8 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
   const descriptionId = useId();
   const [quantity, setQuantity] = useState(1);
   const [wishlisted, setWishlisted] = useState(() => getWishlist().includes(product.id));
-  const [imageSource, setImageSource] = useState(getSafeImageSource(product.image));
   const stock = Math.max(0, Number(product.stock ?? 99));
   const outOfStock = stock <= 0;
-
-  useEffect(() => {
-    setImageSource(getSafeImageSource(product.image));
-  }, [product.image]);
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
@@ -74,13 +68,11 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
           </button>
 
           <div className="quick-view-image">
-            <Image
-              src={imageSource}
+            <ResponsiveImage
+              src={product.image}
               alt={product.name}
               fill
-              unoptimized={isLegacyDataImageSource(imageSource)}
               sizes="(max-width: 760px) 100vw, 46vw"
-              onError={() => setImageSource(DEFAULT_PRODUCT_IMAGE)}
             />
           </div>
 

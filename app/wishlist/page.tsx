@@ -58,7 +58,7 @@ export default function WishlistPage() {
         </div>
 
         {products.length === 0 ? (
-          <motion.div className="wishlist-empty" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }}>
+          <motion.div className="wishlist-empty" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
             <div className="wishlist-empty-icon"><Heart size={42} /></div>
             <p className="wishlist-small-title">Your collection begins here</p>
             <h2>Your wishlist is empty</h2>
@@ -69,7 +69,7 @@ export default function WishlistPage() {
           <div className={`wishlist-grid ${PRODUCT_GRID_CLASSES}`}>
             <AnimatePresence mode="popLayout">
               {products.map((product) => (
-                <motion.div key={product.id} layout initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.88, y: 10 }} transition={{ duration: 0.3 }}>
+                <motion.div key={product.id} layout initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.98, y: 8 }} transition={{ duration: 0.3 }}>
                   <ProductCard p={product} onQuickView={setQuickViewProduct} />
                 </motion.div>
               ))}

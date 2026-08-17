@@ -1,0 +1,2483 @@
+/* =========================================================
+   JAYLUXE PREMIUM UI V2 — GLOBAL PRODUCTION REFINEMENTS
+   Final authoritative layer. Loaded last in layout.tsx.
+   
+   Covers:
+     §1  Design system tokens
+     §2  Typography hierarchy
+     §3  Hero section
+     §4  Trust / delivery section
+     §5  Product card system
+     §6  Category cards
+     §7  Homepage horizontal carousels (mobile)
+     §8  Bridal packages
+     §9  Testimonials carousel
+     §10 WhatsApp CTA consolidation
+     §11 Discover More / editorial promo grid
+     §12 Wishlist page
+     §13 Admin dashboard
+     §14 Upload / dropzone components
+     §15 Image preview aspect ratios
+     §16 Animations (reduced intensity)
+     §17 Responsive grid system
+     §18 Mobile navigation
+     §19 Footer
+     §20 Accessibility
+   ========================================================= */
+
+/* =========================================================
+   §1 — DESIGN SYSTEM TOKENS
+   ========================================================= */
+:root {
+  /* Spacing scale: 4 / 8 / 12 / 16 / 20 / 24 / 32 / 40 */
+  --v2-sp-1: 4px;
+  --v2-sp-2: 8px;
+  --v2-sp-3: 12px;
+  --v2-sp-4: 16px;
+  --v2-sp-5: 20px;
+  --v2-sp-6: 24px;
+  --v2-sp-8: 32px;
+  --v2-sp-10: 40px;
+
+  /* Container + gutters */
+  --v2-container: 1280px;
+  --v2-gutter: clamp(16px, 3vw, 32px);
+  --v2-gutter-mobile: 16px;
+  --v2-gutter-tablet: 24px;
+  --v2-gutter-desktop: 32px;
+
+  /* Grid gaps */
+  --v2-gap-mobile: 10px;
+  --v2-gap-tablet: 14px;
+  --v2-gap-desktop: 20px;
+
+  /* Component heights */
+  --v2-control-h: 40px;
+  --v2-control-h-sm: 36px;
+  --v2-btn-h: 40px;
+  --v2-btn-h-sm: 36px;
+
+  /* Radii */
+  --v2-radius-sm: 8px;
+  --v2-radius-md: 12px;
+  --v2-radius-lg: 16px;
+  --v2-radius-xl: 20px;
+
+  /* Shadows — minimal luxury */
+  --v2-shadow-card: 0 2px 12px rgba(29, 23, 15, 0.07);
+  --v2-shadow-hover: 0 8px 24px rgba(29, 23, 15, 0.11);
+  --v2-shadow-float: 0 16px 40px rgba(29, 23, 15, 0.10);
+
+  /* Animation */
+  --v2-duration: 0.38s;
+  --v2-ease: ease;
+  --v2-stagger: 0.06s;
+
+  /* Section vertical rhythm */
+  --v2-section-y: clamp(24px, 3.5vw, 40px);
+  --v2-major-y: clamp(28px, 4vw, 40px);
+
+  /* Card padding */
+  --v2-card-pad: clamp(12px, 1.8vw, 16px);
+}
+
+/* =========================================================
+   §2 — TYPOGRAPHY HIERARCHY
+   ========================================================= */
+
+/* --- Hero heading: 48–60px desktop, 32–38px mobile --- */
+.jj-hero-content h1 {
+  font-size: clamp(2rem, 6.5vw, 3.75rem) !important;
+  line-height: 1 !important;
+  letter-spacing: -0.02em;
+  font-weight: 500 !important;
+}
+
+/* --- Page heading: 36–42px desktop, 28–32px mobile --- */
+:where(
+  .jl-shop-hero h1,
+  .jl-gallery-hero h1,
+  .jl-services-hero h1,
+  .jl-bridal-booking-hero h1,
+  .wishlist-hero h1,
+  .jl-cart-hero h1,
+  .jl-account-hero h1,
+  .jl-checkout-hero h1,
+  .jl-order-hero h1,
+  .jl-promotions-hero h1,
+  .jl-editorial-hero h1
+) {
+  font-size: clamp(1.75rem, 4vw, 2.625rem) !important;
+  line-height: 1.05 !important;
+}
+
+/* --- Section heading: 28–32px desktop, 22–26px mobile --- */
+:where(
+  .jj-bridal-header h2,
+  .jj-services h2,
+  .jj-contact h2,
+  .jj-transformations h2,
+  .jl-services-section-head h2,
+  .jl-gallery-heading h2,
+  .jl-bridal-intro h2,
+  .jl-bridal-banner-content h2,
+  .jl-related-head h2
+) {
+  font-size: clamp(1.375rem, 3vw, 2rem) !important;
+  line-height: 1.1 !important;
+  font-weight: 500 !important;
+}
+
+/* --- Section sub-header: used by .jj-section-header h2 --- */
+:where(.jj-section-header h2) {
+  font-size: clamp(1.25rem, 2.5vw, 1.65rem) !important;
+  line-height: 1.12 !important;
+  font-weight: 600 !important;
+}
+
+/* --- Card headings: 15–17px desktop, 14–15px mobile --- */
+:where(
+  .lux-product-card h3,
+  .jl-unified-service-card h3,
+  .jj-bridal-card h3,
+  .jl-bridal-card h3
+) {
+  font-size: clamp(0.875rem, 1.6vw, 1.0625rem) !important;
+  line-height: 1.3 !important;
+}
+
+/* --- Body text: 14–15px --- */
+:where(
+  .jj-hero-content > p,
+  .jj-services > div > p,
+  .jl-services-section-head p,
+  .jl-gallery-heading p,
+  .jl-bridal-intro p
+) {
+  font-size: clamp(0.875rem, 1.5vw, 0.9375rem) !important;
+  line-height: 1.7 !important;
+}
+
+/* --- Eyebrow / metadata: 10–12px --- */
+:where(
+  .jj-section-header small,
+  .jl-services-badge,
+  .jl-gallery-badge,
+  .jl-bridal-badge,
+  .lux-product-category,
+  .jl-unified-service-category
+) {
+  font-size: clamp(0.625rem, 1vw, 0.75rem) !important;
+  letter-spacing: 0.09em !important;
+}
+
+/* --- Price: 16–18px desktop --- */
+:where(.lux-product-price, .jl-unified-service-price strong) {
+  font-size: clamp(0.9375rem, 1.6vw, 1.125rem) !important;
+}
+
+/* =========================================================
+   §3 — HERO SECTION
+   Constrain to 480–540px desktop, 390–440px mobile.
+   ========================================================= */
+.jj-hero {
+  min-height: clamp(390px, 56svh, 540px) !important;
+  max-height: 600px;
+}
+
+.jj-hero-content {
+  width: min(680px, calc(100% - (2 * var(--v2-gutter)))) !important;
+  padding-block: clamp(24px, 4vw, 48px) !important;
+}
+
+.jj-hero-content .jj-badge {
+  margin-bottom: var(--v2-sp-4) !important;
+  padding: 6px 12px !important;
+  font-size: 0.68rem !important;
+}
+
+.jj-hero-content p {
+  max-width: 560px;
+  margin-top: var(--v2-sp-3) !important;
+  font-size: clamp(0.875rem, 1.6vw, 1rem) !important;
+  line-height: 1.65 !important;
+}
+
+.jj-hero-buttons {
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: var(--v2-sp-3) !important;
+  margin-top: var(--v2-sp-5) !important;
+}
+
+.jj-btn {
+  min-height: 44px !important;
+  padding: 11px 20px !important;
+  border-radius: var(--v2-radius-md) !important;
+  font-size: 0.82rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.01em;
+}
+
+/* Mobile hero */
+@media (max-width: 767px) {
+  .jj-hero {
+    min-height: clamp(390px, 58svh, 440px) !important;
+    max-height: 460px;
+  }
+
+  .jj-hero-content h1 {
+    font-size: clamp(2rem, 8.5vw, 2.375rem) !important;
+  }
+
+  .jj-btn {
+    min-height: 40px !important;
+    padding: 9px 16px !important;
+    font-size: 0.78rem !important;
+  }
+}
+
+/* =========================================================
+   §4 — TRUST / DELIVERY SECTION
+   Compact 3-column. Subtle stagger animation.
+   ========================================================= */
+.jj-trust {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  width: min(1100px, calc(100% - (2 * var(--v2-gutter)))) !important;
+  margin: -32px auto 0 !important;
+  padding: 0 !important;
+  border: 1px solid var(--jl-border, #e5e5e5) !important;
+  border-radius: var(--v2-radius-lg) !important;
+  background: #fff !important;
+  box-shadow: var(--v2-shadow-float) !important;
+  overflow: hidden !important;
+  position: relative !important;
+  z-index: 3 !important;
+}
+
+.jj-trust > div {
+  padding: 18px 20px !important;
+  border-right: 1px solid var(--jl-border, #e5e5e5) !important;
+  text-align: left !important;
+  animation: v2TrustFade var(--v2-duration) var(--v2-ease) both;
+}
+
+.jj-trust > div:nth-child(1) { animation-delay: 0s; }
+.jj-trust > div:nth-child(2) { animation-delay: var(--v2-stagger); }
+.jj-trust > div:nth-child(3) { animation-delay: calc(var(--v2-stagger) * 2); animation-delay: 0.12s; }
+.jj-trust > div:last-child { border-right: 0 !important; }
+
+.jj-trust svg {
+  width: 22px !important;
+  height: 22px !important;
+  color: var(--jl-gold, #C8A24B) !important;
+}
+
+.jj-trust h3 {
+  margin: 7px 0 2px !important;
+  color: var(--jl-black, #111) !important;
+  font-size: 0.9rem !important;
+  font-weight: 700 !important;
+}
+
+.jj-trust p {
+  margin: 0 !important;
+  color: var(--jl-muted, #777) !important;
+  font-size: 0.78rem !important;
+}
+
+@keyframes v2TrustFade {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 580px) {
+  .jj-trust {
+    margin: -20px auto 0 !important;
+  }
+
+  .jj-trust > div {
+    padding: 14px 12px !important;
+  }
+
+  .jj-trust h3 {
+    font-size: 0.78rem !important;
+  }
+
+  .jj-trust p {
+    font-size: 0.68rem !important;
+  }
+
+  .jj-trust svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+}
+
+/* =========================================================
+   §5 — PRODUCT CARD SYSTEM
+   Target: compact, 4:5 ratio, reduced internal spacing.
+   ========================================================= */
+
+/* Card shell */
+.lux-product-card {
+  border: 1px solid rgba(53, 43, 30, 0.1) !important;
+  border-radius: var(--v2-radius-md) !important;
+  background: #fff !important;
+  box-shadow: var(--v2-shadow-card) !important;
+  transition:
+    transform 0.32s ease,
+    box-shadow 0.32s ease !important;
+  overflow: hidden !important;
+}
+
+.lux-product-card:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: var(--v2-shadow-hover) !important;
+}
+
+/* Image area: 4:5 */
+.lux-product-image {
+  aspect-ratio: 4 / 5 !important;
+  overflow: hidden !important;
+  flex: 0 0 auto !important;
+  position: relative !important;
+}
+
+.lux-product-img {
+  transition: transform 0.42s ease !important;
+  object-fit: cover !important;
+}
+
+.lux-product-card:hover .lux-product-img {
+  transform: scale(1.03) !important;
+}
+
+/* Badges */
+.lux-product-badges {
+  position: absolute !important;
+  top: 8px !important;
+  left: 8px !important;
+  z-index: 2 !important;
+  display: flex !important;
+  gap: 4px !important;
+  flex-wrap: wrap;
+}
+
+.lux-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  padding: 4px 7px !important;
+  border-radius: 999px !important;
+  font-size: 0.58rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.07em !important;
+  line-height: 1 !important;
+  text-transform: uppercase !important;
+}
+
+.lux-badge-stock {
+  background: #4b4b4b !important;
+  color: #fff !important;
+}
+
+/* Wishlist button */
+.lux-product-wishlist {
+  position: absolute !important;
+  top: 8px !important;
+  right: 8px !important;
+  z-index: 3 !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 32px !important;
+  height: 32px !important;
+  border: 1px solid rgba(255, 255, 255, 0.85) !important;
+  border-radius: 50% !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  color: var(--jl-black, #111) !important;
+  cursor: pointer !important;
+  transition: background 0.25s ease, color 0.25s ease, transform 0.2s ease !important;
+}
+
+.lux-product-wishlist:hover,
+.lux-product-wishlist.active {
+  background: var(--jl-gold, #C8A24B) !important;
+  color: #fff !important;
+  border-color: var(--jl-gold, #C8A24B) !important;
+  transform: scale(1.08) !important;
+}
+
+.lux-product-wishlist svg {
+  width: 15px !important;
+  height: 15px !important;
+}
+
+/* Quick view overlay */
+.lux-product-overlay {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 4 !important;
+  display: flex !important;
+  align-items: flex-end !important;
+  justify-content: center !important;
+  padding: 12px !important;
+  background: linear-gradient(to top, rgba(17, 17, 17, 0.6) 0%, transparent 55%) !important;
+  opacity: 0 !important;
+  transition: opacity 0.28s ease !important;
+}
+
+.lux-product-card:hover .lux-product-overlay {
+  opacity: 1 !important;
+}
+
+.lux-quick-view-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  width: 100% !important;
+  min-height: 36px !important;
+  padding: 7px 12px !important;
+  border: 0 !important;
+  border-radius: var(--v2-radius-sm) !important;
+  background: rgba(17, 17, 17, 0.92) !important;
+  color: #fff !important;
+  font-size: 0.75rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  transition: background 0.22s ease !important;
+}
+
+.lux-quick-view-btn:hover {
+  background: var(--jl-gold, #C8A24B) !important;
+}
+
+/* Info panel */
+.lux-product-info {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 !important;
+  min-width: 0 !important;
+  padding: 10px 11px 11px !important;
+  gap: 4px !important;
+}
+
+.lux-product-category {
+  margin: 0 !important;
+  overflow: hidden !important;
+  color: var(--jl-gold, #C8A24B) !important;
+  font-size: 0.6rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.09em !important;
+  text-overflow: ellipsis !important;
+  text-transform: uppercase !important;
+  white-space: nowrap !important;
+}
+
+.lux-product-title-link {
+  text-decoration: none !important;
+}
+
+.lux-product-title-link h3 {
+  margin: 0 !important;
+  color: var(--jl-black, #111) !important;
+  font-size: clamp(0.82rem, 1.5vw, 0.96rem) !important;
+  font-weight: 600 !important;
+  line-height: 1.3 !important;
+  min-height: 2.5em !important;
+}
+
+/* Rating row */
+.lux-product-rating-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  min-height: 16px !important;
+  margin: 2px 0 0 !important;
+  color: var(--jl-gold, #C8A24B) !important;
+}
+
+.lux-product-rating-row > span {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 1px !important;
+}
+
+.lux-product-rating-row svg {
+  width: 11px !important;
+  height: 11px !important;
+}
+
+.lux-product-rating-row small {
+  color: #888 !important;
+  font-size: 0.62rem !important;
+  font-weight: 700 !important;
+}
+
+/* Pricing */
+.lux-product-pricing {
+  display: flex !important;
+  align-items: baseline !important;
+  gap: 5px !important;
+  margin-top: auto !important;
+}
+
+.lux-product-price {
+  color: var(--jl-gold-rich, #A57A1F) !important;
+  font-size: 0.96rem !important;
+  font-weight: 750 !important;
+}
+
+.lux-product-old-price {
+  color: #999 !important;
+  font-size: 0.72rem !important;
+  text-decoration: line-through !important;
+}
+
+/* Add to Cart button */
+.lux-product-add-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  width: 100% !important;
+  min-height: 36px !important;
+  margin-top: 8px !important;
+  padding: 7px 10px !important;
+  border: 0 !important;
+  border-radius: var(--v2-radius-sm) !important;
+  background: var(--jl-black, #111) !important;
+  color: #fff !important;
+  font-size: 0.73rem !important;
+  font-weight: 750 !important;
+  cursor: pointer !important;
+  transition: background 0.25s ease !important;
+}
+
+.lux-product-add-btn:hover:not(:disabled) {
+  background: var(--jl-gold, #C8A24B) !important;
+}
+
+.lux-product-add-btn:disabled {
+  background: #aaa !important;
+  cursor: not-allowed !important;
+}
+
+.lux-product-add-btn svg {
+  width: 14px !important;
+  height: 14px !important;
+  flex: 0 0 auto !important;
+}
+
+/* Tiny screens */
+@media (max-width: 359px) {
+  .lux-product-add-btn svg {
+    display: none !important;
+  }
+}
+
+/* =========================================================
+   §6 — CATEGORY CARDS
+   Image-first, compact text, editorial feel.
+   ========================================================= */
+
+.jj-category-card,
+.jl-category-page-card {
+  border: 1px solid rgba(48, 39, 27, 0.09) !important;
+  border-radius: var(--v2-radius-md) !important;
+  background: #fff !important;
+  box-shadow: var(--v2-shadow-card) !important;
+  transition:
+    transform 0.28s ease,
+    box-shadow 0.28s ease,
+    border-color 0.28s ease !important;
+  overflow: hidden !important;
+}
+
+.jj-category-card:hover,
+.jl-category-page-card:hover {
+  transform: translateY(-3px) !important;
+  border-color: rgba(200, 162, 75, 0.4) !important;
+  box-shadow: var(--v2-shadow-hover) !important;
+}
+
+/* Category image area: 4:3 */
+.jj-category-image,
+.jl-category-page-media {
+  aspect-ratio: 4 / 3 !important;
+  position: relative !important;
+  display: block !important;
+  width: 100% !important;
+  overflow: hidden !important;
+  flex: 0 0 auto !important;
+}
+
+.jj-category-image img,
+.jl-category-page-media img {
+  object-fit: cover !important;
+  transition: transform 0.42s ease !important;
+}
+
+.jj-category-card:hover .jj-category-image img,
+.jl-category-page-card:hover .jl-category-page-media img {
+  transform: scale(1.04) !important;
+}
+
+/* Content area below image */
+.jj-category-content,
+.jl-category-page-copy {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 !important;
+  min-width: 0 !important;
+  padding: 12px 13px 13px !important;
+  gap: 3px !important;
+}
+
+.jj-category-content strong,
+.jl-category-page-copy h2 {
+  color: var(--jl-black, #111) !important;
+  font-size: clamp(0.875rem, 1.5vw, 1rem) !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  overflow-wrap: anywhere;
+}
+
+.jj-category-content small,
+.jl-category-page-copy > p {
+  color: var(--jl-muted, #777) !important;
+  font-size: 0.72rem !important;
+  line-height: 1.45 !important;
+  margin: 0 !important;
+}
+
+.jj-category-explore,
+.jl-category-link {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  margin-top: 8px !important;
+  color: var(--jl-gold-rich, #A57A1F) !important;
+  font-size: 0.72rem !important;
+  font-weight: 750 !important;
+  letter-spacing: 0.03em !important;
+}
+
+.jj-category-explore svg,
+.jl-category-link svg {
+  width: 13px !important;
+  height: 13px !important;
+  transition: transform 0.2s ease !important;
+}
+
+.jj-category-card:hover .jj-category-explore svg,
+.jl-category-page-card:hover .jl-category-link svg {
+  transform: translateX(2px) !important;
+}
+
+/* Category label badge on image */
+.jj-category-label {
+  position: absolute !important;
+  bottom: 8px !important;
+  left: 8px !important;
+  z-index: 2 !important;
+  padding: 4px 8px !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  color: var(--jl-gold-rich, #A57A1F) !important;
+  font-size: 0.58rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+}
+
+/* =========================================================
+   §7 — HOMEPAGE HORIZONTAL CAROUSELS (MOBILE)
+   Featured Products + New Arrivals: horizontal scroll on mobile.
+   Desktop: retain grid.
+   ========================================================= */
+
+/* Shared section layout for homepage product showcases */
+.jl-home-product-showcase {
+  padding-block: var(--v2-section-y) !important;
+}
+
+.jl-home-product-showcase .jj-section-header {
+  margin-bottom: 16px !important;
+  padding-inline: 0 !important;
+}
+
+/* Mobile: horizontal scroll carousel */
+@media (max-width: 767px) {
+  .jl-home-product-showcase .jj-product-grid,
+  .jl-home-product-showcase .jl-responsive-card-grid {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    gap: 10px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory !important;
+    scroll-padding-left: var(--v2-gutter-mobile) !important;
+    padding-bottom: 6px !important;
+    padding-inline: var(--v2-gutter-mobile) !important;
+    margin-inline: calc(-1 * var(--v2-gutter-mobile)) !important;
+    /* Hide scrollbar */
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .jl-home-product-showcase .jj-product-grid::-webkit-scrollbar,
+  .jl-home-product-showcase .jl-responsive-card-grid::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .jl-home-product-showcase .jj-product-grid > *,
+  .jl-home-product-showcase .jl-responsive-card-grid > * {
+    flex: 0 0 calc(45vw - 12px) !important;
+    min-width: 0 !important;
+    width: calc(45vw - 12px) !important;
+    max-width: 200px !important;
+    scroll-snap-align: start !important;
+  }
+}
+
+/* Desktop: clean 4-column grid */
+@media (min-width: 1024px) {
+  .jl-home-product-showcase .jj-product-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: var(--v2-gap-desktop) !important;
+  }
+}
+
+/* =========================================================
+   §8 — BRIDAL PACKAGES
+   Desktop: 3-col. Mobile: 2-col.
+   Shorter cards, reduced description, tighter spacing.
+   ========================================================= */
+
+.jj-bridal {
+  padding: 0 var(--v2-gutter) var(--v2-section-y) !important;
+}
+
+/* Banner */
+.jj-bridal-banner {
+  width: min(var(--v2-container), 100%) !important;
+  min-height: 260px !important;
+  max-height: 340px !important;
+  margin: 0 auto 28px !important;
+  border-radius: 0 0 var(--v2-radius-xl) var(--v2-radius-xl) !important;
+  overflow: hidden !important;
+}
+
+.jj-bridal-banner-content {
+  max-width: 560px !important;
+  padding: clamp(20px, 3.5vw, 36px) !important;
+}
+
+.jj-bridal-banner-content h2 {
+  font-size: clamp(1.75rem, 4vw, 3rem) !important;
+  line-height: 1.05 !important;
+  font-weight: 500 !important;
+}
+
+.jj-bridal-banner-content p {
+  font-size: 0.9rem !important;
+  line-height: 1.6 !important;
+}
+
+/* Header */
+.jj-bridal-header {
+  width: min(var(--v2-container), calc(100% - (2 * var(--v2-gutter))));
+  margin: 0 auto 24px !important;
+  text-align: center;
+}
+
+.jj-bridal-header h2 {
+  font-size: clamp(1.5rem, 3vw, 2.2rem) !important;
+  font-weight: 500 !important;
+}
+
+/* Grid: desktop 3-col, mobile 2-col */
+.jj-bridal-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+  width: min(var(--v2-container), 100%) !important;
+  margin-inline: auto !important;
+}
+
+@media (max-width: 1023px) {
+  .jj-bridal-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .jj-bridal-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+}
+
+/* Individual bridal card */
+.jj-bridal-card {
+  display: flex !important;
+  flex-direction: column !important;
+  min-width: 0 !important;
+  border: 1px solid var(--jl-border, #e5e5e5) !important;
+  border-radius: var(--v2-radius-lg) !important;
+  background: #fff !important;
+  box-shadow: var(--v2-shadow-card) !important;
+  overflow: hidden !important;
+  transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+.jj-bridal-card:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: var(--v2-shadow-hover) !important;
+}
+
+.jj-bridal-card.popular {
+  border-color: var(--jl-gold, #C8A24B) !important;
+}
+
+.jj-popular-badge {
+  text-align: center !important;
+  padding: 6px 12px !important;
+  background: var(--jl-gold, #C8A24B) !important;
+  color: #fff !important;
+  font-size: 0.65rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.07em !important;
+  text-transform: uppercase !important;
+}
+
+.jj-bridal-card-header {
+  padding: 16px 16px 8px !important;
+}
+
+.jj-bridal-card-header h3 {
+  margin: 0 0 4px !important;
+  color: var(--jl-black, #111) !important;
+  font-size: clamp(1rem, 1.8vw, 1.2rem) !important;
+  font-weight: 600 !important;
+}
+
+.jj-bridal-price {
+  margin: 0 !important;
+  color: var(--jl-gold-rich, #A57A1F) !important;
+  font-size: 1.2rem !important;
+  font-weight: 750 !important;
+}
+
+/* Shorter descriptions */
+.jj-bridal-desc {
+  padding: 0 16px 8px !important;
+  color: var(--jl-muted, #777) !important;
+  font-size: 0.78rem !important;
+  line-height: 1.5 !important;
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 2 !important;
+  overflow: hidden !important;
+}
+
+/* Features list: show max 4 */
+.jj-bridal-features {
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 16px 10px !important;
+  display: grid !important;
+  gap: 5px !important;
+}
+
+.jj-bridal-features li {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 7px !important;
+  color: var(--jl-charcoal, #2B2B2B) !important;
+  font-size: 0.78rem !important;
+  line-height: 1.4 !important;
+}
+
+.jj-bridal-features li:nth-child(n+5) {
+  display: none !important;
+}
+
+.jj-bridal-features svg {
+  flex: 0 0 14px !important;
+  width: 14px !important;
+  height: 14px !important;
+  margin-top: 2px !important;
+  color: var(--jl-gold, #C8A24B) !important;
+}
+
+/* Book button */
+.jj-btn-book {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: calc(100% - 32px) !important;
+  min-height: 38px !important;
+  margin: auto 16px 16px !important;
+  padding: 8px 14px !important;
+  border: 0 !important;
+  border-radius: var(--v2-radius-sm) !important;
+  background: var(--jl-black, #111) !important;
+  color: #fff !important;
+  font-size: 0.76rem !important;
+  font-weight: 750 !important;
+  cursor: pointer !important;
+  text-align: center !important;
+  text-decoration: none !important;
+  transition: background 0.25s ease !important;
+}
+
+.jj-btn-book:hover {
+  background: var(--jl-gold, #C8A24B) !important;
+}
+
+@media (max-width: 480px) {
+  .jj-bridal-card-header {
+    padding: 12px 12px 6px !important;
+  }
+
+  .jj-bridal-desc {
+    padding: 0 12px 6px !important;
+    -webkit-line-clamp: 2 !important;
+  }
+
+  .jj-bridal-features {
+    padding: 0 12px 8px !important;
+  }
+
+  .jj-bridal-features li {
+    font-size: 0.72rem !important;
+  }
+
+  .jj-btn-book {
+    width: calc(100% - 24px) !important;
+    margin: auto 12px 12px !important;
+    min-height: 34px !important;
+    font-size: 0.72rem !important;
+  }
+}
+
+/* =========================================================
+   §9 — TESTIMONIALS
+   Desktop: clean multi-column.
+   Mobile: horizontal swipe carousel.
+   ========================================================= */
+
+.jj-testimonials {
+  padding: var(--v2-section-y) var(--v2-gutter) !important;
+  background: var(--jl-ivory, #F8F6F2) !important;
+}
+
+.jj-testimonials .jj-section-header {
+  margin-bottom: 20px !important;
+}
+
+/* Desktop 3-column grid */
+.jj-testimonials-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+  width: min(var(--v2-container), 100%) !important;
+  margin-inline: auto !important;
+}
+
+@media (max-width: 767px) {
+  .jj-testimonials-grid {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    gap: 12px !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory !important;
+    scroll-padding-left: var(--v2-gutter-mobile) !important;
+    padding-bottom: 8px !important;
+    padding-inline: var(--v2-gutter-mobile) !important;
+    margin-inline: calc(-1 * var(--v2-gutter-mobile)) !important;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .jj-testimonials-grid::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .jj-testimonial-card {
+    flex: 0 0 calc(80vw - 24px) !important;
+    min-width: 0 !important;
+    scroll-snap-align: start !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .jj-testimonials-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 14px !important;
+  }
+}
+
+/* Individual testimonial card */
+.jj-testimonial-card {
+  display: flex !important;
+  flex-direction: column !important;
+  padding: 16px !important;
+  border: 1px solid var(--jl-border, #e5e5e5) !important;
+  border-radius: var(--v2-radius-md) !important;
+  background: #fff !important;
+  box-shadow: var(--v2-shadow-card) !important;
+}
+
+.jj-testimonial-rating {
+  display: flex !important;
+  gap: 2px !important;
+  margin-bottom: 10px !important;
+}
+
+.jj-testimonial-rating svg {
+  width: 14px !important;
+  height: 14px !important;
+}
+
+.jj-testimonial-rating .star-icon.filled {
+  color: var(--jl-gold, #C8A24B) !important;
+  fill: var(--jl-gold, #C8A24B) !important;
+}
+
+.jj-testimonial-card blockquote {
+  flex: 1 !important;
+  margin: 0 0 12px !important;
+  padding: 0 !important;
+  color: var(--jl-charcoal, #2B2B2B) !important;
+  font-family: Georgia, serif !important;
+  font-size: 0.9rem !important;
+  line-height: 1.65 !important;
+  border: 0 !important;
+}
+
+.jj-testimonial-customer {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding-top: 12px !important;
+  border-top: 1px solid var(--jl-border, #e5e5e5) !important;
+}
+
+.jj-testimonial-customer img {
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  flex: 0 0 auto !important;
+}
+
+.jj-testimonial-customer div {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+  min-width: 0 !important;
+}
+
+.jj-testimonial-customer strong {
+  color: var(--jl-black, #111) !important;
+  font-size: 0.82rem !important;
+  font-weight: 700 !important;
+}
+
+.jj-testimonial-customer span {
+  color: var(--jl-muted, #777) !important;
+  font-size: 0.68rem !important;
+}
+
+/* =========================================================
+   §10 — WHATSAPP CTA CONSOLIDATION
+   One primary WhatsApp CTA on homepage.
+   Contact section WhatsApp preserved.
+   ========================================================= */
+.jj-contact {
+  padding: var(--v2-section-y) var(--v2-gutter) !important;
+  background: #fff !important;
+  text-align: center !important;
+}
+
+.jj-contact h2 {
+  margin: 0 0 10px !important;
+  color: var(--jl-black, #111) !important;
+  font-size: clamp(1.25rem, 2.8vw, 1.75rem) !important;
+  font-weight: 600 !important;
+}
+
+.jj-contact > p {
+  margin: 0 auto 20px !important;
+  max-width: 560px !important;
+  color: var(--jl-muted, #777) !important;
+  font-size: 0.88rem !important;
+}
+
+.jj-contact-grid {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  margin-bottom: 16px !important;
+  width: auto !important;
+}
+
+.jj-contact-grid a {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 10px 16px !important;
+  border: 1px solid var(--jl-border, #e5e5e5) !important;
+  border-radius: var(--v2-radius-md) !important;
+  background: var(--jl-ivory, #F8F6F2) !important;
+  color: var(--jl-charcoal, #2B2B2B) !important;
+  font-size: 0.82rem !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+  transition: border-color 0.22s, background 0.22s !important;
+}
+
+.jj-contact-grid a:hover {
+  border-color: var(--jl-gold, #C8A24B) !important;
+  background: rgba(200, 162, 75, 0.06) !important;
+}
+
+.jj-contact-grid svg {
+  color: var(--jl-gold, #C8A24B) !important;
+  width: 16px !important;
+  height: 16px !important;
+}
+
+/* Primary WhatsApp button */
+.jj-whatsapp {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  min-height: 44px !important;
+  padding: 10px 22px !important;
+  border-radius: var(--v2-radius-md) !important;
+  background: var(--jl-black, #111) !important;
+  color: #fff !important;
+  font-size: 0.84rem !important;
+  font-weight: 750 !important;
+  text-decoration: none !important;
+  transition: background 0.25s ease !important;
+}
+
+.jj-whatsapp:hover {
+  background: var(--jl-gold, #C8A24B) !important;
+}
+
+.jj-whatsapp svg {
+  width: 18px !important;
+  height: 18px !important;
+}
+
+/* =========================================================
+   §11 — DISCOVER MORE / EDITORIAL PROMO GRID
+   Full-width asymmetric editorial layout.
+   ========================================================= */
+
+/* Flash/seasonal/bestselling promo features */
+.jl-home-promo-features {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+  width: min(var(--v2-container), calc(100% - (2 * var(--v2-gutter)))) !important;
+  margin: 0 auto !important;
+  padding-block: var(--v2-sp-4) !important;
+}
+
+.jl-home-promo-feature {
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+  padding: 18px 20px !important;
+  border-radius: var(--v2-radius-lg) !important;
+  text-decoration: none !important;
+  transition: transform 0.28s ease, box-shadow 0.28s ease !important;
+  overflow: hidden !important;
+  position: relative !important;
+}
+
+.jl-home-promo-feature:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: var(--v2-shadow-hover) !important;
+}
+
+.jl-home-promo-flash {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  color: #fff;
+}
+
+.jl-home-promo-seasonal {
+  background: linear-gradient(135deg, #2d1b0e 0%, #4a2c0a 100%);
+  color: #fff;
+}
+
+.jl-home-promo-bestselling {
+  background: linear-gradient(135deg, #0d1f0a 0%, #1a3a14 100%);
+  color: #fff;
+}
+
+.jl-home-promo-icon {
+  display: grid !important;
+  place-items: center !important;
+  flex: 0 0 44px !important;
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 50% !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+}
+
+.jl-home-promo-icon svg {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+.jl-home-promo-copy {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+  min-width: 0 !important;
+}
+
+.jl-home-promo-copy strong {
+  font-size: 0.9rem !important;
+  font-weight: 750 !important;
+  color: inherit !important;
+}
+
+.jl-home-promo-copy small {
+  font-size: 0.7rem !important;
+  opacity: 0.75 !important;
+  color: inherit !important;
+}
+
+@media (max-width: 767px) {
+  .jl-home-promo-features {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+
+  .jl-home-promo-feature {
+    padding: 12px !important;
+    gap: 8px !important;
+  }
+
+  .jl-home-promo-icon {
+    flex: 0 0 36px !important;
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  .jl-home-promo-icon svg {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  .jl-home-promo-copy strong {
+    font-size: 0.72rem !important;
+  }
+
+  .jl-home-promo-copy small {
+    font-size: 0.6rem !important;
+  }
+}
+
+/* =========================================================
+   §12 — WISHLIST PAGE
+   Compact hero, 2-col mobile grid, full functionality preserved.
+   ========================================================= */
+
+/* Hero: reduce height */
+.wishlist-hero {
+  min-height: 130px !important;
+  max-height: 180px !important;
+  padding: var(--v2-sp-8) var(--v2-gutter) !important;
+  background: linear-gradient(135deg, var(--jl-ivory, #F8F6F2), var(--jl-cream, #F2ECE3)) !important;
+  border-bottom: 1px solid var(--jl-border, #e5e5e5) !important;
+  text-align: center !important;
+}
+
+.wishlist-icon {
+  width: 48px !important;
+  height: 48px !important;
+  margin-bottom: 10px !important;
+}
+
+.wishlist-hero h1 {
+  font-size: clamp(1.5rem, 3.5vw, 2.125rem) !important;
+  margin: 6px 0 8px !important;
+  font-weight: 500 !important;
+}
+
+.wishlist-subtitle {
+  font-size: 0.85rem !important;
+  margin: 0 !important;
+}
+
+/* Content area */
+.wishlist-content {
+  width: min(var(--v2-container), calc(100% - (2 * var(--v2-gutter)))) !important;
+  margin-inline: auto !important;
+  padding: var(--v2-sp-6) 0 var(--v2-major-y) !important;
+}
+
+/* Header bar */
+.wishlist-header {
+  flex-wrap: wrap !important;
+  gap: 12px !important;
+  margin-bottom: 20px !important;
+}
+
+.wishlist-header h2 {
+  font-size: clamp(1.25rem, 2.5vw, 1.6rem) !important;
+  margin: 0 !important;
+  font-weight: 600 !important;
+}
+
+.wishlist-add-all,
+.wishlist-shop-link {
+  min-height: 38px !important;
+  padding: 0 14px !important;
+  font-size: 0.76rem !important;
+}
+
+/* Mobile: 2-column grid */
+@media (max-width: 767px) {
+  .wishlist-hero {
+    min-height: 110px !important;
+    padding: var(--v2-sp-6) var(--v2-gutter-mobile) !important;
+  }
+
+  .wishlist-hero h1 {
+    font-size: clamp(1.25rem, 6vw, 1.75rem) !important;
+  }
+
+  .wishlist-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: var(--v2-gap-mobile) !important;
+  }
+}
+
+/* =========================================================
+   §13 — ADMIN DASHBOARD
+   Professional hierarchy, compact cards, efficient grids.
+   ========================================================= */
+
+/* Admin stat cards: compact */
+.admin-content .stat-card {
+  min-height: 96px !important;
+  padding: 14px 16px !important;
+  border-radius: var(--v2-radius-md) !important;
+  box-shadow: var(--v2-shadow-card) !important;
+}
+
+.admin-content .stat-card h1 {
+  font-size: clamp(1.25rem, 2.5vw, 1.75rem) !important;
+  font-weight: 700 !important;
+}
+
+.admin-content .stat-card h3,
+.admin-content .table-card h2,
+.admin-section-title h2 {
+  font-size: clamp(0.9rem, 1.6vw, 1.1rem) !important;
+}
+
+/* Table cards */
+.admin-content .table-card {
+  border-radius: var(--v2-radius-md) !important;
+  padding: var(--v2-card-pad) !important;
+  box-shadow: var(--v2-shadow-card) !important;
+}
+
+/* Admin overview cards */
+.admin-overview-card {
+  padding: var(--v2-card-pad) !important;
+  border-radius: var(--v2-radius-md) !important;
+  box-shadow: var(--v2-shadow-card) !important;
+}
+
+/* Admin form sections */
+.admin-form-section {
+  border-radius: var(--v2-radius-md) !important;
+  padding: var(--v2-card-pad) !important;
+}
+
+/* Admin table density */
+.admin-content .table th,
+.admin-content .table td {
+  padding: 8px 10px !important;
+  font-size: 0.75rem !important;
+}
+
+.admin-content .table th {
+  font-size: 0.67rem !important;
+}
+
+/* Admin stats grid: 3-col desktop, 2-col mobile */
+.admin-content .stats-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+}
+
+@media (max-width: 1023px) {
+  .admin-content .stats-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .admin-content .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+}
+
+/* Revenue/overview 3-col stats */
+.admin-revenue-stats {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+}
+
+/* Admin 2-col overview grid */
+.admin-overview-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 14px !important;
+}
+
+@media (max-width: 767px) {
+  .admin-revenue-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .admin-overview-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}
+
+/* Admin nav: horizontal scrollable */
+.admin-dashboard-nav {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  gap: 3px !important;
+  scrollbar-width: thin !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+.admin-dashboard-nav a {
+  white-space: nowrap !important;
+  flex: 0 0 auto !important;
+}
+
+/* =========================================================
+   §14 — IMAGE UPLOAD COMPONENTS
+   Horizontal dropzone layout. Consistent across all admin areas.
+   ========================================================= */
+
+/* Field container */
+.admin-image-upload-field {
+  padding: 12px !important;
+  border: 1px solid rgba(53, 43, 30, 0.12) !important;
+  border-radius: var(--v2-radius-md) !important;
+  background: #fbfaf7 !important;
+}
+
+/* Header: label + actions side by side */
+.admin-image-upload-field__header {
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+  margin-bottom: 10px !important;
+}
+
+.admin-image-upload-field__header label {
+  color: #231f1a !important;
+  font-size: 0.78rem !important;
+  font-weight: 800 !important;
+}
+
+.admin-image-upload-field__header p {
+  margin: 2px 0 0 !important;
+  color: #7b7469 !important;
+  font-size: 0.68rem !important;
+  line-height: 1.4 !important;
+}
+
+/* Dropzone: horizontal layout */
+.admin-image-upload-field__dropzone {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  min-height: 64px !important;
+  padding: 12px 16px !important;
+  border: 1px dashed #cfc4b0 !important;
+  border-radius: var(--v2-radius-sm) !important;
+  background: #fff !important;
+  color: #735b27 !important;
+  text-align: center !important;
+  cursor: pointer !important;
+  transition: border-color 0.22s ease, background 0.22s ease !important;
+}
+
+.admin-image-upload-field__dropzone:hover {
+  border-color: var(--jl-gold, #C8A24B) !important;
+  background: rgba(200, 162, 75, 0.04) !important;
+}
+
+.admin-image-upload-field__dropzone strong {
+  color: #2c261e !important;
+  font-size: 0.8rem !important;
+  white-space: nowrap !important;
+}
+
+.admin-image-upload-field__dropzone span {
+  color: #7b7469 !important;
+  font-size: 0.68rem !important;
+}
+
+.admin-image-upload-field__dropzone.is-disabled {
+  cursor: wait !important;
+  opacity: 0.65 !important;
+}
+
+/* Preview: side by side with meta */
+.admin-image-upload-field__preview-wrap {
+  display: grid !important;
+  grid-template-columns: minmax(0, 140px) minmax(0, 1fr) !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+/* Content-type specific aspect ratios */
+.admin-image-upload-field__preview {
+  width: 100% !important;
+  aspect-ratio: 4 / 3 !important;
+  object-fit: cover !important;
+  border-radius: var(--v2-radius-sm) !important;
+  border: 1px solid rgba(53, 43, 30, 0.1) !important;
+  background: #f0ece5 !important;
+}
+
+/* =========================================================
+   §15 — IMAGE PREVIEW ASPECT RATIOS
+   Per-content-type ratios.
+   ========================================================= */
+
+/* Product images: 4:5 */
+.admin-image-upload-field[data-shape='portrait'] .admin-image-upload-field__preview {
+  aspect-ratio: 4 / 5 !important;
+}
+
+/* Square: 1:1 */
+.admin-image-upload-field[data-shape='square'] .admin-image-upload-field__preview {
+  aspect-ratio: 1 / 1 !important;
+}
+
+/* Circle (testimonial avatar) */
+.admin-image-upload-field[data-shape='circle'] .admin-image-upload-field__preview {
+  width: 80px !important;
+  aspect-ratio: 1 / 1 !important;
+  border-radius: 50% !important;
+}
+
+/* Bridal / gallery: 16:9 */
+.admin-image-upload-field[data-shape='landscape'] .admin-image-upload-field__preview {
+  aspect-ratio: 16 / 9 !important;
+}
+
+/* Category / services: 4:3 (default) — already set above */
+
+/* Product card image: correct ratio on front-end */
+.lux-product-image {
+  aspect-ratio: 4 / 5 !important;
+}
+
+/* Bridal gallery images: 16:9 */
+.jl-gallery-grid-item {
+  aspect-ratio: 16 / 9 !important;
+  overflow: hidden !important;
+  border-radius: var(--v2-radius-md) !important;
+}
+
+.jl-gallery-grid-item img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
+/* Testimonial images: preserved as circle/avatar */
+.jj-testimonial-customer img {
+  aspect-ratio: 1 / 1 !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+}
+
+/* =========================================================
+   §16 — ANIMATIONS (REDUCED INTENSITY)
+   opacity + translateY(8px) max. Duration 0.35–0.45s.
+   Stagger: 0.04–0.08s. Respects prefers-reduced-motion.
+   ========================================================= */
+
+/* Global animation keyframes */
+@keyframes v2FadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes v2FadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes v2ScaleIn {
+  from { opacity: 0; transform: scale(0.98); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* Bridal section animation (overrides framer-motion inline) */
+/* framer-motion applies inline styles, so we standardise the
+   starting points via CSS and let framer animate from them */
+.jj-bridal-card {
+  will-change: transform, opacity;
+}
+
+/* Reduced motion: global override */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .jj-trust > div {
+    animation: none !important;
+  }
+}
+
+/* =========================================================
+   §17 — RESPONSIVE GRID SYSTEM
+   Standardised: 2-col mobile, 3-col tablet, 4-col desktop.
+   ========================================================= */
+
+/* Shared responsive product/category/service/bridal grid */
+:is(
+  .jl-responsive-card-grid,
+  .jj-product-grid,
+  .jl-shop-grid,
+  .wishlist-grid,
+  .jl-related-grid,
+  .jl-product-grid,
+  .product-grid,
+  .jj-category-grid,
+  .jl-category-page-grid,
+  .jl-services-featured-grid,
+  .jl-services-grid,
+  .jl-bridal-grid
+) {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: var(--v2-gap-mobile) !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+@media (min-width: 640px) {
+  :is(
+    .jl-responsive-card-grid,
+    .jj-product-grid,
+    .jl-shop-grid,
+    .wishlist-grid,
+    .jl-related-grid,
+    .jl-product-grid,
+    .product-grid,
+    .jj-category-grid,
+    .jl-category-page-grid,
+    .jl-services-featured-grid,
+    .jl-services-grid,
+    .jl-bridal-grid
+  ) {
+    gap: var(--v2-gap-tablet) !important;
+  }
+}
+
+@media (min-width: 768px) {
+  :is(
+    .jl-responsive-card-grid,
+    .jj-product-grid,
+    .jl-shop-grid,
+    .wishlist-grid,
+    .jl-related-grid,
+    .jl-product-grid,
+    .product-grid,
+    .jj-category-grid,
+    .jl-category-page-grid,
+    .jl-services-featured-grid,
+    .jl-services-grid,
+    .jl-bridal-grid
+  ) {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: var(--v2-gap-tablet) !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  :is(
+    .jl-responsive-card-grid,
+    .jj-product-grid,
+    .jl-shop-grid,
+    .wishlist-grid,
+    .jl-related-grid,
+    .jl-product-grid,
+    .product-grid,
+    .jj-category-grid,
+    .jl-category-page-grid,
+    .jl-services-featured-grid,
+    .jl-services-grid
+  ) {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: var(--v2-gap-desktop) !important;
+  }
+
+  /* Bridal stays 3-col on desktop */
+  .jl-bridal-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: var(--v2-gap-desktop) !important;
+  }
+}
+
+/* Homepage product showcase sections: constrain width */
+:is(
+  .jj-products,
+  .jj-categories,
+  .jj-bridal,
+  .jj-transformations,
+  .jj-testimonials,
+  .jj-services,
+  .jj-contact
+) {
+  padding-block: var(--v2-section-y) !important;
+}
+
+.jj-products {
+  padding-inline: var(--v2-gutter) !important;
+}
+
+/* Section header */
+.jj-section-header {
+  display: flex !important;
+  align-items: flex-end !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  margin-bottom: 18px !important;
+  flex-wrap: wrap !important;
+}
+
+.jj-section-header small {
+  display: block !important;
+  margin-bottom: 3px !important;
+  color: var(--jl-gold-rich, #A57A1F) !important;
+  font-size: 0.65rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+}
+
+.jj-section-header a {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  color: var(--jl-gold-rich, #A57A1F) !important;
+  font-size: 0.76rem !important;
+  font-weight: 750 !important;
+  white-space: nowrap !important;
+  text-decoration: none !important;
+  transition: color 0.2s ease !important;
+}
+
+.jj-section-header a:hover {
+  color: var(--jl-gold, #C8A24B) !important;
+}
+
+/* Centred section header variant */
+.jj-section-header-centered {
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+/* =========================================================
+   §18 — MOBILE NAVIGATION
+   Compact, consistent spacing, no overflow.
+   ========================================================= */
+
+@media (max-width: 767px) {
+  /* Header */
+  .jl-site-header {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 2200 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Announcement bar */
+  .jl-announcement-bar {
+    min-height: 28px !important;
+    padding: 4px 12px !important;
+    font-size: 0.62rem !important;
+    line-height: 1.2 !important;
+  }
+
+  /* Main header row */
+  .jl-header-main {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    min-height: 56px !important;
+    padding-block: 8px !important;
+    gap: 8px !important;
+    width: calc(100% - 24px) !important;
+    margin-inline: auto !important;
+  }
+
+  /* Mobile menu icon + cart */
+  .jl-header-menu-button,
+  .jl-header-actions > a[href='/cart'] {
+    display: inline-grid !important;
+    place-items: center !important;
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+    touch-action: manipulation !important;
+  }
+
+  /* Mobile menu panel */
+  .jl-mobile-menu {
+    width: min(88vw, 340px) !important;
+    padding: max(16px, env(safe-area-inset-top)) 16px max(20px, env(safe-area-inset-bottom)) !important;
+    background: #fffdf9 !important;
+    box-shadow: -14px 0 44px rgba(20, 16, 11, 0.24) !important;
+  }
+
+  /* Menu nav links */
+  .jl-mobile-menu-nav a,
+  .jl-mobile-menu-nav button {
+    min-height: 44px !important;
+    padding: 10px 12px !important;
+    font-size: 0.9rem !important;
+    border-radius: var(--v2-radius-sm) !important;
+  }
+
+  /* Bottom nav */
+  .mobile-bottom-nav,
+  .jl-mobile-bottom-nav {
+    height: calc(56px + env(safe-area-inset-bottom)) !important;
+    padding-bottom: env(safe-area-inset-bottom) !important;
+  }
+}
+
+/* =========================================================
+   §19 — FOOTER
+   Compact but readable. Dark luxury treatment.
+   ========================================================= */
+
+.global-footer-pro {
+  margin-top: var(--v2-major-y) !important;
+}
+
+/* Newsletter band */
+.global-footer-newsletter {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  align-items: center !important;
+  gap: 20px !important;
+  padding: 28px 0 !important;
+  margin-bottom: 0 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+.global-footer-newsletter h2 {
+  font-size: clamp(1.1rem, 2.2vw, 1.5rem) !important;
+  margin-block: 6px !important;
+  font-weight: 500 !important;
+  line-height: 1.2 !important;
+}
+
+.global-footer-newsletter p {
+  font-size: 0.8rem !important;
+}
+
+/* Footer grid */
+.global-footer-grid {
+  display: grid !important;
+  grid-template-columns: 1.3fr repeat(4, 0.85fr) !important;
+  gap: 24px !important;
+  padding: 28px 0 22px !important;
+}
+
+.global-footer-brand h2,
+.global-footer-wordmark {
+  font-size: 1.5rem !important;
+  margin-bottom: 10px !important;
+  display: block;
+  color: var(--jl-gold, #C8A24B) !important;
+  text-decoration: none;
+  font-family: Georgia, serif;
+}
+
+.global-footer-brand p {
+  font-size: 0.78rem !important;
+  line-height: 1.65 !important;
+}
+
+.global-footer-links h3 {
+  margin-bottom: 10px !important;
+  font-size: 0.72rem !important;
+  color: var(--jl-gold, #C8A24B) !important;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.global-footer-links ul {
+  margin: 0 !important;
+  padding: 0 !important;
+  list-style: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 7px !important;
+}
+
+.global-footer-links a {
+  font-size: 0.78rem !important;
+  line-height: 1.4 !important;
+}
+
+.global-footer-socials {
+  display: flex !important;
+  gap: 8px !important;
+  margin-top: 14px !important;
+}
+
+.global-footer-socials a {
+  width: 34px !important;
+  height: 34px !important;
+}
+
+.global-footer-bottom {
+  padding: 16px 0 calc(20px + env(safe-area-inset-bottom)) !important;
+  font-size: 0.75rem !important;
+}
+
+/* Tablet footer */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .global-footer-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 20px !important;
+  }
+
+  .global-footer-brand {
+    grid-column: 1 / -1 !important;
+  }
+
+  .global-footer-newsletter {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Mobile footer */
+@media (max-width: 767px) {
+  .global-footer-newsletter {
+    grid-template-columns: 1fr !important;
+    padding: 20px 0 !important;
+    gap: 14px !important;
+  }
+
+  .global-footer-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 16px 12px !important;
+    padding: 20px 0 16px !important;
+  }
+
+  .global-footer-brand {
+    grid-column: 1 / -1 !important;
+  }
+
+  .global-footer-bottom {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 4px !important;
+    padding: 14px 0 calc(16px + env(safe-area-inset-bottom)) !important;
+    font-size: 0.7rem !important;
+  }
+}
+
+/* =========================================================
+   §20 — ACCESSIBILITY
+   Focus states, touch targets, keyboard navigation.
+   ========================================================= */
+
+/* Visible focus ring for keyboard users */
+:focus-visible {
+  outline: 2px solid var(--jl-gold, #C8A24B) !important;
+  outline-offset: 3px !important;
+  border-radius: 4px;
+}
+
+/* Skip link */
+.jl-skip-link {
+  position: absolute !important;
+  top: -100% !important;
+  left: 16px !important;
+  z-index: 9999 !important;
+  padding: 10px 16px !important;
+  border-radius: var(--v2-radius-sm) !important;
+  background: var(--jl-gold, #C8A24B) !important;
+  color: #fff !important;
+  font-weight: 750 !important;
+  font-size: 0.84rem !important;
+  text-decoration: none !important;
+  transition: top 0.15s ease !important;
+}
+
+.jl-skip-link:focus {
+  top: 16px !important;
+}
+
+/* Touch targets: minimum 44px for interactive elements */
+.lux-product-wishlist,
+.lux-product-add-btn,
+.jj-btn,
+.jj-whatsapp,
+.jl-filter-toggle,
+.admin-dashboard-nav a {
+  min-height: max(36px, var(--v2-btn-h)) !important;
+}
+
+/* Ensure buttons are at least 44px touch target on mobile */
+@media (max-width: 767px) {
+  button,
+  [role='button'],
+  input[type='submit'],
+  input[type='button'],
+  a.jj-btn,
+  a.jj-whatsapp,
+  a.lux-product-title-link {
+    touch-action: manipulation;
+  }
+
+  .lux-product-wishlist {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    min-height: 36px !important;
+  }
+}
+
+/* Loading spinner */
+.jl-spin {
+  animation: v2Spin 0.7s linear infinite;
+}
+
+@keyframes v2Spin {
+  to { transform: rotate(360deg); }
+}
+
+/* =========================================================
+   §21 — HOMEPAGE SECTION CONTAINERS
+   Consistent horizontal padding and max-width.
+   ========================================================= */
+
+/* Shared container centering for homepage sections */
+.jj-home > section {
+  position: relative;
+}
+
+/* Products sections */
+.jj-products,
+.jl-home-product-showcase {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.jj-products .jj-section-header,
+.jl-home-product-showcase .jj-section-header {
+  width: min(var(--v2-container), calc(100% - (2 * var(--v2-gutter)))) !important;
+  margin-inline: auto !important;
+}
+
+.jj-products .jj-product-grid,
+.jl-home-product-showcase .jj-product-grid {
+  width: min(var(--v2-container), calc(100% - (2 * var(--v2-gutter)))) !important;
+  margin-inline: auto !important;
+}
+
+/* Categories section */
+.jj-categories {
+  padding-inline: var(--v2-gutter) !important;
+}
+
+.jj-categories .jj-section-header,
+.jl-home-category-section .jj-section-header {
+  width: min(var(--v2-container), 100%) !important;
+  margin-inline: auto !important;
+}
+
+.jj-category-grid {
+  width: min(var(--v2-container), 100%) !important;
+  margin-inline: auto !important;
+}
+
+/* Services section */
+.jj-services {
+  padding: var(--v2-section-y) var(--v2-gutter) !important;
+}
+
+.jj-services > div {
+  width: min(860px, 100%) !important;
+  margin-inline: auto !important;
+  text-align: center !important;
+}
+
+.jj-services h2 {
+  margin: 10px 0 14px !important;
+  font-size: clamp(1.5rem, 3vw, 2rem) !important;
+}
+
+/* Bridal section */
+.jj-bridal-header,
+.jj-bridal-grid,
+.jj-bridal-extras {
+  width: min(var(--v2-container), calc(100% - (2 * var(--v2-gutter)))) !important;
+  margin-inline: auto !important;
+}
+
+/* Transformations section */
+.jj-transformations {
+  padding: var(--v2-section-y) var(--v2-gutter) !important;
+}
+
+.jj-transformations .jj-section-header {
+  width: min(var(--v2-container), 100%) !important;
+  margin-inline: auto !important;
+}
+
+.jj-transformations-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+  width: min(var(--v2-container), 100%) !important;
+  margin-inline: auto !important;
+}
+
+@media (max-width: 767px) {
+  .jj-transformations-grid {
+    grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+    gap: 14px !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .jj-transformations-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+/* Transformation cards */
+.jj-transformation-card {
+  border-radius: var(--v2-radius-lg) !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.jj-transformation-slider {
+  aspect-ratio: 4 / 3 !important;
+  overflow: hidden !important;
+}
+
+.jj-transformation-content {
+  padding: 14px 16px !important;
+}
+
+.jj-transformation-content h3 {
+  font-size: 0.96rem !important;
+  margin: 4px 0 6px !important;
+}
+
+.jj-transformation-content p {
+  font-size: 0.8rem !important;
+  line-height: 1.5 !important;
+}
+
+.jj-transformation-category {
+  font-size: 0.62rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+}
+
+/* =========================================================
+   §22 — COMPARE ALL PACKAGES CTA (editorial)
+   ========================================================= */
+.jj-bridal-extras {
+  margin-top: 24px !important;
+}
+
+.jj-bridal-extras-links {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  margin-bottom: 16px !important;
+}
+
+.jj-bridal-extras-links > a {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 14px 16px !important;
+  border: 1px solid rgba(53, 43, 30, 0.12) !important;
+  border-radius: var(--v2-radius-md) !important;
+  background: rgba(248, 246, 242, 0.8) !important;
+  text-decoration: none !important;
+  transition: border-color 0.25s ease, background 0.25s ease !important;
+}
+
+.jj-bridal-extras-links > a:hover {
+  border-color: var(--jl-gold, #C8A24B) !important;
+  background: rgba(200, 162, 75, 0.06) !important;
+}
+
+.jj-bridal-extras-links h3 {
+  margin: 0 0 2px !important;
+  color: var(--jl-black, #111) !important;
+  font-size: 0.92rem !important;
+  font-weight: 700 !important;
+}
+
+.jj-bridal-extras-links p {
+  margin: 0 !important;
+  color: var(--jl-muted, #777) !important;
+  font-size: 0.72rem !important;
+}
+
+.jj-bridal-extras-links svg {
+  flex: 0 0 auto !important;
+  margin-left: auto !important;
+  color: var(--jl-gold-rich, #A57A1F) !important;
+  width: 16px !important;
+  height: 16px !important;
+}
+
+/* Testimonial pull-quote */
+.jj-bridal-testimonial {
+  padding: 16px 20px !important;
+  border-left: 3px solid var(--jl-gold, #C8A24B) !important;
+  background: rgba(200, 162, 75, 0.05) !important;
+  border-radius: 0 var(--v2-radius-md) var(--v2-radius-md) 0 !important;
+}
+
+.jj-bridal-testimonial blockquote {
+  margin: 0 0 6px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  color: var(--jl-charcoal, #2B2B2B) !important;
+  font-family: Georgia, serif !important;
+  font-size: 0.96rem !important;
+  line-height: 1.6 !important;
+  font-style: italic !important;
+}
+
+.jj-bridal-testimonial cite {
+  color: var(--jl-muted, #777) !important;
+  font-size: 0.72rem !important;
+  font-style: normal !important;
+}
+
+@media (max-width: 640px) {
+  .jj-bridal-extras-links {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* =========================================================
+   §23 — SERVICES PAGE
+   ========================================================= */
+
+/* Service image ratio: 4:3 */
+.jl-unified-service-media {
+  aspect-ratio: 4 / 3 !important;
+}
+
+/* Service card compact */
+.jl-unified-service-card {
+  border-radius: var(--v2-radius-md) !important;
+  box-shadow: var(--v2-shadow-card) !important;
+  transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+.jl-unified-service-card:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: var(--v2-shadow-hover) !important;
+}
+
+.jl-unified-service-body {
+  padding: 12px 13px 13px !important;
+  gap: 5px !important;
+}
+
+.jl-unified-service-body h3 {
+  min-height: 2.5em !important;
+  margin: 0 !important;
+  font-size: clamp(0.875rem, 1.5vw, 1rem) !important;
+  line-height: 1.3 !important;
+}
+
+.jl-unified-service-body > p {
+  margin: 0 !important;
+  font-size: 0.78rem !important;
+  line-height: 1.5 !important;
+  min-height: 0 !important;
+}
+
+.jl-unified-service-price {
+  margin-top: auto !important;
+  padding-top: 8px !important;
+  margin-bottom: 10px !important;
+}
+
+.jl-unified-service-body button {
+  min-height: 36px !important;
+  margin-top: 4px !important;
+  font-size: 0.74rem !important;
+}
+
+/* =========================================================
+   §24 — HOMEPAGE HELP / CONTACT SECTION
+   ========================================================= */
+.jl-home-help-section {
+  padding: var(--v2-sp-8) var(--v2-gutter) !important;
+  text-align: center !important;
+  background: var(--jl-white, #fff) !important;
+}
+
+.jl-home-help-grid {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  margin: 0 auto 16px !important;
+  width: auto !important;
+  max-width: min(640px, 100%) !important;
+}
+
+/* =========================================================
+   §25 — MISC UTILITY & POLISH
+   ========================================================= */
+
+/* Horizontal overflow guard */
+html,
+body {
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+.jl-main-content {
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+/* Global image guard */
+img,
+video,
+canvas,
+svg {
+  max-width: 100%;
+}
+
+/* iOS input zoom prevention */
+@media (max-width: 767px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Honeypot (spam protection) — keep hidden */
+.jl-honeypot {
+  position: absolute !important;
+  left: -9999px !important;
+  top: -9999px !important;
+  overflow: hidden !important;
+  width: 1px !important;
+  height: 1px !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* =========================================================
+   §26 — MOBILE 320px GUARD
+   ========================================================= */
+@media (max-width: 360px) {
+  .jj-hero-content h1 {
+    font-size: 1.8rem !important;
+  }
+
+  .jj-trust > div {
+    padding: 10px 8px !important;
+  }
+
+  .jj-trust h3 {
+    font-size: 0.7rem !important;
+  }
+
+  .jj-trust p {
+    font-size: 0.6rem !important;
+  }
+
+  .lux-product-info {
+    padding: 8px 8px 9px !important;
+  }
+
+  .lux-product-add-btn {
+    min-height: 32px !important;
+    font-size: 0.66rem !important;
+  }
+}

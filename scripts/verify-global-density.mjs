@@ -3,12 +3,12 @@ import path from 'node:path';
 
 const root = process.cwd();
 const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
-const shared = read('app/jayluxe-card-system.css');
+const shared = read('app/jayluxe-design-system.css');
 const globals = read('app/globals.css');
-const luxury = read('app/luxury-theme.css');
+const luxury = read('app/jayluxe-design-system.css');
 const checkout = read('app/checkout/page.module.css');
 const reports = read('components/admin/AdminReportsClient.module.css');
-const admin = read('app/admin/admin-dashboard-redesign.css');
+const admin = read('app/admin/admin-design-system.css');
 
 const failures = [];
 const expect = (condition, message) => { if (!condition) failures.push(message); };

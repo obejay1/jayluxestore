@@ -30,7 +30,7 @@ export default function AdminImageUpload({
   onRemove,
   onUploadingChange,
   disabled = false,
-  helpText = 'JPG, PNG, WebP or GIF, up to 8 MB. Images are stored in Firebase Storage.',
+  helpText = 'JPG, PNG, WebP or GIF, up to 8 MB. Large images are optimized automatically.',
   emptyText = 'Choose an image to upload.',
   previewAlt = 'Image preview',
   previewClassName = '',
@@ -180,7 +180,7 @@ export default function AdminImageUpload({
         id={inputId}
         className="admin-image-file-input"
         type="file"
-        accept="image/*"
+        accept="image/jpeg,image/png,image/webp,image/gif"
         disabled={inputDisabled}
         onChange={handleFileChange}
       />

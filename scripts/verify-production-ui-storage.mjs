@@ -6,63 +6,56 @@ const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
 const failures = [];
 const expect = (condition, message) => { if (!condition) failures.push(message); };
 
-const globals = read('app/globals.css');
-const cardSystem = read('app/jayluxe-card-system.css');
+const production = read('app/jayluxe-design-system.css');
 const layout = read('app/layout.tsx');
-const catalogWrapper = read('lib/catalogImages.ts');
-const uploader = read('lib/adminImageUpload.ts');
-const adminImageUpload = read('components/admin/AdminImageUpload.tsx');
-const firebaseClient = read('lib/firebase.ts');
+const route = read('app/api/upload/route.ts');
+const uploader = read('lib/imageUpload.ts');
+const field = read('components/admin/AdminImageUploadField.tsx');
 const adminPage = read('app/admin/(protected)/page.tsx');
-const rules = read('storage.rules');
 const adminLoginCss = read('app/admin/login/page.module.css');
-const adminManagementCss = read('app/admin/admin-management.css');
-const mobileVerifier = fs.existsSync(path.join(root, 'scripts/verify-mobile-layout.mjs'));
+const adminManagementCss = read('app/admin/admin-design-system.css');
 
-expect(globals.includes('--jl-space-1:'), 'Missing compact spacing token --jl-space-1');
-expect(globals.includes('--jl-section-space:'), 'Missing shared section spacing token');
-expect(globals.includes('--jl-control-h:'), 'Missing compact control-height token');
-expect(globals.includes('--jl-content-max:'), 'Missing shared content-width token');
-expect(cardSystem.includes('PRODUCTION COMPACT DESIGN SYSTEM'), 'Missing production compact design-system layer');
-expect(cardSystem.includes('var(--jl-card-pad)'), 'Shared card system is not consuming compact card padding token');
-expect(cardSystem.includes('var(--jl-section-space)'), 'Shared card system is not consuming compact section spacing token');
+for (const token of [
+  '--jl-space-1: 4px', '--jl-space-2: 8px', '--jl-space-3: 12px',
+  '--jl-space-4: 16px', '--jl-space-5: 20px', '--jl-space-6: 24px',
+  '--jl-space-8: 32px', '--jl-space-10: 40px', '--jl-control-h: 42px',
+]) {
+  expect(production.includes(token), `Missing production design token ${token}`);
+}
+expect(production.includes('--jl-container: 1280px'), 'Missing shared 1280px content container.');
 
 const imports = [...layout.matchAll(/import ['"]\.\/(.+?\.css)['"];?/g)].map((m) => m[1]);
-expect(imports.at(-1) === 'jayluxe-card-system.css', 'jayluxe-card-system.css must be the final global CSS import for predictable shared-system precedence');
+expect(imports.at(-1) === 'jayluxe-design-system.css', 'jayluxe-design-system.css must be the final global CSS import.');
 
-expect(firebaseClient.includes('normalizeStorageBucket'), 'Firebase client must normalize a gs:// bucket value instead of hard-coding a bucket');
-expect(firebaseClient.includes('gs:\\/\\/'), 'Firebase client must strip a gs:// prefix from the configured bucket');
-expect(uploader.includes('uploadBytesResumable'), 'Catalog uploader must use uploadBytesResumable');
-expect(uploader.includes('getDownloadURL'), 'Catalog uploader must use getDownloadURL');
-expect(/maxUploadRetryTime\s*=/.test(uploader), 'Shared uploader must align Firebase max upload retry time below the outer timeout');
-expect(uploader.includes('unsubscribe'), 'Catalog uploader must unsubscribe state listeners when settled');
-expect(/task\?\.cancel\(\)|task\.cancel\(\)/.test(uploader), 'Shared uploader must cancel a stalled upload task');
-expect(uploader.includes('storage/unauthorized'), 'Catalog uploader must map storage/unauthorized');
-expect(uploader.includes('storage/quota-exceeded'), 'Catalog uploader must map storage/quota-exceeded');
-expect(uploader.includes('storage/bucket-not-found'), 'Catalog uploader must map storage/bucket-not-found');
-expect(uploader.includes('storage/retry-limit-exceeded'), 'Catalog uploader must map storage/retry-limit-exceeded');
-expect(uploader.includes('Firebase Storage bucket:'), 'Catalog uploader must include non-secret bucket context in console diagnostics');
+expect(route.includes('cloudinary.utils.api_sign_request'), 'Upload API must generate signed Cloudinary upload parameters.');
+expect(route.includes('verifyAdminSessionCookieValue'), 'Upload API must verify the existing admin session.');
+expect(route.includes('FOLDER_PERMISSIONS'), 'Upload API must enforce section-specific permissions.');
+expect(route.includes('cloudinary.uploader.destroy'), 'Upload API must support Cloudinary asset cleanup.');
+expect(!route.includes('uploader.upload(image'), 'Upload API must not receive/upload base64 image bodies.');
+expect(uploader.includes('XMLHttpRequest'), 'Browser uploader must use XHR for upload progress and timeout support.');
+expect(uploader.includes('FormData'), 'Browser uploader must send binary FormData to Cloudinary.');
+expect(uploader.includes('MAX_IMAGE_DIMENSION = 2400'), 'Large still images must be constrained to 2400px maximum dimension.');
+expect(uploader.includes('image/gif'), 'Uploader must support GIF in addition to JPG/PNG/WebP.');
+expect(uploader.includes('AbortController'), 'Signature request must be bounded by a timeout.');
+expect(field.includes('finally {') && field.includes('setUploading(false)'), 'Reusable upload field must always clear uploading state in finally.');
+expect(field.includes('Replace image') && field.includes('Remove image'), 'Upload field must expose replacement/removal controls.');
+expect(adminPage.includes('AdminImageUploadField'), 'Admin page must use the reusable upload field.');
+expect(!adminPage.includes('new FileReader()'), 'Admin media flow must not convert uploads to base64.');
+expect(adminPage.includes('product-gallery-0') && adminPage.includes('product-gallery-2'), 'Product gallery uploads must have independent image slot state.');
+expect(adminPage.includes('cleanupCloudinaryImages'), 'Known Cloudinary assets must be cleaned up after record deletion/replacement.');
 
-expect(catalogWrapper.includes('uploadAdminImage'), 'Legacy catalog uploader must delegate to the shared admin uploader');
-expect(adminImageUpload.includes('admin-image-preview-actions'), 'Admin image UX needs compact preview replace/remove controls');
-expect(adminImageUpload.includes('Remove image'), 'Admin image UX needs an explicit Remove image action');
-expect(adminImageUpload.includes('Replace image'), 'Admin image UX needs an explicit Replace image label/action');
-expect(adminImageUpload.includes('finally {') && adminImageUpload.includes('onUploadingChange?.(false)'), 'Shared admin upload component must always reset uploading state in finally');
+for (const file of ['lib/catalogImages.ts', 'lib/testimonials.ts', 'lib/transformations.ts', 'lib/bridal.ts']) {
+  const source = read(file);
+  expect(!source.includes("from 'firebase/storage'"), `${file} still uses Firebase Storage for media uploads.`);
+}
 
-expect(rules.includes("match /products/{fileName}"), 'Storage rules must preserve products path');
-expect(rules.includes("match /categories/{fileName}"), 'Storage rules must preserve categories path');
-expect(rules.includes("hasPermission('products')"), 'Product uploads must remain permission-gated');
-expect(rules.includes("hasPermission('categories')"), 'Category uploads must remain permission-gated');
-expect(/request\.resource\.size\s*<=\s*8\s*\*\s*1024\s*\*\s*1024/.test(rules), 'Storage rules must allow at most 8 MB inclusive');
-expect(adminLoginCss.includes('PRODUCTION COMPACT ADMIN LOGIN'), 'Admin login must use the compact production density layer');
-expect(adminLoginCss.includes('min-height: 440px'), 'Admin login brand panel should not remain unnecessarily tall');
-expect(adminManagementCss.includes('PRODUCTION COMPACT ACCESS DENIED'), 'Admin access-denied state must use compact production density');
-expect(mobileVerifier, 'Existing mobile regression verifier must remain present');
+expect(adminLoginCss.includes('PRODUCTION COMPACT ADMIN LOGIN'), 'Admin login compact production layer must remain present.');
+expect(adminManagementCss.includes('PRODUCTION COMPACT ACCESS DENIED'), 'Admin access-denied compact production layer must remain present.');
 
 if (failures.length) {
-  console.error(`Production UI/storage verification failed (${failures.length}):`);
+  console.error(`Production UI/media verification failed (${failures.length}):`);
   for (const failure of failures) console.error(`- ${failure}`);
   process.exit(1);
 }
 
-console.log('Production UI/storage verification passed.');
+console.log('Production UI/media verification passed.');

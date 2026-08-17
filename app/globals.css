@@ -2763,10 +2763,10 @@ textarea:focus {
 
 @media (max-width: 1023px){
   body {
-    padding-bottom: 85px !important;
+    padding-bottom: 85px;
   }
   .desktop-only {
-    display: none !important;
+    display: none;
   }
 }
 
@@ -2909,7 +2909,7 @@ textarea:focus {
 /* Global Layout Fixes */
 html, body {
   overflow-x: hidden;
-  width: 100vw;
+  width: 100%;
   max-width: 100%;
 }
 .wishlist-page {
@@ -3363,7 +3363,7 @@ html, body {
 }
 
 .sidebar {
-  background: #111827 !important;
+  background: #111827;
 }
 
 .sidebar h2 {
@@ -3755,13 +3755,13 @@ html, body {
 }
 
 .jj-transformation-slider [data-rcs-handle] {
-  background-color: white !important;
-  border: 2px solid #d4a574 !important;
-  box-shadow: 0 0 15px rgba(0,0,0,0.3) !important;
+  background-color: white;
+  border: 2px solid #d4a574;
+  box-shadow: 0 0 15px rgba(0,0,0,0.3);
 }
 
 .jj-transformation-slider [data-rcs-handle-line] {
-  box-shadow: 0 0 10px rgba(0,0,0,0.3) !important;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
 }
 
 .jj-transformation-content {
@@ -4351,27 +4351,27 @@ html, body {
 }
 @media (max-width: 768px){
   .admin-layout {
-    display: block !important;
+    display: block;
   }
 
   .sidebar {
-    width: 100% !important;
-    height: auto !important;
-    min-height: auto !important;
-    padding: 22px !important;
-    position: relative !important;
+    width: 100%;
+    height: auto;
+    min-height: auto;
+    padding: 22px;
+    position: relative;
   }
 
   .admin-content {
-    width: 100% !important;
-    padding: 18px !important;
-    margin-left: 0 !important;
-    display: block !important;
+    width: 100%;
+    padding: 18px;
+    margin-left: 0;
+    display: block;
   }
 
   .sidebar a {
-    padding: 14px 16px !important;
-    margin-bottom: 8px !important;
+    padding: 14px 16px;
+    margin-bottom: 8px;
   }
 }
 
@@ -4382,17 +4382,17 @@ html, body {
 
 @media (max-width: 768px){
   .mobile-search-small {
-    flex: none !important;
-    width: 170px !important;
-    max-width: 170px !important;
-    height: 54px !important;
-    font-size: 15px !important;
-    padding: 10px 14px !important;
-    border-radius: 999px !important;
+    flex: none;
+    width: 170px;
+    max-width: 170px;
+    height: 54px;
+    font-size: 15px;
+    padding: 10px 14px;
+    border-radius: 999px;
   }
   .mobile-search-small input {
-    width: 100% !important;
-    min-width: 0 !important;
+    width: 100%;
+    min-width: 0;
   }
 }
 .mobile-search-small {
@@ -4401,11 +4401,11 @@ html, body {
 
 @media (max-width: 768px){
   .mobile-search-small {
-    width: 170px !important;
-    max-width: 170px !important;
-    height: 54px !important;
-    font-size: 15px !important;
-    padding: 10px 14px !important;
+    width: 170px;
+    max-width: 170px;
+    height: 54px;
+    font-size: 15px;
+    padding: 10px 14px;
   }
 }
 @media (max-width: 768px){
@@ -4424,13 +4424,13 @@ html, body {
   
 
   .mobile-search-input {
-    width: 100% !important;
-    min-width: 0 !important;
-    font-size: 14px !important;
+    width: 100%;
+    min-width: 0;
+    font-size: 14px;
   }
 
   .mobile-search-input::placeholder {
-    font-size: 14px !important;
+    font-size: 14px;
   }
 }
 .jj-bridal-page {
@@ -4547,15 +4547,15 @@ html, body {
   border-radius: 0;
 }
 .jj-transformation-slider [data-rcs-handle] {
-  background-color: #d4a574 !important;
-  border: 2px solid white !important;
-  box-shadow: 0 0 15px rgba(212, 165, 116, 0.5) !important;
-  width: 48px !important;
-  height: 48px !important;
+  background-color: #d4a574;
+  border: 2px solid white;
+  box-shadow: 0 0 15px rgba(212, 165, 116, 0.5);
+  width: 48px;
+  height: 48px;
 }
 .jj-transformation-slider [data-rcs-handle-line] {
-  box-shadow: none !important;
-  background: #d4a574 !important;
+  box-shadow: none;
+  background: #d4a574;
 }
 
 .jj-transformation-content {
@@ -8261,7 +8261,7 @@ html, body {
   background: #fee2e2;
   border-radius: 12px;
   padding: 12px;
-  margin-top: 20px !important;
+  margin-top: 20px;
 }
 
 .jl-order-history-header {
@@ -9593,11 +9593,11 @@ body {
    TYPOGRAPHY UTILITIES
 ========================================== */
 .font-serif {
-  font-family: var(--font-serif) !important;
+  font-family: var(--font-serif);
 }
 
 .font-sans {
-  font-family: var(--font-sans) !important;
+  font-family: var(--font-sans);
 }
 
 /* ==========================================

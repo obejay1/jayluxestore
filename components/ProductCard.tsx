@@ -1,11 +1,10 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { MouseEvent, useEffect, useMemo, useState } from 'react';
-import { Eye, Heart, ShoppingBag, Star } from 'lucide-react';
+import { Eye, Heart, ShoppingBag } from 'lucide-react';
 
-import { DEFAULT_PRODUCT_IMAGE, getSafeImageSource, isLegacyDataImageSource } from '@/lib/images';
+import ResponsiveImage from '@/components/ResponsiveImage';
 import type { Product } from '@/lib/types';
 import { addToCart, getWishlist, toggleWishlist } from '@/lib/store';
 import { showToast } from '@/lib/toast';
@@ -22,14 +21,7 @@ function formatPrice(value: number) {
 
 export default function ProductCard({ p, onQuickView }: ProductCardProps) {
   const [wishlisted, setWishlisted] = useState(false);
-  const [imageSource, setImageSource] = useState(getSafeImageSource(p.image));
   const outOfStock = Number(p.stock ?? 1) <= 0;
-  const rating = Math.max(0, Math.min(5, Number(p.rating || 0)));
-  const reviewCount = Math.max(0, Number(p.reviewCount || 0));
-
-  useEffect(() => {
-    setImageSource(getSafeImageSource(p.image));
-  }, [p.image]);
 
   useEffect(() => {
     const syncWishlist = () => setWishlisted(getWishlist().includes(p.id));
@@ -70,17 +62,15 @@ export default function ProductCard({ p, onQuickView }: ProductCardProps) {
   }
 
   return (
-    <article className="lux-product-card tw-flex tw-h-full tw-min-w-0 tw-flex-col tw-overflow-hidden">
-      <div className="lux-product-image tw-relative tw-w-full tw-overflow-hidden tw-aspect-[4/5]">
+    <article className="lux-product-card jl-product-card-compact tw-flex tw-h-full tw-min-w-0 tw-flex-col tw-overflow-hidden">
+      <div className="lux-product-image tw-relative tw-w-full tw-overflow-hidden">
         <Link href={`/product/${p.id}`} aria-label={`View ${p.name}`}>
-          <Image
-            src={imageSource}
+          <ResponsiveImage
+            src={p.image}
             alt={p.name}
             fill
-            unoptimized={isLegacyDataImageSource(imageSource)}
             sizes="(max-width: 767px) 50vw, (max-width: 1023px) 33vw, 25vw"
             className="lux-product-img"
-            onError={() => setImageSource(DEFAULT_PRODUCT_IMAGE)}
           />
         </Link>
 
@@ -97,7 +87,7 @@ export default function ProductCard({ p, onQuickView }: ProductCardProps) {
           aria-pressed={wishlisted}
           aria-label={wishlisted ? `Remove ${p.name} from wishlist` : `Add ${p.name} to wishlist`}
         >
-          <Heart size={19} fill={wishlisted ? 'currentColor' : 'none'} />
+          <Heart size={13} fill={wishlisted ? 'currentColor' : 'none'} />
         </button>
 
         {onQuickView && (
@@ -109,33 +99,12 @@ export default function ProductCard({ p, onQuickView }: ProductCardProps) {
         )}
       </div>
 
-      <div className="lux-product-info tw-flex tw-min-w-0 tw-flex-1 tw-flex-col">
-        <p className="lux-product-category">{p.category || 'JayLuxe Collection'}</p>
+      <div className="lux-product-info tw-flex tw-min-w-0 tw-flex-col">
         <Link href={`/product/${p.id}`} className="lux-product-title-link">
-          <h3 className="tw-line-clamp-2 tw-min-h-[2.8em] tw-break-words">{p.name}</h3>
+          <h3 className="tw-line-clamp-2 tw-break-words">{p.name}</h3>
         </Link>
 
-        <div
-          className="lux-product-rating-row"
-          aria-label={
-            reviewCount > 0
-              ? `${rating.toFixed(1)} out of 5 from ${reviewCount} reviews`
-              : 'No published reviews yet'
-          }
-        >
-          <span aria-hidden="true">
-            {Array.from({ length: 5 }).map((_, index) => (
-              <Star
-                key={index}
-                size={13}
-                fill={index < Math.round(rating) ? 'currentColor' : 'none'}
-              />
-            ))}
-          </span>
-          <small>{reviewCount > 0 ? `(${reviewCount})` : 'New'}</small>
-        </div>
-
-        <div className="lux-product-pricing tw-mt-auto">
+        <div className="lux-product-pricing">
           <p className="lux-product-price">{formatPrice(p.price)}</p>
           {p.oldPrice && p.oldPrice > p.price && (
             <p className="lux-product-old-price">{formatPrice(p.oldPrice)}</p>
@@ -148,7 +117,7 @@ export default function ProductCard({ p, onQuickView }: ProductCardProps) {
           className="lux-product-add-btn tw-mt-0 tw-w-full"
           disabled={outOfStock}
         >
-          <ShoppingBag size={17} /> {outOfStock ? 'Out of Stock' : 'Add to Cart'}
+          <ShoppingBag size={13} /> {outOfStock ? 'Out of Stock' : 'Add to Cart'}
         </button>
       </div>
     </article>

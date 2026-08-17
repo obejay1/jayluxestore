@@ -3,7 +3,12 @@
 import Image, { type ImageProps } from 'next/image';
 import { useEffect, useState } from 'react';
 
-import { getSafeImageSource, isLegacyDataImageSource } from '@/lib/images';
+import {
+  cloudinaryImageLoader,
+  getSafeImageSource,
+  isCloudinaryImageSource,
+  isLegacyDataImageSource,
+} from '@/lib/images';
 
 type ResponsiveImageProps = Omit<ImageProps, 'src' | 'onError'> & {
   src?: string | null;
@@ -27,6 +32,7 @@ export default function ResponsiveImage({
       {...props}
       src={imageSource}
       alt={alt}
+      loader={isCloudinaryImageSource(imageSource) ? cloudinaryImageLoader : props.loader}
       unoptimized={isLegacyDataImageSource(imageSource) || props.unoptimized}
       onError={() => {
         const safeFallback = getSafeImageSource(null, fallbackSrc);

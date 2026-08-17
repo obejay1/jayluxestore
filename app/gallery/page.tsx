@@ -210,9 +210,9 @@ export default function GalleryPage() {
         <div className="jl-gallery-hero-content">
           <PageHeroIcon icon={ImageIcon} label="JayLuxe gallery" />
           <motion.div
-            initial={{ opacity: 0, y: 24 }}
+            initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.65 }}
+            transition={{ duration: 0.4 }}
           >
             <span className="jl-gallery-badge">
               Beauty Portfolio
@@ -331,7 +331,7 @@ export default function GalleryPage() {
                 <motion.article
                   key={item.id}
                   className="jl-gallery-card"
-                  initial={{ opacity: 0, y: 28 }}
+                  initial={{ opacity: 0, y: 8 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, amount: 0.25 }}
                   transition={{ duration: 0.45, delay: index * 0.04 }}
@@ -417,9 +417,9 @@ export default function GalleryPage() {
             >
               <motion.div
                 className="jl-gallery-modal-card"
-                initial={{ scale: 0.94, y: 20 }}
+                initial={{ scale: 0.98, y: 8 }}
                 animate={{ scale: 1, y: 0 }}
-                exit={{ scale: 0.94, y: 20 }}
+                exit={{ scale: 0.98, y: 8 }}
                 onMouseDown={(event) => event.stopPropagation()}
                 role="dialog"
                 aria-modal="true"

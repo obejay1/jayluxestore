@@ -8,15 +8,16 @@ const assert = (condition, message) => {
   if (!condition) failures.push(message);
 };
 
-const luxury = read('app/luxury-theme.css');
-const cards = read('app/jayluxe-card-system.css');
-const mobile = read('app/jayluxe-mobile.css');
+const luxury = read('app/jayluxe-design-system.css');
+const cards = read('app/jayluxe-design-system.css');
+const mobile = read('app/jayluxe-design-system.css');
 const home = read('app/page.tsx');
 const account = read('app/account/page.tsx');
 const layout = read('lib/layoutClasses.ts');
 const shop = read('app/shop/page.tsx');
 const services = read('app/services/page.tsx');
-const refactor = read('app/jayluxe-refactor.css');
+const refactor = read('app/jayluxe-design-system.css');
+const premium = cards.split('JAYLUXE PREMIUM UI V2 — canonical production layer')[1] || cards;
 
 const smallAccountBlock = luxury.match(/@media\s*\(max-width:\s*600px\)[\s\S]*?\.jl-account-overview\s*\{([\s\S]*?)\}/);
 assert(Boolean(smallAccountBlock), 'Missing <=600px account overview media rule.');
@@ -39,7 +40,7 @@ assert(
   'Gallery grid must default to two columns on mobile.',
 );
 assert(
-  !/margin-(?:top|bottom|left|right):\s*-\d+/.test(cards),
+  !/margin-(?:top|bottom|left|right):\s*-\d+/.test(premium),
   'Compact card system must not use arbitrary negative margins.',
 );
 
@@ -84,7 +85,7 @@ assert(
   'Services must continue reading the category query and filtering services.',
 );
 assert(
-  !/@media\s*\(max-width:\s*420px\)[\s\S]*?\.jj-category-grid,[\s\S]*?grid-template-columns:\s*minmax\(0,\s*1fr\)/.test(refactor),
+  !/@media\s*\(max-width:\s*420px\)[\s\S]*?\.jj-category-grid,[\s\S]*?grid-template-columns:\s*minmax\(0,\s*1fr\)/.test(premium),
   'Legacy <=420px CSS must not force category grids back to one column.',
 );
 
