@@ -25250,10 +25250,16 @@ textarea.input {
 }
 
 .jl-home-product-showcase .jj-section-header {
-  align-items: flex-end;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 4px;
   margin-bottom: 12px;
   text-align: left;
+}
+
+.jl-home-product-showcase .jj-section-header > a {
+  align-self: flex-start;
 }
 
 .jl-home-product-showcase .jj-section-header > div,
