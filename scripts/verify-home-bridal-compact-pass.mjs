@@ -13,8 +13,8 @@ const mustNot = (text, pattern, message) => assert.doesNotMatch(text, pattern, m
 const heroIndex = home.indexOf('className="jj-hero"');
 const trustIndex = home.indexOf('className="jj-trust"');
 const discoverIndex = home.indexOf('className="jl-discover-more');
-const promoIndex = home.indexOf('className="jj-home-promotions');
-const categoryIndex = home.indexOf('className="jj-categories');
+const promoIndex = home.indexOf('jj-home-promotions');
+const categoryIndex = home.indexOf('jj-categories');
 const newArrivalIndex = home.indexOf('title="New Arrivals"');
 const featuredIndex = home.indexOf('title="Featured Products"');
 assert.ok(heroIndex > -1 && trustIndex > heroIndex, 'Hero must remain first, followed by Fast Delivery/trust.');

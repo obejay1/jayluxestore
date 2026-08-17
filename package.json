@@ -8,7 +8,11 @@
     "start": "next start",
     "lint": "next lint",
     "admin:bootstrap": "node scripts/bootstrap-super-admin.mjs",
-    "verify:ui-v3": "node scripts/verify-global-ui-v3.mjs"
+    "verify:ui-v3": "node scripts/verify-global-ui-v3.mjs",
+    "verify:home-bridal-compact": "node scripts/verify-home-bridal-compact-pass.mjs",
+    "verify:mobile-grid-v4": "node scripts/verify-mobile-grid-v4.mjs",
+    "verify:product-card-category": "node scripts/verify-product-card-category.mjs",
+    "verify:product-section-alignment": "node scripts/verify-product-section-alignment-v6.mjs"
   },
   "dependencies": {
     "@paystack/inline-js": "^2.22.0",

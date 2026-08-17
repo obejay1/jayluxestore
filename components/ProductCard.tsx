@@ -62,14 +62,14 @@ export default function ProductCard({ p, onQuickView }: ProductCardProps) {
   }
 
   return (
-    <article className="lux-product-card jl-product-card-compact tw-flex tw-h-full tw-min-w-0 tw-flex-col tw-overflow-hidden">
+    <article className="lux-product-card jl-product-card-compact tw-flex tw-w-full tw-min-w-0 tw-flex-col tw-overflow-hidden">
       <div className="lux-product-image tw-relative tw-w-full tw-overflow-hidden">
         <Link href={`/product/${p.id}`} aria-label={`View ${p.name}`}>
           <ResponsiveImage
             src={p.image}
             alt={p.name}
             fill
-            sizes="(max-width: 767px) 50vw, (max-width: 1023px) 33vw, 25vw"
+            sizes="(max-width: 767px) calc(50vw - 15px), (max-width: 1099px) 33vw, 25vw"
             className="lux-product-img"
           />
         </Link>
@@ -103,6 +103,12 @@ export default function ProductCard({ p, onQuickView }: ProductCardProps) {
         <Link href={`/product/${p.id}`} className="lux-product-title-link">
           <h3 className="tw-line-clamp-2 tw-break-words">{p.name}</h3>
         </Link>
+
+        {p.category?.trim() && (
+          <p className="lux-product-category" title={p.category.trim()}>
+            {p.category.trim()}
+          </p>
+        )}
 
         <div className="lux-product-pricing">
           <p className="lux-product-price">{formatPrice(p.price)}</p>

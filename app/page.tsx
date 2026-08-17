@@ -23,6 +23,7 @@ import { getResponsiveDeliverySource, getSafeImageSource } from '@/lib/images';
 import {
   CATEGORY_GRID_CLASSES,
   PRODUCT_GRID_CLASSES,
+  PRODUCT_SECTION_SHELL_CLASS,
 } from '@/lib/layoutClasses';
 import { getProducts, getCategories } from '@/lib/store';
 import { getTestimonials, Testimonial } from '@/lib/testimonials';
@@ -60,7 +61,7 @@ function ProductShowcase({
   if (products.length === 0) return null;
 
   return (
-    <section className="jj-products jj-product-showcase jl-home-product-showcase" id={id}>
+    <section className={`jj-products jj-product-showcase jl-home-product-showcase jl-home-tight-section ${PRODUCT_SECTION_SHELL_CLASS}`} id={id}>
       <div className="jj-section-header">
         <div>
           <small>{eyebrow}</small>
@@ -71,7 +72,7 @@ function ProductShowcase({
         </Link>
       </div>
 
-      <div className={`jj-product-grid ${PRODUCT_GRID_CLASSES} jl-home-product-carousel`}>
+      <div className={`jj-product-grid ${PRODUCT_GRID_CLASSES} jl-home-product-grid`}>
         {products.map((product, index) => (
           <motion.div
             key={product.id}
@@ -210,7 +211,7 @@ export default function Home() {
       </section>
 
 
-      <section className="jl-discover-more" aria-labelledby="discover-more-title">
+      <section className="jl-discover-more jl-home-tight-section" aria-labelledby="discover-more-title">
         <div className="jj-section-header">
           <div>
             <small>Explore JayLuxe</small>
@@ -236,7 +237,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="jj-home-promotions" aria-labelledby="home-promotions-title">
+      <section className={`jj-home-promotions jl-home-tight-section ${PRODUCT_SECTION_SHELL_CLASS}`} aria-labelledby="home-promotions-title">
         <div className="jj-section-header">
           <div>
             <small>Current edits</small>
@@ -260,8 +261,8 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="jj-categories jl-home-category-section">
-        <div className="jj-section-header jj-section-header-centered">
+      <section className={`jj-categories jl-home-category-section jl-home-tight-section ${PRODUCT_SECTION_SHELL_CLASS}`}>
+        <div className="jj-section-header jl-category-heading">
           <div>
             <small>Curated Departments</small>
             <h2>Shop by Category</h2>
@@ -454,7 +455,7 @@ export default function Home() {
       )}
 
       {testimonials.length > 0 && (
-        <section className="jj-testimonials">
+        <section className="jj-testimonials jl-home-tight-section">
           <div className="jj-section-header">
             <div>
               <small>💬 Testimonials</small>

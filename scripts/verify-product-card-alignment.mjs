@@ -15,10 +15,11 @@ assert(/\.lux-product-img\s*\{[\s\S]*?width:\s*100%\s*;[\s\S]*?height:\s*100%\s*
 assert(/\.lux-product-info\s*\{[\s\S]*?gap:\s*0\s*;[\s\S]*?padding:\s*8px\s*;/m.test(css), 'Product body must use 8px padding and explicit natural margins.');
 assert(/\.lux-product-title-link\s*\{[\s\S]*?margin:\s*0\s*;/m.test(css), 'Title must rely on the 8px body inset instead of artificial spacer margins.');
 assert(/\.lux-product-info h3\s*\{[\s\S]*?font-size:\s*13px\s*;[\s\S]*?-webkit-line-clamp:\s*2\s*;[\s\S]*?min-height:/m.test(css), 'Product title must be 13px, clamped to 2 lines, and reserve consistent title height.');
-assert(/\.lux-product-pricing\s*\{[\s\S]*?margin-top:\s*(4px|5px|6px)\s*;/m.test(css), 'Price must sit naturally 4–6px below the title.');
+assert(/\.lux-product-category\s*\{[\s\S]*?margin:\s*3px 0 0\s*;/m.test(css), 'Category must sit naturally 2–4px below the title.');
+assert(/\.lux-product-category \+ \.lux-product-pricing\s*\{[\s\S]*?margin-top:\s*(4px|5px|6px)\s*;/m.test(css), 'Price must sit naturally 4–6px below the category.');
 assert(/\.lux-product-price\s*\{[\s\S]*?font-size:\s*14px\s*;/m.test(css), 'Product price must remain 14px.');
 assert(/\.lux-product-add-btn\s*\{[\s\S]*?margin-top:\s*(6px|7px|8px)\s*;[\s\S]*?padding:\s*7px\s*;[\s\S]*?font-size:\s*10px\s*;/m.test(css), 'CTA must use natural 6–8px spacing, 7px padding, and 10px type.');
-assert(!card.includes('lux-product-category'), 'Product card hierarchy should not render category metadata between image and title.');
+assert(card.includes('lux-product-category'), 'Product card hierarchy must render dynamic category metadata between title and price when available.');
 assert(!card.includes('lux-product-rating-row'), 'Product card hierarchy should not render rating metadata between title and price.');
 assert(!card.includes('tw-mt-auto'), 'Product card must not use auto-margin spacers to align pricing.');
 assert(card.includes('fill'), 'Responsive product image must use fill inside the controlled container.');

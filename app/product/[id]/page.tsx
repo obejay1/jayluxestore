@@ -29,7 +29,7 @@ import {
   toggleWishlist,
 } from '@/lib/store';
 import { showToast } from '@/lib/toast';
-import { PRODUCT_GRID_CLASSES } from '@/lib/layoutClasses';
+import { PRODUCT_GRID_CLASSES, PRODUCT_SECTION_SHELL_CLASS } from '@/lib/layoutClasses';
 import type { Product } from '@/lib/types';
 import type { ProductReviewSummary } from '@/lib/productReviews';
 
@@ -418,7 +418,7 @@ function ProductRail({
 }) {
   if (!products.length) return null;
   return (
-    <section className={`jl-related-products${recommended ? ' jl-recommended-products' : ''}`}>
+    <section className={`jl-related-products ${PRODUCT_SECTION_SHELL_CLASS}${recommended ? ' jl-recommended-products' : ''}`}>
       <div className="jl-related-head">
         <div><p>Discover more</p><h2 className="font-serif">{title}</h2></div>
         {viewAllHref ? <Link href={viewAllHref} className="jl-related-view-all">View All</Link> : null}

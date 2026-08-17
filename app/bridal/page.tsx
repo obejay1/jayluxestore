@@ -184,7 +184,7 @@ export default function BridalPage() {
           <span>Designed around your style</span>
         </div>
 
-        <div>
+        <div className="jl-bridal-delivery-note">
           <Truck aria-hidden="true" />
           <strong>Available Across Nigeria</strong>
           <span>Book early for your date</span>

@@ -10,7 +10,7 @@ import { addToCart, getProducts, getWishlist } from '@/lib/store';
 import { Product } from '@/lib/types';
 import { Heart, ShoppingBag } from 'lucide-react';
 import { showToast } from '@/lib/toast';
-import { PRODUCT_GRID_CLASSES } from '@/lib/layoutClasses';
+import { PRODUCT_GRID_CLASSES, PRODUCT_SECTION_SHELL_CLASS } from '@/lib/layoutClasses';
 
 export default function WishlistPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -45,7 +45,7 @@ export default function WishlistPage() {
         <p className="wishlist-subtitle">Save your favourite JayLuxe fashion, beauty and lifestyle pieces, then return whenever you are ready.</p>
       </section>
 
-      <section className="wishlist-content">
+      <section className={`wishlist-content ${PRODUCT_SECTION_SHELL_CLASS}`}>
         <div className="wishlist-header">
           <div>
             <p className="wishlist-small-title">Saved Collection</p>

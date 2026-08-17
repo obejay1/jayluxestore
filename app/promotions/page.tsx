@@ -17,7 +17,7 @@ import PageHeroIcon from '@/components/PageHeroIcon';
 import ProductCard from '@/components/ProductCard';
 import QuickViewModal from '@/components/QuickViewModal';
 import { getProducts } from '@/lib/store';
-import { PRODUCT_GRID_CLASSES } from '@/lib/layoutClasses';
+import { PRODUCT_GRID_CLASSES, PRODUCT_SECTION_SHELL_CLASS } from '@/lib/layoutClasses';
 import type { Product } from '@/lib/types';
 
 const promotionCards = [
@@ -155,7 +155,7 @@ export default function PromotionsPage() {
         })}
       </section>
 
-      <section className="jl-promo-products">
+      <section className={`jl-promo-products ${PRODUCT_SECTION_SHELL_CLASS}`}>
         <div className="jj-section-header">
           <div>
             <small>Available now</small>

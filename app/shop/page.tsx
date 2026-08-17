@@ -20,7 +20,7 @@ import PageHeroIcon from '@/components/PageHeroIcon';
 import ProductCard from '@/components/ProductCard';
 import { getCategories, getProducts } from '@/lib/store';
 import type { Category, Product } from '@/lib/types';
-import { PRODUCT_GRID_CLASSES } from '@/lib/layoutClasses';
+import { PRODUCT_GRID_CLASSES, PRODUCT_SECTION_SHELL_CLASS } from '@/lib/layoutClasses';
 
 const ITEMS_PER_PAGE = 12;
 
@@ -386,7 +386,7 @@ function ShopContent() {
         </div>
       </section>
 
-      <section className="jl-shop-section" aria-live="polite">
+      <section className={`jl-shop-section ${PRODUCT_SECTION_SHELL_CLASS}`} aria-live="polite">
         {loadState === 'loading' ? (
           <>
             <div className="jl-shop-loading-heading">

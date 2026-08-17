@@ -21,9 +21,9 @@ mustContain(css, /\.lux-product-price\s*\{[\s\S]*?font-size:\s*14px/, 'Product p
 mustContain(css, /\.lux-product-add-btn\s*\{[\s\S]*?padding:\s*7px[\s\S]*?font-size:\s*10px/, 'Product CTA must use 7px padding and 10px type.');
 
 const trustIndex = home.indexOf('className="jj-trust"');
-const discoverIndex = home.indexOf('className="jl-discover-more"');
-const promotionIndex = home.indexOf('className="jj-home-promotions"');
-const categoryIndex = home.indexOf('className="jj-categories');
+const discoverIndex = home.indexOf('className="jl-discover-more');
+const promotionIndex = home.indexOf('jj-home-promotions');
+const categoryIndex = home.indexOf('jj-categories');
 const newArrivalIndex = home.indexOf('title="New Arrivals"');
 const featuredIndex = home.indexOf('title="Featured Products"');
 assert.ok(trustIndex > -1 && discoverIndex > trustIndex, 'Discover More must follow trust section.');

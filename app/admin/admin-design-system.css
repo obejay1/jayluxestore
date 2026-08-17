@@ -2300,3 +2300,114 @@
     max-height: 96px;
   }
 }
+
+
+/* ============================================================
+   MOBILE ADMIN CONTAINMENT V4 — 2026-08-17
+   Keeps table overflow inside its own viewport and compacts content forms.
+   ============================================================ */
+.admin-dashboard,
+.admin-content,
+.admin-shell {
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+.admin-table-scroll {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-inline: contain;
+}
+
+.admin-table-scroll .table {
+  width: 100%;
+  min-width: 620px;
+  margin: 0;
+}
+
+.admin-compact-form {
+  padding: 12px;
+}
+
+.admin-compact-form .admin-section-title {
+  margin-bottom: 10px;
+}
+
+.admin-compact-form .admin-form-grid {
+  gap: 10px;
+}
+
+.admin-compact-form .input,
+.admin-compact-form input.input,
+.admin-compact-form select.input {
+  min-height: 38px;
+  padding: 8px 10px;
+}
+
+.admin-compact-form textarea.input,
+.admin-compact-form .admin-textarea-compact {
+  min-height: 72px;
+  max-height: 150px;
+  padding: 9px 10px;
+  resize: vertical;
+}
+
+.admin-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.admin-compact-form .admin-image-upload-field {
+  min-width: 0;
+}
+
+@media (max-width: 767px) {
+  .admin-dashboard,
+  .admin-content,
+  .admin-shell {
+    overflow-x: clip;
+  }
+
+  .admin-compact-form {
+    padding: 10px;
+  }
+
+  .admin-compact-form .admin-form-grid {
+    gap: 8px;
+  }
+
+  .admin-compact-form .input,
+  .admin-compact-form input.input,
+  .admin-compact-form select.input {
+    min-height: 36px;
+    padding: 7px 9px;
+  }
+
+  .admin-compact-form textarea.input,
+  .admin-compact-form .admin-textarea-compact {
+    min-height: 68px;
+    max-height: 128px;
+  }
+
+  .admin-table-scroll .table {
+    min-width: 560px;
+  }
+
+  .admin-table-scroll .table th,
+  .admin-table-scroll .table td {
+    padding: 7px 8px;
+  }
+
+  .admin-table-scroll .table img {
+    width: 34px;
+    height: 34px;
+    max-width: 34px;
+    max-height: 34px;
+  }
+}

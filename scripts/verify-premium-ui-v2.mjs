@@ -19,7 +19,7 @@ for (const legacy of ['luxury-theme.css','jayluxe-redesign.css','jayluxe-refacto
 for (const token of ['--jl-space-1: 4px','--jl-space-2: 8px','--jl-space-3: 12px','--jl-space-4: 16px','--jl-space-5: 20px','--jl-space-6: 24px','--jl-space-8: 32px','--jl-space-10: 40px','--jl-container: 1280px']) {
   assert(css.includes(token), `Missing design token ${token}.`);
 }
-assert(css.includes('.jl-home-product-carousel'), 'Missing homepage mobile product carousel rules.');
+assert(css.includes('.jl-home-product-grid'), 'Missing homepage product-grid rules.');
 assert(css.includes('scroll-snap-type: x mandatory'), 'Mobile carousels must use scroll snapping.');
 assert(css.includes('@media (prefers-reduced-motion: reduce)'), 'Reduced-motion support is required.');
 assert(css.includes('grid-template-columns: repeat(2, minmax(0, 1fr))'), 'Mobile two-column grid rule is required.');
@@ -27,7 +27,7 @@ assert(css.includes('grid-template-columns: repeat(3, minmax(0, 1fr))'), 'Tablet
 assert(css.includes('grid-template-columns: repeat(4, minmax(0, 1fr))'), 'Desktop four-column grid rule is required.');
 assert(css.includes('min-height: 390px') || css.includes('min-height: clamp(390px'), 'Mobile hero minimum target must be present.');
 
-assert(home.includes('className={`jj-product-grid ${PRODUCT_GRID_CLASSES} jl-home-product-carousel`}'), 'Homepage product showcases need carousel hook.');
+assert(home.includes('className={`jj-product-grid ${PRODUCT_GRID_CLASSES} jl-home-product-grid`}'), 'Homepage product showcases need the equal-width product-grid hook.');
 assert(home.includes('className="jj-testimonials-grid jl-home-testimonial-carousel"'), 'Homepage testimonials need carousel hook.');
 assert(home.includes('className="jj-bridal-compare-cta"'), 'Bridal compare area must use editorial CTA.');
 assert(!home.includes('WhatsApp: {OFFICIAL_WHATSAPP_DISPLAY}'), 'Homepage must not show the duplicate WhatsApp contact card.');

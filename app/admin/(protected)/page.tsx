@@ -2007,7 +2007,7 @@ export default function Admin() {
           )}
         </section>
         
-        <section className="table-card" id="transformations-form" hidden={!can('content')}>
+        <section className="table-card admin-compact-form" id="transformations-form" hidden={!can('content')}>
           <div className="admin-section-title">
             <div>
               <h2>Add/Edit Transformation</h2>
@@ -2030,7 +2030,7 @@ export default function Admin() {
               {transformationCategories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
             </select>
             <textarea
-              className="input admin-field-wide"
+              className="input admin-field-wide admin-textarea-compact"
               placeholder="Optional: Description of the work done"
               value={transformationForm.data.description}
               onChange={(e) => setTransformationForm(p => ({ ...p, data: { ...p.data, description: e.target.value } }))}
@@ -2079,7 +2079,7 @@ export default function Admin() {
             </label>
           </div>
 
-          <div style={{ display: 'flex', gap: 12, marginTop: 16 }}>
+          <div className="admin-form-actions">
             <button className="btn" onClick={submitTransformation} disabled={savingTransformation || uploadActive('transformation-before', 'transformation-after')}>
               {uploadActive('transformation-before', 'transformation-after') ? 'Uploading transformation image…' : savingTransformation ? 'Saving…' : (transformationForm.data.id ? 'Update Transformation' : 'Save Transformation')}
             </button>
@@ -2094,6 +2094,7 @@ export default function Admin() {
           {transformations.length === 0 ? (
             <p style={{ textAlign: 'center', padding: '20px 0' }}>No transformations found. Add one above.</p>
           ) : (
+            <div className="admin-table-scroll">
             <table className="table">
               <thead>
                 <tr>
@@ -2160,10 +2161,11 @@ export default function Admin() {
                 ))}
               </tbody>
             </table>
+            </div>
           )}
         </section>
 
-        <section className="table-card" id="testimonials-form" hidden={!can('testimonials')}>
+        <section className="table-card admin-compact-form" id="testimonials-form" hidden={!can('testimonials')}>
           <div className="admin-section-title">
             <div>
               <h2 className="admin-heading-with-icon"><MessageCircle size={20} aria-hidden="true" /> Add/Edit Testimonial</h2>
@@ -2190,11 +2192,10 @@ export default function Admin() {
               <option value={1}>1 Star</option>
             </select>
             <textarea
-              className="input admin-field-wide"
+              className="input admin-field-wide admin-textarea-compact"
               placeholder="Testimonial text..."
               value={testimonialForm.data.testimonial}
               onChange={(e) => setTestimonialForm(p => ({ ...p, data: { ...p.data, testimonial: e.target.value } }))}
-              style={{ minHeight: '100px' }}
             />
             <AdminImageUploadField
               id="testimonial-image-upload"
@@ -2224,7 +2225,7 @@ export default function Admin() {
             </label>
           </div>
 
-          <div style={{ display: 'flex', gap: 12, marginTop: 16 }}>
+          <div className="admin-form-actions">
             <button className="btn" onClick={submitTestimonial} disabled={savingTestimonial || uploadActive('testimonial')}>
               {uploadActive('testimonial') ? 'Uploading customer image…' : savingTestimonial ? 'Saving…' : (testimonialForm.data.id ? 'Update Testimonial' : 'Save Testimonial')}
             </button>
@@ -2239,6 +2240,7 @@ export default function Admin() {
           {testimonials.length === 0 ? (
             <p style={{ textAlign: 'center', padding: '20px 0' }}>No testimonials found. Add one above.</p>
           ) : (
+            <div className="admin-table-scroll">
             <table className="table">
               <thead>
                 <tr>
@@ -2296,6 +2298,7 @@ export default function Admin() {
                 ))}
               </tbody>
             </table>
+            </div>
           )}
         </section>
 
