@@ -24,6 +24,42 @@ function recipient(order: Order) {
   return order.customerEmail?.trim().toLowerCase() || '';
 }
 
+function formatOrderTemplateDate(value: string) {
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return value || 'N/A';
+
+  return new Intl.DateTimeFormat('en-NG', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+    timeZone: 'Africa/Lagos',
+  }).format(parsed);
+}
+
+function formatOrderTemplateMoney(value: number) {
+  return `₦${Number(value || 0).toLocaleString('en-NG')}`;
+}
+
+function getOrderUrl(order: Order) {
+  const siteUrl = getSiteUrlString();
+  return `${siteUrl}/order/${encodeURIComponent(order.id)}${order.accessToken ? `?token=${encodeURIComponent(order.accessToken)}` : ''}`;
+}
+
+function getOrderConfirmationTemplateVariables(order: Order) {
+  return {
+    CUSTOMER_NAME: order.customerName || order.customer?.name || 'Customer',
+    ORDER_NUMBER: `#${order.id}`,
+    ORDER_DATE: formatOrderTemplateDate(order.createdAt),
+    ORDER_TOTAL: formatOrderTemplateMoney(order.total),
+    DELIVERY_ADDRESS:
+      order.customerAddress ||
+      order.shippingAddress ||
+      order.address ||
+      order.customer?.address ||
+      'To be confirmed',
+    ORDER_URL: getOrderUrl(order),
+  };
+}
+
 async function recordOrderEmailSummary(orderId: string, fields: Record<string, unknown>) {
   try {
     await adminDb.collection('orders').doc(orderId).set({
@@ -37,7 +73,9 @@ async function recordOrderEmailSummary(orderId: string, fields: Record<string, u
 
 export async function sendOrderCreatedEmails(order: Order) {
   const customer = recipient(order);
-  const admin = getEmailConfig().adminRecipient;
+  const emailConfig = getEmailConfig();
+  const admin = emailConfig.adminRecipient;
+  const orderConfirmationTemplateId = emailConfig.orderConfirmationTemplateId;
   const results: ManagedEmailResult[] = [];
 
   if (customer) {
@@ -50,6 +88,12 @@ export async function sendOrderCreatedEmails(order: Order) {
       orderId: order.id,
       userId: order.userId,
       ...template,
+      template: orderConfirmationTemplateId
+        ? {
+            id: orderConfirmationTemplateId,
+            variables: getOrderConfirmationTemplateVariables(order),
+          }
+        : undefined,
     });
     results.push(result);
     await recordOrderEmailSummary(order.id, {

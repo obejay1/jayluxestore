@@ -31,6 +31,8 @@ export function getEmailConfig() {
       DEFAULT_ADMIN_RECIPIENT,
     reviewRequestEnabled:
       process.env.REVIEW_REQUEST_EMAILS_ENABLED?.trim().toLowerCase() === 'true',
+    orderConfirmationTemplateId:
+      process.env.RESEND_ORDER_CONFIRMATION_TEMPLATE_ID?.trim() || '',
   };
 }
 
