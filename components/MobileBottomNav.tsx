@@ -2,10 +2,10 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import { Home, Scissors, ShoppingBag, ShoppingCart, User } from 'lucide-react';
 
-import { getCart } from '@/lib/store';
+import CartCountBadge from '@/components/CartCountBadge';
+import { useCartCount } from '@/lib/useCartCount';
 
 const navItems = [
   { href: '/', icon: Home, label: 'Home' },
@@ -21,19 +21,7 @@ function isActiveRoute(pathname: string, href: string) {
 
 export default function MobileBottomNav() {
   const pathname = usePathname();
-  const [cartCount, setCartCount] = useState(0);
-
-  useEffect(() => {
-    const updateCount = () => {
-      setCartCount(
-        getCart().reduce((total, item) => total + Number(item.qty || 0), 0),
-      );
-    };
-
-    updateCount();
-    window.addEventListener('cart', updateCount);
-    return () => window.removeEventListener('cart', updateCount);
-  }, []);
+  const cartCount = useCartCount();
 
   return (
     <nav className="mobile-bottom-nav" aria-label="Mobile navigation">
@@ -50,9 +38,9 @@ export default function MobileBottomNav() {
           >
             <span className="mobile-nav-icon-wrapper">
               <Icon size={22} strokeWidth={active ? 2.5 : 2} aria-hidden="true" />
-              {item.href === '/cart' && cartCount > 0 && (
-                <b className="mobile-cart-badge">{cartCount > 99 ? '99+' : cartCount}</b>
-              )}
+              {item.href === '/cart' ? (
+                <CartCountBadge count={cartCount} className="mobile-cart-badge" />
+              ) : null}
             </span>
             <span>{item.label}</span>
           </Link>

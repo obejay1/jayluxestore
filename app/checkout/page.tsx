@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
-import { getCart, getProducts, money, setCart } from '@/lib/store';
+import { clearCart, getCart, getProducts, money } from '@/lib/store';
 import { trackEvent } from '@/lib/analytics';
 import { getCheckoutSettings } from '@/lib/settings';
 import { validateCoupon } from '@/lib/coupons';
@@ -37,7 +37,7 @@ async function readJsonResponse<T>(response: Response): Promise<T> {
 
 export default function Checkout() {
   const [products, setProducts] = useState<Product[]>([]);
-  const [cart, setCart] = useState<{ id: string; qty: number }[]>([]);
+  const [cart, setCheckoutCart] = useState<{ id: string; qty: number }[]>([]);
   const [mounted, setMounted] = useState(false);
 
   const [email, setEmail] = useState('');
@@ -69,7 +69,7 @@ export default function Checkout() {
 
   useEffect(() => {
     setMounted(true);
-    setCart(getCart());
+    setCheckoutCart(getCart());
 
     getProducts()
       .then(setProducts)
@@ -290,7 +290,8 @@ export default function Checkout() {
         throw new Error(data.message || 'The payment could not be verified.');
       }
 
-      setCart([]);
+      clearCart();
+      setCheckoutCart([]);
 
       void fetch('/api/termii/send-order-sms', {
         method: 'POST',
