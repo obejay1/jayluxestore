@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
     if (!allowed) {
       return NextResponse.json({
         ok: true,
-        message: 'If that email belongs to a JayLuxe account, a reset link will be sent shortly.',
+        message: ' Please check your email for password reset instructions.',
       });
     }
 
