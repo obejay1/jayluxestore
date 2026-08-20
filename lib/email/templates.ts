@@ -1,4 +1,4 @@
-import { getSiteUrlString } from '@/lib/site';
+import { PRODUCTION_SITE_URL } from '@/lib/site';
 import type { Order } from '@/lib/types';
 
 function esc(value: unknown): string {
@@ -35,7 +35,7 @@ function button(label: string, href: string): string {
 }
 
 function shell(title: string, body: string, options?: { eyebrow?: string; footerNote?: string }): string {
-  const siteUrl = getSiteUrlString();
+  const siteUrl = PRODUCTION_SITE_URL;
   const supportEmail =
     process.env.SUPPORT_EMAIL?.trim() ||
     process.env.CONTACT_TO_EMAIL?.trim() ||
@@ -104,7 +104,7 @@ function totals(order: Order): string {
 }
 
 export function orderConfirmationTemplate(order: Order) {
-  const siteUrl = getSiteUrlString();
+  const siteUrl = PRODUCTION_SITE_URL;
   const orderUrl = `${siteUrl}/order/${encodeURIComponent(order.id)}${order.accessToken ? `?token=${encodeURIComponent(order.accessToken)}` : ''}`;
   const body = `
     <p style="margin:0 0 18px;font-size:16px;line-height:1.7">Hello <strong>${esc(order.customerName || 'Customer')}</strong>, thank you for shopping with JayLuxe. Your order has been confirmed and is now being prepared.</p>
@@ -128,7 +128,7 @@ export function orderConfirmationTemplate(order: Order) {
 }
 
 export function paymentConfirmationTemplate(order: Order) {
-  const siteUrl = getSiteUrlString();
+  const siteUrl = PRODUCTION_SITE_URL;
   const orderUrl = `${siteUrl}/order/${encodeURIComponent(order.id)}${order.accessToken ? `?token=${encodeURIComponent(order.accessToken)}` : ''}`;
   const body = `
     <p style="font-size:16px;line-height:1.7">Hello <strong>${esc(order.customerName || 'Customer')}</strong>, we successfully verified your payment for JayLuxe order <strong>#${esc(order.id)}</strong>.</p>
@@ -148,7 +148,7 @@ export function paymentConfirmationTemplate(order: Order) {
 }
 
 export function adminNewOrderTemplate(order: Order) {
-  const siteUrl = getSiteUrlString();
+  const siteUrl = PRODUCTION_SITE_URL;
   const adminUrl = `${siteUrl}/admin#orders`;
   const body = `
     <p style="font-size:16px;line-height:1.7">A new JayLuxe order has been created successfully.</p>
@@ -173,7 +173,7 @@ export function adminNewOrderTemplate(order: Order) {
 }
 
 export function adminPaymentTemplate(order: Order) {
-  const siteUrl = getSiteUrlString();
+  const siteUrl = PRODUCTION_SITE_URL;
   const body = `<p style="font-size:16px;line-height:1.7">Payment has been verified for order <strong>#${esc(order.id)}</strong>.</p>
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#faf7f1;border:1px solid #eee4d5;border-radius:14px">
       <tr><td style="padding:10px 16px;color:#746b60">Customer</td><td style="padding:10px 16px;text-align:right">${esc(order.customerName || 'N/A')}</td></tr>
@@ -191,7 +191,7 @@ export function adminPaymentTemplate(order: Order) {
 }
 
 export function orderStatusTemplate(order: Order, status: string) {
-  const siteUrl = getSiteUrlString();
+  const siteUrl = PRODUCTION_SITE_URL;
   const orderUrl = `${siteUrl}/order/${encodeURIComponent(order.id)}${order.accessToken ? `?token=${encodeURIComponent(order.accessToken)}` : ''}`;
   const normalized = status.trim();
   const headingByStatus: Record<string, string> = {
@@ -244,7 +244,7 @@ export function orderStatusTemplate(order: Order, status: string) {
 
 
 export function adminOrderStatusTemplate(order: Order, status: string) {
-  const siteUrl = getSiteUrlString();
+  const siteUrl = PRODUCTION_SITE_URL;
   const body = `<p style="font-size:16px;line-height:1.7">Order <strong>#${esc(order.id)}</strong> has been updated to <strong>${esc(status)}</strong>.</p>
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#faf7f1;border:1px solid #eee4d5;border-radius:14px">
       <tr><td style="padding:10px 16px;color:#746b60">Customer</td><td style="padding:10px 16px;text-align:right">${esc(order.customerName || 'Customer')}</td></tr>
@@ -263,7 +263,7 @@ export function adminOrderStatusTemplate(order: Order, status: string) {
 
 export function passwordResetTemplate(name: string, resetLink: string) {
   const body = `<p style="font-size:16px;line-height:1.7">Hello <strong>${esc(name || 'Customer')}</strong>, we received a request to reset your JayLuxe password.</p>
-    <p style="color:#655d53;line-height:1.7">Use the secure button below to continue. This Firebase-generated action link is time-limited. If you did not request a password reset, you can safely ignore this email.</p>
+    <p style="color:#655d53;line-height:1.7">Use the secure button below to continue. This password-reset link is time-limited and protected by Firebase Authentication. If you did not request a password reset, you can safely ignore this email.</p>
     ${button('Reset Password', resetLink)}
     <div style="margin-top:22px;padding:16px;background:#fff7e9;border:1px solid #eed9ad;border-radius:12px;color:#6d5a34;font-size:13px;line-height:1.65">For your security, JayLuxe will never ask you to send your password by email.</div>`;
   return {
@@ -285,7 +285,7 @@ export function verificationTemplate(name: string, verificationLink: string) {
 }
 
 export function welcomeTemplate(name: string) {
-  const siteUrl = getSiteUrlString();
+  const siteUrl = PRODUCTION_SITE_URL;
   const body = `<p style="font-size:17px;line-height:1.75">Welcome, <strong>${esc(name || 'Customer')}</strong>. Your JayLuxe account is ready for a more personalised luxury shopping experience.</p>
     <p style="color:#655d53;line-height:1.7">Save favourites, follow eligible orders and discover curated beauty, fashion, bridal and lifestyle selections.</p>
     ${button('Shop Now', `${siteUrl}/shop`)}
@@ -298,7 +298,7 @@ export function welcomeTemplate(name: string) {
 }
 
 export function contactAdminTemplate(input: { id: string; name: string; email: string; phone?: string; subject: string; message: string }) {
-  const siteUrl = getSiteUrlString();
+  const siteUrl = PRODUCTION_SITE_URL;
   const body = `<p style="font-size:16px;line-height:1.7">A customer submitted a new message through the JayLuxe website.</p>
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#faf7f1;border:1px solid #eee4d5;border-radius:14px">
       <tr><td style="padding:9px 14px;color:#746b60">Name</td><td style="padding:9px 14px;text-align:right">${esc(input.name)}</td></tr>
@@ -316,7 +316,7 @@ export function contactAdminTemplate(input: { id: string; name: string; email: s
 }
 
 export function contactAcknowledgementTemplate(name: string) {
-  const siteUrl = getSiteUrlString();
+  const siteUrl = PRODUCTION_SITE_URL;
   const body = `<p style="font-size:16px;line-height:1.7">Hello <strong>${esc(name || 'Customer')}</strong>, thank you for contacting JayLuxe.</p>
     <p style="color:#655d53;line-height:1.75">Your message has been received and saved securely. A member of the JayLuxe team will review it and respond as soon as possible.</p>
     ${button('Visit JayLuxe', siteUrl)}`;
@@ -328,7 +328,7 @@ export function contactAcknowledgementTemplate(name: string) {
 }
 
 export function newsletterWelcomeTemplate(unsubscribeUrl: string) {
-  const siteUrl = getSiteUrlString();
+  const siteUrl = PRODUCTION_SITE_URL;
   const body = `<p style="font-size:17px;line-height:1.75">Your subscription to <strong>The JayLuxe Edit</strong> is confirmed.</p>
     <p style="color:#655d53;line-height:1.75">Expect curated luxury arrivals, beauty notes, bridal inspiration and private offers from JayLuxe.</p>
     ${button('Explore JayLuxe', `${siteUrl}/shop`)}
@@ -351,7 +351,7 @@ export function newsletterAdminTemplate(email: string) {
 }
 
 export function reviewRequestTemplate(order: Order) {
-  const siteUrl = getSiteUrlString();
+  const siteUrl = PRODUCTION_SITE_URL;
   const body = `<p style="font-size:16px;line-height:1.7">Hello <strong>${esc(order.customerName || 'Customer')}</strong>, we hope you are enjoying your JayLuxe purchase from order <strong>#${esc(order.id)}</strong>.</p>
     ${orderItems(order)}
     <p style="color:#655d53;line-height:1.7">Your feedback helps us improve the JayLuxe experience for every customer.</p>

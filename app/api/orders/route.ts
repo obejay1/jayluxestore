@@ -145,6 +145,11 @@ export async function POST(request: NextRequest) {
   }
 
   const reference = cleanText(body.reference, 160);
+
+  console.info('ORDER_CREATION_STARTED', {
+    reference,
+    timestamp: new Date().toISOString(),
+  });
   const customerName = cleanText(body.customerName, 120);
   const customerEmail = cleanText(body.customerEmail, 160).toLowerCase();
   const customerPhone = cleanText(body.customerPhone, 50);
@@ -417,7 +422,10 @@ export async function POST(request: NextRequest) {
       { status: 201 },
     );
   } catch (error) {
-    console.error('CREATE ORDER ERROR:', error);
+    console.error('CREATE_ORDER_ERROR', {
+      message: error instanceof Error ? error.message : String(error),
+      timestamp: new Date().toISOString(),
+    });
 
     if (error instanceof OrderRequestError) {
       return NextResponse.json(

@@ -15,7 +15,6 @@
     "verify:product-section-alignment": "node scripts/verify-product-section-alignment-v6.mjs"
   },
   "dependencies": {
-    "@aws-sdk/client-ses": "^3.1112.0",
     "@paystack/inline-js": "^2.22.0",
     "axios": "^1.18.1",
     "cloudinary": "^2.10.0",

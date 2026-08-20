@@ -92,9 +92,12 @@ export default function LoginPage() {
 
       localStorage.removeItem('jj-user');
       localStorage.removeItem('jj-users');
+      setPassword('');
+      setShowPassword(false);
       router.replace('/account');
       router.refresh();
     } catch (loginError) {
+      setPassword('');
       setError(getAuthErrorMessage(loginError));
     } finally {
       setLoading(false);

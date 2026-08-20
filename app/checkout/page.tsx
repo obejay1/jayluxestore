@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
-import { clearCart, getCart, getProducts, money } from '@/lib/store';
+import { getCart, getProducts, money, setCart as persistCart } from '@/lib/store';
 import { trackEvent } from '@/lib/analytics';
 import { getCheckoutSettings } from '@/lib/settings';
 import { validateCoupon } from '@/lib/coupons';
@@ -37,7 +37,7 @@ async function readJsonResponse<T>(response: Response): Promise<T> {
 
 export default function Checkout() {
   const [products, setProducts] = useState<Product[]>([]);
-  const [cart, setCheckoutCart] = useState<{ id: string; qty: number }[]>([]);
+  const [cart, setCart] = useState<{ id: string; qty: number }[]>([]);
   const [mounted, setMounted] = useState(false);
 
   const [email, setEmail] = useState('');
@@ -69,7 +69,7 @@ export default function Checkout() {
 
   useEffect(() => {
     setMounted(true);
-    setCheckoutCart(getCart());
+    setCart(getCart());
 
     getProducts()
       .then(setProducts)
@@ -290,8 +290,8 @@ export default function Checkout() {
         throw new Error(data.message || 'The payment could not be verified.');
       }
 
-      clearCart();
-      setCheckoutCart([]);
+      persistCart([]);
+      setCart([]);
 
       void fetch('/api/termii/send-order-sms', {
         method: 'POST',
@@ -321,7 +321,11 @@ export default function Checkout() {
       );
       r.refresh();
     } catch (error) {
-      console.error('Order creation failed:', error);
+      console.error('ORDER_CREATION_FAILED', {
+        message: error instanceof Error ? error.message : String(error),
+        reference,
+        timestamp: new Date().toISOString(),
+      });
       setCheckoutError(
         error instanceof Error
           ? error.message

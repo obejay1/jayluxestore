@@ -210,66 +210,16 @@ export async function removeCategory(id: string) {
 
 /* CART */
 
-type CartItem = { id: string; qty: number };
-
-function normalizeCartItems(value: unknown): CartItem[] {
-  if (!Array.isArray(value)) return [];
-
-  const merged = new Map<string, number>();
-
-  for (const item of value) {
-    if (!item || typeof item !== 'object') continue;
-
-    const id = String((item as { id?: unknown }).id || '').trim();
-    const rawQty = Number((item as { qty?: unknown }).qty);
-    const qty = Number.isFinite(rawQty) ? Math.floor(rawQty) : 0;
-
-    if (!id || qty <= 0) continue;
-    merged.set(id, (merged.get(id) || 0) + qty);
-  }
-
-  return Array.from(merged, ([id, qty]) => ({ id, qty }));
+export function getCart() {
+  return JSON.parse(ls?.getItem('cart') || '[]') as { id: string; qty: number }[];
 }
 
-export function getCart(): CartItem[] {
-  try {
-    return normalizeCartItems(JSON.parse(ls?.getItem('cart') || '[]'));
-  } catch {
-    return [];
-  }
-}
-
-export function getCartItemCount() {
-  return getCart().reduce((total, item) => total + item.qty, 0);
-}
-
-export function setCart(c: CartItem[]) {
-  const next = normalizeCartItems(c);
-  ls?.setItem('cart', JSON.stringify(next));
+export function setCart(c: { id: string; qty: number }[]) {
+  ls?.setItem('cart', JSON.stringify(c));
 
   if (typeof window !== 'undefined') {
     window.dispatchEvent(new Event('cart'));
   }
-}
-
-export function clearCart() {
-  setCart([]);
-}
-
-export function subscribeToCart(listener: () => void) {
-  if (typeof window === 'undefined') return () => undefined;
-
-  const handleStorage = (event: StorageEvent) => {
-    if (event.key === null || event.key === 'cart') listener();
-  };
-
-  window.addEventListener('cart', listener);
-  window.addEventListener('storage', handleStorage);
-
-  return () => {
-    window.removeEventListener('cart', listener);
-    window.removeEventListener('storage', handleStorage);
-  };
 }
 
 export async function getUserSessions(): Promise<Session[]> {

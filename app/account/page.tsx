@@ -35,8 +35,7 @@ import {
 import Footer from '@/components/Footer';
 import PageHeroIcon from '@/components/PageHeroIcon';
 import { auth } from '@/lib/firebase';
-import { getWishlist, money } from '@/lib/store';
-import { useCartCount } from '@/lib/useCartCount';
+import { getCart, getWishlist, money } from '@/lib/store';
 import type { Order } from '@/lib/types';
 
 type AuthMode = 'login' | 'register';
@@ -136,16 +135,24 @@ export default function AccountPage() {
   const [ordersError, setOrdersError] = useState('');
 
   const [wishlistCount, setWishlistCount] = useState(0);
-  const cartCount = useCartCount();
+  const [cartCount, setCartCount] = useState(0);
 
   useEffect(() => {
     const updateWishlist = () => setWishlistCount(getWishlist().length);
+    const updateCart = () =>
+      setCartCount(
+        getCart().reduce((sum, item) => sum + Number(item.qty || 0), 0),
+      );
 
     updateWishlist();
+    updateCart();
+
     window.addEventListener('wishlist', updateWishlist);
+    window.addEventListener('cart', updateCart);
 
     return () => {
       window.removeEventListener('wishlist', updateWishlist);
+      window.removeEventListener('cart', updateCart);
     };
   }, []);
 

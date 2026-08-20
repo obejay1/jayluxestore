@@ -18,6 +18,7 @@ import {
   welcomeTemplate,
 } from '@/lib/email/templates';
 import { getSiteUrlString } from '@/lib/site';
+import { buildBrandedPasswordResetLink } from '@/lib/passwordReset';
 import type { Order } from '@/lib/types';
 
 function recipient(order: Order) {
@@ -258,11 +259,12 @@ export async function sendRegistrationEmails(input: { uid: string; email: string
 export async function sendPasswordResetEmailWithResend(email: string) {
   const user = await adminAuth.getUserByEmail(email);
   const siteUrl = getSiteUrlString();
-  const link = await adminAuth.generatePasswordResetLink(email, {
+  const firebaseResetLink = await adminAuth.generatePasswordResetLink(email, {
     url: `${siteUrl}/login`,
     handleCodeInApp: false,
   });
-  const template = passwordResetTemplate(user.displayName || 'Customer', link);
+  const resetLink = buildBrandedPasswordResetLink(firebaseResetLink);
+  const template = passwordResetTemplate(user.displayName || 'Customer', resetLink);
   return sendManagedEmail({
     eventKey: `password-reset:${user.uid}:${Date.now().toString().slice(0, -5)}`,
     emailType: 'password_reset',

@@ -14,9 +14,7 @@ import {
   X,
 } from 'lucide-react';
 import HamburgerMenu from '@/components/HamburgerMenu';
-import CartCountBadge from '@/components/CartCountBadge';
-import { getWishlist } from '@/lib/store';
-import { useCartCount } from '@/lib/useCartCount';
+import { getCart, getWishlist } from '@/lib/store';
 
 type HeaderProps = {
   title?: string;
@@ -91,18 +89,26 @@ export default function Header({
 }: HeaderProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const cartCount = useCartCount();
+  const [cartCount, setCartCount] = useState(0);
   const [wishlistCount, setWishlistCount] = useState(0);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
+    const updateCart = () => {
+      setCartCount(
+        getCart().reduce((total, item) => total + Number(item.qty || 0), 0),
+      );
+    };
     const updateWishlist = () => setWishlistCount(getWishlist().length);
 
+    updateCart();
     updateWishlist();
+    window.addEventListener('cart', updateCart);
     window.addEventListener('wishlist', updateWishlist);
 
     return () => {
+      window.removeEventListener('cart', updateCart);
       window.removeEventListener('wishlist', updateWishlist);
     };
   }, []);
@@ -260,7 +266,9 @@ export default function Header({
                 aria-label={`Shopping bag with ${cartCount} items`}
               >
                 <ShoppingBag size={20} aria-hidden="true" />
-                <CartCountBadge count={cartCount} />
+                {cartCount > 0 ? (
+                  <span aria-hidden="true">{cartCount > 99 ? '99+' : cartCount}</span>
+                ) : null}
               </Link>
 
               <HamburgerMenu />

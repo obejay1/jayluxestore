@@ -1191,18 +1191,18 @@
 .jl-auth-badge { display: inline-flex; align-items: center; gap: 8px; width: max-content; margin-bottom: 20px; padding: 8px 11px; border: 1px solid rgba(200,162,75,.35); border-radius: 999px; color: var(--jl-gold); font-size: .68rem; font-weight: 850; text-transform: uppercase; }
 .jl-auth-aside h1 { margin: 0 0 16px; color: var(--jl-white); font-size: clamp(3rem,6vw,5.7rem); line-height: .98; font-weight: 500; }
 .jl-auth-aside p { max-width: 570px; color: rgba(255,255,255,.68); line-height: 1.8; }
-.jl-auth-panel { display: grid; place-items: center; padding: 40px 24px; }
-.jl-auth-card { width: min(520px,100%); padding: 36px; border: 1px solid var(--jl-border); border-radius: 16px; background: var(--jl-white); box-shadow: var(--jl-shadow); }
+.jl-auth-panel { display: grid; place-items: center; padding: 32px 20px; }
+.jl-auth-card { width: min(520px,100%); padding: 28px; border: 1px solid var(--jl-border); border-radius: 16px; background: var(--jl-white); box-shadow: var(--jl-shadow); }
 .jl-auth-back { display: inline-flex; align-items: center; gap: 6px; margin-bottom: 26px; color: var(--jl-muted); font-size: .75rem; font-weight: 800; }
 .jl-auth-back:hover { color: var(--jl-gold-rich); }
 .jl-auth-eyebrow { color: var(--jl-gold-rich); font-size: .68rem; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
-.jl-auth-card h2 { margin: 8px 0 9px; color: var(--jl-black); font-size: 2.5rem; font-weight: 500; }
-.jl-auth-intro { margin-bottom: 24px; color: var(--jl-muted); line-height: 1.65; }
-.jl-auth-form { display: grid; gap: 14px; }
+.jl-auth-card h2 { margin: 8px 0 8px; color: var(--jl-black); font-size: 2.15rem; font-weight: 500; }
+.jl-auth-intro { margin-bottom: 18px; color: var(--jl-muted); line-height: 1.65; }
+.jl-auth-form { display: grid; gap: 12px; }
 .jl-auth-form label { color: var(--jl-charcoal); font-size: .72rem; font-weight: 850; }
-.jl-auth-form input { width: 100%; min-height: 50px; margin-top: 7px; padding: 0 14px; border: 1px solid var(--jl-border); border-radius: 10px; background: var(--jl-ivory); outline: 0; }
+.jl-auth-form input { width: 100%; min-height: 46px; margin-top: 7px; padding: 0 14px; border: 1px solid var(--jl-border); border-radius: 10px; background: var(--jl-ivory); outline: 0; }
 .jl-auth-form input:focus { border-color: var(--jl-gold); background: var(--jl-white); box-shadow: 0 0 0 3px rgba(200,162,75,.12); }
-.jl-auth-form button { min-height: 52px; margin-top: 5px; border: 0; border-radius: 10px; background: var(--jl-black); color: var(--jl-white); font-weight: 900; cursor: pointer; transition: var(--jl-transition); }
+.jl-auth-form button { min-height: 46px; margin-top: 5px; border: 0; border-radius: 10px; background: var(--jl-black); color: var(--jl-white); font-weight: 900; cursor: pointer; transition: var(--jl-transition); }
 .jl-auth-form button:hover { background: var(--jl-gold); }
 .jl-auth-switch { margin: 23px 0 0; color: var(--jl-muted); text-align: center; }
 .jl-auth-switch a { color: var(--jl-gold-rich); font-weight: 850; }
@@ -25585,5 +25585,42 @@ textarea.input {
 
   .lux-product-price {
     font-size: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  .jl-auth-page {
+    min-height: auto;
+    display: block;
+  }
+
+  .jl-auth-aside {
+    min-height: auto;
+    padding: 24px 18px 18px;
+  }
+
+  .jl-auth-aside h1 {
+    font-size: clamp(1.8rem, 8vw, 2.5rem);
+  }
+
+  .jl-auth-aside p {
+    line-height: 1.5;
+  }
+
+  .jl-auth-panel {
+    padding: 12px 16px 96px;
+  }
+
+  .jl-auth-card {
+    padding: 22px 18px;
+    border-radius: 14px;
+  }
+
+  .jl-auth-card h2 {
+    font-size: 1.8rem;
+  }
+
+  .jl-auth-intro {
+    line-height: 1.45;
   }
 }

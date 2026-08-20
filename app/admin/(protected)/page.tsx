@@ -1337,8 +1337,8 @@ export default function Admin() {
           <a href="#admin"><LayoutDashboard size={16} aria-hidden="true" /> Dashboard</a>
           {can('orders') ? <a href="#orders"><ClipboardList size={16} aria-hidden="true" /> Orders</a> : null}
           {can('customers') ? <a href="#customers"><UsersRound size={16} aria-hidden="true" /> Customers</a> : null}
-          {can('categories') ? <a href="#categories"><Layers3 size={16} aria-hidden="true" /> Categories</a> : null}
           {can('products') ? <a href="#products"><Boxes size={16} aria-hidden="true" /> Products</a> : null}
+          {can('categories') ? <a href="#categories"><Layers3 size={16} aria-hidden="true" /> Categories</a> : null}
           {can('products') ? <a href="#inventory"><BarChart3 size={16} aria-hidden="true" /> Inventory</a> : null}
           {can('promotions') ? <a href="#coupons"><TicketPercent size={16} aria-hidden="true" /> Promotions</a> : null}
           {can('bookings') ? <a href="#bookings"><CalendarDays size={16} aria-hidden="true" /> Bookings</a> : null}
@@ -1790,126 +1790,6 @@ export default function Admin() {
             </table>
           </div>
           <AdminPagination page={categoriesPage} totalPages={totalCategoriesPages} onPageChange={setCategoriesPage} label="Categories" />
-        </section>
-
-        <section className="table-card admin-catalog-editor" id="products" hidden={!can('products')}>
-          <div className="admin-section-title">
-            <div>
-              <h2>{form.id ? 'Edit Product or Service' : 'Add Product or Service'}</h2>
-              <p>Keep product information, pricing, inventory and status clearly separated.</p>
-            </div>
-          </div>
-
-          <div className="admin-product-form-sections">
-            <fieldset className="admin-form-section">
-              <legend>Product Information</legend>
-              <div className="admin-form-grid">
-                <label className="admin-field"><span>Name</span><input className="input" placeholder="Product name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /></label>
-                <label className="admin-field"><span>Category</span><select className="input" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}><option value="">Select Category</option>{categories.filter((c) => c.active).map((cat) => <option key={String(cat.id)} value={cat.name}>{cat.name}</option>)}</select></label>
-                <label className="admin-field"><span>Type</span><select className="input" value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value as 'product' | 'service', sizes: e.target.value === 'service' ? [] : form.sizes })}><option value="product">Product</option><option value="service">Service</option></select></label>
-                <label className="admin-field admin-field-wide"><span>Description</span><textarea className="input" rows={5} placeholder="Detailed product description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} /></label>
-                <AdminImageUploadField
-                  id="product-image-upload"
-                  label="Product Image"
-                  value={form.image}
-                  folder={form.type === 'service' ? 'jayluxe/services' : 'jayluxe/products'}
-                  shape={form.type === 'service' ? 'landscape' : 'portrait'}
-                  className="admin-field-wide"
-                  onUploadingChange={(uploading) => markUploadActive('product', uploading)}
-                  onChange={(url, result) => setForm((current) => ({
-                    ...current,
-                    image: url,
-                    imagePublicId: result?.publicId || (url ? current.imagePublicId : ''),
-                  }))}
-                  emptyText="Choose an image to add a storefront product thumbnail."
-                />
-                <div className="admin-product-gallery-upload-grid admin-field-wide">
-                  {[0, 1, 2].map((index) => (
-                    <AdminImageUploadField
-                      key={index}
-                      id={`product-gallery-image-${index + 1}`}
-                      label={`Additional Image ${index + 1}`}
-                      value={form.gallery?.[index] || ''}
-                      folder={form.type === 'service' ? 'jayluxe/services' : 'jayluxe/products'}
-                      shape={form.type === 'service' ? 'landscape' : 'portrait'}
-                      onUploadingChange={(uploading) => markUploadActive(`product-gallery-${index}`, uploading)}
-                      onChange={(url, result) => setProductGalleryImage(index, url, result?.publicId)}
-                      description="Optional product gallery image. Uploads independently from the other image slots."
-                      emptyText="Choose an optional gallery image."
-                    />
-                  ))}
-                </div>
-              </div>
-            </fieldset>
-
-            <fieldset className="admin-form-section">
-              <legend>Pricing</legend>
-              <div className="admin-form-grid">
-                <label className="admin-field"><span>Selling Price</span><input className="input" placeholder="Price" type="number" min="0" value={form.price} onChange={(e) => setForm({ ...form, price: +e.target.value })} /></label>
-                <label className="admin-field"><span>Compare-at Price <small>Optional</small></span><input className="input" placeholder="Original price" type="number" min="0" value={form.oldPrice || ''} onChange={(e) => setForm({ ...form, oldPrice: e.target.value ? +e.target.value : undefined })} /></label>
-              </div>
-            </fieldset>
-
-            <fieldset className="admin-form-section">
-              <legend>Inventory</legend>
-              <div className="admin-form-grid">
-                <label className="admin-field"><span>Stock Quantity</span><input className="input" placeholder="Stock" type="number" min="0" value={form.stock} onChange={(e) => setForm({ ...form, stock: +e.target.value })} /></label>
-                {form.type === 'product' ? <div className="admin-field admin-field-wide"><span>Available Sizes</span><div className="admin-size-picker">{PRODUCT_SIZE_OPTIONS.map((size) => { const selected = form.sizes?.includes(size) || false; return <label key={size} className={selected ? 'selected' : ''}><input type="checkbox" checked={selected} onChange={(e) => setForm({ ...form, sizes: e.target.checked ? Array.from(new Set([...(form.sizes || []), size])) : (form.sizes || []).filter((item) => item !== size) })} /><span>{size}</span></label>; })}</div><small className="admin-help-text">Sizes are optional. Existing products without sizes continue to work normally.</small></div> : null}
-              </div>
-            </fieldset>
-
-            <fieldset className="admin-form-section">
-              <legend>Status</legend>
-              <div className="admin-toggle-row">
-                <label><input type="checkbox" checked={form.featured || false} onChange={(e) => setForm({ ...form, featured: e.target.checked })} /><span>Featured</span></label>
-                <label><input type="checkbox" checked={form.active ?? true} onChange={(e) => setForm({ ...form, active: e.target.checked })} /><span>Active / available for sale</span></label>
-              </div>
-            </fieldset>
-          </div>
-
-          <div className="admin-form-actions">
-            <button className="btn" onClick={submitProduct} disabled={uploadActive('product', 'product-gallery-0', 'product-gallery-1', 'product-gallery-2')}>{uploadActive('product', 'product-gallery-0', 'product-gallery-1', 'product-gallery-2') ? 'Uploading product image…' : form.id ? 'Update Product / Service' : 'Save Product / Service'}</button>
-            {form.id ? <button className="btn light" type="button" onClick={() => setForm(blankProduct)}>Cancel Edit</button> : null}
-          </div>
-        </section>
-
-        <section className="table-card" id="inventory" hidden={!can('products')}>
-          <div className="admin-section-title"><div><h2>Products &amp; Inventory</h2><p>Review descriptions, pricing, sizes, stock and availability at a glance.</p></div></div>
-          <div className="admin-table-scroll">
-            <table className="table admin-products-table">
-              <thead><tr><th>Product</th><th>Description</th><th>Category</th><th>Price</th><th>Sizes</th><th>Availability</th><th>Status</th><th>Actions</th></tr></thead>
-              <tbody>
-                {paginatedProducts.map((p) => {
-                  const stock = Number(p.stock || 0);
-                  const stockLabel = stock <= 0 ? 'Out of Stock' : stock <= 5 ? 'Low Stock' : 'Available';
-                  const stockClass = stock <= 0 ? 'danger' : stock <= 5 ? 'warning' : 'success';
-                  return (
-                    <tr key={String(p.id)}>
-                      <td><div className="admin-product-cell">{p.image ? <ResponsiveImage src={p.image} alt="" width={56} height={56} sizes="56px" /> : <span className="admin-product-image-placeholder"><Package2 size={18} aria-hidden="true" /></span>}<div><strong>{p.name}</strong><small>{p.type}</small></div></div></td>
-                      <td className="admin-description-cell">{p.description || 'No description provided.'}</td>
-                      <td>{p.category || '—'}</td>
-                      <td><strong>{money(p.price)}</strong>{p.oldPrice && p.oldPrice > p.price ? <small className="admin-compare-price">{money(p.oldPrice)}</small> : null}</td>
-                      <td>{p.sizes?.length ? <div className="admin-size-list">{p.sizes.map((size) => <span key={size}>{size}</span>)}</div> : <span className="admin-muted">Not set</span>}</td>
-                      <td><span className={`admin-stock-status ${stockClass}`}><span aria-hidden="true" />{stockLabel}</span><small>{stock} in stock</small></td>
-                      <td><span className={`badge ${p.active === false ? 'red' : 'green'}`}>{p.active === false ? 'Inactive' : 'Active'}</span></td>
-                      <td><div className="admin-row-actions"><button onClick={() => { setForm({ ...p, sizes: p.sizes || [] }); document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' }); }}>Edit</button><button onClick={async () => { if (confirm(`Delete ${p.name}?`)) { await removeProduct(p.id); void cleanupCloudinaryImages(p.imagePublicId, ...(p.galleryPublicIds || [])); void recordAdminActivity({ action: 'Deleted Product', description: `Deleted product or service: ${p.name}.`, targetType: 'product', targetId: String(p.id) }); showToast('Product deleted successfully', 'success'); load(); } }}>Delete</button></div></td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-          <AdminPagination page={productsPage} totalPages={totalProductsPages} onPageChange={setProductsPage} label="Products" />
-        </section>
-
-        <section className="table-card" id="product-reviews" hidden={!can('products')}>
-          <div className="admin-section-title"><div><h2>Product Reviews</h2><p>Customer product feedback is separate from general JayLuxe testimonials.</p></div><span className="badge gold">{productReviews.length} reviews</span></div>
-          <div className="admin-table-scroll">
-            <table className="table admin-reviews-table">
-              <thead><tr><th>Customer</th><th>Product</th><th>Rating</th><th>Review</th><th>Purchase</th><th>Date</th><th>Action</th></tr></thead>
-              <tbody>{productReviews.length ? productReviews.map((review) => <tr key={review.id}><td>{review.customerName}</td><td>{products.find((product) => product.id === review.productId)?.name || review.productId}</td><td>{review.rating}/5</td><td className="admin-description-cell">{review.review}</td><td>{review.verifiedPurchase ? <span className="badge green">Verified</span> : <span className="badge">Customer</span>}</td><td>{new Date(review.createdAt).toLocaleDateString('en-NG')}</td><td><button onClick={() => void deleteProductReview(review)}>Delete</button></td></tr>) : <tr><td colSpan={7} className="admin-empty-cell">No product reviews yet.</td></tr>}</tbody>
-            </table>
-          </div>
         </section>
 
         <section className="table-card" id="bridal-packages" hidden={!can('products')}>
@@ -2420,6 +2300,126 @@ export default function Admin() {
             </table>
             </div>
           )}
+        </section>
+
+        <section className="table-card admin-catalog-editor" id="products" hidden={!can('products')}>
+          <div className="admin-section-title">
+            <div>
+              <h2>{form.id ? 'Edit Product or Service' : 'Add Product or Service'}</h2>
+              <p>Keep product information, pricing, inventory and status clearly separated.</p>
+            </div>
+          </div>
+
+          <div className="admin-product-form-sections">
+            <fieldset className="admin-form-section">
+              <legend>Product Information</legend>
+              <div className="admin-form-grid">
+                <label className="admin-field"><span>Name</span><input className="input" placeholder="Product name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /></label>
+                <label className="admin-field"><span>Category</span><select className="input" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}><option value="">Select Category</option>{categories.filter((c) => c.active).map((cat) => <option key={String(cat.id)} value={cat.name}>{cat.name}</option>)}</select></label>
+                <label className="admin-field"><span>Type</span><select className="input" value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value as 'product' | 'service', sizes: e.target.value === 'service' ? [] : form.sizes })}><option value="product">Product</option><option value="service">Service</option></select></label>
+                <label className="admin-field admin-field-wide"><span>Description</span><textarea className="input" rows={5} placeholder="Detailed product description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} /></label>
+                <AdminImageUploadField
+                  id="product-image-upload"
+                  label="Product Image"
+                  value={form.image}
+                  folder={form.type === 'service' ? 'jayluxe/services' : 'jayluxe/products'}
+                  shape={form.type === 'service' ? 'landscape' : 'portrait'}
+                  className="admin-field-wide"
+                  onUploadingChange={(uploading) => markUploadActive('product', uploading)}
+                  onChange={(url, result) => setForm((current) => ({
+                    ...current,
+                    image: url,
+                    imagePublicId: result?.publicId || (url ? current.imagePublicId : ''),
+                  }))}
+                  emptyText="Choose an image to add a storefront product thumbnail."
+                />
+                <div className="admin-product-gallery-upload-grid admin-field-wide">
+                  {[0, 1, 2].map((index) => (
+                    <AdminImageUploadField
+                      key={index}
+                      id={`product-gallery-image-${index + 1}`}
+                      label={`Additional Image ${index + 1}`}
+                      value={form.gallery?.[index] || ''}
+                      folder={form.type === 'service' ? 'jayluxe/services' : 'jayluxe/products'}
+                      shape={form.type === 'service' ? 'landscape' : 'portrait'}
+                      onUploadingChange={(uploading) => markUploadActive(`product-gallery-${index}`, uploading)}
+                      onChange={(url, result) => setProductGalleryImage(index, url, result?.publicId)}
+                      description="Optional product gallery image. Uploads independently from the other image slots."
+                      emptyText="Choose an optional gallery image."
+                    />
+                  ))}
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset className="admin-form-section">
+              <legend>Pricing</legend>
+              <div className="admin-form-grid">
+                <label className="admin-field"><span>Selling Price</span><input className="input" placeholder="Price" type="number" min="0" value={form.price} onChange={(e) => setForm({ ...form, price: +e.target.value })} /></label>
+                <label className="admin-field"><span>Compare-at Price <small>Optional</small></span><input className="input" placeholder="Original price" type="number" min="0" value={form.oldPrice || ''} onChange={(e) => setForm({ ...form, oldPrice: e.target.value ? +e.target.value : undefined })} /></label>
+              </div>
+            </fieldset>
+
+            <fieldset className="admin-form-section">
+              <legend>Inventory</legend>
+              <div className="admin-form-grid">
+                <label className="admin-field"><span>Stock Quantity</span><input className="input" placeholder="Stock" type="number" min="0" value={form.stock} onChange={(e) => setForm({ ...form, stock: +e.target.value })} /></label>
+                {form.type === 'product' ? <div className="admin-field admin-field-wide"><span>Available Sizes</span><div className="admin-size-picker">{PRODUCT_SIZE_OPTIONS.map((size) => { const selected = form.sizes?.includes(size) || false; return <label key={size} className={selected ? 'selected' : ''}><input type="checkbox" checked={selected} onChange={(e) => setForm({ ...form, sizes: e.target.checked ? Array.from(new Set([...(form.sizes || []), size])) : (form.sizes || []).filter((item) => item !== size) })} /><span>{size}</span></label>; })}</div><small className="admin-help-text">Sizes are optional. Existing products without sizes continue to work normally.</small></div> : null}
+              </div>
+            </fieldset>
+
+            <fieldset className="admin-form-section">
+              <legend>Status</legend>
+              <div className="admin-toggle-row">
+                <label><input type="checkbox" checked={form.featured || false} onChange={(e) => setForm({ ...form, featured: e.target.checked })} /><span>Featured</span></label>
+                <label><input type="checkbox" checked={form.active ?? true} onChange={(e) => setForm({ ...form, active: e.target.checked })} /><span>Active / available for sale</span></label>
+              </div>
+            </fieldset>
+          </div>
+
+          <div className="admin-form-actions">
+            <button className="btn" onClick={submitProduct} disabled={uploadActive('product', 'product-gallery-0', 'product-gallery-1', 'product-gallery-2')}>{uploadActive('product', 'product-gallery-0', 'product-gallery-1', 'product-gallery-2') ? 'Uploading product image…' : form.id ? 'Update Product / Service' : 'Save Product / Service'}</button>
+            {form.id ? <button className="btn light" type="button" onClick={() => setForm(blankProduct)}>Cancel Edit</button> : null}
+          </div>
+        </section>
+
+        <section className="table-card" id="inventory" hidden={!can('products')}>
+          <div className="admin-section-title"><div><h2>Products &amp; Inventory</h2><p>Review descriptions, pricing, sizes, stock and availability at a glance.</p></div></div>
+          <div className="admin-table-scroll">
+            <table className="table admin-products-table">
+              <thead><tr><th>Product</th><th>Description</th><th>Category</th><th>Price</th><th>Sizes</th><th>Availability</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody>
+                {paginatedProducts.map((p) => {
+                  const stock = Number(p.stock || 0);
+                  const stockLabel = stock <= 0 ? 'Out of Stock' : stock <= 5 ? 'Low Stock' : 'Available';
+                  const stockClass = stock <= 0 ? 'danger' : stock <= 5 ? 'warning' : 'success';
+                  return (
+                    <tr key={String(p.id)}>
+                      <td><div className="admin-product-cell">{p.image ? <ResponsiveImage src={p.image} alt="" width={56} height={56} sizes="56px" /> : <span className="admin-product-image-placeholder"><Package2 size={18} aria-hidden="true" /></span>}<div><strong>{p.name}</strong><small>{p.type}</small></div></div></td>
+                      <td className="admin-description-cell">{p.description || 'No description provided.'}</td>
+                      <td>{p.category || '—'}</td>
+                      <td><strong>{money(p.price)}</strong>{p.oldPrice && p.oldPrice > p.price ? <small className="admin-compare-price">{money(p.oldPrice)}</small> : null}</td>
+                      <td>{p.sizes?.length ? <div className="admin-size-list">{p.sizes.map((size) => <span key={size}>{size}</span>)}</div> : <span className="admin-muted">Not set</span>}</td>
+                      <td><span className={`admin-stock-status ${stockClass}`}><span aria-hidden="true" />{stockLabel}</span><small>{stock} in stock</small></td>
+                      <td><span className={`badge ${p.active === false ? 'red' : 'green'}`}>{p.active === false ? 'Inactive' : 'Active'}</span></td>
+                      <td><div className="admin-row-actions"><button onClick={() => { setForm({ ...p, sizes: p.sizes || [] }); document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' }); }}>Edit</button><button onClick={async () => { if (confirm(`Delete ${p.name}?`)) { await removeProduct(p.id); void cleanupCloudinaryImages(p.imagePublicId, ...(p.galleryPublicIds || [])); void recordAdminActivity({ action: 'Deleted Product', description: `Deleted product or service: ${p.name}.`, targetType: 'product', targetId: String(p.id) }); showToast('Product deleted successfully', 'success'); load(); } }}>Delete</button></div></td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+          <AdminPagination page={productsPage} totalPages={totalProductsPages} onPageChange={setProductsPage} label="Products" />
+        </section>
+
+        <section className="table-card" id="product-reviews" hidden={!can('products')}>
+          <div className="admin-section-title"><div><h2>Product Reviews</h2><p>Customer product feedback is separate from general JayLuxe testimonials.</p></div><span className="badge gold">{productReviews.length} reviews</span></div>
+          <div className="admin-table-scroll">
+            <table className="table admin-reviews-table">
+              <thead><tr><th>Customer</th><th>Product</th><th>Rating</th><th>Review</th><th>Purchase</th><th>Date</th><th>Action</th></tr></thead>
+              <tbody>{productReviews.length ? productReviews.map((review) => <tr key={review.id}><td>{review.customerName}</td><td>{products.find((product) => product.id === review.productId)?.name || review.productId}</td><td>{review.rating}/5</td><td className="admin-description-cell">{review.review}</td><td>{review.verifiedPurchase ? <span className="badge green">Verified</span> : <span className="badge">Customer</span>}</td><td>{new Date(review.createdAt).toLocaleDateString('en-NG')}</td><td><button onClick={() => void deleteProductReview(review)}>Delete</button></td></tr>) : <tr><td colSpan={7} className="admin-empty-cell">No product reviews yet.</td></tr>}</tbody>
+            </table>
+          </div>
         </section>
 
         <section className="table-card" id="orders" hidden={!can('orders')}>
