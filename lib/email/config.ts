@@ -6,7 +6,7 @@ export type EmailSenderKind =
   | 'bookings'
   | 'newsletter';
 
-const DEFAULT_ADMIN_RECIPIENT = 'officialjayluxe.ng@gmail.com';
+const DEFAULT_ADMIN_RECIPIENT = 'support@jayluxestore.com';
 
 const DEFAULT_SENDERS: Record<EmailSenderKind, string> = {
   orders: 'JayLuxe Orders <orders@jayluxestore.com>',

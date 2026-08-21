@@ -1,4 +1,4 @@
-export const OFFICIAL_EMAIL = 'officialjayluxe.ng@gmail.com';
+export const OFFICIAL_EMAIL = 'support@jayluxestore.com';
 export const OFFICIAL_EMAIL_LINK = `mailto:${OFFICIAL_EMAIL}`;
 
 export const OFFICIAL_WHATSAPP_DISPLAY = '07072197137';

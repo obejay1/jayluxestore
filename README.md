@@ -283,10 +283,10 @@ ADMIN_EMAIL_FROM=JayLuxe <admin@jayluxestore.com>
 BOOKING_FROM_EMAIL=JayLuxe Support <support@jayluxestore.com>
 NEWSLETTER_FROM_EMAIL=JayLuxe <noreply@jayluxestore.com>
 
-ADMIN_NOTIFICATION_EMAIL=officialjayluxe.ng@gmail.com
-CONTACT_TO_EMAIL=officialjayluxe.ng@gmail.com
-BOOKING_TO_EMAIL=officialjayluxe.ng@gmail.com
-SUPPORT_EMAIL=officialjayluxe.ng@gmail.com
+ADMIN_NOTIFICATION_EMAIL=support@jayluxestore.com
+CONTACT_TO_EMAIL=support@jayluxestore.com
+BOOKING_TO_EMAIL=support@jayluxestore.com
+SUPPORT_EMAIL=support@jayluxestore.com
 
 REVIEW_REQUEST_EMAILS_ENABLED=false
 ```
@@ -324,7 +324,7 @@ Order/payment creation remains authoritative even if Resend is unavailable. Emai
 
 - Customer order confirmation after the server verifies Paystack and commits the order.
 - Customer payment confirmation based only on the trusted backend Paystack verification result.
-- Admin new-order notification to `officialjayluxe.ng@gmail.com`.
+- Admin new-order notification to `support@jayluxestore.com`.
 - Admin payment notification.
 - Order status emails for Processing/Packed/Shipped/Out for Delivery/Delivered/Cancelled/Refunded and other supported statuses.
 - Shipping email includes courier/tracking details when those fields exist on the order.

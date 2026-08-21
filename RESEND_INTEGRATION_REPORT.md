@@ -52,8 +52,8 @@ ACCOUNT_FROM_EMAIL=JayLuxe <noreply@jayluxestore.com>
 ADMIN_EMAIL_FROM=JayLuxe <admin@jayluxestore.com>
 BOOKING_FROM_EMAIL=JayLuxe Support <support@jayluxestore.com>
 NEWSLETTER_FROM_EMAIL=JayLuxe <noreply@jayluxestore.com>
-ADMIN_NOTIFICATION_EMAIL=officialjayluxe.ng@gmail.com
-SUPPORT_EMAIL=officialjayluxe.ng@gmail.com
+ADMIN_NOTIFICATION_EMAIL=support@jayluxestore.com
+SUPPORT_EMAIL=support@jayluxestore.com
 REVIEW_REQUEST_EMAILS_ENABLED=false
 ```
 
