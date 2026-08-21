@@ -39,7 +39,7 @@ function shell(title: string, body: string, options?: { eyebrow?: string; footer
   const supportEmail =
     process.env.SUPPORT_EMAIL?.trim() ||
     process.env.CONTACT_TO_EMAIL?.trim() ||
-    'officialjayluxe.ng@gmail.com';
+    'support@jayluxestore.com';
   const logoUrl = process.env.NEXT_PUBLIC_EMAIL_LOGO_URL?.trim() || `${siteUrl}/jayluxe-logo.png`;
 
   return `<!doctype html>
