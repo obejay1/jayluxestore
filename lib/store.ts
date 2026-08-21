@@ -234,6 +234,23 @@ export function getCartCount() {
   );
 }
 
+// Backward-compatible alias for older cart hooks/components.
+export function getCartItemCount() {
+  return getCartCount();
+}
+
+export function subscribeToCart(callback: () => void) {
+  if (typeof window === 'undefined') {
+    return () => {};
+  }
+
+  window.addEventListener('cart', callback);
+
+  return () => {
+    window.removeEventListener('cart', callback);
+  };
+}
+
 export function setCart(c: { id: string; qty: number }[]) {
   ls?.setItem('cart', JSON.stringify(c));
 
