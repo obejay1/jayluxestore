@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Home, Scissors, ShoppingBag, ShoppingCart, User } from 'lucide-react';
 
-import { getCart } from '@/lib/store';
+import { getCartCount } from '@/lib/store';
 
 const navItems = [
   { href: '/', icon: Home, label: 'Home' },
@@ -26,7 +26,7 @@ export default function MobileBottomNav() {
   useEffect(() => {
     const updateCount = () => {
       setCartCount(
-        getCart().reduce((total, item) => total + Number(item.qty || 0), 0),
+        getCartCount(),
       );
     };
 

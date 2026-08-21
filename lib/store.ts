@@ -211,7 +211,27 @@ export async function removeCategory(id: string) {
 /* CART */
 
 export function getCart() {
-  return JSON.parse(ls?.getItem('cart') || '[]') as { id: string; qty: number }[];
+  try {
+    const saved = JSON.parse(ls?.getItem('cart') || '[]');
+
+    if (!Array.isArray(saved)) return [];
+
+    return saved.filter(
+      (item) =>
+        item &&
+        typeof item.id === 'string' &&
+        Number(item.qty) > 0
+    ) as { id: string; qty: number }[];
+  } catch {
+    return [];
+  }
+}
+
+export function getCartCount() {
+  return getCart().reduce(
+    (total, item) => total + Number(item.qty || 0),
+    0
+  );
 }
 
 export function setCart(c: { id: string; qty: number }[]) {

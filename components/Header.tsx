@@ -14,7 +14,7 @@ import {
   X,
 } from 'lucide-react';
 import HamburgerMenu from '@/components/HamburgerMenu';
-import { getCart, getWishlist } from '@/lib/store';
+import { getCartCount, getWishlist } from '@/lib/store';
 
 type HeaderProps = {
   title?: string;
@@ -97,7 +97,7 @@ export default function Header({
   useEffect(() => {
     const updateCart = () => {
       setCartCount(
-        getCart().reduce((total, item) => total + Number(item.qty || 0), 0),
+        getCartCount(),
       );
     };
     const updateWishlist = () => setWishlistCount(getWishlist().length);
