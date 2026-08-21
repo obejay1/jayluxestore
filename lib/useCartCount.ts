@@ -2,12 +2,12 @@
 
 import { useSyncExternalStore } from 'react';
 
-import { getCartItemCount, subscribeToCart } from '@/lib/store';
+import { getCartCount, subscribeToCart } from '@/lib/store';
 
 export function useCartCount() {
   return useSyncExternalStore(
     subscribeToCart,
-    getCartItemCount,
+    getCartCount,
     () => 0,
   );
 }
