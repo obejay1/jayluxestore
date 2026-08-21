@@ -269,7 +269,7 @@ export async function sendPasswordResetEmailWithResend(email: string) {
     eventKey: `password-reset:${user.uid}:${Date.now().toString().slice(0, -5)}`,
     emailType: 'password_reset',
     to: email,
-    sender: 'noreply',
+    sender: 'support',
     userId: user.uid,
     ...template,
   });

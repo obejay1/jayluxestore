@@ -40,7 +40,7 @@ function shell(title: string, body: string, options?: { eyebrow?: string; footer
     process.env.SUPPORT_EMAIL?.trim() ||
     process.env.CONTACT_TO_EMAIL?.trim() ||
     'officialjayluxe.ng@gmail.com';
-  const logoUrl = `${siteUrl}/jayluxe-logo.png`;
+  const logoUrl = process.env.NEXT_PUBLIC_EMAIL_LOGO_URL?.trim() || `${siteUrl}/jayluxe-logo.png`;
 
   return `<!doctype html>
 <html>
@@ -58,7 +58,7 @@ function shell(title: string, body: string, options?: { eyebrow?: string; footer
     <tr><td align="center">
       <table role="presentation" class="jl-card" width="640" cellspacing="0" cellpadding="0" border="0" style="width:640px;max-width:100%;background:#ffffff;border:1px solid #e7dcc9;border-radius:22px;overflow:hidden">
         <tr><td style="background:#17130f;padding:28px 24px;text-align:center">
-          <img src="${esc(logoUrl)}" width="150" alt="JayLuxe" style="display:block;max-width:150px;height:auto;margin:0 auto 16px">
+          <img src="${esc(logoUrl)}" width="150" height="60" alt="JayLuxe logo" style="display:block;width:150px;height:auto;max-width:150px;margin:0 auto 16px;border:0;outline:none;text-decoration:none">
           <div style="color:#d4af55;font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase">${esc(options?.eyebrow || 'JayLuxe')}</div>
           <h1 class="jl-title" style="margin:9px 0 0;color:#ffffff;font-family:Georgia,'Times New Roman',serif;font-size:34px;line-height:1.18;font-weight:500">${esc(title)}</h1>
         </td></tr>
