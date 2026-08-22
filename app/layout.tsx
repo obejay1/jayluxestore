@@ -53,7 +53,6 @@ const organizationJsonLd = {
 };
 
 export const metadata: Metadata = {
-  description: 'JayLuxe offers premium beauty products, fashion accessories, lifestyle essentials, and professional beauty services across Nigeria.',
   metadataBase: getSiteUrl(),
   title: {
     default: 'JayLuxe',

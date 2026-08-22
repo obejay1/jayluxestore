@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
     if (!allowed) {
       return NextResponse.json({
         ok: true,
-        message: 'A reset link will be sent your gmail shortly.',
+        message: 'If that email belongs to a JayLuxe account, a reset link will be sent shortly.',
       });
     }
 
@@ -68,13 +68,13 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       ok: true,
-      message: 'A reset link will be sent to your gmail shortly.',
+      message: 'If that email belongs to a JayLuxe account, a reset link will be sent shortly.',
     });
   } catch (error) {
     console.error('PASSWORD RESET REQUEST ERROR:', error);
     return NextResponse.json({
       ok: true,
-      message: 'A reset link will be sent to your gmail shortly.',
+      message: 'If that email belongs to a JayLuxe account, a reset link will be sent shortly.',
     });
   }
 }

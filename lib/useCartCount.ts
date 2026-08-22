@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState, useSyncExternalStore } from 'react';
+import { useEffect, useState } from 'react';
+import { useSyncExternalStore } from 'react';
 import { getCartCount, subscribeToCart } from '@/lib/store';
 
 export function useCartCount() {
@@ -10,16 +11,9 @@ export function useCartCount() {
     setMounted(true);
   }, []);
 
-  const cartCount = useSyncExternalStore(
+  return useSyncExternalStore(
     subscribeToCart,
-    getCartCount,
+    mounted ? getCartCount : () => 0,
     () => 0
   );
-
-  // Prevent Next.js SSR/client hydration mismatch caused by localStorage cart state.
-  if (!mounted) {
-    return 0;
-  }
-
-  return cartCount;
 }
