@@ -352,13 +352,14 @@ export function newsletterAdminTemplate(email: string) {
 
 export function reviewRequestTemplate(order: Order) {
   const siteUrl = PRODUCTION_SITE_URL;
-  const body = `<p style="font-size:16px;line-height:1.7">Hello <strong>${esc(order.customerName || 'Customer')}</strong>, we hope you are enjoying your JayLuxe purchase from order <strong>#${esc(order.id)}</strong>.</p>
+  const body = `<p style="font-size:16px;line-height:1.7">Hello <strong>${esc(order.customerName || 'Customer')}</strong>, thank you for shopping with JayLuxe.</p>
+    <p style="color:#655d53;line-height:1.7">We hope you are enjoying your purchase from order <strong>#${esc(order.id)}</strong>. We would appreciate your feedback because it helps us improve the JayLuxe experience.</p>
     ${orderItems(order)}
-    <p style="color:#655d53;line-height:1.7">Your feedback helps us improve the JayLuxe experience for every customer.</p>
-    ${button('Review Your Purchase', `${siteUrl}/testimonials`)}`;
+    <p style="color:#655d53;line-height:1.7">Thank you for choosing JayLuxe. We look forward to serving you again.</p>
+    ${button('Share Your Feedback', `${siteUrl}/testimonials`)}`;
   return {
-    subject: 'How Was Your JayLuxe Purchase?',
-    html: shell('How Was Your JayLuxe Purchase?', body, { eyebrow: 'We value your feedback' }),
-    text: `How was your JayLuxe purchase from order #${order.id}? Share your feedback: ${siteUrl}/testimonials`,
+    subject: 'How was your JayLuxe experience?',
+    html: shell('How was your JayLuxe experience?', body, { eyebrow: 'Thank you for choosing JayLuxe' }),
+    text: `Thank you for shopping with JayLuxe. Share your feedback for order #${order.id}: ${siteUrl}/testimonials`,
   };
 }
