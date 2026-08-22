@@ -25636,3 +25636,24 @@ textarea.input {
     line-height: 1.45;
   }
 }
+
+/* JayLuxe premium conversion polish */
+.jl-premium-note {
+  border: 1px solid rgba(197, 160, 89, .25);
+  border-radius: 18px;
+  padding: 18px;
+  background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(250,247,240,.98));
+}
+.jl-trust-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+@media (max-width: 767px) {
+  .jj-hero-content h1 {
+    line-height: 1.05;
+  }
+  .jj-home {
+    overflow-x: hidden;
+  }
+}

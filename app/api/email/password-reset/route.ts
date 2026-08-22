@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
     if (!allowed) {
       return NextResponse.json({
         ok: true,
-        message: 'A reset link will be sent to your gmail shortly.',
+        message: 'A reset link will be sent your gmail shortly.',
       });
     }
 
