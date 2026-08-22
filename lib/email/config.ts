@@ -36,6 +36,16 @@ export function getEmailConfig() {
   };
 }
 
+function isJayLuxeSender(value?: string) {
+  if (!value) return false;
+
+  const sender = value.toLowerCase();
+
+  // Prevent production from accidentally using unverified senders
+  // such as onboarding@resend.dev or unrelated Gmail addresses.
+  return sender.includes('@jayluxestore.com>');
+}
+
 export function getEmailSender(kind: EmailSenderKind): string {
   const generic = process.env.RESEND_FROM_EMAIL?.trim();
 
@@ -48,5 +58,9 @@ export function getEmailSender(kind: EmailSenderKind): string {
     newsletter: process.env.NEWSLETTER_FROM_EMAIL?.trim(),
   };
 
-  return senderByKind[kind] || generic || DEFAULT_SENDERS[kind];
+  const configuredSender = senderByKind[kind] || generic;
+
+  return isJayLuxeSender(configuredSender)
+    ? configuredSender!
+    : DEFAULT_SENDERS[kind];
 }
