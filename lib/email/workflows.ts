@@ -270,6 +270,10 @@ export async function sendPasswordResetEmailWithResend(email: string) {
     emailType: 'password_reset',
     to: email,
     sender: 'support',
+    replyTo: 'support@jayluxestore.com',
+    headers: {
+      'X-Entity-Ref-ID': 'jayluxe-password-reset',
+    },
     userId: user.uid,
     ...template,
   });

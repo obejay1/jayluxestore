@@ -14,7 +14,8 @@ import {
   X,
 } from 'lucide-react';
 import HamburgerMenu from '@/components/HamburgerMenu';
-import { getCartCount, getWishlist } from '@/lib/store';
+import { getWishlist } from '@/lib/store';
+import { useCartCount } from '@/lib/useCartCount';
 
 type HeaderProps = {
   title?: string;
@@ -89,26 +90,18 @@ export default function Header({
 }: HeaderProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const [cartCount, setCartCount] = useState(0);
+  const cartCount = useCartCount();
   const [wishlistCount, setWishlistCount] = useState(0);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    const updateCart = () => {
-      setCartCount(
-        getCartCount(),
-      );
-    };
     const updateWishlist = () => setWishlistCount(getWishlist().length);
 
-    updateCart();
     updateWishlist();
-    window.addEventListener('cart', updateCart);
     window.addEventListener('wishlist', updateWishlist);
 
     return () => {
-      window.removeEventListener('cart', updateCart);
       window.removeEventListener('wishlist', updateWishlist);
     };
   }, []);

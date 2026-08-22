@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Home, Scissors, ShoppingBag, ShoppingCart, User } from 'lucide-react';
 
-import { getCartCount } from '@/lib/store';
+import { useCartCount } from '@/lib/useCartCount';
 
 const navItems = [
   { href: '/', icon: Home, label: 'Home' },
@@ -21,19 +21,9 @@ function isActiveRoute(pathname: string, href: string) {
 
 export default function MobileBottomNav() {
   const pathname = usePathname();
-  const [cartCount, setCartCount] = useState(0);
+  const cartCount = useCartCount();
 
-  useEffect(() => {
-    const updateCount = () => {
-      setCartCount(
-        getCartCount(),
-      );
-    };
 
-    updateCount();
-    window.addEventListener('cart', updateCount);
-    return () => window.removeEventListener('cart', updateCount);
-  }, []);
 
   return (
     <nav className="mobile-bottom-nav" aria-label="Mobile navigation">

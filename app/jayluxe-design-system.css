@@ -4780,6 +4780,18 @@ textarea:disabled {
   padding-bottom: 0;
 }
 
+@media (max-width: 768px) {
+  .jl-cart-page {
+    padding-top: 132px;
+    padding-bottom: 90px;
+  }
+
+  .jl-cart-hero {
+    min-height: auto;
+    padding-top: 20px;
+  }
+}
+
 .jl-cart-hero {
   min-height: clamp(260px, 36vw, 390px);
 }
