@@ -270,7 +270,7 @@ export default function Home() {
         </div>
 
         <div className={`jj-category-grid ${CATEGORY_GRID_CLASSES}`}>
-          {categories.filter((category) => category.active !== false).map((category) => (
+          {categories.filter((category) => category.active !== false).slice(0, 4).map((category) => (
             <Link
               href={
                 category.type === 'service'

@@ -14,6 +14,10 @@ import {
   passwordResetTemplate,
   paymentConfirmationTemplate,
   reviewRequestTemplate,
+  installmentPlanCreatedTemplate,
+  installmentPaymentReceivedTemplate,
+  installmentPaymentReminderTemplate,
+  installmentCompletedTemplate,
   verificationTemplate,
   welcomeTemplate,
 } from '@/lib/email/templates';
@@ -328,6 +332,56 @@ export async function sendNewsletterAdminNotification(input: { subscriberId: str
     to: getEmailConfig().adminRecipient,
     sender: 'admin',
     replyTo: input.email,
+    ...template,
+  });
+}
+
+
+export async function sendInstallmentPlanCreatedEmail(input: { email: string; customerName: string; amount: number; planId: string }) {
+  const template = installmentPlanCreatedTemplate(input.customerName, input.amount, input.planId);
+  return sendManagedEmail({
+    eventKey: `installment-created:${input.planId}`,
+    emailType: 'installment_created',
+    to: input.email,
+    sender: 'orders',
+    replyTo: 'support@jayluxestore.com',
+    ...template,
+  });
+}
+
+export async function sendInstallmentPaymentReceivedEmail(input: { email: string; customerName: string; amount: number; remaining: number; paymentId: string }) {
+  const template = installmentPaymentReceivedTemplate(input.customerName, input.amount, input.remaining);
+  return sendManagedEmail({
+    eventKey: `installment-payment:${input.paymentId}`,
+    emailType: 'installment_payment_received',
+    to: input.email,
+    sender: 'orders',
+    replyTo: 'support@jayluxestore.com',
+    ...template,
+  });
+}
+
+
+export async function sendInstallmentPaymentReminderEmail(input: { email: string; customerName: string; amount: number; dueDate?: string; planId: string }) {
+  const template = installmentPaymentReminderTemplate(input.customerName, input.amount, input.dueDate);
+  return sendManagedEmail({
+    eventKey: `installment-reminder:${input.planId}`,
+    emailType: 'installment_payment_reminder',
+    to: input.email,
+    sender: 'orders',
+    replyTo: 'support@jayluxestore.com',
+    ...template,
+  });
+}
+
+export async function sendInstallmentCompletedEmail(input: { email: string; customerName: string; planId: string }) {
+  const template = installmentCompletedTemplate(input.customerName);
+  return sendManagedEmail({
+    eventKey: `installment-completed:${input.planId}`,
+    emailType: 'installment_completed',
+    to: input.email,
+    sender: 'orders',
+    replyTo: 'support@jayluxestore.com',
     ...template,
   });
 }

@@ -363,3 +363,45 @@ export function reviewRequestTemplate(order: Order) {
     text: `Thank you for shopping with JayLuxe. Share your feedback for order #${order.id}: ${siteUrl}/testimonials`,
   };
 }
+
+
+export function installmentPlanCreatedTemplate(customerName: string, amount: number, planId: string) {
+  const body = `<p style="font-size:16px;line-height:1.7">Hello <strong>${esc(customerName || 'Customer')}</strong>, your JayLuxe installment plan has been created successfully.</p>
+  <p style="color:#655d53;line-height:1.7">Your installment reference is <strong>${esc(planId)}</strong>. Your next payment amount is <strong>${money(amount)}</strong>.</p>
+  <p style="color:#655d53;line-height:1.7">You can continue payments from your JayLuxe account.</p>`;
+  return {
+    subject: 'Your JayLuxe installment plan has been created',
+    html: shell('Installment Plan Created', body, { eyebrow: 'JayLuxe Payments' }),
+    text: `Your JayLuxe installment plan ${planId} has been created. Next payment: ${money(amount)}.`,
+  };
+}
+
+
+export function installmentPaymentReminderTemplate(customerName: string, amount: number, dueDate?: string) {
+  const body = `<p style="font-size:16px;line-height:1.7">Hello <strong>${esc(customerName || 'Customer')}</strong>, this is a reminder that your next JayLuxe installment payment is due soon.</p>
+  <p style="color:#655d53;line-height:1.7">Upcoming payment: <strong>${money(amount)}</strong>${dueDate ? `<br/>Due date: <strong>${esc(dueDate)}</strong>` : ''}</p>`;
+  return {
+    subject: 'Reminder: Your JayLuxe installment payment is due soon',
+    html: shell('Payment Reminder', body, { eyebrow: 'JayLuxe Payments' }),
+    text: `Your next JayLuxe installment payment of ${money(amount)} is due soon.`,
+  };
+}
+
+export function installmentCompletedTemplate(customerName: string) {
+  const body = `<p style="font-size:16px;line-height:1.7">Hello <strong>${esc(customerName || 'Customer')}</strong>, congratulations. Your JayLuxe installment plan has been completed successfully.</p>`;
+  return {
+    subject: 'Your JayLuxe installment plan is complete',
+    html: shell('Installment Completed', body, { eyebrow: 'JayLuxe Payments' }),
+    text: 'Your JayLuxe installment plan is complete.',
+  };
+}
+
+export function installmentPaymentReceivedTemplate(customerName: string, amount: number, remaining: number) {
+  const body = `<p style="font-size:16px;line-height:1.7">Hello <strong>${esc(customerName || 'Customer')}</strong>, we have received your JayLuxe installment payment.</p>
+  <p style="color:#655d53;line-height:1.7">Payment received: <strong>${money(amount)}</strong><br/>Remaining balance: <strong>${money(remaining)}</strong></p>`;
+  return {
+    subject: 'JayLuxe installment payment received',
+    html: shell('Payment Received', body, { eyebrow: 'JayLuxe Payments' }),
+    text: `Payment received: ${money(amount)}. Remaining balance: ${money(remaining)}.`,
+  };
+}
