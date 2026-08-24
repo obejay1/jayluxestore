@@ -67,7 +67,7 @@ export default function Checkout() {
   const opayEnabled = process.env.NEXT_PUBLIC_OPAY_ENABLED === 'true';
   const paystackPublicKey = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY || '';
   const paystackEnabled = Boolean(paystackPublicKey);
-  const installmentInitialAmount = Math.ceil(total / installmentCount);
+  const safeInstallmentCount = Number(installmentCount || 1);
 
   useEffect(() => {
     setMounted(true);
@@ -139,6 +139,12 @@ export default function Checkout() {
   const shipping = subtotal > 0 ? shippingFee : 0;
   const tax = Math.round(subtotal * (taxRate / 100));
   const total = Math.max(0, subtotal + shipping + tax - discountAmount);
+
+  const safeTotal = Number(total || 0);
+
+  const installmentInitialAmount = Math.ceil(
+    safeTotal / safeInstallmentCount
+  );
 
   async function applyCoupon() {
     if (couponLoading) return;

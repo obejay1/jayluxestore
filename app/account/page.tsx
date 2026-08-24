@@ -34,11 +34,25 @@ import {
 
 import Footer from '@/components/Footer';
 import PageHeroIcon from '@/components/PageHeroIcon';
-import { auth } from '@/lib/firebase';
+import { auth, db } from '@/lib/firebase';
+import { collection, onSnapshot, query, where } from 'firebase/firestore';
 import { getCart, getWishlist, money } from '@/lib/store';
 import type { Order } from '@/lib/types';
 
 type AuthMode = 'login' | 'register';
+
+type InstallmentPlan = {
+  id: string;
+  orderId?: string;
+  productName?: string;
+  totalAmount?: number;
+  paidAmount?: number;
+  remainingBalance?: number;
+  nextPaymentAmount?: number;
+  status?: string;
+  totalInstallments?: number;
+  completedInstallments?: number;
+};
 
 
 const ORDER_TRACKING_STEPS = [
@@ -136,6 +150,35 @@ export default function AccountPage() {
 
   const [wishlistCount, setWishlistCount] = useState(0);
   const [cartCount, setCartCount] = useState(0);
+  const [installmentPlans, setInstallmentPlans] = useState<InstallmentPlan[]>([]);
+  const [installmentsLoading, setInstallmentsLoading] = useState(true);
+
+  useEffect(() => {
+    if (!firebaseUser) {
+      setInstallmentPlans([]);
+      setInstallmentsLoading(false);
+      return;
+    }
+
+    const q = query(
+      collection(db, 'installmentPlans'),
+      where('userId', '==', firebaseUser.uid)
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      setInstallmentPlans(
+        snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...(doc.data() as Omit<InstallmentPlan, 'id'>),
+        }))
+      );
+      setInstallmentsLoading(false);
+    }, () => {
+      setInstallmentsLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [firebaseUser]);
 
   useEffect(() => {
     const updateWishlist = () => setWishlistCount(getWishlist().length);
@@ -742,21 +785,90 @@ export default function AccountPage() {
 
             <article>
               <Package size={22} />
-              <span><small>Your orders</small><strong>{customerOrders.length}</strong></span>
+              <span>
+                <small>Your orders</small>
+                <strong>{customerOrders.length} orders</strong>
+              </span>
             </article>
 
             <Link href="/wishlist">
               <Heart size={22} />
-              <span><small>Wishlist</small><strong>{wishlistCount} saved</strong></span>
+              <span>
+                <small>Wishlist</small>
+                <strong>{wishlistCount} saved</strong>
+              </span>
             </Link>
 
             <Link href="/cart">
               <ShoppingCart size={22} />
-              <span><small>Shopping bag</small><strong>{cartCount} items</strong></span>
+              <span>
+                <small>Shopping bag</small>
+                <strong>{cartCount} items</strong>
+              </span>
             </Link>
           </section>
 
-          <section className="jl-account-content">
+          <section className="mt-8">
+            <div className="rounded-2xl border border-neutral-200 bg-white p-5">
+              <div className="flex items-center justify-between">
+                <h2 className="font-serif text-xl">Pay in Installments</h2>
+                <Link href="/account/installments" className="text-sm underline">
+                  View Installments
+                </Link>
+              </div>
+              <p className="mt-2 text-sm text-neutral-600">
+                Track your payment progress and remaining balance.
+              </p>
+              {installmentsLoading ? (
+                <div className="mt-5 h-24 animate-pulse rounded-xl bg-neutral-100" />
+              ) : installmentPlans.length === 0 ? (
+                <p className="mt-5 text-sm text-neutral-600">
+                  You don&apos;t currently have an active installment payment plan.
+                </p>
+              ) : (
+                <div className="mt-5 space-y-4">
+                  {installmentPlans.map((plan) => {
+                    const total = Number(plan.totalInstallments || 0);
+                    const completed = Number(plan.completedInstallments || 0);
+                    const progress = total
+                      ? Math.min(100, Math.round((completed / total) * 100))
+                      : 0;
+
+                    return (
+                      <div key={plan.id} className="rounded-xl bg-[#faf7f0] p-4">
+                        <p className="font-medium">Order #{plan.orderId || plan.id}</p>
+                        <p className="mt-1 text-sm text-neutral-600">
+                          {completed} of {total} payments completed
+                        </p>
+                        <div
+                          className="mt-4 h-2 rounded-full bg-neutral-200"
+                          role="progressbar"
+                          aria-valuemin={0}
+                          aria-valuemax={100}
+                          aria-valuenow={progress}
+                        >
+                          <div
+                            className="h-2 rounded-full bg-[#c49a45] transition-all duration-1000"
+                            style={{ width: `${progress}%` }}
+                          />
+                        </div>
+                        <p className="mt-2 text-sm">{progress}% complete</p>
+                        <div className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
+                          <p>Paid: ₦{Number(plan.paidAmount || 0).toLocaleString('en-NG')}</p>
+                          <p>Remaining: ₦{Number(plan.remainingBalance || 0).toLocaleString('en-NG')}</p>
+                        </div>
+                        <Link href="/account/installments" className="mt-4 inline-block rounded-full bg-black px-5 py-2 text-white">
+                          Make Payment
+                        </Link>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </section>
+
+<section className="jl-account-content">
             <div className="jl-account-profile-bar">
               <div>
                 <small>Signed in as</small>
