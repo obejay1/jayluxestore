@@ -93,7 +93,7 @@ export default function InstallmentsPage() {
           <section className="jl-installment-empty">
             <Wallet size={45} />
             <h2>No Active Installment Plan</h2>
-            <p>You don't have an active installment payment plan yet.</p>
+            <p>You don&apos;t have an active installment payment plan yet.</p>
             <Link href="/shop" className="jl-installment-button">Continue Shopping <ArrowRight size={18}/></Link>
           </section>
         ) : plans.map((plan) => {
