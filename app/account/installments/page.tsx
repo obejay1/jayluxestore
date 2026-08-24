@@ -54,7 +54,7 @@ export default function InstallmentsPage() {
     let unsubscribePlans: (() => void) | undefined;
     const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
       if (!user) { setPlans([]); return; }
-      const q = query(collection(db, 'installmentPlans'), where('userId', '===', user.uid));
+      const q = query(collection(db, 'installmentPlans'), where('userId', '==', user.uid));
       unsubscribePlans = onSnapshot(q, (snap) => {
         setPlans(snap.docs.map((doc) => ({ id: doc.id, ...(doc.data() as Omit<InstallmentPlan, 'id'>) })));
       });
