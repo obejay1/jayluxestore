@@ -15,6 +15,7 @@ const NAVIGATION_ITEMS = [
   { label: 'Promotions', href: '/promotions' },
   { label: 'About Us', href: '/about' },
   { label: 'Contact Us', href: '/contact' },
+  { label: 'Installments', href: '/account/installments' },
 ];
 
 export default function HamburgerMenu({ className = '' }) {

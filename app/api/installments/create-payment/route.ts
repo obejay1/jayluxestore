@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 import { adminDb } from '@/lib/firebaseAdmin';
 import { getBearerToken, getVerifiedCustomer } from '@/lib/requestAuth';
