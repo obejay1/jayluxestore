@@ -25750,3 +25750,29 @@ textarea.input {
     font-size: .75rem;
   }
 }
+
+.jl-installments-page{background:#f8f6f2;min-height:100vh;padding:32px 16px 100px;color:#111;}
+.jl-installments-container{max-width:1100px;margin:auto;}
+.jl-installments-hero,.jl-installment-card,.jl-installment-empty,.jl-installment-how-card{background:#fff;border:1px solid #eadfce;border-radius:22px;box-shadow:0 10px 30px rgba(0,0,0,.05);}
+.jl-installments-hero{padding:28px;margin-bottom:28px;}
+.jl-installments-hero span,.jl-installment-card-head small{color:#c8a24b;letter-spacing:.2em;font-size:12px;font-weight:700;}
+.jl-installments-hero h1,.jl-installment-card h2,.jl-installment-empty h2,.jl-installments-section h2{font-family:var(--font-jayluxe-serif),serif;}
+.jl-installments-hero p,.jl-installment-how-card p{color:#666;}
+.jl-installments-how-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+.jl-installment-how-card{padding:22px;transition:.25s;}
+.jl-installment-how-card:hover{transform:translateY(-3px);}
+.jl-installment-number{color:#c8a24b;font-weight:700;margin-bottom:15px;}
+.jl-installment-card{overflow:hidden;margin-top:28px;}
+.jl-installment-card-head{background:#111;color:#fff;padding:28px;display:flex;justify-content:space-between;gap:15px;}
+.jl-installment-card-head strong{height:max-content;border-radius:999px;background:#ffffff20;padding:8px 14px;}
+.jl-installment-body{padding:28px;}
+.jl-progress{height:12px;background:#eee6d8;border-radius:999px;overflow:hidden;}
+.jl-progress div{height:100%;background:#c8a24b;transition:width .7s ease;}
+.jl-progress-title{display:flex;justify-content:space-between;margin-bottom:10px;}
+.jl-installment-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin:24px 0;}
+.jl-installment-summary div{background:#faf8f4;padding:16px;border-radius:14px;}
+.jl-installment-summary small{display:block;color:#777;}
+.jl-installment-summary b{font-size:20px;display:block;margin-top:6px;}
+.jl-installment-button{display:inline-flex;align-items:center;gap:8px;background:#c8a24b;color:#111;border:0;border-radius:999px;padding:14px 24px;font-weight:700;cursor:pointer;}
+.jl-installment-empty{text-align:center;padding:45px;}
+@media(max-width:768px){.jl-installments-how-grid,.jl-installment-summary{grid-template-columns:1fr;}.jl-installment-card-head{flex-direction:column;}.jl-installments-page{padding:20px 16px 100px;}}

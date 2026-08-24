@@ -809,24 +809,51 @@ export default function AccountPage() {
           </section>
 
           <section className="mt-8">
-            <div className="rounded-2xl border border-neutral-200 bg-white p-5">
-              <div className="flex items-center justify-between">
-                <h2 className="font-serif text-xl">Pay in Installments</h2>
-                <Link href="/account/installments" className="text-sm underline">
-                  View Installments
+            <div className="rounded-3xl border border-[#eadfce] bg-white p-6 shadow-sm">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <span className="text-xs uppercase tracking-[0.2em] text-[#b08a3e]">
+                    Payment Plans
+                  </span>
+                  <h2 className="mt-2 font-serif text-2xl">
+                    Pay in Installments
+                  </h2>
+                </div>
+
+                <Link
+                  href="/account/installments"
+                  className="text-sm font-medium text-[#8f6d2b] underline underline-offset-4"
+                >
+                  View Installments →
                 </Link>
               </div>
-              <p className="mt-2 text-sm text-neutral-600">
+
+              <p className="mt-3 text-sm text-neutral-600">
                 Track your payment progress and remaining balance.
               </p>
+
               {installmentsLoading ? (
-                <div className="mt-5 h-24 animate-pulse rounded-xl bg-neutral-100" />
+                <div className="mt-6 h-28 animate-pulse rounded-2xl bg-[#faf7f0]" />
               ) : installmentPlans.length === 0 ? (
-                <p className="mt-5 text-sm text-neutral-600">
-                  You don&apos;t currently have an active installment payment plan.
-                </p>
+                <div className="mt-6 rounded-2xl border border-[#eadfce] bg-[#faf7f0] p-6 text-center">
+                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-white text-[#b08a3e]">
+                    ◇
+                  </div>
+                  <h3 className="mt-4 font-serif text-xl">
+                    No Active Installment Plan
+                  </h3>
+                  <p className="mx-auto mt-2 max-w-sm text-sm text-neutral-600">
+                    You don&apos;t currently have an active installment payment plan.
+                  </p>
+                  <Link
+                    href="/shop"
+                    className="mt-5 inline-flex rounded-full bg-black px-6 py-3 text-white"
+                  >
+                    Continue Shopping
+                  </Link>
+                </div>
               ) : (
-                <div className="mt-5 space-y-4">
+                <div className="mt-6 space-y-5">
                   {installmentPlans.map((plan) => {
                     const total = Number(plan.totalInstallments || 0);
                     const completed = Number(plan.completedInstallments || 0);
@@ -835,30 +862,66 @@ export default function AccountPage() {
                       : 0;
 
                     return (
-                      <div key={plan.id} className="rounded-xl bg-[#faf7f0] p-4">
-                        <p className="font-medium">Order #{plan.orderId || plan.id}</p>
-                        <p className="mt-1 text-sm text-neutral-600">
+                      <div
+                        key={plan.id}
+                        className="rounded-2xl border border-[#eadfce] bg-[#faf7f0] p-5"
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <p className="text-xs uppercase tracking-wider text-[#b08a3e]">
+                              Active Plan
+                            </p>
+                            <p className="mt-2 font-medium">
+                              Order #{plan.orderId || plan.id}
+                            </p>
+                          </div>
+
+                          <span className="rounded-full bg-white px-3 py-1 text-xs">
+                            Active
+                          </span>
+                        </div>
+
+                        <p className="mt-4 text-sm text-neutral-600">
                           {completed} of {total} payments completed
                         </p>
+
                         <div
-                          className="mt-4 h-2 rounded-full bg-neutral-200"
+                          className="mt-4 h-3 overflow-hidden rounded-full bg-neutral-200"
                           role="progressbar"
                           aria-valuemin={0}
                           aria-valuemax={100}
                           aria-valuenow={progress}
                         >
                           <div
-                            className="h-2 rounded-full bg-[#c49a45] transition-all duration-1000"
+                            className="h-full rounded-full bg-[#c49a45] transition-all duration-700"
                             style={{ width: `${progress}%` }}
                           />
                         </div>
-                        <p className="mt-2 text-sm">{progress}% complete</p>
-                        <div className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
-                          <p>Paid: ₦{Number(plan.paidAmount || 0).toLocaleString('en-NG')}</p>
-                          <p>Remaining: ₦{Number(plan.remainingBalance || 0).toLocaleString('en-NG')}</p>
+
+                        <p className="mt-2 text-sm font-medium">
+                          {progress}% complete
+                        </p>
+
+                        <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                          <div className="rounded-xl bg-white p-4">
+                            <small className="text-neutral-500">Amount Paid</small>
+                            <p className="mt-1 font-serif text-xl">
+                              ₦{Number(plan.paidAmount || 0).toLocaleString('en-NG')}
+                            </p>
+                          </div>
+                          <div className="rounded-xl bg-white p-4">
+                            <small className="text-neutral-500">Remaining Balance</small>
+                            <p className="mt-1 font-serif text-xl">
+                              ₦{Number(plan.remainingBalance || 0).toLocaleString('en-NG')}
+                            </p>
+                          </div>
                         </div>
-                        <Link href="/account/installments" className="mt-4 inline-block rounded-full bg-black px-5 py-2 text-white">
-                          Make Payment
+
+                        <Link
+                          href="/account/installments"
+                          className="mt-5 inline-flex rounded-full bg-black px-6 py-3 text-white"
+                        >
+                          Make Payment →
                         </Link>
                       </div>
                     );

@@ -2,14 +2,13 @@ import { randomUUID } from 'node:crypto';
 import { NextRequest, NextResponse } from 'next/server';
 
 import { adminDb } from '@/lib/firebaseAdmin';
-import { getBearerToken, getVerifiedCustomer } from '@/lib/requestAuth';
+import { getVerifiedCustomer } from '@/lib/requestAuth';
 
 export const runtime = 'nodejs';
 
 export async function POST(request: NextRequest) {
   try {
-    const token = getBearerToken(request);
-    const customer = await getVerifiedCustomer(token);
+    const customer = await getVerifiedCustomer(request);
 
     if (!customer?.uid) {
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
