@@ -808,51 +808,41 @@ export default function AccountPage() {
             </Link>
           </section>
 
-          <section className="tw-mt-8">
-            <div className="tw-rounded-3xl tw-border tw-border-[#eadfce] tw-bg-white tw-p-6 tw-shadow-sm">
-              <div className="tw-flex tw-flex-col tw-gap-4 sm:tw-flex-row sm:tw-items-center sm:tw-justify-between">
+          <section className="jl-installment-section">
+            <div className="jl-installment-card">
+              <div className="jl-installment-header">
                 <div>
-                  <span className="tw-text-xs tw-uppercase tw-tracking-[0.2em] tw-text-[#b08a3e]">
+                  <span className="jl-installment-label">
                     Payment Plans
                   </span>
-                  <h2 className="tw-mt-2 tw-font-serif tw-text-2xl">
+                  <h2 className="font-serif">
                     Pay in Installments
                   </h2>
-                  <p className="tw-mt-3 tw-text-sm tw-text-neutral-600">
+                  <p>
                     Track your payment progress and remaining balance.
                   </p>
                 </div>
 
-                <Link
-                  href="/account/installments"
-                  className="tw-text-sm tw-font-medium tw-text-[#8f6d2b] tw-underline tw-underline-offset-4"
-                >
+                <Link href="/account/installments">
                   View Installments →
                 </Link>
               </div>
 
               {installmentsLoading ? (
-                <div className="tw-mt-6 tw-h-28 tw-animate-pulse tw-rounded-2xl tw-bg-[#faf7f0]" />
+                <div className="jl-installment-loading" />
               ) : installmentPlans.length === 0 ? (
-                <div className="tw-mt-6 tw-rounded-2xl tw-border tw-border-[#eadfce] tw-bg-[#faf7f0] tw-p-6 tw-text-center">
-                  <div className="tw-mx-auto tw-flex tw-h-12 tw-w-12 tw-items-center tw-justify-center tw-rounded-full tw-bg-white tw-text-[#b08a3e]">
-                    ◇
-                  </div>
-                  <h3 className="tw-mt-4 tw-font-serif tw-text-xl">
-                    No Active Installment Plan
-                  </h3>
-                  <p className="tw-mx-auto tw-mt-2 tw-max-w-sm tw-text-sm tw-text-neutral-600">
+                <div className="jl-installment-empty">
+                  <div className="jl-installment-icon">◇</div>
+                  <h3>No Active Installment Plan</h3>
+                  <p>
                     You don&apos;t currently have an active installment payment plan.
                   </p>
-                  <Link
-                    href="/shop"
-                    className="tw-mt-5 tw-inline-flex tw-rounded-full tw-bg-black tw-px-6 tw-py-3 tw-text-white"
-                  >
+                  <Link href="/shop">
                     Continue Shopping
                   </Link>
                 </div>
               ) : (
-                <div className="tw-mt-6 tw-space-y-5">
+                <div className="jl-installment-list">
                   {installmentPlans.map((plan) => {
                     const total = Number(plan.totalInstallments || 0);
                     const completed = Number(plan.completedInstallments || 0);
@@ -861,38 +851,28 @@ export default function AccountPage() {
                       : 0;
 
                     return (
-                      <div
-                        key={plan.id}
-                        className="tw-rounded-2xl tw-border tw-border-[#eadfce] tw-bg-[#faf7f0] tw-p-5"
-                      >
-                        <div className="tw-flex tw-items-start tw-justify-between tw-gap-3">
+                      <div key={plan.id} className="jl-installment-plan">
+                        <div className="jl-installment-plan-top">
                           <div>
-                            <p className="tw-text-xs tw-uppercase tw-tracking-wider tw-text-[#b08a3e]">
-                              Active Plan
-                            </p>
-                            <p className="tw-mt-2 tw-font-medium">
+                            <small>Active Plan</small>
+                            <strong>
                               Order #{plan.orderId || plan.id}
-                            </p>
+                            </strong>
                           </div>
-                          <span className="tw-rounded-full tw-bg-white tw-px-3 tw-py-1 tw-text-xs">
+                          <span>
                             {plan.status || 'Active'}
                           </span>
                         </div>
 
-                        <p className="tw-mt-4 tw-text-sm tw-text-neutral-600">
+                        <p>
                           {completed} of {total} payments completed
                         </p>
 
-                        <div className="tw-mt-4 tw-h-3 tw-overflow-hidden tw-rounded-full tw-bg-neutral-200">
-                          <div
-                            className="tw-h-full tw-rounded-full tw-bg-[#c49a45] tw-transition-all tw-duration-700"
-                            style={{ width: `${progress}%` }}
-                          />
+                        <div className="jl-installment-progress">
+                          <div style={{ width: `${progress}%` }} />
                         </div>
 
-                        <p className="tw-mt-2 tw-text-sm tw-font-medium">
-                          {progress}% complete
-                        </p>
+                        <strong>{progress}% Complete</strong>
                       </div>
                     );
                   })}
@@ -900,6 +880,7 @@ export default function AccountPage() {
               )}
             </div>
           </section>
+
 <section className="jl-account-content">
             <div className="jl-account-profile-bar">
               <div>

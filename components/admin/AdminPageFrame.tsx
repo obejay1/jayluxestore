@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { signOut } from 'firebase/auth';
 import {
   Activity,
+  CreditCard,
   BarChart3,
   LayoutDashboard,
   LogOut,
@@ -51,6 +52,12 @@ export default function AdminPageFrame({
       label: 'Reports',
       icon: BarChart3,
       visible: hasAdminPermission(user, 'reports'),
+    },
+    {
+      href: '/admin/installments',
+      label: 'Installments',
+      icon: CreditCard,
+      visible: true,
     },
   ];
 

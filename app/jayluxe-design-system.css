@@ -1022,7 +1022,7 @@
 .jl-gallery-card-body { padding: 21px; }
 .jl-gallery-card-body span { color: var(--jl-gold-rich); font-size: .66rem; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
 .jl-gallery-card-body h3 { margin: 8px 0 7px; color: var(--jl-black); font-family: Georgia,serif; font-size: 1.4rem; font-weight: 500; }
-.jl-gallery-card-body p { color: var(--jl-muted); line-height: 1.65; }
+.jl-gallery-card-body p { color: var(--jl-muted); line-height: 1.35; }
 .jl-gallery-modal { position: fixed; inset: 0; z-index: 10000; display: grid; place-items: center; padding: 24px; background: rgba(17,17,17,.82); backdrop-filter: blur(10px); }
 .jl-gallery-modal-card { position: relative; display: grid; grid-template-columns: minmax(0,1.25fr) minmax(300px,.75fr); width: min(1060px,100%); max-height: 90vh; overflow: hidden; border: 1px solid rgba(255,255,255,.12); border-radius: 16px; background: var(--jl-white); box-shadow: 0 35px 100px rgba(0,0,0,.4); }
 .jl-gallery-modal-image { min-height: 620px; overflow: hidden; background: var(--jl-black); }
@@ -2540,7 +2540,7 @@ a {
   display: flex;
   flex: 1;
   flex-direction: column;
-  padding: 22px;
+  padding: 18px;
 }
 
 .jl-category-page-copy small {
@@ -2552,7 +2552,7 @@ a {
 }
 
 .jl-category-page-copy h2 {
-  margin: 8px 0 10px;
+  margin: 6px 0 6px;
   font-family: Georgia, 'Times New Roman', serif;
   font-size: clamp(1.7rem, 3vw, 2.3rem);
   font-weight: 500;
@@ -2569,8 +2569,8 @@ a {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  margin-top: auto;
-  padding-top: 20px;
+  margin-top: 12px;
+  padding-top: 0;
   color: var(--jl-gold-dark);
   font-size: 0.78rem;
   font-weight: 850;
@@ -25776,3 +25776,151 @@ textarea.input {
 .jl-installment-button{display:inline-flex;align-items:center;gap:8px;background:#c8a24b;color:#111;border:0;border-radius:999px;padding:14px 24px;font-weight:700;cursor:pointer;}
 .jl-installment-empty{text-align:center;padding:45px;}
 @media(max-width:768px){.jl-installments-how-grid,.jl-installment-summary{grid-template-columns:1fr;}.jl-installment-card-head{flex-direction:column;}.jl-installments-page{padding:20px 16px 100px;}}
+
+
+/* JayLuxe installment account summary */
+.jl-installment-section {
+  margin-top: 32px;
+}
+
+.jl-installment-card {
+  background: #fff;
+  border: 1px solid #eadfce;
+  border-radius: 24px;
+  padding: 28px;
+}
+
+.jl-installment-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.jl-installment-label {
+  color: #b08a3e;
+  font-size: 12px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+
+.jl-installment-header h2 {
+  margin-top: 8px;
+  font-size: 28px;
+}
+
+.jl-installment-header p {
+  margin-top: 8px;
+  color: #666;
+}
+
+.jl-installment-header a {
+  color: #8f6d2b;
+  font-weight: 600;
+}
+
+.jl-installment-empty {
+  margin-top: 24px;
+  padding: 32px;
+  text-align: center;
+  border-radius: 20px;
+  border: 1px solid #eadfce;
+  background: #faf7f0;
+}
+
+.jl-installment-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  margin: auto;
+  border-radius: 999px;
+  background: #fff;
+  color: #b08a3e;
+  font-size: 24px;
+}
+
+.jl-installment-empty h3 {
+  margin-top: 16px;
+  font-family: var(--font-jayluxe-serif);
+  font-size: 22px;
+}
+
+.jl-installment-empty p {
+  margin: 8px auto 0;
+  max-width: 380px;
+  color: #666;
+}
+
+.jl-installment-empty a {
+  display: inline-flex;
+  margin-top: 20px;
+  padding: 12px 26px;
+  border-radius: 999px;
+  background: #111;
+  color: #fff;
+}
+
+.jl-installment-plan {
+  margin-top: 24px;
+  padding: 20px;
+  border-radius: 20px;
+  border: 1px solid #eadfce;
+  background: #faf7f0;
+}
+
+.jl-installment-plan-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.jl-installment-plan-top small {
+  display: block;
+  color: #b08a3e;
+}
+
+.jl-installment-plan-top strong {
+  display: block;
+  margin-top: 8px;
+}
+
+.jl-installment-plan-top span {
+  height: fit-content;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #fff;
+  font-size: 12px;
+}
+
+.jl-installment-progress {
+  height: 10px;
+  margin: 16px 0 10px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e8e2d7;
+}
+
+.jl-installment-progress div {
+  height: 100%;
+  border-radius: inherit;
+  background: #c8a24b;
+}
+
+.jl-installment-loading {
+  height: 120px;
+  margin-top: 24px;
+  border-radius: 20px;
+  background: #faf7f0;
+}
+
+@media (max-width: 640px) {
+  .jl-installment-card {
+    padding: 18px;
+  }
+
+  .jl-installment-header {
+    flex-direction: column;
+  }
+}
