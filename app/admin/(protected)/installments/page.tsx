@@ -104,13 +104,19 @@ export default function AdminInstallmentsPage(){
           ['Collected',money(collected),CheckCircle2],
           ['Outstanding',money(outstanding),CircleAlert],
           ['Overdue',overdue,CircleAlert],
-        ].map(([label,value,Icon])=>{
-          const I=Icon as typeof CreditCard;
+        ].map((item)=>{
+          const [label, value, Icon] = item as [
+            string,
+            string | number,
+            React.ComponentType<{ size?: number; className?: string }>
+          ];
+          const I = Icon;
+
           return (
-            <div className="amu-card" key={String(label)}>
+            <div className="amu-card" key={label}>
               <I size={20} className="text-[#c8a24b]"/>
               <p className="mt-3 text-sm text-neutral-500">{label}</p>
-              <strong className="mt-1 block text-2xl">{value as string}</strong>
+              <strong className="mt-1 block text-2xl">{value}</strong>
             </div>
           );
         })}
