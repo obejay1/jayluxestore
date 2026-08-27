@@ -54,10 +54,9 @@ export default function Checkout() {
   const [deliveryDaysText, setDeliveryDaysText] = useState('2–5 business days');
   const [deliveryDaysCount, setDeliveryDaysCount] = useState(5);
 
-  const [paymentMethod, setPaymentMethod] = useState<'Paystack' | 'OPay' | 'Installment'>(
+  const [paymentMethod, setPaymentMethod] = useState<'Paystack' | 'OPay'>(
     'Paystack'
   );
-  const [installmentCount, setInstallmentCount] = useState(4);
   const [isProcessingOPay, setIsProcessingOPay] = useState(false);
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [userId, setUserId] = useState<string | undefined>();
@@ -67,7 +66,6 @@ export default function Checkout() {
   const opayEnabled = process.env.NEXT_PUBLIC_OPAY_ENABLED === 'true';
   const paystackPublicKey = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY || '';
   const paystackEnabled = Boolean(paystackPublicKey);
-  const safeInstallmentCount = Number(installmentCount || 1);
 
   useEffect(() => {
     setMounted(true);
@@ -139,12 +137,6 @@ export default function Checkout() {
   const shipping = subtotal > 0 ? shippingFee : 0;
   const tax = Math.round(subtotal * (taxRate / 100));
   const total = Math.max(0, subtotal + shipping + tax - discountAmount);
-
-  const safeTotal = Number(total || 0);
-
-  const installmentInitialAmount = Math.ceil(
-    safeTotal / safeInstallmentCount
-  );
 
   async function applyCoupon() {
     if (couponLoading) return;
@@ -285,9 +277,6 @@ export default function Checkout() {
           customerPhone: phone,
           customerAddress: address,
           couponCode: appliedCouponCode,
-          paymentType: paymentMethod,
-          installmentCount: paymentMethod === 'Installment' ? installmentCount : null,
-          installmentAmount: paymentMethod === 'Installment' ? installmentInitialAmount : null,
         }),
       });
       const data = await readJsonResponse<{
@@ -357,14 +346,14 @@ export default function Checkout() {
   );
 
   const selectedPaymentEnabled =
-    paymentMethod === 'Paystack' || paymentMethod === 'Installment' ? paystackEnabled : opayEnabled;
+    paymentMethod === 'Paystack' ? paystackEnabled : opayEnabled;
   const canPay = formComplete && selectedPaymentEnabled;
 
   const paystackConfig = {
     email: email.trim(),
-    amount: Math.round((paymentMethod === 'Installment' ? installmentInitialAmount : total) * 100),
+    amount: Math.round(total * 100),
     publicKey: paystackPublicKey,
-    text: paymentMethod === 'Installment' ? `Pay ${money(installmentInitialAmount)} & Start Plan` : `Pay ${money(total)}`,
+    text: `Pay ${money(total)}`,
     onSuccess: (response: unknown) =>
       void saveOrder((response as { reference: string }).reference),
     onClose: () => {
@@ -438,19 +427,6 @@ export default function Checkout() {
               <button
                 type="button"
                 role="radio"
-                aria-checked={paymentMethod === 'Installment'}
-                className={`jl-payment-option ${paymentMethod === 'Installment' ? 'active' : ''}`}
-                onClick={() => setPaymentMethod('Installment')}
-              >
-                <span className="jl-payment-option-header">
-                  <strong className="jl-payment-option-title">Pay in Installments</strong>
-                </span>
-                <span className="jl-payment-option-description">Split your payment into manageable installments.</span>
-              </button>
-
-              <button
-                type="button"
-                role="radio"
                 aria-checked={paymentMethod === 'OPay'}
                 aria-disabled={!opayEnabled}
                 disabled={!opayEnabled}
@@ -478,19 +454,6 @@ export default function Checkout() {
                 </span>
               </button>
             </div>
-            {paymentMethod === 'Installment' ? (
-              <div className="jl-payment-notice">
-                <strong>Choose installment plan</strong>
-                <div>
-                  {[2,3,4].map((count) => (
-                    <button key={count} type="button" onClick={() => setInstallmentCount(count)} className={installmentCount === count ? 'active' : ''}>
-                      {count} payments
-                    </button>
-                  ))}
-                </div>
-                <p>Pay today {money(installmentInitialAmount)}. Remaining balance will be scheduled.</p>
-              </div>
-            ) : null}
             {!opayEnabled ? (
               <p className="jl-payment-notice">
                 OPay remains disabled until the merchant callback and webhook

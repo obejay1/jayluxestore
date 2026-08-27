@@ -16,6 +16,7 @@ import {
   Gem,
   Heart,
   LayoutDashboard,
+  WalletCards,
   Layers3,
   LogOut,
   Mail,
@@ -1335,6 +1336,7 @@ export default function Admin() {
 
         <nav className="admin-dashboard-nav" aria-label="Administrator dashboard navigation">
           <a href="#admin"><LayoutDashboard size={16} aria-hidden="true" /> Dashboard</a>
+          <Link href="/admin/installments"><WalletCards size={16} aria-hidden="true" /> Installments</Link>
           {can('orders') ? <a href="#orders"><ClipboardList size={16} aria-hidden="true" /> Orders</a> : null}
           {can('customers') ? <a href="#customers"><UsersRound size={16} aria-hidden="true" /> Customers</a> : null}
           {can('products') ? <a href="#products"><Boxes size={16} aria-hidden="true" /> Products</a> : null}

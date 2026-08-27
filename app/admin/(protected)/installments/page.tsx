@@ -1,197 +1,62 @@
-'use client';
+import Link from 'next/link';
+import { getAdminInstallments } from '@/lib/installments/adminService';
 
-import { useEffect, useMemo, useState } from 'react';
-import { collection, onSnapshot, query } from 'firebase/firestore';
-import { CreditCard, WalletCards, CircleAlert, CheckCircle2 } from 'lucide-react';
-import { db } from '@/lib/firebase';
+const money=(v:number)=>`₦${Number(v||0).toLocaleString('en-NG')}`;
 
-type Plan = {
-  id:string;
-  userId?:string;
-  orderId?:string;
-  productName?:string;
-  totalAmount?:number;
-  paidAmount?:number;
-  remainingBalance?:number;
-  nextPaymentAmount?:number;
-  nextPaymentDate?:string;
-  status?:string;
-  totalInstallments?:number;
-  completedInstallments?:number;
-};
+export default async function AdminInstallmentsPage({searchParams}:{searchParams?:{q?:string,status?:string,provider?:string}}){
+ const plans:any[]=await getAdminInstallments();
+ const q=(searchParams?.q||'').toLowerCase();
 
-const money=(value=0)=>`₦${Number(value).toLocaleString('en-NG')}`;
+ const filtered=plans.filter(p=>{
+  const text=`${p.customerName||''} ${p.customerEmail||''} ${p.customerId||''} ${p.orderId||''} ${p.productName||''} ${p.provider||''} ${p.transactionReference||''}`.toLowerCase();
+  return (!q||text.includes(q)) && (!searchParams?.status||p.status===searchParams.status) && (!searchParams?.provider||p.provider===searchParams.provider);
+ });
 
-function statusLabel(status?:string){
-  return status || 'Active';
-}
+ const collected=filtered.reduce((s,p)=>s+Number(p.paidAmount||0),0);
+ const outstanding=filtered.reduce((s,p)=>s+Number(p.outstanding||0),0);
+ const upcoming=filtered.filter(p=>p.nextPaymentDate && p.status!=="Completed");
+ const overdue=filtered.filter(p=>p.status==="Overdue");
+ const paystack=filtered.filter(p=>p.provider==="Paystack").reduce((s,p)=>s+p.paidAmount,0);
+ const opay=filtered.filter(p=>p.provider==="OPay").reduce((s,p)=>s+p.paidAmount,0);
 
-function exportCsv(plans: Plan[]){
-  const rows = [
-    ['Customer','Order ID','Product','Total','Paid','Balance','Status','Next Payment Date'],
-    ...plans.map(p => [
-      p.userId || '',
-      p.orderId || '',
-      p.productName || '',
-      p.totalAmount || 0,
-      p.paidAmount || 0,
-      p.remainingBalance || 0,
-      statusLabel(p.status),
-      p.nextPaymentDate || ''
-    ])
-  ];
-  const csv = rows.map(r => r.map(v => `"${String(v).replaceAll('\"','\"\"')}"`).join(',')).join('\n');
-  const blob = new Blob([csv], {type:'text/csv'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href=url;
-  a.download='jayluxe-installment-report.csv';
-  a.click();
-  URL.revokeObjectURL(url);
-}
+ const cards=[['Active Plans',filtered.filter(p=>p.status==='Active').length],['Completed',filtered.filter(p=>p.status==='Completed').length],['Overdue',overdue.length],['Due Soon',upcoming.length],['Total Collected',money(collected)],['Outstanding',money(outstanding)]];
+ const recentPayments=[...filtered].sort((a:any,b:any)=>Number(b.paidAmount||0)-Number(a.paidAmount||0)).slice(0,5);
 
-export default function AdminInstallmentsPage(){
-  const [plans,setPlans]=useState<Plan[]>([]);
-  const [search,setSearch]=useState('');
-  const [status,setStatus]=useState('All');
-  const [sort,setSort]=useState('newest');
+ return <div className="amu-page-content space-y-6">
+  <section className="amu-card flex justify-between gap-4 flex-wrap">
+   <div><h1 className="font-serif text-3xl">Installment Management</h1><p>Monitor customer installment plans, payment progress, balances and upcoming payments.</p></div>
+   <div className="flex gap-2"><a className="border px-4 py-2 rounded" href="/api/admin/installments/export">Export</a><a className="border px-4 py-2 rounded" href="/admin/installments">Refresh</a></div>
+  </section>
 
-  useEffect(()=>{
-    return onSnapshot(
-      query(collection(db,'installmentPlans')),
-      snap=>setPlans(snap.docs.map(doc=>({id:doc.id,...doc.data()} as Plan)))
-    );
-  },[]);
+  <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-6">
+   {cards.map(([a,b])=><div className="amu-card" key={String(a)}><p className="text-sm">{a}</p><strong className="text-2xl">{b}</strong></div>)}
+  </section>
 
-  const filtered=useMemo(()=>plans.filter(plan=>{
-    const text=`${plan.userId||''} ${plan.orderId||''} ${plan.productName||''}`.toLowerCase();
-    return text.includes(search.toLowerCase()) &&
-      (status==='All'||statusLabel(plan.status)===status);
-  }),[plans,search,status]);
+  <section className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+   <div className="amu-card"><h2 className="font-semibold">Upcoming Payments</h2>{upcoming.slice(0,5).map(p=><div className="py-2 border-b" key={p.id}>{p.customerName||p.customerId} · {money(p.nextPaymentAmount)} · {p.nextPaymentDate}</div>)}{!upcoming.length&&<p>No upcoming payments</p>}</div>
+   <div className="amu-card"><h2 className="font-semibold">Overdue Payments</h2>{overdue.slice(0,5).map(p=><div className="py-2 border-b" key={p.id}>{p.customerName||p.customerId} · {money(p.outstanding)} · {p.nextPaymentDate}</div>)}{!overdue.length&&<p>No overdue payments</p>}</div>
+   <div className="amu-card"><h2 className="font-semibold">Payment Providers</h2><p>Paystack: <b>{money(paystack)}</b></p><p>OPay: <b>{money(opay)}</b></p></div>
+   <div className="amu-card"><h2 className="font-semibold">Installment Statistics</h2><p>Total Plans: {filtered.length}</p><p>Successful Collected: {money(collected)}</p></div>
+   <div className="amu-card"><h2 className="font-semibold">Recent Installment Payments</h2>{recentPayments.map(p=><div className="py-2 border-b" key={p.id}>{p.customerId||'Customer'} · {money(p.paidAmount)} · {p.provider||'Provider'}</div>)}{!recentPayments.length&&<p>No recent payments</p>}</div>
+  </section>
 
-  const sorted=[...filtered].sort((a,b)=>{
-    if(sort==='balance') return Number(b.remainingBalance||0)-Number(a.remainingBalance||0);
-    if(sort==='paid') return Number(b.paidAmount||0)-Number(a.paidAmount||0);
-    return 0;
-  });
+  <section className="amu-card">
+   <form className="flex flex-wrap gap-3"><input name="q" placeholder="Search customer, order, provider, reference" className="border p-2 rounded"/><select name="status" className="border p-2 rounded"><option value="">All status</option><option>Active</option><option>Overdue</option><option>Completed</option><option>Pending</option></select><select name="provider" className="border p-2 rounded"><option value="">All providers</option><option>Paystack</option><option>OPay</option></select><button className="border px-4 rounded">Filter</button></form>
+  </section>
 
-  const financed=plans.reduce((a,p)=>a+Number(p.totalAmount||0),0);
-  const collected=plans.reduce((a,p)=>a+Number(p.paidAmount||0),0);
-  const outstanding=Math.max(0,financed-collected);
-  const overdue=plans.filter(p=>p.status==='Overdue').length;
-
-  return (
-    <div className="amu-page-content">
-      <section className="amu-card">
-        <div className="flex items-center gap-3">
-          <div className="rounded-2xl bg-[#c8a24b]/15 p-3 text-[#c8a24b]">
-            <CreditCard size={24}/>
-          </div>
-          <div>
-            <h1 className="font-serif text-3xl">Installment Management</h1>
-            <p className="mt-1 text-neutral-600">
-              Monitor installment customers, payment progress, balances and upcoming payments.
-            </p>
-            <button onClick={() => exportCsv(plans)} className="mt-4 rounded-full bg-[#111] px-5 py-2 text-sm text-white">Export Report</button>
-          </div>
-        </div>
-      </section>
-
-      <section className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-        {[
-          ['Active Plans',plans.length,WalletCards],
-          ['Total Financed',money(financed),CreditCard],
-          ['Collected',money(collected),CheckCircle2],
-          ['Outstanding',money(outstanding),CircleAlert],
-          ['Overdue',overdue,CircleAlert],
-        ].map((item)=>{
-          const [label, value, Icon] = item as [
-            string,
-            string | number,
-            React.ComponentType<{ size?: number; className?: string }>
-          ];
-          const I = Icon;
-
-          return (
-            <div className="amu-card" key={label}>
-              <I size={20} className="text-[#c8a24b]"/>
-              <p className="mt-3 text-sm text-neutral-500">{label}</p>
-              <strong className="mt-1 block text-2xl">{value}</strong>
-            </div>
-          );
-        })}
-      </section>
-
-      <section className="amu-card mt-6">
-        <div className="flex flex-col gap-3 md:flex-row">
-          <input
-            className="rounded-xl border border-neutral-200 p-3"
-            placeholder="Search customers, orders or products..."
-            value={search}
-            onChange={e=>setSearch(e.target.value)}
-          />
-          <select
-            className="rounded-xl border border-neutral-200 p-3"
-            value={status}
-            onChange={e=>setStatus(e.target.value)}
-          >
-            {['All','Active','Due Soon','Overdue','Completed','Cancelled'].map(item=>
-              <option key={item}>{item}</option>
-            )}
-          </select>
-
-          <select
-            className="rounded-xl border border-neutral-200 p-3"
-            value={sort}
-            onChange={e=>setSort(e.target.value)}
-          >
-            <option value="newest">Newest</option>
-            <option value="balance">Highest Balance</option>
-            <option value="paid">Highest Paid</option>
-          </select>
-        </div>
-
-        <div className="mt-6 space-y-4">
-          {sorted.map(plan=>{
-            const total=Number(plan.totalAmount||0);
-            const paid=Number(plan.paidAmount||0);
-            const progress=total ? Math.min(100,Math.round((paid/total)*100)) : 0;
-
-            return (
-              <article key={plan.id} className="rounded-2xl border border-neutral-200 bg-white p-5">
-                <div className="flex flex-col justify-between gap-3 sm:flex-row">
-                  <div>
-                    <h2 className="font-serif text-xl">
-                      {plan.productName || 'JayLuxe Order'}
-                    </h2>
-                    <p className="text-sm text-neutral-500">
-                      Order #{plan.orderId || plan.id}
-                    </p>
-                  </div>
-                  <span className="h-fit rounded-full border px-3 py-1 text-sm">
-                    {statusLabel(plan.status)}
-                  </span>
-                </div>
-
-                <div className="mt-5 grid gap-4 sm:grid-cols-4">
-                  <div><small>Total</small><strong>{money(total)}</strong></div>
-                  <div><small>Paid</small><strong>{money(paid)}</strong></div>
-                  <div><small>Balance</small><strong>{money(plan.remainingBalance || outstanding)}</strong></div>
-                  <div><small>Next Payment</small><strong>{money(plan.nextPaymentAmount)}</strong></div>
-                </div>
-
-                <div className="mt-5 h-2 overflow-hidden rounded-full bg-neutral-200">
-                  <div className="h-full rounded-full bg-[#c8a24b]" style={{width:`${progress}%`}}/>
-                </div>
-
-                <p className="mt-2 text-sm text-neutral-600">
-                  {progress}% complete
-                </p>
-              </article>
-            );
-          })}
-        </div>
-      </section>
-    </div>
-  );
+  <section className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+   {filtered.length===0&&<div className="amu-card">No installment plans yet</div>}
+   {filtered.map(p=>{
+    const progress=Math.min(100,Math.max(0,Number(p.progress||0)));
+    return <article key={p.id} className="amu-card">
+      <div className="flex justify-between gap-3"><div><h2 className="font-semibold text-lg">{p.customerName||'Customer'}</h2><p className="text-sm">{p.customerEmail||''}</p><p>Order #{p.orderId||'-'} · {p.planDuration||'Installment Plan'}</p></div><span className="border rounded-full px-3 py-1">{p.status||'Pending'}</span></div>
+      <div className="grid grid-cols-3 gap-3 mt-5"><div>Total<b className="block">{money(p.totalAmount)}</b></div><div>Paid<b className="block">{money(p.paidAmount)}</b></div><div>Remaining<b className="block">{money(p.outstanding)}</b></div></div>
+      <div className="mt-5"><b>Payment Progress {progress}%</b><div role="progressbar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100} aria-label={`Payment progress ${progress}%`} className="h-3 bg-neutral-200 rounded mt-2 overflow-hidden"><div className="h-full rounded bg-[#c8a24b] transition-all duration-700" style={{width:`${progress}%`}}/></div><small>{money(p.paidAmount)} paid of {money(p.totalAmount)}</small></div>
+      <div className="grid grid-cols-2 gap-3 mt-4"><div>Next Payment<b className="block">{money(p.nextPaymentAmount)}</b></div><div>Due Date<b className="block">{p.nextPaymentDate||'-'}</b></div></div>
+      <div className="mt-4">Provider: <b>{p.provider||'-'}</b></div>
+      <Link className="inline-block mt-5 border px-4 py-2 rounded" href={`/admin/installments/${p.id}`}>View Details</Link>
+    </article>
+   })}
+  </section>
+ </div>
 }

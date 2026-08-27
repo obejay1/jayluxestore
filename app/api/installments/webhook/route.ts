@@ -48,10 +48,18 @@ export async function POST(request: Request) {
     return NextResponse.json({ received: true });
   }
 
+  const existing:any = paymentSnap.data();
+  if (existing.webhookProcessed) {
+    return NextResponse.json({ received: true, duplicate: true });
+  }
+
   await paymentRef.set(
     {
       webhookReceivedAt: new Date(),
       webhookEvent: payload?.event || null,
+      webhookProcessed: true,
+      provider: 'Paystack',
+      providerReference: reference,
     },
     { merge: true }
   );

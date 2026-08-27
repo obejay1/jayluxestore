@@ -36,6 +36,12 @@ export default function AdminPageFrame({
   const links = [
     { href: '/admin', label: 'Dashboard', icon: LayoutDashboard, visible: true },
     {
+      href: '/admin/installments',
+      label: 'Installments',
+      icon: CreditCard,
+      visible: true,
+    },
+    {
       href: '/admin/users',
       label: 'Users',
       icon: Users,
@@ -52,12 +58,6 @@ export default function AdminPageFrame({
       label: 'Reports',
       icon: BarChart3,
       visible: hasAdminPermission(user, 'reports'),
-    },
-    {
-      href: '/admin/installments',
-      label: 'Installments',
-      icon: CreditCard,
-      visible: true,
     },
   ];
 

@@ -1,0 +1,3 @@
+import {getInstallmentReports} from '@/lib/installments/reporting';
+const n=(v:number)=>`₦${v.toLocaleString('en-NG')}`;
+export default async function Page(){const r=await getInstallmentReports();return <div className="amu-page-content space-y-6"><section className="amu-card"><h1 className="font-serif text-3xl">Installment Reports</h1></section><section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">{Object.entries({Sales:n(r.total),Collected:n(r.collected),Outstanding:n(r.outstanding),Overdue:r.overdue,Active:r.active,Completed:r.completed,Paystack:n(r.paystack),OPay:n(r.opay)}).map(([a,b])=><div className="amu-card" key={a}><p>{a}</p><strong>{b}</strong></div>)}</section></div>}
