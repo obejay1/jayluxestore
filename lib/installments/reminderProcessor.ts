@@ -1,6 +1,19 @@
 
 import { adminDb } from '@/lib/firebaseAdmin';
 
+function toDate(value: unknown) {
+  if (!value) return null;
+  if (typeof value === 'object' && value !== null && 'toDate' in value) {
+    const converter = (value as { toDate?: () => Date }).toDate;
+    if (typeof converter === 'function') {
+      const converted = converter.call(value);
+      return Number.isFinite(converted.getTime()) ? converted : null;
+    }
+  }
+  const converted = new Date(String(value));
+  return Number.isFinite(converted.getTime()) ? converted : null;
+}
+
 export async function processInstallmentReminders() {
   const now = new Date();
   const plans = await adminDb.collection('installmentSchedules').get();
@@ -10,7 +23,8 @@ export async function processInstallmentReminders() {
     const item = doc.data();
     if (!item.dueDate || item.status === 'paid') continue;
 
-    const due = new Date(item.dueDate);
+    const due = toDate(item.dueDate);
+    if (!due) continue;
     const days = Math.ceil((due.getTime()-now.getTime())/86400000);
     let type = '';
 
@@ -22,8 +36,8 @@ export async function processInstallmentReminders() {
     if (!type) continue;
 
     const existing = await adminDb.collection('installmentReminders')
-      .where('scheduleId','===',doc.id)
-      .where('type','===',type)
+      .where('scheduleId','==',doc.id)
+      .where('type','==',type)
       .limit(1).get();
 
     if (!existing.empty) continue;

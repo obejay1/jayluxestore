@@ -17,4 +17,4 @@ if (missing.length) {
 }
 
 console.log("Installment production validation passed.");
-console.log("Next checks: Paystack sandbox, OPay sandbox, webhook replay tests.");
+console.log("Next checks: Paystack sandbox/live low-value checkout, browser-close recovery, and webhook replay tests. Test OPay only if it is intentionally enabled after its full lifecycle is implemented.");

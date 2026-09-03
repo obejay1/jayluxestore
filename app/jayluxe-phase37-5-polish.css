@@ -1,0 +1,85 @@
+
+/* JayLuxe Phase 37.5 frontend polish */
+.jl-checkout-page,
+.jl-checkout-layout,
+.jl-form-card,
+.jl-checkout-summary {
+  box-sizing: border-box;
+}
+
+.jl-checkout-layout {
+  gap: clamp(16px, 2.5vw, 28px) !important;
+}
+
+.jl-form-card,
+.jl-checkout-summary {
+  border-radius: 18px;
+  padding: clamp(16px, 2vw, 24px);
+}
+
+.jl-payment-option {
+  min-height: auto;
+  padding: 14px 16px !important;
+  border-radius: 14px;
+}
+
+.jl-payment-option-description {
+  line-height: 1.45;
+}
+
+.jl-payment-notice {
+  margin-top: 12px !important;
+  padding: 14px 16px !important;
+  border-radius: 14px;
+}
+
+.jl-summary-items {
+  gap: 10px !important;
+}
+
+.jl-summary-item {
+  padding: 10px 0 !important;
+}
+
+.jl-summary-total {
+  margin-top: 12px !important;
+}
+
+@media (max-width: 640px) {
+  .jl-checkout-hero {
+    min-height: 130px !important;
+    padding: 24px 16px !important;
+  }
+
+  .jl-checkout-layout {
+    padding-inline: 14px !important;
+  }
+
+  .jl-form-card,
+  .jl-checkout-summary {
+    border-radius: 16px;
+    padding: 16px;
+  }
+
+  .jl-place-order-btn {
+    min-height: 52px;
+    width: 100%;
+  }
+}
+
+/* Global compact luxury rhythm */
+section {
+  scroll-margin-top: 90px;
+}
+
+img {
+  max-width: 100%;
+}
+
+@media (max-width: 768px) {
+  .container,
+  .jl-container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}

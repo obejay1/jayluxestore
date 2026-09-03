@@ -1,0 +1,101 @@
+/* ================================
+   JayLuxe Public Gallery Page
+================================ */
+
+.jj-gallery-page {
+  min-height: 100vh;
+  background: #ffffff;
+  color: #111827;
+}
+
+.jj-gallery-hero {
+  padding: 85px 6%;
+  background:
+    radial-gradient(circle at top left, rgba(212, 175, 55, 0.22), transparent 35%),
+    linear-gradient(135deg, #030712, #111827);
+  color: #ffffff;
+  text-align: center;
+}
+
+.jj-gallery-section {
+  padding: 80px 6%;
+  background: #fdfbf7;
+}
+
+.jj-gallery-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 40px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.jj-filter-btn {
+  background: white;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  padding: 12px 24px;
+  border-radius: 999px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.jj-filter-btn:hover {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+.jj-filter-btn.active {
+  background: #111827;
+  color: #d4a574;
+  border-color: #111827;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.jj-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+}
+
+.jj-gallery-card img,
+.jj-gallery-placeholder {
+  height: 380px;
+}
+
+/* Responsive Gallery */
+@media (max-width: 1024px){
+  .jj-gallery-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px){
+  .jj-gallery-hero {
+    padding: 65px 20px;
+  }
+
+  .jj-gallery-section {
+    padding: 55px 20px;
+  }
+
+  .jj-gallery-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .jj-gallery-card img,
+  .jj-gallery-placeholder {
+    height: 320px;
+  }
+}
+
+.jj-bridal-hero p {
+  max-width: 680px;
+  margin: 0 auto;
+  color: #d1d5db;
+  font-size: 18px;
+  line-height: 1.7;
+}

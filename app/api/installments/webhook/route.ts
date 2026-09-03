@@ -1,68 +1,18 @@
-import { createHmac, timingSafeEqual } from 'node:crypto';
 import { NextResponse } from 'next/server';
-import { adminDb } from '@/lib/firebaseAdmin';
+import { handlePaystackWebhook } from '@/lib/payments/paystackWebhook';
 
 export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
-function verifyPaystackSignature(rawBody: string, signature: string) {
-  const secret = process.env.PAYSTACK_SECRET_KEY;
-
-  if (!secret) return false;
-
-  const hash = createHmac('sha512', secret)
-    .update(rawBody)
-    .digest('hex');
-
-  try {
-    return timingSafeEqual(
-      Buffer.from(hash),
-      Buffer.from(signature)
-    );
-  } catch {
-    return false;
-  }
-}
-
+// Backward-compatible endpoint. Production Paystack configuration should use
+// /api/paystack/webhook so standard checkout and installment events share one handler.
 export async function POST(request: Request) {
-  const rawBody = await request.text();
-  const signature = request.headers.get('x-paystack-signature');
-
-  if (!signature || !verifyPaystackSignature(rawBody, signature)) {
-    return NextResponse.json(
-      { error: 'Invalid webhook signature' },
-      { status: 401 }
-    );
+  try {
+    const rawBody = await request.text();
+    const result = await handlePaystackWebhook(rawBody, request.headers.get('x-paystack-signature'));
+    return NextResponse.json(result.body, { status: result.status });
+  } catch (error) {
+    console.error('INSTALLMENT_WEBHOOK_ERROR', error);
+    return NextResponse.json({ error: 'Webhook processing failed' }, { status: 500 });
   }
-
-  const payload = JSON.parse(rawBody);
-  const reference = payload?.data?.reference;
-
-  if (!reference) {
-    return NextResponse.json({ received: true });
-  }
-
-  const paymentRef = adminDb.collection('installmentPayments').doc(reference);
-  const paymentSnap = await paymentRef.get();
-
-  if (!paymentSnap.exists) {
-    return NextResponse.json({ received: true });
-  }
-
-  const existing:any = paymentSnap.data();
-  if (existing.webhookProcessed) {
-    return NextResponse.json({ received: true, duplicate: true });
-  }
-
-  await paymentRef.set(
-    {
-      webhookReceivedAt: new Date(),
-      webhookEvent: payload?.event || null,
-      webhookProcessed: true,
-      provider: 'Paystack',
-      providerReference: reference,
-    },
-    { merge: true }
-  );
-
-  return NextResponse.json({ received: true });
 }

@@ -49,7 +49,7 @@ const navigation: NavigationGroup[] = [
       { label: 'Best Sellers', href: '/best-sellers' },
     ],
   },
-  { label: 'Beauty Services', href: '/beauty-services' },
+  { label: 'Beauty Services', href: '/services' },
   {
     label: 'Services',
     href: '/services',

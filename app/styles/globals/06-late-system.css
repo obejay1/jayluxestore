@@ -1,0 +1,2288 @@
+/* ================================
+   JayLuxe Public Gallery Page
+================================ */
+
+.jj-gallery-page {
+  min-height: 100vh;
+  background: #ffffff;
+  color: #111827;
+}
+
+.jj-gallery-hero {
+  padding: 85px 6%;
+  background:
+    radial-gradient(circle at top left, rgba(212, 175, 55, 0.22), transparent 35%),
+    linear-gradient(135deg, #030712, #111827);
+  color: #ffffff;
+  text-align: center;
+}
+
+.jj-gallery-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #d4af37;
+  text-decoration: none;
+  font-weight: 900;
+  margin-bottom: 35px;
+}
+
+.jj-gallery-hero small {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #d4af37;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+.jj-gallery-hero h1 {
+  margin: 14px 0;
+  font-size: clamp(42px, 7vw, 78px);
+  font-weight: 950;
+  line-height: 1;
+}
+
+.jj-gallery-hero p {
+  max-width: 720px;
+  margin: 0 auto;
+  color: #d1d5db;
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+.jj-gallery-section {
+  padding: 80px 6%;
+  background: #fdfbf7;
+}
+
+.jj-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+}
+
+.jj-gallery-card {
+  background: #ffffff;
+  border-radius: 28px;
+  overflow: hidden;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.jj-gallery-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 30px 75px rgba(212, 175, 55, 0.18);
+}
+
+.jj-gallery-card img,
+.jj-gallery-placeholder {
+  width: 100%;
+  height: 320px;
+  object-fit: cover;
+  background: #111827;
+}
+
+.jj-gallery-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #d4af37;
+}
+
+.jj-gallery-card-body {
+  padding: 24px;
+}
+
+.jj-gallery-card-body span {
+  display: inline-flex;
+  background: rgba(212, 175, 55, 0.14);
+  color: #92400e;
+  border-radius: 999px;
+  padding: 8px 13px;
+  font-size: 12px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 14px;
+}
+
+.jj-gallery-card-body h3 {
+  margin: 0;
+  font-size: 21px;
+  font-weight: 950;
+  color: #111827;
+}
+
+.jj-gallery-card-body p {
+  margin: 10px 0 0;
+  color: #4b5563;
+  line-height: 1.7;
+}
+
+.jj-gallery-empty {
+  text-align: center;
+  font-weight: 900;
+  color: #6b7280;
+  padding: 50px 20px;
+}
+
+/* Mobile Gallery */
+@media (max-width: 1024px){
+  .jj-gallery-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px){
+  .jj-gallery-hero {
+    padding: 65px 20px;
+  }
+
+  .jj-gallery-section {
+    padding: 55px 20px;
+  }
+
+  .jj-gallery-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .jj-gallery-card {
+    border-radius: 22px;
+  }
+
+  .jj-gallery-card img,
+  .jj-gallery-placeholder {
+    height: 280px;
+  }
+}
+/* ================================
+   Jayluxe Professional Bridal Page
+================================ */
+
+.jl-bridal-page {
+  min-height: 100vh;
+  background: #fffaf0;
+  color: #111827;
+}
+
+
+
+
+
+
+
+
+
+
+
+.jl-bridal-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #f8e7a1;
+  text-decoration: none;
+  font-weight: 900;
+  margin-bottom: 70px;
+}
+
+
+
+.jl-bridal-badge,
+.jl-bridal-intro span,
+.jl-bridal-showcase-content span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #d4af37;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+.jl-bridal-badge {
+  padding: 11px 17px;
+  border-radius: 999px;
+  border: 1px solid rgba(212, 175, 55, 0.45);
+  background: rgba(212, 175, 55, 0.12);
+  backdrop-filter: blur(12px);
+}
+
+
+
+
+
+
+
+.jl-bridal-btn,
+.jl-bridal-book {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: 999px;
+  padding: 15px 22px;
+  text-decoration: none;
+  font-weight: 950;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.jl-bridal-btn.gold,
+.jl-bridal-book {
+  background: #d4af37;
+  color: #111827;
+  box-shadow: 0 18px 42px rgba(212, 175, 55, 0.28);
+}
+
+.jl-bridal-btn.outline {
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.jl-bridal-btn:hover,
+.jl-bridal-book:hover {
+  transform: translateY(-3px);
+}
+
+
+
+
+
+
+
+
+
+
+
+.jl-bridal-intro {
+  max-width: 780px;
+  margin: 0 auto 42px;
+  text-align: center;
+  padding: 0 20px;
+}
+
+.jl-bridal-intro.compact {
+  margin-bottom: 30px;
+}
+
+.jl-bridal-intro h2 {
+  margin: 14px 0;
+  color: #111827;
+  font-size: clamp(34px, 5vw, 62px);
+  line-height: 1.04;
+  letter-spacing: -0.045em;
+  font-weight: 950;
+}
+
+.jl-bridal-intro p {
+  color: #6b7280;
+  font-size: 17px;
+  line-height: 1.75;
+  margin: 0;
+}
+
+.jl-bridal-packages {
+  padding: 0 6% 90px;
+}
+
+.jl-bridal-grid {
+  max-width: 1220px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+}
+
+.jl-bridal-grid.single {
+  grid-template-columns: minmax(0, 430px);
+  justify-content: center;
+}
+
+.jl-bridal-card {
+  position: relative;
+  background: #ffffff;
+  border-radius: 32px;
+  overflow: hidden;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  box-shadow: 0 26px 70px rgba(15, 23, 42, 0.1);
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.jl-bridal-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 34px 90px rgba(212, 175, 55, 0.18);
+}
+
+.jl-bridal-card.popular {
+  border-color: rgba(212, 175, 55, 0.85);
+}
+
+.jl-popular-badge {
+  position: absolute;
+  z-index: 3;
+  top: 18px;
+  right: 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #d4af37;
+  color: #111827;
+  border-radius: 999px;
+  padding: 9px 13px;
+  font-size: 12px;
+  font-weight: 950;
+}
+
+.jl-bridal-card-image {
+  height: 250px;
+  background: #111827;
+}
+
+.jl-bridal-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.jl-bridal-card-body {
+  padding: 26px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.jl-bridal-card-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+
+.jl-bridal-card-top span {
+  color: #92400e;
+  font-size: 12px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.jl-bridal-card-top h3 {
+  margin: 8px 0 0;
+  font-size: 23px;
+  line-height: 1.18;
+  color: #111827;
+  font-weight: 950;
+}
+
+.jl-bridal-card-top strong {
+  color: #d4af37;
+  font-size: 21px;
+  white-space: nowrap;
+  font-weight: 950;
+}
+
+.jl-bridal-desc {
+  color: #4b5563;
+  line-height: 1.72;
+  margin: 0 0 18px;
+}
+
+.jl-bridal-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px;
+  display: grid;
+  gap: 11px;
+  flex: 1;
+}
+
+.jl-bridal-features li {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  color: #374151;
+  line-height: 1.45;
+  font-weight: 700;
+}
+
+.jl-bridal-features svg {
+  color: #d4af37;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.jl-bridal-book {
+  width: 100%;
+}
+
+.jl-bridal-message {
+  max-width: 650px;
+  margin: 0 auto;
+  background: #ffffff;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 24px;
+  padding: 30px;
+  text-align: center;
+  font-weight: 900;
+  color: #6b7280;
+}
+
+.jl-bridal-message.error {
+  color: #991b1b;
+  background: #fee2e2;
+}
+
+.jl-skeleton {
+  background: linear-gradient(90deg, #f3f4f6, #e5e7eb, #f3f4f6);
+  background-size: 200% 100%;
+  animation: jlPulse 1.4s infinite;
+  border-radius: 16px;
+}
+
+.jl-skeleton.image {
+  height: 250px;
+  border-radius: 0;
+}
+
+.jl-skeleton.line {
+  height: 18px;
+  margin: 16px 24px;
+}
+
+.jl-skeleton.line.wide {
+  height: 28px;
+}
+
+.jl-skeleton.line.short {
+  width: 60%;
+}
+
+.jl-skeleton.button {
+  height: 50px;
+  margin: auto 24px 24px;
+  border-radius: 999px;
+}
+
+@keyframes jlPulse {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.jl-bridal-compare {
+  padding: 80px 6%;
+  background: #ffffff;
+}
+
+.jl-compare-table-wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  overflow-x: auto;
+  border-radius: 26px;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  box-shadow: 0 26px 70px rgba(15, 23, 42, 0.08);
+}
+
+.jl-compare-table {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+  background: #ffffff;
+}
+
+.jl-compare-table th {
+  background: #111827;
+  color: #d4af37;
+  padding: 18px;
+  text-align: center;
+}
+
+.jl-compare-table th:first-child,
+.jl-compare-table td:first-child {
+  text-align: left;
+}
+
+.jl-compare-table td {
+  padding: 17px;
+  border-bottom: 1px solid #f3f4f6;
+  text-align: center;
+  font-weight: 800;
+}
+
+.jl-check {
+  color: #16a34a;
+}
+
+.jl-x {
+  color: #dc2626;
+}
+
+.jl-bridal-showcase {
+  padding: 90px 6%;
+  background:
+    radial-gradient(circle at top left, rgba(212, 175, 55, 0.16), transparent 35%),
+    linear-gradient(135deg, #030712, #111827);
+}
+
+.jl-bridal-showcase-card {
+  max-width: 1180px;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 34px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  box-shadow: 0 34px 90px rgba(0, 0, 0, 0.3);
+}
+
+.jl-bridal-showcase-image {
+  position: relative;
+  min-height: 460px;
+}
+
+.jl-bridal-showcase-content {
+  padding: clamp(34px, 5vw, 70px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.jl-bridal-showcase-content blockquote {
+  margin: 20px 0;
+  font-size: clamp(24px, 3vw, 42px);
+  line-height: 1.2;
+  font-weight: 950;
+  color: #111827;
+  letter-spacing: -0.04em;
+}
+
+.jl-bridal-showcase-content cite {
+  color: #6b7280;
+  font-style: normal;
+  font-weight: 900;
+  margin-bottom: 28px;
+}
+
+.jl-bridal-faq {
+  padding: 90px 6%;
+  background: #fffaf0;
+}
+
+.jl-faq-grid {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+
+.jl-faq-grid article {
+  background: #ffffff;
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  border-radius: 26px;
+  padding: 28px;
+  box-shadow: 0 22px 60px rgba(15, 23, 42, 0.07);
+}
+
+.jl-faq-grid h3 {
+  margin: 0 0 10px;
+  font-size: 20px;
+  font-weight: 950;
+}
+
+.jl-faq-grid p {
+  margin: 0;
+  color: #6b7280;
+  line-height: 1.7;
+}
+
+.jl-bridal-final-cta {
+  margin: 0 6% 80px;
+  border-radius: 34px;
+  padding: 70px 30px;
+  text-align: center;
+  color: #ffffff;
+  background:
+    radial-gradient(circle at top left, rgba(212, 175, 55, 0.2), transparent 36%),
+    linear-gradient(135deg, #111827, #030712);
+}
+
+.jl-bridal-final-cta h2 {
+  max-width: 760px;
+  margin: 0 auto 14px;
+  font-size: clamp(32px, 5vw, 56px);
+  line-height: 1.05;
+  font-weight: 950;
+  letter-spacing: -0.04em;
+}
+
+.jl-bridal-final-cta p {
+  max-width: 620px;
+  margin: 0 auto 28px;
+  color: #d1d5db;
+  line-height: 1.75;
+}
+
+/* Responsive */
+@media (max-width: 1100px){
+  
+
+  .jl-bridal-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .jl-bridal-showcase-card {
+    grid-template-columns: 1fr;
+  }
+
+  .jl-faq-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px){
+  
+
+  
+
+  .jl-bridal-back {
+    margin-bottom: 42px;
+  }
+
+  
+
+  .jl-bridal-btn,
+  .jl-bridal-book {
+    width: 100%;
+  }
+
+  
+
+  .jl-bridal-packages,
+  .jl-bridal-compare,
+  .jl-bridal-showcase,
+  .jl-bridal-faq {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .jl-bridal-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .jl-bridal-card {
+    border-radius: 26px;
+  }
+
+  .jl-bridal-card-top {
+    flex-direction: column;
+  }
+
+  .jl-bridal-showcase-image {
+    min-height: 300px;
+  }
+
+  .jl-bridal-final-cta {
+    margin: 0 20px 70px;
+    padding: 48px 20px;
+    border-radius: 26px;
+  }
+}
+/* ================================
+   Jayluxe Professional Gallery Page
+================================ */
+
+.jl-gallery-page {
+  min-height: 100vh;
+  background: #fffaf0;
+  color: #111827;
+}
+
+.jl-gallery-hero {
+  position: relative;
+  min-height: 620px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at top left, rgba(212, 175, 55, 0.25), transparent 35%),
+    linear-gradient(135deg, #030712, #111827);
+}
+
+.jl-gallery-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(3, 7, 18, 0.96), rgba(3, 7, 18, 0.72)),
+    url("/hero-banner.png");
+  background-size: cover;
+  background-position: center;
+  opacity: 0.9;
+}
+
+.jl-gallery-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 20%, rgba(212, 175, 55, 0.22), transparent 34%);
+  z-index: 1;
+}
+
+.jl-gallery-hero-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding: 44px 6% 90px;
+}
+
+.jl-gallery-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #f8e7a1;
+  text-decoration: none;
+  font-weight: 900;
+  margin-bottom: 70px;
+}
+
+.jl-gallery-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #d4af37;
+  border: 1px solid rgba(212, 175, 55, 0.45);
+  background: rgba(212, 175, 55, 0.12);
+  border-radius: 999px;
+  padding: 11px 17px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+.jl-gallery-hero h1 {
+  max-width: 820px;
+  margin: 24px 0 18px;
+  color: #ffffff;
+  font-size: clamp(48px, 8vw, 96px);
+  line-height: 0.95;
+  letter-spacing: -0.06em;
+  font-weight: 950;
+}
+
+.jl-gallery-hero p {
+  max-width: 650px;
+  margin: 0;
+  color: #e5e7eb;
+  font-size: 18px;
+  line-height: 1.8;
+}
+
+.jl-gallery-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 34px;
+}
+
+.jl-gallery-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-decoration: none;
+  border-radius: 999px;
+  padding: 15px 22px;
+  font-weight: 950;
+}
+
+.jl-gallery-btn.gold {
+  background: #d4af37;
+  color: #111827;
+  box-shadow: 0 18px 42px rgba(212, 175, 55, 0.28);
+}
+
+.jl-gallery-btn.outline {
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.jl-gallery-stats {
+  width: min(1180px, 88%);
+  margin: -70px auto 80px;
+  position: relative;
+  z-index: 5;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.jl-gallery-stats div {
+  background: #ffffff;
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  border-radius: 24px;
+  padding: 26px 20px;
+  text-align: center;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.12);
+}
+
+.jl-gallery-stats strong {
+  display: block;
+  color: #d4af37;
+  font-size: 32px;
+  font-weight: 950;
+}
+
+.jl-gallery-stats span {
+  color: #4b5563;
+  font-weight: 850;
+  font-size: 14px;
+}
+
+.jl-gallery-section {
+  padding: 0 6% 90px;
+}
+
+.jl-gallery-heading {
+  max-width: 760px;
+  margin: 0 auto 34px;
+  text-align: center;
+}
+
+.jl-gallery-heading span {
+  color: #d4af37;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+.jl-gallery-heading h2 {
+  margin: 12px 0;
+  font-size: clamp(34px, 5vw, 62px);
+  line-height: 1.04;
+  font-weight: 950;
+  letter-spacing: -0.045em;
+}
+
+.jl-gallery-heading p {
+  color: #6b7280;
+  line-height: 1.75;
+  font-size: 17px;
+}
+
+.jl-gallery-toolbar {
+  max-width: 1180px;
+  margin: 0 auto 34px;
+  display: grid;
+  gap: 18px;
+}
+
+.jl-gallery-search {
+  background: #ffffff;
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 999px;
+  min-height: 62px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 18px;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
+}
+
+.jl-gallery-search svg {
+  color: #d4af37;
+  flex-shrink: 0;
+}
+
+.jl-gallery-search input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  background: transparent;
+  color: #111827;
+  font-weight: 750;
+}
+
+.jl-gallery-search button {
+  border: none;
+  background: #111827;
+  color: #ffffff;
+  border-radius: 999px;
+  width: 34px;
+  height: 34px;
+  cursor: pointer;
+}
+
+.jl-gallery-filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.jl-gallery-filters button {
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  background: #ffffff;
+  color: #111827;
+  border-radius: 999px;
+  padding: 11px 15px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.jl-gallery-filters button.active,
+.jl-gallery-filters button:hover {
+  background: #111827;
+  color: #d4af37;
+}
+
+.jl-gallery-grid {
+  max-width: 1220px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+}
+
+.jl-gallery-card {
+  background: #ffffff;
+  border-radius: 30px;
+  overflow: hidden;
+  border: 1px solid rgba(212, 175, 55, 0.24);
+  box-shadow: 0 26px 70px rgba(15, 23, 42, 0.1);
+  cursor: pointer;
+  transition: transform 0.24s ease, box-shadow 0.24s ease;
+}
+
+.jl-gallery-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 34px 90px rgba(212, 175, 55, 0.18);
+}
+
+.jl-gallery-image {
+  position: relative;
+  height: 330px;
+  background: #111827;
+  overflow: hidden;
+}
+
+.jl-gallery-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.35s ease;
+}
+
+.jl-gallery-card:hover .jl-gallery-image img {
+  transform: scale(1.06);
+}
+
+.jl-gallery-image span {
+  position: absolute;
+  left: 18px;
+  top: 18px;
+  background: #d4af37;
+  color: #111827;
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 950;
+}
+
+.jl-gallery-placeholder {
+  width: 100%;
+  height: 100%;
+  color: #d4af37;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.jl-gallery-card-body {
+  padding: 24px;
+}
+
+.jl-gallery-card-body h3 {
+  margin: 0;
+  color: #111827;
+  font-size: 21px;
+  line-height: 1.24;
+  font-weight: 950;
+}
+
+.jl-gallery-card-body p {
+  color: #6b7280;
+  line-height: 1.65;
+  margin: 10px 0 18px;
+}
+
+.jl-gallery-card-body button {
+  border: none;
+  color: #92400e;
+  background: rgba(212, 175, 55, 0.14);
+  border-radius: 999px;
+  padding: 10px 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 950;
+}
+
+.jl-gallery-empty {
+  max-width: 620px;
+  margin: 40px auto;
+  text-align: center;
+  background: #ffffff;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 26px;
+  padding: 34px;
+  font-weight: 900;
+  color: #6b7280;
+}
+
+.jl-pagination {
+  margin: 42px auto 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.jl-pagination button {
+  border: none;
+  background: #111827;
+  color: #ffffff;
+  border-radius: 999px;
+  padding: 12px 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 950;
+  cursor: pointer;
+}
+
+.jl-pagination button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.jl-pagination span {
+  font-weight: 950;
+  color: #111827;
+}
+
+.jl-gallery-cta {
+  margin: 0 6% 90px;
+  border-radius: 34px;
+  padding: 70px 30px;
+  text-align: center;
+  color: #ffffff;
+  background:
+    radial-gradient(circle at top left, rgba(212, 175, 55, 0.22), transparent 36%),
+    linear-gradient(135deg, #111827, #030712);
+}
+
+.jl-gallery-cta h2 {
+  max-width: 760px;
+  margin: 0 auto 14px;
+  font-size: clamp(34px, 5vw, 58px);
+  line-height: 1.05;
+  font-weight: 950;
+}
+
+.jl-gallery-cta p {
+  max-width: 620px;
+  margin: 0 auto 28px;
+  color: #d1d5db;
+  line-height: 1.75;
+}
+
+.jl-gallery-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(3, 7, 18, 0.88);
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.jl-gallery-modal-card {
+  position: relative;
+  width: min(1100px, 100%);
+  max-height: 90vh;
+  background: #ffffff;
+  border-radius: 30px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  box-shadow: 0 34px 100px rgba(0, 0, 0, 0.5);
+}
+
+.jl-gallery-modal-close {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  z-index: 5;
+  border: none;
+  background: #111827;
+  color: #ffffff;
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.jl-gallery-modal-image {
+  min-height: 560px;
+  background: #111827;
+}
+
+.jl-gallery-modal-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.jl-gallery-modal-info {
+  padding: 46px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.jl-gallery-modal-info span {
+  color: #d4af37;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.jl-gallery-modal-info h3 {
+  margin: 14px 0;
+  font-size: clamp(30px, 4vw, 48px);
+  line-height: 1.05;
+  font-weight: 950;
+}
+
+.jl-gallery-modal-info p {
+  color: #6b7280;
+  line-height: 1.75;
+}
+
+.jl-gallery-modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.jl-gallery-modal-actions button,
+.jl-gallery-modal-actions a {
+  border: none;
+  text-decoration: none;
+  border-radius: 999px;
+  padding: 12px 17px;
+  font-weight: 950;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.jl-gallery-modal-actions button {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.jl-gallery-modal-actions a {
+  background: #d4af37;
+  color: #111827;
+}
+
+.jl-gallery-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  background: #d4af37;
+  color: #111827;
+  cursor: pointer;
+}
+
+.jl-gallery-nav.prev {
+  left: 16px;
+}
+
+.jl-gallery-nav.next {
+  right: 16px;
+}
+
+.jl-gallery-card.skeleton {
+  height: 420px;
+  background: linear-gradient(90deg, #f3f4f6, #e5e7eb, #f3f4f6);
+  background-size: 200% 100%;
+  animation: jlGalleryPulse 1.4s infinite;
+}
+
+@keyframes jlGalleryPulse {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Mobile */
+@media (max-width: 1100px){
+  .jl-gallery-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .jl-gallery-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .jl-gallery-modal-card {
+    grid-template-columns: 1fr;
+    overflow-y: auto;
+  }
+
+  .jl-gallery-modal-image {
+    min-height: 360px;
+  }
+}
+
+@media (max-width: 700px){
+  .jl-gallery-hero {
+    min-height: 600px;
+  }
+
+  .jl-gallery-hero-content {
+    padding: 28px 20px 78px;
+  }
+
+  .jl-gallery-back {
+    margin-bottom: 46px;
+  }
+
+  .jl-gallery-hero-actions,
+  .jl-gallery-btn {
+    width: 100%;
+  }
+
+  .jl-gallery-stats {
+    width: calc(100% - 40px);
+    grid-template-columns: 1fr;
+    margin-top: -55px;
+    margin-bottom: 58px;
+  }
+
+  .jl-gallery-section {
+    padding: 0 20px 70px;
+  }
+
+  .jl-gallery-filters {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: flex-start;
+    padding-bottom: 8px;
+  }
+
+  .jl-gallery-filters button {
+    white-space: nowrap;
+  }
+
+  .jl-gallery-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .jl-gallery-image {
+    height: 300px;
+  }
+
+  .jl-gallery-cta {
+    margin: 0 20px 70px;
+    padding: 48px 20px;
+    border-radius: 26px;
+  }
+
+  .jl-gallery-modal {
+    padding: 12px;
+  }
+
+  .jl-gallery-modal-card {
+    border-radius: 22px;
+  }
+
+  .jl-gallery-modal-info {
+    padding: 28px;
+  }
+
+  .jl-gallery-modal-actions a,
+  .jl-gallery-modal-actions button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+/* ================================
+   Jayluxe Bridal Booking Page
+================================ */
+
+.jl-bridal-booking-page {
+  min-height: 100vh;
+  background: #fffaf0;
+  color: #111827;
+}
+
+.jl-bridal-booking-hero {
+  padding: 80px 6%;
+  background:
+    radial-gradient(circle at top left, rgba(212, 175, 55, 0.22), transparent 35%),
+    linear-gradient(135deg, #030712, #111827);
+  color: #ffffff;
+  text-align: center;
+}
+
+.jl-bridal-booking-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #f8e7a1;
+  text-decoration: none;
+  font-weight: 900;
+  margin-bottom: 36px;
+}
+
+.jl-bridal-booking-hero span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #d4af37;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+.jl-bridal-booking-hero h1 {
+  max-width: 850px;
+  margin: 18px auto;
+  font-size: clamp(40px, 7vw, 76px);
+  line-height: 1;
+  font-weight: 950;
+  letter-spacing: -0.05em;
+}
+
+.jl-bridal-booking-hero p {
+  max-width: 650px;
+  margin: 0 auto;
+  color: #d1d5db;
+  font-size: 18px;
+  line-height: 1.75;
+}
+
+.jl-bridal-booking-wrap {
+  width: min(1180px, 88%);
+  margin: -45px auto 90px;
+  position: relative;
+  z-index: 4;
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  gap: 28px;
+  align-items: start;
+}
+
+.jl-bridal-booking-card,
+.jl-bridal-booking-form {
+  background: #ffffff;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 30px;
+  box-shadow: 0 26px 70px rgba(15, 23, 42, 0.12);
+}
+
+.jl-bridal-booking-card {
+  padding: 30px;
+  position: sticky;
+  top: 20px;
+}
+
+.jl-bridal-booking-label {
+  display: inline-flex;
+  color: #92400e;
+  background: rgba(212, 175, 55, 0.14);
+  border-radius: 999px;
+  padding: 8px 13px;
+  font-size: 12px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.jl-bridal-booking-card h2 {
+  margin: 18px 0 10px;
+  font-size: 34px;
+  line-height: 1.05;
+  font-weight: 950;
+}
+
+.jl-bridal-booking-card strong {
+  display: block;
+  color: #d4af37;
+  font-size: 28px;
+  font-weight: 950;
+  margin-bottom: 16px;
+}
+
+.jl-bridal-booking-card p {
+  color: #6b7280;
+  line-height: 1.75;
+}
+
+.jl-bridal-booking-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 22px 0;
+  display: grid;
+  gap: 12px;
+}
+
+.jl-bridal-booking-card li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: #374151;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.jl-bridal-booking-card li svg {
+  color: #d4af37;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.jl-bridal-booking-note {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #111827;
+  color: #f8e7a1;
+  border-radius: 18px;
+  padding: 16px;
+  font-weight: 900;
+}
+
+.jl-bridal-booking-form {
+  padding: 30px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.jl-bridal-booking-form .full {
+  grid-column: 1 / -1;
+}
+
+.jl-bridal-booking-form label {
+  display: block;
+  font-size: 13px;
+  font-weight: 950;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.jl-bridal-booking-form input,
+.jl-bridal-booking-form select,
+.jl-bridal-booking-form textarea {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  color: #111827;
+  border-radius: 16px;
+  padding: 14px 15px;
+  outline: none;
+  font-size: 15px;
+}
+
+.jl-bridal-booking-form input:focus,
+.jl-bridal-booking-form select:focus,
+.jl-bridal-booking-form textarea:focus {
+  border-color: #d4af37;
+  box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.16);
+}
+
+.jl-bridal-booking-form button {
+  grid-column: 1 / -1;
+  border: none;
+  border-radius: 999px;
+  background: #d4af37;
+  color: #111827;
+  padding: 16px 22px;
+  font-size: 16px;
+  font-weight: 950;
+  cursor: pointer;
+  box-shadow: 0 18px 42px rgba(212, 175, 55, 0.25);
+}
+
+.jl-bridal-booking-form button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.jl-bridal-booking-success {
+  grid-column: 1 / -1;
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid #86efac;
+  border-radius: 18px;
+  padding: 15px;
+  font-weight: 900;
+}
+
+@media (max-width: 900px){
+  .jl-bridal-booking-wrap {
+    grid-template-columns: 1fr;
+  }
+
+  .jl-bridal-booking-card {
+    position: static;
+  }
+}
+
+@media (max-width: 640px){
+  .jl-bridal-booking-hero {
+    padding: 60px 20px;
+  }
+
+  .jl-bridal-booking-wrap {
+    width: calc(100% - 40px);
+    margin-bottom: 80px;
+  }
+
+  .jl-bridal-booking-form {
+    grid-template-columns: 1fr;
+    padding: 22px;
+    border-radius: 24px;
+  }
+
+  .jl-bridal-booking-card {
+    padding: 22px;
+    border-radius: 24px;
+  }
+}
+/* ================================
+   Jayluxe Professional Services Page
+================================ */
+
+.jl-services-page {
+  min-height: 100vh;
+  background: #fffaf0;
+  color: #111827;
+}
+
+
+
+.jl-services-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: #ffffff;
+}
+
+.jl-services-logo img {
+  object-fit: contain;
+}
+
+.jl-services-logo strong {
+  display: block;
+  color: #f8e7a1;
+  font-size: 25px;
+  font-weight: 950;
+  line-height: 1;
+}
+
+.jl-services-logo span {
+  color: #d1d5db;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+
+
+
+
+
+
+
+
+.jl-services-hero {
+  position: relative;
+  min-height: 640px;
+  display: flex;
+  align-items: center;
+  background:
+    radial-gradient(circle at top left, rgba(212, 175, 55, 0.24), transparent 35%),
+    linear-gradient(135deg, #030712, #111827);
+  overflow: hidden;
+}
+
+.jl-services-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(3, 7, 18, 0.98), rgba(3, 7, 18, 0.72)),
+    url("/hero-banner.png");
+  background-size: cover;
+  background-position: center;
+  opacity: 0.82;
+}
+
+.jl-services-hero-content {
+  position: relative;
+  z-index: 2;
+  padding: 46px 6% 90px;
+  max-width: 920px;
+}
+
+.jl-services-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #f8e7a1;
+  text-decoration: none;
+  font-weight: 900;
+  margin-bottom: 56px;
+}
+
+.jl-services-badge,
+.jl-services-section-head span,
+.jl-booking-placeholder span,
+.jl-form-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #d4af37;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+.jl-services-badge {
+  border: 1px solid rgba(212, 175, 55, 0.45);
+  background: rgba(212, 175, 55, 0.12);
+  border-radius: 999px;
+  padding: 11px 17px;
+}
+
+.jl-services-hero h1 {
+  margin: 24px 0 18px;
+  color: #ffffff;
+  font-size: clamp(42px, 7vw, 88px);
+  line-height: 0.98;
+  letter-spacing: -0.06em;
+  font-weight: 950;
+}
+
+.jl-services-hero p {
+  max-width: 680px;
+  color: #e5e7eb;
+  font-size: 18px;
+  line-height: 1.8;
+  margin: 0;
+}
+
+.jl-services-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 34px;
+}
+
+.jl-services-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-decoration: none;
+  border-radius: 999px;
+  padding: 15px 22px;
+  font-weight: 950;
+}
+
+.jl-services-btn.gold {
+  background: #d4af37;
+  color: #111827;
+  box-shadow: 0 18px 42px rgba(212, 175, 55, 0.28);
+}
+
+.jl-services-btn.outline {
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.jl-services-trust {
+  width: min(1180px, 88%);
+  margin: -70px auto 80px;
+  position: relative;
+  z-index: 4;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.jl-services-trust div {
+  background: #ffffff;
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.12);
+}
+
+.jl-services-trust svg {
+  color: #d4af37;
+  margin-bottom: 12px;
+}
+
+.jl-services-trust strong {
+  display: block;
+  font-size: 16px;
+  font-weight: 950;
+  margin-bottom: 6px;
+}
+
+.jl-services-trust span {
+  color: #6b7280;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.jl-services-featured,
+.jl-services-list-section,
+.jl-booking-section {
+  padding: 0 6% 90px;
+}
+
+.jl-services-section-head {
+  max-width: 760px;
+  margin: 0 auto 34px;
+  text-align: center;
+}
+
+.jl-services-section-head h2 {
+  margin: 12px 0;
+  font-size: clamp(34px, 5vw, 62px);
+  line-height: 1.04;
+  font-weight: 950;
+  letter-spacing: -0.045em;
+}
+
+.jl-services-section-head p {
+  color: #6b7280;
+  line-height: 1.75;
+  font-size: 17px;
+}
+
+.jl-services-featured-grid,
+.jl-services-grid {
+  max-width: 1220px;
+  margin: 0 auto;
+  display: grid;
+  gap: 28px;
+}
+
+.jl-services-featured-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.jl-featured-service,
+.jl-service-card,
+.jl-booking-placeholder,
+.jl-booking-success,
+.jl-booking-summary,
+.jl-booking-form {
+  background: #ffffff;
+  border: 1px solid rgba(212, 175, 55, 0.24);
+  border-radius: 30px;
+  box-shadow: 0 26px 70px rgba(15, 23, 42, 0.1);
+}
+
+.jl-featured-service {
+  overflow: hidden;
+}
+
+.jl-featured-service img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  background: #111827;
+}
+
+.jl-featured-service div {
+  padding: 24px;
+}
+
+.jl-featured-service span,
+.jl-booking-summary span {
+  color: #92400e;
+  background: rgba(212, 175, 55, 0.14);
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.jl-featured-service h3,
+.jl-service-card h3,
+.jl-booking-summary h2 {
+  margin: 14px 0 10px;
+  font-size: 23px;
+  line-height: 1.2;
+  font-weight: 950;
+}
+
+.jl-featured-service strong,
+.jl-service-footer strong,
+.jl-booking-summary strong {
+  display: block;
+  color: #d4af37;
+  font-size: 22px;
+  font-weight: 950;
+  margin-bottom: 18px;
+}
+
+.jl-featured-service button,
+.jl-service-footer button,
+.jl-booking-summary button,
+.jl-booking-success button,
+.jl-booking-form button {
+  border: none;
+  border-radius: 999px;
+  background: #d4af37;
+  color: #111827;
+  padding: 13px 18px;
+  font-weight: 950;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.jl-services-toolbar {
+  max-width: 1180px;
+  margin: 0 auto 34px;
+  display: grid;
+  gap: 18px;
+}
+
+.jl-services-search {
+  background: #ffffff;
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 999px;
+  min-height: 62px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 18px;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
+}
+
+.jl-services-search svg {
+  color: #d4af37;
+  flex-shrink: 0;
+}
+
+.jl-services-search input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  background: transparent;
+  color: #111827;
+  font-weight: 750;
+}
+
+.jl-services-search button {
+  border: none;
+  background: #111827;
+  color: #ffffff;
+  border-radius: 999px;
+  width: 34px;
+  height: 34px;
+  cursor: pointer;
+}
+
+.jl-services-categories {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.jl-services-categories button {
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  background: #ffffff;
+  color: #111827;
+  border-radius: 999px;
+  padding: 11px 15px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.jl-services-categories button.active,
+.jl-services-categories button:hover {
+  background: #111827;
+  color: #d4af37;
+}
+
+.jl-services-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.jl-service-card {
+  overflow: hidden;
+  transition: transform 0.24s ease, box-shadow 0.24s ease;
+}
+
+.jl-service-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 34px 90px rgba(212, 175, 55, 0.18);
+}
+
+.jl-service-image {
+  position: relative;
+  height: 280px;
+  background: #111827;
+}
+
+.jl-service-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.jl-service-image span {
+  position: absolute;
+  left: 18px;
+  top: 18px;
+  background: #d4af37;
+  color: #111827;
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 950;
+}
+
+.jl-service-body {
+  padding: 24px;
+}
+
+.jl-service-body p {
+  color: #6b7280;
+  line-height: 1.65;
+  margin: 0 0 18px;
+}
+
+.jl-service-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.jl-service-footer strong {
+  margin: 0;
+}
+
+.jl-services-empty {
+  max-width: 620px;
+  margin: 40px auto;
+  text-align: center;
+  background: #ffffff;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 26px;
+  padding: 34px;
+  color: #6b7280;
+}
+
+.jl-services-empty svg {
+  color: #d4af37;
+}
+
+.jl-services-empty h3 {
+  margin: 14px 0 8px;
+  color: #111827;
+  font-size: 24px;
+  font-weight: 950;
+}
+
+.jl-booking-placeholder,
+.jl-booking-success {
+  max-width: 850px;
+  margin: 0 auto;
+  padding: 44px;
+  text-align: center;
+}
+
+.jl-booking-placeholder h2,
+.jl-booking-success h2 {
+  max-width: 680px;
+  margin: 14px auto;
+  font-size: clamp(30px, 4vw, 48px);
+  line-height: 1.08;
+  font-weight: 950;
+}
+
+.jl-booking-placeholder p,
+.jl-booking-success p,
+.jl-booking-success small {
+  color: #6b7280;
+  line-height: 1.75;
+}
+
+.jl-booking-success div {
+  font-size: 50px;
+}
+
+.jl-booking-layout {
+  max-width: 1180px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  gap: 28px;
+  align-items: start;
+}
+
+.jl-booking-summary {
+  padding: 24px;
+  position: sticky;
+  top: 90px;
+}
+
+.jl-booking-summary > button {
+  background: #f3f4f6;
+  color: #111827;
+  margin-bottom: 18px;
+}
+
+.jl-booking-summary img {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  background: #111827;
+  border-radius: 22px;
+  margin-bottom: 20px;
+}
+
+.jl-booking-summary p {
+  color: #6b7280;
+  line-height: 1.7;
+}
+
+.jl-booking-form {
+  padding: 30px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+}
+
+.jl-booking-form .full {
+  grid-column: 1 / -1;
+}
+
+.jl-booking-form h2 {
+  margin: 12px 0 0;
+  font-size: clamp(28px, 4vw, 42px);
+  line-height: 1.08;
+  font-weight: 950;
+}
+
+.jl-booking-form label {
+  display: block;
+  font-size: 13px;
+  font-weight: 950;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.jl-booking-form input,
+.jl-booking-form textarea {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  color: #111827;
+  border-radius: 16px;
+  padding: 14px 15px;
+  outline: none;
+  font-size: 15px;
+}
+
+.jl-booking-form input:focus,
+.jl-booking-form textarea:focus {
+  border-color: #d4af37;
+  box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.16);
+}
+
+.jl-booking-form > button {
+  grid-column: 1 / -1;
+  width: 100%;
+  padding: 16px 22px;
+  font-size: 16px;
+  box-shadow: 0 18px 42px rgba(212, 175, 55, 0.25);
+}
+
+.jl-booking-form > button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.jl-services-final-cta {
+  margin: 0 6% 90px;
+  border-radius: 34px;
+  padding: 70px 30px;
+  text-align: center;
+  color: #ffffff;
+  background:
+    radial-gradient(circle at top left, rgba(212, 175, 55, 0.22), transparent 36%),
+    linear-gradient(135deg, #111827, #030712);
+}
+
+.jl-services-final-cta h2 {
+  max-width: 760px;
+  margin: 0 auto 14px;
+  font-size: clamp(34px, 5vw, 58px);
+  line-height: 1.05;
+  font-weight: 950;
+}
+
+.jl-services-final-cta p {
+  max-width: 620px;
+  margin: 0 auto 28px;
+  color: #d1d5db;
+  line-height: 1.75;
+}
+
+/* Responsive */
+@media (max-width: 1100px){
+  .jl-services-trust,
+  .jl-services-featured-grid,
+  .jl-services-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .jl-booking-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .jl-booking-summary {
+    position: static;
+  }
+}
+
+@media (max-width: 700px){
+  
+
+  .jl-services-logo span {
+    display: none;
+  }
+
+  
+
+  .jl-services-hero {
+    min-height: 620px;
+  }
+
+  .jl-services-hero-content {
+    padding: 28px 20px 80px;
+  }
+
+  .jl-services-back {
+    margin-bottom: 44px;
+  }
+
+  .jl-services-hero-actions,
+  .jl-services-btn {
+    width: 100%;
+  }
+
+  .jl-services-trust {
+    width: calc(100% - 40px);
+    grid-template-columns: 1fr;
+    margin-top: -55px;
+    margin-bottom: 58px;
+  }
+
+  .jl-services-featured,
+  .jl-services-list-section,
+  .jl-booking-section {
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 70px;
+  }
+
+  .jl-services-featured-grid,
+  .jl-services-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .jl-services-categories {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: flex-start;
+    padding-bottom: 8px;
+  }
+
+  .jl-services-categories button {
+    white-space: nowrap;
+  }
+
+  .jl-service-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .jl-service-footer button {
+    width: 100%;
+  }
+
+  .jl-booking-placeholder,
+  .jl-booking-success {
+    padding: 30px 22px;
+  }
+
+  .jl-booking-form {
+    grid-template-columns: 1fr;
+    padding: 22px;
+    border-radius: 24px;
+  }
+
+  .jl-booking-summary {
+    padding: 22px;
+    border-radius: 24px;
+  }
+
+  .jl-services-final-cta {
+    margin: 0 20px 80px;
+    padding: 48px 20px;
+    border-radius: 26px;
+  }
+}

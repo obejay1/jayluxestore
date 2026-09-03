@@ -35,9 +35,10 @@ async function hasPurchasedProduct(userId: string, email: string, productId: str
   return false;
 }
 
-export async function GET(_request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const productId = decodeURIComponent(params.id);
+    const { id } = await params;
+    const productId = decodeURIComponent(id);
     const reviews = await getPublishedReviews(productId);
     return NextResponse.json(
       { ok: true, reviews, summary: reviewSummary(reviews) },
@@ -49,14 +50,15 @@ export async function GET(_request: NextRequest, { params }: { params: { id: str
   }
 }
 
-export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const customer = await getVerifiedCustomer(request);
   if (!customer) {
     return NextResponse.json({ ok: false, message: 'Please sign in to review this product.' }, { status: 401 });
   }
 
   try {
-    const productId = decodeURIComponent(params.id);
+    const { id } = await params;
+    const productId = decodeURIComponent(id);
     const body = (await request.json().catch(() => ({}))) as { rating?: unknown; review?: unknown };
     const rating = Number(body.rating);
     const review = validReviewText(body.review);

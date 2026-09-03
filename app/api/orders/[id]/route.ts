@@ -17,9 +17,10 @@ function safeOrder(order: Order) {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
-  const orderId = params.id?.trim();
+  const { id } = await params;
+  const orderId = id?.trim();
   if (!orderId || orderId.length > 120) {
     return NextResponse.json({ message: 'Invalid order ID.' }, { status: 400 });
   }
@@ -31,7 +32,7 @@ export async function GET(
     }
 
     const order = { ...(snapshot.data() as Order), id: snapshot.id };
-    const suppliedAccessToken = request.nextUrl.searchParams.get('token');
+    const suppliedAccessToken = request.headers.get('x-order-access-token')?.trim() || '';
     const customer = await getVerifiedCustomer(request);
     let adminSession = false;
     try {

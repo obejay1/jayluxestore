@@ -1,4 +1,4 @@
-import { calculateEffectivePaidAmount } from './financialIntegrity';
+import { calculateEffectivePaid } from './financialIntegrity';
 
 export type InstallmentIntegrityIssue = {
   code: string;
@@ -12,7 +12,7 @@ export function validateInstallmentIntegrity(input: {
 }) {
   const issues: InstallmentIntegrityIssue[] = [];
 
-  const paid = calculateEffectivePaidAmount(input.payments, input.refunds || []);
+  const paid = calculateEffectivePaid(input.payments, input.refunds || []);
 
   if (input.totalAmount < 0) {
     issues.push({ code: 'INVALID_TOTAL', message: 'Installment total cannot be negative.' });

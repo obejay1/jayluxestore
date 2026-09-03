@@ -1,94 +1,82 @@
-import crypto from 'crypto';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
+import { createOpaySignature } from "@/lib/payments/opay";
 
-import { getSiteUrlString } from '@/lib/site';
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
-export const runtime = 'nodejs';
-
-export async function POST(request: NextRequest) {
-  if (process.env.OPAY_ENABLED !== 'true') {
-    return NextResponse.json(
-      { error: 'OPay is not enabled for this store.' },
-      { status: 503 },
-    );
-  }
-
+export async function POST(req: Request) {
   try {
-    const body = (await request.json()) as {
-      amount?: unknown;
-      email?: unknown;
-      name?: unknown;
-      phone?: unknown;
-      orderId?: unknown;
-    };
-    const amount = Number(body.amount);
-    const email = String(body.email ?? '').trim();
-    const name = String(body.name ?? '').trim();
-    const phone = String(body.phone ?? '').trim();
-    const orderId = String(body.orderId ?? '').trim();
+    const { amount, email, name, phone, orderId, productName } = await req.json();
 
-    if (!Number.isFinite(amount) || amount <= 0 || !email || !name || !phone || !orderId) {
-      return NextResponse.json({ error: 'Invalid OPay request.' }, { status: 400 });
-    }
-
-    const merchantId = process.env.OPAY_MERCHANT_ID?.trim();
-    const privateKey = process.env.OPAY_PRIVATE_KEY?.trim();
-    if (!merchantId || !privateKey) {
+    if (!amount || !orderId) {
       return NextResponse.json(
-        { error: 'OPay merchant credentials are not configured.' },
-        { status: 503 },
+        { error: "Missing payment information" },
+        { status: 400 }
       );
     }
 
-    const baseUrl = (process.env.OPAY_BASE_URL || 'https://liveapi.opayweb.com').replace(/\/$/, '');
-    const appUrl = getSiteUrlString();
-    const forwardedFor = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim();
+    const merchantId = process.env.OPAY_MERCHANT_ID;
+    const secret = process.env.OPAY_SECRET_KEY;
+    const baseUrl = process.env.OPAY_BASE_URL;
+
+    if (!merchantId || !secret || !baseUrl) {
+      return NextResponse.json(
+        { error: "OPay is not configured" },
+        { status: 503 }
+      );
+    }
 
     const payload = {
-      reference: orderId,
-      mchShortName: name,
-      productName: 'JayLuxe Order',
-      productDesc: 'JayLuxe ecommerce order',
-      userPhone: phone,
-      userRequestIp: forwardedFor || '127.0.0.1',
       amount: {
-        total: Math.round(amount * 100).toString(),
-        currency: 'NGN',
+        currency: "NGN",
+        total: Math.round(Number(amount)),
       },
-      returnUrl: `${appUrl}/opay/callback?orderId=${encodeURIComponent(orderId)}`,
-      callbackUrl: `${appUrl}/api/opay/webhook`,
-      customerName: name,
-      customerEmail: email,
-      customerPhone: phone,
+      callbackUrl:
+        process.env.OPAY_CALLBACK_URL ||
+        "https://jayluxestore.com/api/opay/webhook",
+      country: "NG",
+      reference: orderId,
+      product: {
+        name: productName || "Jayluxestore Order",
+        description: `Customer: ${name || email}`,
+      },
+      notify: {
+        notifyUserEmail: email,
+        notifyUserMobile: phone,
+        notifyUserName: name,
+      },
+      payMethod: "ReferenceCode",
     };
 
-    const signature = crypto
-      .createHmac('sha512', privateKey)
-      .update(JSON.stringify(payload))
-      .digest('hex');
+    const signature = createOpaySignature(payload, secret);
 
-    const response = await fetch(`${baseUrl}/api/v3/cashier/initialize`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${signature}`,
-        MerchantId: merchantId,
-      },
-      body: JSON.stringify(payload),
-      cache: 'no-store',
-    });
-    const data = (await response.json()) as { data?: { cashierUrl?: string } };
+    const response = await fetch(
+      `${baseUrl}/api/v1/international/payment/create`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${signature}`,
+          MerchantId: merchantId,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      }
+    );
 
-    if (!response.ok || !data.data?.cashierUrl) {
+    const data = await response.json();
+
+    if (!response.ok) {
       return NextResponse.json(
-        { error: 'Failed to initialize OPay.' },
-        { status: 400 },
+        { error: "OPay payment creation failed", details: data },
+        { status: 502 }
       );
     }
 
-    return NextResponse.json({ url: data.data.cashierUrl });
+    return NextResponse.json(data);
   } catch (error) {
-    console.error('OPay initialization error:', error);
-    return NextResponse.json({ error: 'OPay initialization failed.' }, { status: 500 });
+    return NextResponse.json(
+      { error: "Unable to initialize OPay payment" },
+      { status: 500 }
+    );
   }
 }

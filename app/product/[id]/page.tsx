@@ -20,6 +20,7 @@ import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
 import ProductReviews from '@/components/ProductReviews';
 import ResponsiveImage from '@/components/ResponsiveImage';
+import ProductImageLightbox from '@/components/ProductImageLightbox';
 import {
   addRecentlyViewed,
   addToCart,
@@ -54,6 +55,7 @@ export default function ProductDetailPage() {
   const [zoomPosition, setZoomPosition] = useState({ x: 50, y: 50 });
   const [isZoomed, setIsZoomed] = useState(false);
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
+  const [imageViewerOpen, setImageViewerOpen] = useState(false);
   const [recentIds, setRecentIds] = useState<string[]>([]);
   const touchStartX = useRef<number | null>(null);
 
@@ -216,11 +218,13 @@ export default function ProductDetailPage() {
   return (
     <main className="jl-product-page">
       {quickViewProduct && <QuickViewModal product={quickViewProduct} onClose={() => setQuickViewProduct(null)} />}
+      {imageViewerOpen && <ProductImageLightbox images={images} initialIndex={activeImage} productName={product.name} onClose={() => setImageViewerOpen(false)} />}
 
       <div className="jl-product-wrap">
         <div className="jl-product-gallery">
           <div
             className="jl-product-main-image"
+            onClick={() => setImageViewerOpen(true)}
             onMouseMove={handleMouseMove}
             onMouseEnter={() => setIsZoomed(true)}
             onMouseLeave={() => setIsZoomed(false)}
@@ -245,7 +249,7 @@ export default function ProductDetailPage() {
             </div>
             <button
               type="button"
-              onClick={handleToggleWishlist}
+              onClick={(event) => { event.stopPropagation(); handleToggleWishlist(); }}
               className={`jl-product-heart${wishlisted ? ' active' : ''}`}
               aria-pressed={wishlisted}
               aria-label={wishlisted ? `Remove ${product.name} from wishlist` : `Add ${product.name} to wishlist`}
@@ -331,7 +335,7 @@ export default function ProductDetailPage() {
             <div className="jl-product-actions">
               <button type="button" className="jl-add-cart" onClick={handleAddToCart} disabled={stock <= 0}>Add to Cart</button>
               <button type="button" className="jl-buy-now" onClick={handleBuyNow} disabled={stock <= 0}>Buy Now</button>
-              <button type="button" className={`jl-wishlist-action${wishlisted ? ' active' : ''}`} onClick={handleToggleWishlist} aria-pressed={wishlisted}>
+              <button type="button" className={`jl-wishlist-action${wishlisted ? ' active' : ''}`} onClick={(event) => { event.stopPropagation(); handleToggleWishlist(); }} aria-pressed={wishlisted}>
                 <Heart size={18} fill={wishlisted ? 'currentColor' : 'none'} aria-hidden="true" /> {wishlisted ? 'Saved' : 'Wishlist'}
               </button>
             </div>

@@ -79,8 +79,7 @@ service cloud.firestore {
     }
 
     match /coupons/{document=**} {
-      allow read: if true;
-      allow write: if hasPermission('promotions');
+      allow read, write: if hasPermission('promotions');
     }
 
     match /users/{userId} {
@@ -150,6 +149,27 @@ service cloud.firestore {
     match /resendWebhookEvents/{eventId} {
       allow read: if isSuperAdmin();
       allow write: if false;
+    }
+
+    // Installment and payment-recovery ledgers are server-only. Customer and
+    // administrator UIs access these through authenticated route handlers.
+    match /installmentPlans/{document=**} {
+      allow read, write: if false;
+    }
+    match /installmentPayments/{document=**} {
+      allow read, write: if false;
+    }
+    match /installmentSchedules/{document=**} {
+      allow read, write: if false;
+    }
+    match /installmentReminders/{document=**} {
+      allow read, write: if false;
+    }
+    match /paymentTransactions/{document=**} {
+      allow read, write: if false;
+    }
+    match /paymentRecoveries/{document=**} {
+      allow read, write: if false;
     }
 
     match /{document=**} {

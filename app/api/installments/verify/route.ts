@@ -1,108 +1,127 @@
-import { NextResponse } from 'next/server';
-import { FieldValue } from 'firebase-admin/firestore';
+import { NextRequest, NextResponse } from 'next/server';
+
 import { adminDb } from '@/lib/firebaseAdmin';
-import { sendInstallmentPaymentReceivedEmail, sendInstallmentCompletedEmail } from '@/lib/email/workflows';
+import { getVerifiedCustomer } from '@/lib/requestAuth';
+import {
+  InstallmentSettlementError,
+  settleVerifiedInstallmentPayment,
+} from '@/lib/installments/settlement';
+import {
+  sendInstallmentCompletedEmail,
+  sendInstallmentPaymentReceivedEmail,
+} from '@/lib/email/workflows';
 
 export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
+  let attemptedReference = '';
+  const paystackSecret = process.env.PAYSTACK_SECRET_KEY?.trim();
+  if (!paystackSecret) {
+    return NextResponse.json({ error: 'Paystack is not configured.' }, { status: 503 });
+  }
+
   try {
-    const { reference } = await request.json();
+    const customer = await getVerifiedCustomer(request);
+    if (!customer?.uid) {
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+    }
 
-    if (!reference) {
+    const { reference } = await request.json() as { reference?: unknown };
+    const paymentReference = String(reference || '').trim();
+    attemptedReference = paymentReference;
+    if (!paymentReference) {
       return NextResponse.json({ error: 'Payment reference required' }, { status: 400 });
     }
 
-    const paymentRef = adminDb.collection('installmentPayments').doc(reference);
-    const paymentSnap = await paymentRef.get();
-
+    const paymentSnap = await adminDb.collection('installmentPayments').doc(paymentReference).get();
     if (!paymentSnap.exists) {
       return NextResponse.json({ error: 'Payment record not found' }, { status: 404 });
     }
 
-    const payment = paymentSnap.data()!;
-
-    if (payment.status === 'success') {
-      return NextResponse.json({ verified: true, duplicate: true });
+    const payment = paymentSnap.data() || {};
+    if (String(payment.userId || '') !== customer.uid) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
     const response = await fetch(
-      `https://api.paystack.co/transaction/verify/${reference}`,
+      `https://api.paystack.co/transaction/verify/${encodeURIComponent(paymentReference)}`,
       {
-        headers: {
-          Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
-        },
-      }
+        headers: { Authorization: `Bearer ${paystackSecret}` },
+        cache: 'no-store',
+      },
     );
 
-    const result = await response.json();
+    const result = await response.json() as {
+      status?: boolean;
+      data?: {
+        status?: string;
+        amount?: number;
+        currency?: string;
+        reference?: string;
+        customer?: { email?: string };
+        metadata?: Record<string, unknown>;
+      };
+    };
 
-    if (!result.status || result.data?.status !== 'success') {
-      await paymentRef.set({
-        status: 'failed',
-        updatedAt: FieldValue.serverTimestamp(),
-      }, { merge: true });
-
-      return NextResponse.json({ verified: false });
+    if (!response.ok || !result.status || result.data?.status !== 'success') {
+      return NextResponse.json({ verified: false }, { status: 402 });
     }
 
-    await adminDb.runTransaction(async (transaction) => {
-      const planRef = adminDb.collection('installmentPlans').doc(payment.planId);
-      const planSnap = await transaction.get(planRef);
+    if (result.data.reference && result.data.reference !== paymentReference) {
+      return NextResponse.json({ error: 'Payment reference mismatch' }, { status: 400 });
+    }
 
-      if (!planSnap.exists) {
-        throw new Error('Installment plan not found');
-      }
-
-      const plan = planSnap.data()!;
-      const newPaid = Math.min(
-        Number(plan.totalAmount || 0),
-        Number(plan.paidAmount || 0) + Number(payment.amount || 0)
-      );
-
-      const remaining = Math.max(
-        Number(plan.totalAmount || 0) - newPaid,
-        0
-      );
-
-      transaction.set(paymentRef, {
-        status: 'success',
-        verifiedAt: FieldValue.serverTimestamp(),
-      }, { merge: true });
-
-      transaction.set(planRef, {
-        paidAmount: newPaid,
-        remainingBalance: remaining,
-        status: remaining === 0 ? 'completed' : 'active',
-        updatedAt: FieldValue.serverTimestamp(),
-      }, { merge: true });
+    const settlement = await settleVerifiedInstallmentPayment({
+      reference: paymentReference,
+      status: result.data.status,
+      amountKobo: Number(result.data.amount || 0),
+      currency: result.data.currency,
+      email: result.data.customer?.email,
+      metadata: result.data.metadata,
     });
 
-    try {
-      const customer = payment.email || payment.customerEmail;
-      if (customer) {
+    if (!settlement.duplicate && settlement.customerEmail) {
+      try {
         await sendInstallmentPaymentReceivedEmail({
-          email: customer,
-          customerName: payment.customerName || 'JayLuxe Customer',
-          amount: Number(payment.amount || 0),
-          remaining: Number(payment.remainingBalance || 0),
-          paymentId: reference,
+          email: settlement.customerEmail,
+          customerName: settlement.customerName || 'JayLuxe Customer',
+          amount: settlement.amount,
+          remaining: settlement.remaining,
+          paymentId: paymentReference,
         });
 
-        if (Number(payment.remainingBalance || 0) === 0) {
+        if (settlement.completed) {
           await sendInstallmentCompletedEmail({
-            email: customer,
-            customerName: payment.customerName || 'JayLuxe Customer',
-            planId: payment.planId,
+            email: settlement.customerEmail,
+            customerName: settlement.customerName || 'JayLuxe Customer',
+            planId: settlement.planId,
           });
         }
+      } catch (emailError) {
+        console.error('Installment email notification failed', emailError);
       }
-    } catch (emailError) {
-      console.error('Installment email notification failed', emailError);
     }
 
-    return NextResponse.json({ verified: true });
-  } catch {
+    return NextResponse.json({
+      verified: true,
+      duplicate: settlement.duplicate,
+      remainingBalance: settlement.remaining,
+      completed: settlement.completed,
+    });
+  } catch (error) {
+    if (error instanceof InstallmentSettlementError) {
+      if (attemptedReference) {
+        await adminDb.collection('installmentPayments').doc(attemptedReference).set({
+          reconciliationRequired: true,
+          reconciliationReason: error.message,
+          lastVerificationAttemptAt: new Date().toISOString(),
+        }, { merge: true }).catch(() => undefined);
+      }
+      return NextResponse.json({ error: error.message }, { status: error.status });
+    }
+
+    console.error('INSTALLMENT_VERIFICATION_ERROR', error);
     return NextResponse.json({ error: 'Verification failed' }, { status: 500 });
   }
 }

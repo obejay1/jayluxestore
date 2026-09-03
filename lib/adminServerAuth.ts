@@ -162,7 +162,7 @@ export async function verifyAdminSessionCookieValue(
 }
 
 export async function getCurrentAdminSession(checkRevoked = true) {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const sessionCookie = cookieStore.get(ADMIN_SESSION_COOKIE)?.value;
   return verifyAdminSessionCookieValue(sessionCookie, checkRevoked);
 }

@@ -1,0 +1,1233 @@
+/* =======================================
+   Jayluxe Professional Checkout Page
+======================================= */
+
+.jl-checkout-page {
+  background-color: var(--ivory);
+  color: var(--text-body);
+  font-family: var(--font-sans);
+}
+
+.jl-checkout-hero {
+  padding: 60px 40px;
+  background: var(--white);
+  text-align: center;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.jl-checkout-hero h1 {
+  font-family: var(--font-serif);
+  font-size: 48px;
+  margin-bottom: 8px;
+}
+
+.jl-checkout-hero p {
+  color: var(--text-body);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.jl-checkout-layout {
+  max-width: 1300px;
+  margin: 40px auto;
+  padding: 0 40px;
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 30px;
+  align-items: start;
+}
+
+.jl-form-card {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 24px;
+  border: 1px solid var(--border-color);
+}
+
+.jl-form-card h2 {
+  font-family: var(--font-serif);
+  font-size: 26px;
+  margin-bottom: 20px;
+}
+
+.jl-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.jl-form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.jl-form-group label {
+  font-weight: 600;
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+.jl-form-group input {
+  padding: 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  font-size: 15px;
+  transition: all 0.3s;
+}
+
+.jl-form-group input:focus {
+  outline: none;
+  border-color: var(--gold-primary);
+  box-shadow: 0 0 0 3px rgba(200, 162, 75, 0.2);
+}
+
+.jl-form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.jl-payment-option {
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-bottom: 12px;
+}
+
+.jl-payment-option.active {
+  border-color: var(--gold-primary);
+  background-color: var(--ivory);
+  box-shadow: 0 0 0 3px rgba(200, 162, 75, 0.2);
+}
+
+.jl-checkout-summary {
+  position: sticky;
+  top: 100px;
+  background: var(--white);
+  border-radius: 16px;
+  padding: 28px;
+  border: 1px solid var(--border-color);
+}
+
+.jl-summary-item {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  padding-bottom: 14px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid var(--border-color);
+}
+.jl-summary-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.jl-summary-item img {
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.jl-summary-item-info {
+  flex: 1;
+}
+
+.jl-summary-line {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+}
+
+.jl-summary-total {
+  border-top: 1px solid var(--border-color);
+  margin-top: 10px;
+  padding-top: 20px;
+  font-size: 22px;
+  font-weight: 700;
+  display: flex;
+  justify-content: space-between;
+}
+
+.jl-place-order-btn {
+  width: 100%;
+  background: var(--black);
+  color: var(--white);
+  border: none;
+  padding: 16px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: all 0.3s;
+}
+
+.jl-place-order-btn:hover:not(:disabled) {
+  background: var(--gold-primary);
+  color: var(--black);
+}
+
+.jl-place-order-btn:disabled {
+  background: var(--light-gray);
+  cursor: not-allowed;
+}
+
+/* =======================================
+   Jayluxe Order Confirmation Page
+======================================= */
+
+.jl-order-page {
+  background-color: var(--ivory);
+  font-family: var(--font-sans);
+}
+
+.jl-order-container {
+  max-width: 1100px;
+  margin: 60px auto;
+  padding: 0 40px;
+}
+
+.jl-order-thank-you {
+  text-align: center;
+  background: var(--white);
+  padding: 50px;
+  border-radius: 24px;
+  margin-bottom: 40px;
+  border: 1px solid var(--border-color);
+}
+
+.jl-order-check-icon {
+  color: #22c55e; /* A nice green */
+  margin-bottom: 20px;
+}
+
+.jl-order-thank-you h1 {
+  font-size: 42px;
+  margin-bottom: 12px;
+}
+
+.jl-order-thank-you p {
+  font-size: 18px;
+  color: var(--text-body);
+  max-width: 550px;
+  margin: 0 auto;
+}
+
+.jl-order-details-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 30px;
+  align-items: start;
+}
+
+.jl-order-summary {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 28px;
+  border: 1px solid var(--border-color);
+}
+
+.jl-order-summary h2 {
+  font-family: var(--font-serif);
+  font-size: 26px;
+  margin-bottom: 20px;
+}
+
+.jl-order-items {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.jl-order-item {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.jl-order-item img {
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid var(--border-color);
+}
+
+.jl-order-item-info {
+  flex: 1;
+}
+
+.jl-order-item-info strong {
+  font-weight: 700;
+}
+
+.jl-order-item-info span {
+  display: block;
+  color: var(--text-body);
+  font-size: 14px;
+}
+
+.jl-order-totals {
+  border-top: 1px solid var(--border-color);
+  padding-top: 20px;
+}
+
+.jl-order-total-line {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+}
+
+.jl-order-total-line.grand-total {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--gold-primary);
+  margin-top: 8px;
+}
+
+.jl-order-shipping-info {
+  display: grid;
+  gap: 24px;
+}
+
+.jl-order-info-card {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid var(--border-color);
+  display: flex;
+  gap: 16px;
+  align-items: start;
+}
+
+.jl-order-info-card svg {
+  color: var(--gold-primary);
+  flex-shrink: 0;
+}
+
+.jl-order-info-card h3 {
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.jl-order-info-card p {
+  margin: 0;
+  color: var(--text-body);
+  line-height: 1.6;
+}
+
+.jl-order-actions {
+  display: grid;
+  gap: 12px;
+}
+
+.jl-order-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  border-radius: 8px;
+  font-weight: 700;
+  text-decoration: none;
+  background: var(--black);
+  color: var(--white);
+  transition: all 0.3s;
+}
+
+.jl-order-btn:hover {
+  background: var(--gold-primary);
+  color: var(--black);
+}
+
+.jl-order-btn.outline {
+  background: transparent;
+  color: var(--black);
+  border: 1px solid var(--border-color);
+}
+
+.jl-order-btn.outline:hover {
+  background: var(--ivory);
+  border-color: var(--black);
+}
+
+.jl-order-loading, .jl-order-not-found {
+  min-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+@media (max-width: 900px){
+  .jl-order-details-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =======================================
+   Jayluxe "My Account" Page
+======================================= */
+
+.jl-account-page {
+  background-color: var(--ivory);
+  font-family: var(--font-sans);
+  color: var(--text-body);
+}
+
+.jl-account-hero {
+  padding: 70px 40px;
+  text-align: center;
+  background: var(--white);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.jl-account-hero h1 {
+  font-family: var(--font-serif);
+  font-size: 48px;
+  margin-bottom: 8px;
+}
+
+.jl-account-hero p {
+  color: var(--text-body);
+  max-width: 600px;
+  margin: 0 auto;
+  font-size: 18px;
+}
+
+.jl-account-content {
+  max-width: 900px;
+  margin: 60px auto;
+  padding: 0 40px;
+}
+
+.jl-account-search-card {
+  background: var(--white);
+  border-radius: 24px;
+  padding: 40px;
+  text-align: center;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.07);
+}
+
+.jl-account-search-card h2 {
+  font-family: var(--font-serif);
+  font-size: 32px;
+  margin-bottom: 12px;
+}
+
+.jl-account-search-card p {
+  max-width: 500px;
+  margin: 0 auto 24px;
+  line-height: 1.7;
+}
+
+.jl-account-search-box {
+  display: flex;
+  max-width: 500px;
+  margin: 0 auto;
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  padding: 8px;
+}
+
+.jl-account-search-box input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 0 16px;
+  font-size: 16px;
+}
+
+.jl-account-search-box button {
+  border: none;
+  background: var(--black);
+  color: var(--white);
+  border-radius: 999px;
+  width: 48px;
+  height: 48px;
+  cursor: pointer;
+}
+
+.jl-account-not-found {
+  color: #b91c1c;
+  background: #fee2e2;
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: 20px;
+}
+
+.jl-order-history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.jl-order-history-header h2 {
+  font-family: var(--font-serif);
+  font-size: 32px;
+  margin: 0;
+}
+
+.jl-order-history-header button {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-body);
+  font-weight: 700;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.jl-order-history-item {
+  background: var(--white);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+}
+
+.jl-order-history-item div { font-size: 15px; }
+.jl-order-history-item strong { font-weight: 700; display: block; font-size: 16px; }
+.jl-order-history-item span { font-size: 13px; color: var(--gray); }
+.jl-order-history-item .status-badge { padding: 6px 12px; border-radius: 999px; font-weight: 700; font-size: 12px; text-align: center; }
+.jl-order-history-item .status-badge.processing { background: #fffbeb; color: #b45309; }
+.jl-order-history-item .status-badge.shipped { background: #dbeafe; color: #1e40af; }
+.jl-order-history-item .status-badge.delivered { background: #dcfce7; color: #166534; }
+.jl-order-history-item .status-badge.cancelled { background: #fee2e2; color: #991b1b; }
+
+.jl-order-history-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.jl-order-history-actions a,
+.jl-order-history-actions button {
+  background: var(--black); color: var(--white); padding: 12px 18px; border-radius: 8px; font-weight: 700; text-decoration: none; text-align: center; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
+}
+
+.jl-order-history-actions button { background: var(--ivory); color: var(--black); border: 1px solid var(--border-color); }
+
+@media (max-width: 768px){
+  .jl-order-history-item {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  .jl-order-history-actions { justify-content: center; }
+  .jl-order-history-header {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
+}
+
+/* =======================================
+   Jayluxe "About Us" Page
+======================================= */
+
+.jl-about-page {
+  background-color: var(--ivory);
+  font-family: var(--font-sans);
+  color: var(--text-body);
+}
+
+.jl-about-hero {
+  position: relative;
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url("/hero-banner.png");
+  background-size: cover;
+  background-position: center 30%;
+  color: var(--white);
+  padding: 80px 40px;
+}
+
+.jl-about-hero-content {
+  max-width: 800px;
+}
+
+.jl-about-badge {
+  display: inline-block;
+  padding: 8px 18px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--gold-primary);
+  color: var(--gold-primary);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+.jl-about-hero h1 {
+  font-family: var(--font-serif);
+  font-size: 56px;
+  margin-bottom: 16px;
+  line-height: 1.1;
+}
+
+.jl-about-hero p {
+  font-size: 18px;
+  line-height: 1.6;
+  max-width: 600px;
+  margin: 0 auto;
+  color: var(--ivory);
+}
+
+.jl-about-mission {
+  padding: 80px 40px;
+  background: var(--white);
+}
+
+.jl-about-mission-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.jl-about-mission-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 16px;
+  object-fit: cover;
+}
+
+.jl-about-mission-text h2 {
+  font-family: var(--font-serif);
+  font-size: 42px;
+  margin-bottom: 20px;
+}
+
+.jl-about-mission-text p {
+  font-size: 17px;
+  line-height: 1.8;
+  margin-bottom: 20px;
+}
+
+.jl-about-mission-text cite {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 18px;
+  color: var(--gold-rich);
+  font-weight: 700;
+}
+
+.jl-about-values {
+  padding: 80px 40px;
+}
+
+.jl-about-values-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+.jl-about-value-card {
+  background: var(--white);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 30px;
+  text-align: center;
+}
+
+.jl-about-value-card svg {
+  color: var(--gold-primary);
+  margin-bottom: 16px;
+}
+
+.jl-about-value-card h3 {
+  font-size: 24px;
+  margin-bottom: 12px;
+}
+
+.jl-about-value-card p {
+  line-height: 1.7;
+}
+
+@media (max-width: 768px){
+  .jl-about-mission-grid {
+    grid-template-columns: 1fr;
+  }
+  .jl-about-values-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =======================================
+   Jayluxe "Contact Us" Page
+======================================= */
+
+.jl-contact-page {
+  background-color: var(--white);
+  font-family: var(--font-sans);
+  color: var(--text-body);
+}
+
+.jl-contact-hero {
+  padding: 80px 40px;
+  text-align: center;
+  background: var(--ivory);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.jl-contact-hero-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.jl-contact-badge {
+  display: inline-block;
+  padding: 8px 18px;
+  border-radius: 20px;
+  background: var(--white);
+  border: 1px solid var(--gold-primary);
+  color: var(--gold-primary);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+.jl-contact-hero h1 {
+  font-family: var(--font-serif);
+  font-size: 56px;
+  margin-bottom: 16px;
+  line-height: 1.1;
+}
+
+.jl-contact-hero p {
+  font-size: 18px;
+  line-height: 1.6;
+  max-width: 600px;
+  margin: 0 auto;
+  color: var(--text-body);
+}
+
+.jl-contact-section {
+  padding: 80px 40px;
+}
+
+.jl-contact-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 60px;
+  align-items: start;
+}
+
+.jl-contact-details h2 {
+  font-size: 36px;
+  margin-bottom: 12px;
+}
+
+.jl-contact-details p {
+  line-height: 1.7;
+  margin-bottom: 24px;
+}
+
+.jl-contact-details h3 {
+  font-size: 24px;
+  margin-top: 30px;
+  margin-bottom: 12px;
+}
+
+.jl-contact-info-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+.jl-contact-info-item svg {
+  color: var(--gold-primary);
+}
+
+.jl-contact-form {
+  background: var(--ivory);
+  padding: 40px;
+  border-radius: 16px;
+  border: 1px solid var(--border-color);
+}
+
+.jl-contact-form textarea {
+  width: 100%;
+  padding: 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  font-size: 15px;
+  transition: all 0.3s;
+  resize: vertical;
+  font-family: var(--font-sans);
+}
+
+.jl-contact-form textarea:focus {
+  outline: none;
+  border-color: var(--gold-primary);
+  box-shadow: 0 0 0 3px rgba(200, 162, 75, 0.2);
+}
+
+.jl-contact-submit-btn {
+  width: 100%;
+  background: var(--black);
+  color: var(--white);
+  border: none;
+  padding: 16px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: all 0.3s;
+}
+
+.jl-contact-submit-btn:hover {
+  background: var(--gold-primary);
+  color: var(--black);
+}
+
+.jl-contact-map {
+  padding: 0;
+  line-height: 0; /* Remove space below iframe */
+}
+
+@media (max-width: 768px){
+  .jl-contact-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+}
+
+/* =======================================
+   Jayluxe "About Us" FAQ Section
+======================================= */
+
+.jl-about-faq {
+  padding: 80px 40px;
+}
+
+.jl-faq-container {
+  max-width: 900px;
+  margin: 0 auto;
+  display: grid;
+  gap: 16px;
+}
+
+.jl-faq-item {
+  background: var(--white);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.jl-faq-item:hover {
+  border-color: var(--gold-primary);
+}
+
+.jl-faq-question {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  background: transparent;
+  border: none;
+  text-align: left;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--black);
+}
+
+.jl-faq-question svg {
+  color: var(--gold-primary);
+  flex-shrink: 0;
+}
+
+.jl-faq-answer {
+  padding: 0 24px 24px;
+  color: var(--text-body);
+  line-height: 1.7;
+}
+
+@media (max-width: 768px){
+  .jl-about-faq {
+    padding: 60px 20px;
+  }
+}
+
+/* ==========================================
+   JAYLUXE LUXURY HOMEPAGE DESIGN
+========================================== */
+
+
+.lux-homepage {
+  --gold-primary: #C8A24B;
+  --gold-rich: #A57A1F;
+  --black: #111111;
+  --charcoal: #2B2B2B;
+  --white: #FFFFFF;
+  --ivory: #F8F6F2;
+  --warm-cream: #F2ECE3;
+  --beige: #E8DDCF;
+  --border-color: #E5E5E5;
+  --text-body: #444444;
+
+  --font-serif: var(--font-jayluxe-serif), Georgia, serif;
+  --font-sans: var(--font-jayluxe-sans), system-ui, sans-serif;
+
+  background-color: var(--ivory);
+  color: var(--text-body);
+  font-family: var(--font-sans);
+}
+
+/* 1. Top Announcement Bar */
+.lux-announcement-bar {
+  background-color: var(--black);
+  color: var(--gold-primary);
+  padding: 12px 40px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+}
+
+.lux-announcement-bar span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 2. Header/Navbar */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* 3. Hero Banner */
+.lux-hero {
+    background: linear-gradient(135deg, #F8F6F2, #F2ECE3);
+    padding: 80px 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 60px;
+    min-height: 70vh;
+}
+
+.lux-hero-text .subtitle {
+    color: var(--gold-primary);
+    font-weight: 700;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.lux-hero-text h1 {
+    font-family: var(--font-serif);
+    font-size: 56px;
+    color: var(--black);
+    margin-bottom: 20px;
+    line-height: 1.2;
+}
+
+.lux-hero-text p {
+    color: var(--text-body);
+    margin-bottom: 30px;
+    max-width: 500px;
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+.lux-hero-text .btn {
+    background-color: var(--black);
+    color: var(--white);
+    padding: 16px 32px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: background-color 0.3s, color 0.3s;
+    border: 2px solid var(--black);
+}
+
+.lux-hero-text .btn:hover {
+    background-color: var(--gold-primary);
+    color: var(--black);
+    border-color: var(--gold-primary);
+}
+
+.lux-hero-image img {
+    width: 100%;
+    border-radius: 10px;
+    object-fit: cover;
+    height: 500px;
+}
+
+/* 4. Service Features */
+.lux-features {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+    padding: 60px 40px;
+    background-color: var(--white);
+}
+
+.feature-card {
+    background-color: var(--white);
+    padding: 20px;
+    text-align: center;
+}
+
+.feature-card svg {
+    color: var(--gold-primary);
+    margin-bottom: 16px;
+}
+
+.feature-card h3 {
+    font-size: 18px;
+    color: var(--black);
+    margin-bottom: 8px;
+}
+
+/* General Section Styling */
+.lux-section {
+    padding: 80px 40px;
+}
+
+.lux-section-title {
+    text-align: center;
+    font-family: var(--font-serif);
+    font-size: 42px;
+    margin-bottom: 40px;
+}
+
+/* 10. Testimonials */
+.testimonial-card .stars {
+    color: var(--gold-primary);
+}
+
+/* 11. Newsletter */
+.lux-newsletter {
+    background-color: var(--black);
+    color: var(--white);
+    padding: 60px 40px;
+    text-align: center;
+}
+.lux-newsletter h2 {
+    font-family: var(--font-serif);
+    font-size: 36px;
+    margin-bottom: 16px;
+}
+.lux-newsletter .btn {
+    background-color: var(--gold-primary);
+    color: var(--black);
+    font-weight: 700;
+}
+
+/* 12. Footer */
+.lux-footer {
+    background-color: var(--black);
+    color: var(--white);
+    padding: 60px 40px 20px;
+}
+
+.lux-footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 40px;
+    margin-bottom: 40px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.lux-footer-col h4 {
+    color: var(--gold-primary);
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+.lux-footer-col a, .lux-footer-col p {
+    color: var(--border-color);
+    text-decoration: none;
+    display: block;
+    margin-bottom: 12px;
+    transition: color 0.3s;
+}
+
+.lux-footer-col a:hover {
+    color: var(--gold-primary);
+}
+
+.lux-footer-bottom {
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid var(--charcoal);
+    color: var(--gray);
+    font-size: 14px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Product Card */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.lux-quick-view-btn {
+    background: var(--white);
+    color: var(--black);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
+}
+
+.lux-quick-view-btn:hover {
+    background: var(--gold-primary);
+    color: var(--black);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Quick View Modal */
+.quick-view-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    -webkit-backdrop-filter: blur(5px);
+            backdrop-filter: blur(5px);
+    padding: 20px;
+}
+
+.quick-view-modal {
+    background: var(--white);
+    border-radius: 16px;
+    width: 100%;
+    max-width: 900px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    position: relative;
+    padding: 40px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+}
+
+.quick-view-modal-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.quick-view-image img {
+    width: 100%;
+    height: 450px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.quick-view-details h2 {
+    font-family: var(--font-serif);
+    font-size: 32px;
+    margin-bottom: 12px;
+}
+
+.quick-view-details .price {
+    font-size: 28px;
+    color: var(--gold-primary);
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+@media (max-width: 768px){
+    
+    .lux-hero {
+        grid-template-columns: 1fr;
+        text-align: center;
+        padding: 40px 20px;
+    }
+    .lux-features {
+        grid-template-columns: 1fr 1fr;
+        padding: 40px 20px;
+    }
+    .lux-section {
+        padding: 60px 20px;
+    }
+    .quick-view-modal {
+        grid-template-columns: 1fr;
+        max-height: 90vh;
+        overflow-y: auto;
+        padding: 20px;
+    }
+}

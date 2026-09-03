@@ -1,3 +1,5 @@
+> Historical implementation report. For current release readiness, see `PHASE33_PRODUCTION_STABILIZATION_REPORT.md`.
+
 # JayLuxe Installment System - Phase 11
 
 Implemented a centralized verified-payment settlement layer.

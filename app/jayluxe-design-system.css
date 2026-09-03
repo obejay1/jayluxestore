@@ -1,7 +1,4 @@
-/* JayLuxe consolidated global design system.
-   Legacy theme layers are retained below in their historical cascade order for compatibility.
-   Premium UI V2 tokens and canonical refinements live at the end of this file. */
-
+/* GENERATED BUNDLE. Edit app/styles/design-system/*.css, then run npm run css:build. */
 /* ===== Consolidated from app/luxury-theme.css ===== */
 /* JayLuxe luxury redesign. Navigation components are intentionally not restyled. */
 :root {
@@ -7180,7 +7177,6 @@ textarea:disabled {
   }
 }
 
-
 /* ===== Consolidated from app/jayluxe-redesign.css ===== */
 /* =========================================================
    JAYLUXE 2026 REDESIGN LAYER
@@ -9085,7 +9081,6 @@ a {
   }
 }
 
-
 /* ===== Consolidated from app/jayluxe-refactor.css ===== */
 /* =========================================================
    JAYLUXE FINAL REFACTOR LAYER
@@ -10877,7 +10872,6 @@ body.jl-remove-hero-images .jl-main-content :is(
   }
 }
 
-
 /* ===== Consolidated from app/jayluxe-mobile.css ===== */
 /* =========================================================
    JAYLUXE MOBILE-ONLY REFINEMENT
@@ -12134,7 +12128,6 @@ body.jl-remove-hero-images .jl-main-content :is(
   }
 }
 
-
 /* ===== Consolidated from app/jayluxe-mobile-polish.css ===== */
 /* =========================================================
    JAYLUXE MOBILE POLISH
@@ -12733,7 +12726,6 @@ body.jl-remove-hero-images .jl-main-content :is(
     transform: none;
   }
 }
-
 
 /* ===== Consolidated from app/jayluxe-consistency-fixes.css ===== */
 /* =========================================================
@@ -14447,7 +14439,6 @@ body .global-footer-newsletter p {
   color: var(--jl-gold-rich, #9a711d);
 }
 
-
 /* ===== Consolidated from app/jayluxe-production-stability.css ===== */
 /* JayLuxe production stability overrides.
    This file is imported last so older responsive experiments cannot reintroduce
@@ -15318,7 +15309,6 @@ canvas {
     -webkit-overflow-scrolling: touch;
   }
 }
-
 
 /* ===== Consolidated from app/jayluxe-feature-update.css ===== */
 /* JayLuxe 2026 feature refinements: product reviews, sizes and lightweight promotion motion. */
@@ -16747,7 +16737,6 @@ canvas {
     transition: none;
   }
 }
-
 
 /* ===== Consolidated from app/jayluxe-card-system.css ===== */
 /* =========================================================
@@ -19725,7 +19714,6 @@ canvas {
     padding-inline: 9px;
   }
 }
-
 
 /* ===== Consolidated from app/jayluxe-production-system.css ===== */
 /* =========================================================
@@ -25923,4 +25911,111 @@ textarea.input {
   .jl-installment-header {
     flex-direction: column;
   }
+}
+
+/* Phase 30: Fix editorial experience card layout */
+.jl-discover-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.jl-discover-card {
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden;
+  min-height: 420px !important;
+  padding: 0 !important;
+  background: #fcfaf5 !important;
+}
+
+.jl-editorial-image {
+  width: 100%;
+  height: 250px;
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+}
+
+.jl-editorial-image {
+  position: relative;
+  overflow: hidden;
+  background: #f6efe4;
+}
+
+.jl-editorial-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform .35s ease;
+}
+
+.jl-discover-card:hover .jl-editorial-image img {
+  transform: scale(1.04);
+}
+
+.jl-editorial-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 22px;
+}
+
+.jl-editorial-copy small {
+  color: #b8860b;
+  letter-spacing: .12em;
+  font-size: .7rem;
+}
+
+.jl-editorial-copy strong {
+  font-family: var(--jl-heading-font, serif);
+  font-size: 1.35rem;
+}
+
+.jl-editorial-copy span {
+  color: #b8860b;
+  font-weight: 600;
+}
+
+.jl-home-promo-features {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0,1fr)) !important;
+  gap: 16px !important;
+}
+
+.jl-home-promo-feature {
+  min-height: 220px !important;
+  display:flex !important;
+  flex-direction:column !important;
+  justify-content:flex-end !important;
+  overflow:hidden;
+  padding:24px !important;
+  background-size:cover !important;
+  background-position:center !important;
+}
+
+.jl-home-promo-feature::before {
+  content:"";
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,.28);
+}
+
+.jl-home-promo-copy { position:relative; z-index:1; color:white; }
+
+@media (max-width:767px){
+ .jl-discover-grid,
+ .jl-home-promo-features {
+   display:flex !important;
+   overflow-x:auto !important;
+   scroll-snap-type:x mandatory;
+ }
+ .jl-discover-card,
+ .jl-home-promo-feature {
+   flex:0 0 88% !important;
+   min-width:88% !important;
+   scroll-snap-align:start;
+   min-height:360px !important;
+ }
+ .jl-editorial-image {height:190px;}
 }

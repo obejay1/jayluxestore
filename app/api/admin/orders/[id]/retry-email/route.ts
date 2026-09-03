@@ -15,8 +15,9 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
+  const { id } = await params;
   if (!hasTrustedRequestOrigin(request)) {
     return NextResponse.json({ ok: false, message: 'The request origin is not trusted.' }, { status: 403 });
   }
@@ -28,7 +29,7 @@ export async function POST(
     return NextResponse.json(response.body, { status: response.status });
   }
 
-  const orderId = String(params.id || '').trim();
+  const orderId = String(id || '').trim();
   if (!orderId) return NextResponse.json({ ok: false, message: 'Invalid order ID.' }, { status: 400 });
 
   try {

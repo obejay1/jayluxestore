@@ -20,6 +20,8 @@ export type Product = {
   stock?: number;
   sizes?: string[];
   active?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 };
 export type Category={id:string;name:string;slug?:string;type:'product'|'service';description?:string;image?:string;imagePublicId?:string;active?:boolean;createdAt?:string;};
 export type Order={
@@ -38,6 +40,7 @@ export type Order={
 	discountAmount?:number;
 	paymentMethod:string;
 	paymentReference?:string;
+	installmentPlanId?:string;
 	status:string;
 	createdAt:string;
 	customer?:{name:string;phone:string;address:string};

@@ -1,0 +1,1790 @@
+/* ===== Consolidated from app/jayluxe-refactor.css ===== */
+/* =========================================================
+   JAYLUXE FINAL REFACTOR LAYER
+   Loaded last so it can resolve legacy conflicts without
+   changing Firebase, checkout, authentication or API logic.
+========================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+body {
+  min-width: 0;
+}
+
+.jl-main-content,
+.jl-main-content > *,
+.jl-main-content main,
+.jl-main-content section,
+.jl-main-content article,
+.jl-main-content aside,
+.jl-main-content form,
+.jl-main-content div {
+  min-width: 0;
+}
+
+img,
+video,
+canvas {
+  max-width: 100%;
+}
+
+input,
+select,
+textarea,
+button {
+  max-width: 100%;
+  font: inherit;
+}
+
+/* ---------- Header and navigation ---------- */
+
+.jl-site-header {
+  position: sticky;
+  top: 0;
+  z-index: 1100;
+  width: 100%;
+  max-width: 100%;
+}
+
+.jl-header-main {
+  min-width: 0;
+}
+
+.jl-header-brand,
+.jl-header-left,
+.jl-header-actions {
+  min-width: 0;
+}
+
+.jl-mobile-menu-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 220ms ease, visibility 0s linear 260ms;
+}
+
+.jl-mobile-menu-layer.is-open {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+  transition-delay: 0s;
+}
+
+.jl-mobile-menu-backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: rgba(13, 11, 9, 0.58);
+  opacity: 0;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  transition: opacity 220ms ease;
+}
+
+.jl-mobile-menu-layer.is-open .jl-mobile-menu-backdrop {
+  opacity: 1;
+}
+
+.jl-mobile-menu {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  width: min(92vw, 430px);
+  max-width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  margin: 0;
+  padding:
+    max(22px, env(safe-area-inset-top))
+    max(22px, env(safe-area-inset-right))
+    max(24px, env(safe-area-inset-bottom))
+    22px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border-radius: 0;
+  background: #fff;
+  box-shadow: -24px 0 70px rgba(20, 16, 11, 0.28);
+  transform: translate3d(104%, 0, 0);
+  transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+  -webkit-overflow-scrolling: touch;
+}
+
+.jl-mobile-menu-layer.is-open .jl-mobile-menu {
+  transform: translate3d(0, 0, 0);
+}
+
+.jl-mobile-menu-heading {
+  flex: 0 0 auto;
+}
+
+.jl-mobile-menu nav {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+  width: 100%;
+}
+
+.jl-mobile-menu nav a,
+.jl-mobile-menu-links a {
+  min-height: 46px;
+}
+
+.jl-mobile-nav-group {
+  display: grid;
+  gap: 4px;
+  padding: 6px;
+  border: 1px solid rgba(34, 29, 23, 0.09);
+  border-radius: 13px;
+  background: #fbfaf7;
+}
+
+.jl-mobile-menu nav .jl-mobile-nav-group-title {
+  display: flex;
+  align-items: center;
+  min-height: 42px;
+  padding: 10px 11px;
+  color: #171512;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.jl-mobile-nav-children {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.jl-mobile-menu nav .jl-mobile-nav-children a {
+  min-height: 40px;
+  padding: 10px 11px;
+  font-size: 0.77rem;
+}
+
+@media (min-width: 1041px) {
+  .jl-mobile-menu-layer {
+    display: none;
+  }
+}
+
+@media (max-width: 430px) {
+  .jl-mobile-menu {
+    width: 100%;
+  }
+
+  .jl-mobile-nav-children {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---------- Image-free page headers outside the Home route ---------- */
+
+/* The route controller only adds this body class away from `/`. */
+body.jl-remove-hero-images .jl-main-content :is(
+  .jl-editorial-hero-image,
+  .jl-shop-hero-image,
+  .jl-shop-hero-img,
+  .jl-cart-hero-image,
+  .jl-cart-hero-img,
+  .jl-checkout-hero-image,
+  .jl-checkout-hero-img,
+  .jl-bridal-hero-bg,
+  .jl-bridal-hero-image,
+  .jl-bridal-hero-img,
+  .jl-services-hero-image,
+  .jl-services-hero-img,
+  .jl-account-hero-image,
+  .jl-order-hero-image,
+  .jl-gallery-hero-image,
+  .jl-gallery-hero-img,
+  .jl-promotions-hero-image,
+  .hero-image,
+  .hero-img,
+  .hero-media,
+  .hero-photo,
+  .hero-picture,
+  .hero-background,
+  .hero-banner-image
+) {
+  display: none;
+}
+
+body.jl-remove-hero-images .jl-main-content :is(
+  .jl-editorial-hero,
+  .jl-policy-hero,
+  .jl-shop-hero,
+  .jl-cart-hero,
+  .jl-checkout-hero,
+  .jl-bridal-hero,
+  .jl-services-hero,
+  .jl-account-hero,
+  .jl-order-hero,
+  .jl-gallery-hero,
+  .jl-bridal-booking-hero,
+  .jl-promotions-hero,
+  .wishlist-hero,
+  .checkout-hero-pro,
+  [data-hero]
+) {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 0;
+  height: auto;
+  margin: 0;
+  padding: clamp(34px, 5vw, 64px) max(18px, 4vw);
+  overflow: hidden;
+  background: transparent;
+  background-image: none;
+  color: #171512;
+  text-align: center;
+  text-shadow: none;
+}
+
+body.jl-remove-hero-images .jl-main-content :is(
+  .jl-editorial-hero,
+  .jl-policy-hero,
+  .jl-shop-hero,
+  .jl-cart-hero,
+  .jl-checkout-hero,
+  .jl-bridal-hero,
+  .jl-services-hero,
+  .jl-account-hero,
+  .jl-order-hero,
+  .jl-gallery-hero,
+  .jl-bridal-booking-hero,
+  .jl-promotions-hero,
+  .wishlist-hero,
+  .checkout-hero-pro,
+  [data-hero]
+) > :is(img, picture),
+body.jl-remove-hero-images .jl-main-content :is(
+  .jl-editorial-hero-overlay,
+  .jl-shop-hero-overlay,
+  .jl-cart-hero-overlay,
+  .jl-checkout-hero-overlay,
+  .jl-bridal-hero-overlay,
+  .jl-services-hero-overlay,
+  .jl-account-hero-overlay,
+  .jl-order-hero-overlay,
+  .jl-gallery-hero-overlay,
+  .jl-promotions-hero-overlay,
+  .hero-overlay
+) {
+  display: none;
+}
+
+body.jl-remove-hero-images .jl-main-content :is(
+  .jl-editorial-hero,
+  .jl-policy-hero,
+  .jl-shop-hero,
+  .jl-cart-hero,
+  .jl-checkout-hero,
+  .jl-bridal-hero,
+  .jl-services-hero,
+  .jl-account-hero,
+  .jl-order-hero,
+  .jl-gallery-hero,
+  .jl-bridal-booking-hero,
+  .jl-promotions-hero,
+  .wishlist-hero,
+  .checkout-hero-pro,
+  [data-hero]
+)::before,
+body.jl-remove-hero-images .jl-main-content :is(
+  .jl-editorial-hero,
+  .jl-policy-hero,
+  .jl-shop-hero,
+  .jl-cart-hero,
+  .jl-checkout-hero,
+  .jl-bridal-hero,
+  .jl-services-hero,
+  .jl-account-hero,
+  .jl-order-hero,
+  .jl-gallery-hero,
+  .jl-bridal-booking-hero,
+  .jl-promotions-hero,
+  .wishlist-hero,
+  .checkout-hero-pro,
+  [data-hero]
+)::after {
+  background: none;
+  background-image: none;
+}
+
+body.jl-remove-hero-images .jl-main-content :is(
+  .jl-shop-hero-content,
+  .jl-cart-hero-content,
+  .jl-checkout-hero-content,
+  .jl-bridal-hero-inner,
+  .jl-bridal-hero-content,
+  .jl-services-hero-content,
+  .jl-account-hero-content,
+  .jl-order-hero-content,
+  .jl-gallery-hero-content,
+  .jl-editorial-hero-content
+) {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(100%, 860px);
+  min-height: 0;
+  margin: 0 auto;
+  padding: 0;
+  color: #171512;
+  text-align: center;
+}
+
+body.jl-remove-hero-images .jl-main-content :is(
+  .jl-editorial-hero,
+  .jl-policy-hero,
+  .jl-shop-hero,
+  .jl-cart-hero,
+  .jl-checkout-hero,
+  .jl-bridal-hero,
+  .jl-services-hero,
+  .jl-account-hero,
+  .jl-order-hero,
+  .jl-gallery-hero,
+  .jl-bridal-booking-hero,
+  .jl-promotions-hero,
+  .wishlist-hero,
+  .checkout-hero-pro,
+  [data-hero]
+) :is(h1, h2) {
+  max-width: 900px;
+  margin: 10px auto 0;
+  color: #171512;
+  font-size: clamp(2.25rem, 5vw, 4.75rem);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  text-shadow: none;
+  overflow-wrap: anywhere;
+}
+
+body.jl-remove-hero-images .jl-main-content :is(
+  .jl-editorial-hero,
+  .jl-policy-hero,
+  .jl-shop-hero,
+  .jl-cart-hero,
+  .jl-checkout-hero,
+  .jl-bridal-hero,
+  .jl-services-hero,
+  .jl-account-hero,
+  .jl-order-hero,
+  .jl-gallery-hero,
+  .jl-bridal-booking-hero,
+  .jl-promotions-hero,
+  .wishlist-hero,
+  .checkout-hero-pro,
+  [data-hero]
+) > p,
+body.jl-remove-hero-images .jl-main-content :is(
+  .jl-shop-hero-content,
+  .jl-bridal-hero-content,
+  .jl-services-hero-content,
+  .jl-gallery-hero-content,
+  .jl-editorial-hero-content
+) > p {
+  max-width: 720px;
+  margin: 14px auto 0;
+  color: #6f675e;
+  font-size: clamp(0.94rem, 1.5vw, 1.05rem);
+  line-height: 1.7;
+  text-shadow: none;
+}
+
+.jl-page-hero-icon,
+.wishlist-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 62px;
+  height: 62px;
+  margin: 0 auto 14px;
+  border: 1px solid rgba(184, 138, 41, 0.28);
+  border-radius: 999px;
+  background: #fff;
+  color: #aa7d1d;
+  box-shadow: 0 14px 36px rgba(35, 27, 17, 0.08);
+}
+
+.jl-page-eyebrow,
+body.jl-remove-hero-images .jl-main-content :is(
+  .jl-shop-badge,
+  .jl-services-badge,
+  .jl-bridal-badge,
+  .jl-gallery-badge,
+  .jl-policy-eyebrow,
+  .wishlist-label,
+  .jl-promotions-hero > span,
+  .jl-editorial-hero > span
+) {
+  color: #a77a18;
+}
+
+body.jl-remove-hero-images .jl-main-content :is(
+  .jl-shop-badge,
+  .jl-bridal-badge
+) {
+  border-color: rgba(184, 138, 41, 0.32);
+  background: #f4efe6;
+}
+
+body.jl-remove-hero-images .jl-main-content :is(
+  .jl-services-hero-actions,
+  .jl-bridal-hero-actions,
+  .jl-gallery-hero-actions
+) {
+  margin-top: 24px;
+}
+
+@media (max-width: 640px) {
+  body.jl-remove-hero-images .jl-main-content :is(
+    .jl-editorial-hero,
+    .jl-policy-hero,
+    .jl-shop-hero,
+    .jl-cart-hero,
+    .jl-checkout-hero,
+    .jl-bridal-hero,
+    .jl-services-hero,
+    .jl-account-hero,
+    .jl-order-hero,
+    .jl-gallery-hero,
+    .jl-bridal-booking-hero,
+    .jl-promotions-hero,
+    .wishlist-hero,
+    .checkout-hero-pro,
+    [data-hero]
+  ) {
+    padding: 28px 16px 34px;
+  }
+
+  body.jl-remove-hero-images .jl-main-content :is(
+    .jl-editorial-hero,
+    .jl-policy-hero,
+    .jl-shop-hero,
+    .jl-cart-hero,
+    .jl-checkout-hero,
+    .jl-bridal-hero,
+    .jl-services-hero,
+    .jl-account-hero,
+    .jl-order-hero,
+    .jl-gallery-hero,
+    .jl-bridal-booking-hero,
+    .jl-promotions-hero,
+    .wishlist-hero,
+    .checkout-hero-pro,
+    [data-hero]
+  ) h1 {
+    font-size: clamp(2.15rem, 11vw, 3.8rem);
+  }
+
+  .jl-page-hero-icon,
+  .wishlist-icon {
+    width: 54px;
+    height: 54px;
+  }
+}
+
+/* ---------- Home page refinement ---------- */
+
+.jj-home {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+.jj-home > section:not(.jj-hero):not(.jj-trust) {
+  margin-top: clamp(58px, 8vw, 108px);
+}
+
+.jj-hero {
+  min-height: clamp(580px, 76vh, 840px);
+}
+
+.jj-hero-content {
+  width: min(calc(100% - 36px), 720px);
+}
+
+.jj-promo-rail {
+  display: grid;
+  grid-template-columns: 1.35fr repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.jj-product-showcase {
+  padding-top: clamp(8px, 2vw, 24px);
+}
+
+.jj-product-showcase + .jj-product-showcase {
+  padding-top: clamp(48px, 6vw, 78px);
+  border-top: 1px solid rgba(34, 29, 23, 0.09);
+}
+
+.jj-category-grid,
+.jj-product-grid,
+.jj-bridal-grid,
+.jj-transformations-grid,
+.jj-testimonials-grid {
+  min-width: 0;
+}
+
+.jj-section-header {
+  gap: 20px;
+}
+
+.jj-section-header h2 {
+  text-wrap: balance;
+}
+
+.jj-contact-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  max-width: 820px;
+  margin-inline: auto;
+}
+
+@media (max-width: 1024px) {
+  .jj-promo-rail {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .jj-promo-featured {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 760px) {
+  .jj-home > section:not(.jj-hero):not(.jj-trust) {
+    width: min(calc(100% - 24px), var(--jl-content));
+    margin-top: 36px;
+  }
+
+  .jj-hero {
+    min-height: 620px;
+  }
+
+  .jj-promo-rail,
+  .jj-contact-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .jj-section-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .jj-category-grid,
+  .jj-product-grid,
+  .jj-bridal-grid,
+  .jj-transformations-grid,
+  .jj-testimonials-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 420px) {
+  .jj-bridal-grid,
+  .jj-transformations-grid,
+  .jj-testimonials-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .jj-hero-content {
+    width: calc(100% - 28px);
+  }
+}
+
+/* ---------- Cart ---------- */
+
+.jl-cart-page {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+  background: #f7f4ee;
+}
+
+.jl-cart-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(310px, 0.65fr);
+  align-items: start;
+  gap: 24px;
+  width: min(calc(100% - 40px), 1220px);
+  margin: 0 auto clamp(28px, 4vw, 44px);
+}
+
+.jl-cart-items-card,
+.jl-cart-summary-card {
+  min-width: 0;
+  border: 1px solid rgba(34, 29, 23, 0.1);
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0 20px 55px rgba(46, 35, 19, 0.07);
+}
+
+.jl-cart-items-card {
+  padding: clamp(20px, 3vw, 34px);
+}
+
+.jl-cart-summary-card {
+  position: sticky;
+  top: 126px;
+  padding: clamp(22px, 3vw, 32px);
+}
+
+.jl-cart-card-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid #ece6dc;
+}
+
+.jl-cart-card-heading span,
+.jl-cart-summary-card > span {
+  color: #a77a18;
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.jl-cart-card-heading h2,
+.jl-cart-summary-card h2 {
+  margin: 6px 0 0;
+  font-size: clamp(1.9rem, 3vw, 2.7rem);
+  font-weight: 500;
+}
+
+.jl-cart-items-list {
+  display: grid;
+}
+
+.jl-cart-item {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 18px;
+  padding: 22px 0;
+  border-bottom: 1px solid #ece6dc;
+}
+
+.jl-cart-item:last-child {
+  border-bottom: 0;
+}
+
+.jl-cart-item-image {
+  position: relative;
+  display: block;
+  width: 112px;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 16px;
+  background: #f0ebe3;
+}
+
+.jl-cart-item-image img {
+  object-fit: cover;
+}
+
+.jl-cart-item-copy {
+  display: grid;
+  gap: 6px;
+}
+
+.jl-cart-item-copy > span {
+  color: #9a721b;
+  font-size: 0.65rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.jl-cart-item-copy > a {
+  color: #211d18;
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1.35;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.jl-cart-item-copy > button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  width: fit-content;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #b42318;
+  font-size: 0.77rem;
+  cursor: pointer;
+}
+
+.jl-cart-quantity {
+  display: grid;
+  grid-template-columns: 36px 32px 36px;
+  align-items: center;
+  border: 1px solid #e3ddd3;
+  border-radius: 999px;
+  background: #faf8f4;
+}
+
+.jl-cart-quantity button {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.jl-cart-quantity span {
+  text-align: center;
+  font-size: 0.86rem;
+  font-weight: 900;
+}
+
+.jl-cart-item-total {
+  color: #211d18;
+  white-space: nowrap;
+}
+
+.jl-cart-state,
+.jl-cart-empty {
+  padding: 54px 20px;
+  text-align: center;
+}
+
+.jl-cart-state.error {
+  color: #a61b1b;
+}
+
+.jl-cart-empty > span {
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 18px;
+  border-radius: 999px;
+  background: #f3eee5;
+  color: #a77a18;
+}
+
+.jl-cart-empty h3 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.jl-cart-empty p {
+  margin: 10px 0 22px;
+  color: #756e66;
+}
+
+.jl-cart-empty a,
+.jl-cart-checkout-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: 13px 22px;
+  border: 1px solid #1d1915;
+  border-radius: 13px;
+  background: #1d1915;
+  color: #fff;
+  font-weight: 900;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.jl-cart-summary-lines {
+  display: grid;
+  margin-top: 24px;
+}
+
+.jl-cart-summary-lines > div,
+.jl-cart-summary-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.jl-cart-summary-lines > div {
+  padding: 13px 0;
+  border-bottom: 1px solid #ece6dc;
+  color: #746d64;
+}
+
+.jl-cart-summary-lines small {
+  text-align: right;
+}
+
+.jl-cart-summary-total {
+  padding: 22px 0 10px;
+  font-size: 1.2rem;
+  font-weight: 900;
+}
+
+.jl-cart-summary-total strong {
+  color: #a77a18;
+  font-size: 1.6rem;
+}
+
+.jl-cart-checkout-button {
+  width: 100%;
+  margin-top: 18px;
+}
+
+.jl-cart-checkout-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
+.jl-cart-security-note {
+  margin: 14px 0 0;
+  color: #81796f;
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+@media (max-width: 960px) {
+  .jl-cart-layout {
+    grid-template-columns: minmax(0, 1fr);
+    width: min(calc(100% - 28px), 760px);
+  }
+
+  .jl-cart-summary-card {
+    position: static;
+  }
+}
+
+@media (max-width: 640px) {
+  .jl-cart-layout {
+    width: calc(100% - 20px);
+    gap: 14px;
+  }
+
+  .jl-cart-items-card,
+  .jl-cart-summary-card {
+    border-radius: 18px;
+  }
+
+  .jl-cart-card-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .jl-cart-item {
+    grid-template-columns: 84px minmax(0, 1fr);
+    grid-template-areas:
+      "image copy"
+      "quantity total";
+    gap: 13px;
+  }
+
+  .jl-cart-item-image {
+    grid-area: image;
+    width: 84px;
+  }
+
+  .jl-cart-item-copy {
+    grid-area: copy;
+  }
+
+  .jl-cart-quantity {
+    grid-area: quantity;
+    justify-self: start;
+  }
+
+  .jl-cart-item-total {
+    grid-area: total;
+    justify-self: end;
+  }
+}
+
+/* ---------- Footer ---------- */
+
+.global-footer-pro {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: #14120f;
+  color: rgba(255, 255, 255, 0.76);
+}
+
+.global-footer-shell {
+  width: min(calc(100% - 40px), 1280px);
+  margin: 0 auto;
+  padding: clamp(32px, 5vw, 48px) 0 22px;
+}
+
+.global-footer-newsletter {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(340px, 0.9fr);
+  align-items: center;
+  gap: clamp(18px, 3vw, 34px);
+  padding: clamp(26px, 4vw, 44px);
+  border: 1px solid rgba(213, 173, 75, 0.24);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.global-footer-newsletter > div > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #d7b45f;
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.global-footer-newsletter h2 {
+  max-width: 650px;
+  margin: 12px 0 0;
+  color: #fff;
+  font-size: clamp(2rem, 4vw, 3.65rem);
+  font-weight: 500;
+  line-height: 1.05;
+}
+
+.global-footer-newsletter p {
+  margin: 14px 0 0;
+  color: rgba(255, 255, 255, 0.62);
+  line-height: 1.7;
+}
+
+.global-footer-newsletter form {
+  min-width: 0;
+}
+
+.global-footer-newsletter-control {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 54px;
+  gap: 8px;
+  padding: 7px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.global-footer-newsletter-control input {
+  width: 100%;
+  min-width: 0;
+  height: 50px;
+  padding: 0 13px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #fff;
+}
+
+.global-footer-newsletter-control input::placeholder {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.global-footer-newsletter-control button {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 50px;
+  padding: 0;
+  border: 0;
+  border-radius: 11px;
+  background: #c99e36;
+  color: #17130f;
+  cursor: pointer;
+}
+
+.global-footer-newsletter form > small {
+  display: block;
+  margin-top: 10px;
+  color: #b8d9b6;
+}
+
+.global-footer-newsletter form > small.error {
+  color: #ffb4b4;
+}
+
+.global-footer-grid {
+  display: grid;
+  grid-template-columns: minmax(220px, 1.35fr) repeat(4, minmax(130px, 0.8fr));
+  gap: clamp(18px, 3vw, 34px);
+  padding: clamp(30px, 4vw, 46px) 0;
+}
+
+.global-footer-wordmark {
+  display: inline-block;
+  color: #fff;
+  font-family: var(--font-jayluxe-serif), Georgia, serif;
+  font-size: 2.5rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.global-footer-brand p {
+  max-width: 330px;
+  margin: 16px 0 22px;
+  line-height: 1.75;
+}
+
+.global-footer-socials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.global-footer-socials a {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  color: #fff;
+  transition: background-color 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+.global-footer-socials a:hover {
+  border-color: #c99e36;
+  background: #c99e36;
+  color: #17130f;
+  transform: translateY(-2px);
+}
+
+.global-footer-links h3 {
+  margin: 0 0 18px;
+  color: #fff;
+  font-size: 0.84rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.global-footer-links ul {
+  display: grid;
+  gap: 11px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.global-footer-links a {
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.5;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  transition: color 160ms ease;
+}
+
+.global-footer-links a:hover {
+  color: #d7b45f;
+}
+
+.global-footer-contact {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 13px;
+}
+
+.global-footer-contact h3 {
+  margin-bottom: 5px;
+}
+
+.global-footer-contact a {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  max-width: 100%;
+}
+
+.global-footer-contact svg {
+  flex: 0 0 auto;
+  margin-top: 2px;
+  color: #d7b45f;
+}
+
+.global-footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.11);
+  color: rgba(255, 255, 255, 0.46);
+  font-size: 0.75rem;
+}
+
+.global-footer-bottom p {
+  margin: 0;
+}
+
+@media (max-width: 1100px) {
+  .global-footer-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .global-footer-brand {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 760px) {
+  .global-footer-shell {
+    width: calc(100% - 24px);
+  }
+
+  .global-footer-newsletter {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 24px 18px;
+    border-radius: 19px;
+  }
+
+  .global-footer-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 34px 22px;
+  }
+
+  .global-footer-brand {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 480px) {
+  .global-footer-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .global-footer-brand {
+    grid-column: auto;
+  }
+
+  .global-footer-bottom {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+/* ---------- Checkout, product cards, forms and tables ---------- */
+
+.jl-payment-option,
+.jl-payment-option strong,
+.jl-payment-option span {
+  color: #171512;
+}
+
+.jl-payment-option.active {
+  border-color: #c99e36;
+  background: #fffaf0;
+}
+
+.lux-product-card,
+.lux-product-image,
+.lux-product-info,
+.jl-form-card,
+.jl-checkout-summary,
+.jl-auth-layout,
+.jl-account-content,
+.admin-content,
+.table-card {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.lux-product-card {
+  overflow: hidden;
+}
+
+.lux-product-title-link h3 {
+  overflow-wrap: anywhere;
+}
+
+.jl-form-grid,
+.admin-form-grid {
+  min-width: 0;
+}
+
+.jl-form-group input,
+.jl-form-group select,
+.jl-form-group textarea,
+.jl-contact-form input,
+.jl-contact-form select,
+.jl-contact-form textarea {
+  width: 100%;
+  min-width: 0;
+}
+
+.table-card,
+.jl-compare-table-wrap,
+.admin-table-wrap,
+.jl-account-table-wrap {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 768px) {
+  .jl-checkout-layout,
+  .jl-account-content,
+  .admin-content,
+  .jl-contact-layout,
+  .jl-policy-layout {
+    width: min(calc(100% - 20px), 760px);
+    max-width: 100%;
+    margin-inline: auto;
+  }
+
+  .jl-form-grid,
+  .admin-form-grid,
+  .jl-contact-form-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .jl-payment-option-group {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 360px) {
+  .jl-payment-option-group {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+
+/* ---------- Invoice and final narrow-screen safeguards ---------- */
+
+.invoice-page,
+.invoice-container,
+.invoice-toolbar {
+  width: 100%;
+  max-width: 100%;
+}
+
+.invoice-page {
+  overflow-x: hidden;
+}
+
+.invoice-container {
+  overflow: hidden;
+}
+
+.invoice-container img,
+.invoice-container svg {
+  max-width: 100%;
+}
+
+@media (max-width: 640px) {
+  .invoice-page {
+    padding: 14px 8px;
+  }
+
+  .invoice-toolbar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 9px;
+  }
+
+  .invoice-toolbar button {
+    width: 100%;
+    min-height: 46px;
+  }
+
+  .invoice-container {
+    padding: 20px 14px;
+    border-radius: 13px;
+  }
+
+  .invoice-watermark {
+    font-size: clamp(54px, 19vw, 88px);
+  }
+
+  .invoice-barcode {
+    justify-content: flex-start;
+    overflow-x: auto;
+  }
+}
+
+@media (pointer: coarse) {
+  button,
+  [role='button'],
+  input[type='submit'],
+  input[type='button'] {
+    min-height: 44px;
+  }
+}
+
+
+/* ============================================================
+   Homepage + Bridal compact pass — 2026-08-17
+   Keeps the existing JayLuxe system; no additional override file.
+   ============================================================ */
+
+/* Connected homepage rhythm. Adjacent priority sections now share a shallow,
+   intentional gap instead of stacking large section paddings. */
+.jj-home > section:not(.jj-hero):not(.jj-trust) {
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+.jj-home > section.jl-home-tight-section:not(.jj-hero):not(.jj-trust) {
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.jl-home-tight-section .jj-section-header {
+  margin-bottom: 10px;
+}
+
+/* Existing hero remains the only homepage hero, but is more compact. */
+.jj-hero {
+  min-height: clamp(430px, 48svh, 500px);
+  height: auto;
+  max-height: 500px;
+}
+
+/* Curated Departments aligns with the category grid rather than floating
+   centered above it. */
+.jl-category-heading {
+  text-align: left;
+  justify-content: flex-start;
+  align-items: flex-end;
+  margin-bottom: 10px;
+}
+
+.jl-category-heading > div,
+.jl-category-heading small,
+.jl-category-heading h2 {
+  width: 100%;
+  text-align: left;
+}
+
+.jl-category-heading h2 {
+  margin-top: 2px;
+}
+
+/* Bridal benefit strip: three equal primary benefits plus one compact
+   full-width nationwide availability line. */
+.jl-bridal-page .jl-bridal-trust {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  width: min(calc(100% - 24px), 1180px);
+  margin-top: 0;
+}
+
+.jl-bridal-page .jl-bridal-trust > div {
+  min-height: 82px;
+  padding: 12px;
+  border-radius: 12px;
+  box-shadow: 0 8px 22px rgba(45, 35, 18, 0.06);
+}
+
+.jl-bridal-page .jl-bridal-trust svg {
+  width: 20px;
+  height: 20px;
+}
+
+.jl-bridal-page .jl-bridal-trust strong {
+  font-size: 12px;
+}
+
+.jl-bridal-page .jl-bridal-trust span {
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+.jl-bridal-page .jl-bridal-delivery-note {
+  grid-column: 1 / -1;
+  grid-template-columns: 22px auto minmax(0, 1fr);
+  min-height: 46px;
+  padding: 9px 12px;
+  column-gap: 8px;
+}
+
+.jl-bridal-page .jl-bridal-delivery-note svg {
+  grid-row: auto;
+}
+
+.jl-bridal-page .jl-bridal-delivery-note span {
+  justify-self: end;
+  text-align: right;
+}
+
+/* Bridal page density: smaller type, shallower cards and tighter grids. */
+.jl-bridal-page .jl-bridal-intro {
+  padding: 24px 0 16px;
+}
+
+.jl-bridal-page .jl-bridal-intro > span {
+  margin-bottom: 8px;
+  font-size: 10px;
+}
+
+.jl-bridal-page .jl-bridal-intro h2 {
+  font-size: clamp(26px, 3.4vw, 38px);
+  line-height: 1.04;
+}
+
+.jl-bridal-page .jl-bridal-intro p {
+  max-width: 620px;
+  margin-top: 10px;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.jl-bridal-page .jl-bridal-packages {
+  width: min(calc(100% - 24px), 1180px);
+  padding-bottom: 24px;
+}
+
+.jl-bridal-page .jl-bridal-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.jl-bridal-page .jl-bridal-card {
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(42, 33, 19, 0.065);
+}
+
+.jl-bridal-page .jl-bridal-card.popular {
+  box-shadow: 0 10px 28px rgba(156, 114, 20, 0.11);
+}
+
+.jl-bridal-page .jl-popular-badge {
+  top: 8px;
+  left: 8px;
+  max-width: calc(100% - 16px);
+  padding: 5px 7px;
+  font-size: 8px;
+}
+
+.jl-bridal-page .jl-bridal-card-body {
+  padding: 14px;
+}
+
+.jl-bridal-page .jl-bridal-card-top {
+  flex-direction: column;
+  gap: 5px;
+}
+
+.jl-bridal-page .jl-bridal-card-top span {
+  margin-bottom: 3px;
+  font-size: 9px;
+}
+
+.jl-bridal-page .jl-bridal-card h3 {
+  display: -webkit-box;
+  min-height: 2.45em;
+  overflow: hidden;
+  font-size: clamp(15px, 1.8vw, 18px);
+  line-height: 1.22;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.jl-bridal-page .jl-bridal-card-price {
+  gap: 4px;
+}
+
+.jl-bridal-page .jl-bridal-card-price small {
+  font-size: 9px;
+}
+
+.jl-bridal-page .jl-bridal-card-price strong {
+  font-size: 16px;
+}
+
+.jl-bridal-page .jl-bridal-desc {
+  min-height: 2.8em;
+  margin-top: 7px;
+  font-size: 11px;
+  line-height: 1.4;
+  -webkit-line-clamp: 2;
+}
+
+.jl-bridal-page .jl-bridal-features {
+  gap: 5px;
+  margin: 9px 0 11px;
+}
+
+.jl-bridal-page .jl-bridal-features li {
+  gap: 5px;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.jl-bridal-page .jl-bridal-features svg {
+  width: 14px;
+  height: 14px;
+}
+
+.jl-bridal-page .jl-bridal-book {
+  min-height: 36px;
+  margin-top: 7px;
+  padding: 8px 10px;
+  border-radius: 9px;
+  gap: 5px;
+  font-size: 11px;
+}
+
+@media (max-width: 767px) {
+  .jj-home > section:not(.jj-hero):not(.jj-trust) {
+    padding-top: 14px;
+    padding-bottom: 14px;
+  }
+
+  .jj-home > section.jl-home-tight-section:not(.jj-hero):not(.jj-trust) {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .jj-hero {
+    min-height: clamp(360px, 54svh, 400px);
+    height: clamp(360px, 54svh, 400px);
+    max-height: 400px;
+  }
+
+  .jj-hero-content {
+    width: calc(100% - 24px);
+  }
+
+  .jj-hero-content > p {
+    max-width: 430px;
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
+  .jj-hero-buttons {
+    margin-top: 12px;
+  }
+
+  .jl-home-tight-section .jj-section-header,
+  .jl-category-heading {
+    margin-bottom: 8px;
+  }
+
+  .jl-category-heading h2 {
+    font-size: 19px;
+    line-height: 1.15;
+  }
+
+  .jl-category-heading small {
+    font-size: 9px;
+    letter-spacing: .11em;
+  }
+
+  .jj-category-content {
+    padding-top: 6px;
+  }
+
+  /* Three concise bridal benefits remain scannable; the secondary copy is
+     hidden on very small cards while the nationwide row keeps its detail. */
+  .jl-bridal-page .jl-bridal-trust {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 5px;
+    width: calc(100% - 24px);
+    margin-top: 0;
+  }
+
+  .jl-bridal-page .jl-bridal-trust > div:not(.jl-bridal-delivery-note) {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    min-height: 72px;
+    padding: 7px 4px;
+    gap: 4px;
+    text-align: center;
+  }
+
+  .jl-bridal-page .jl-bridal-trust > div:not(.jl-bridal-delivery-note) svg {
+    grid-row: auto;
+    width: 17px;
+    height: 17px;
+  }
+
+  .jl-bridal-page .jl-bridal-trust > div:not(.jl-bridal-delivery-note) strong {
+    font-size: 9px;
+    line-height: 1.2;
+  }
+
+  .jl-bridal-page .jl-bridal-trust > div:not(.jl-bridal-delivery-note) span {
+    display: none;
+  }
+
+  .jl-bridal-page .jl-bridal-delivery-note {
+    grid-column: 1 / -1;
+    grid-template-columns: 18px auto minmax(0, 1fr);
+    min-height: 38px;
+    padding: 7px 9px;
+    gap: 6px;
+  }
+
+  .jl-bridal-page .jl-bridal-delivery-note strong {
+    font-size: 9px;
+  }
+
+  .jl-bridal-page .jl-bridal-delivery-note span {
+    display: block;
+    font-size: 8px;
+  }
+
+  .jl-bridal-page .jl-bridal-intro {
+    width: calc(100% - 24px);
+    padding: 18px 0 12px;
+  }
+
+  .jl-bridal-page .jl-bridal-intro h2 {
+    font-size: 22px;
+  }
+
+  .jl-bridal-page .jl-bridal-intro p {
+    margin-top: 7px;
+    font-size: 11px;
+  }
+
+  .jl-bridal-page .jl-bridal-packages {
+    width: 100%;
+    padding-inline: 12px;
+    padding-bottom: 20px;
+  }
+
+  .jl-bridal-page .jl-bridal-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .jl-bridal-page .jl-bridal-grid.single {
+    grid-template-columns: minmax(0, 1fr);
+    width: min(100%, 240px);
+    margin-inline: auto;
+  }
+
+  .jl-bridal-page .jl-bridal-card {
+    border-radius: 10px;
+    box-shadow: none;
+  }
+
+  .jl-bridal-page .jl-popular-badge {
+    top: 5px;
+    left: 5px;
+    max-width: calc(100% - 10px);
+    padding: 4px 5px;
+    font-size: 7px;
+  }
+
+  .jl-bridal-page .jl-bridal-card-image {
+    aspect-ratio: 4 / 3;
+    min-height: 0;
+  }
+
+  .jl-bridal-page .jl-bridal-card-body {
+    display: block;
+    padding: 8px;
+  }
+
+  .jl-bridal-page .jl-bridal-card-top {
+    display: block;
+  }
+
+  .jl-bridal-page .jl-bridal-card-top span {
+    margin-bottom: 2px;
+    font-size: 8px;
+  }
+
+  .jl-bridal-page .jl-bridal-card h3 {
+    min-height: 2.5em;
+    font-size: 13px;
+    line-height: 1.25;
+  }
+
+  .jl-bridal-page .jl-bridal-card-price {
+    margin-top: 4px;
+    gap: 3px;
+  }
+
+  .jl-bridal-page .jl-bridal-card-price small {
+    font-size: 8px;
+  }
+
+  .jl-bridal-page .jl-bridal-card-price strong {
+    font-size: 14px;
+    line-height: 1.2;
+  }
+
+  .jl-bridal-page .jl-bridal-desc {
+    min-height: 2.7em;
+    margin-top: 5px;
+    font-size: 10px;
+    line-height: 1.35;
+    -webkit-line-clamp: 2;
+  }
+
+  .jl-bridal-page .jl-bridal-features {
+    display: none;
+  }
+
+  .jl-bridal-page .jl-bridal-book {
+    min-height: 30px;
+    margin-top: 7px;
+    padding: 7px;
+    border-radius: 8px;
+    gap: 4px;
+    font-size: 10px;
+    line-height: 1.1;
+  }
+
+  .jl-bridal-page .jl-bridal-book svg {
+    width: 13px;
+    height: 13px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jl-mobile-menu-layer,
+  .jl-mobile-menu-backdrop,
+  .jl-mobile-menu,
+  .global-footer-socials a {
+    transition: none;
+  }
+}

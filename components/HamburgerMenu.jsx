@@ -8,9 +8,9 @@ import styles from './HamburgerMenu.module.css';
 const NAVIGATION_ITEMS = [
   { label: 'Home', href: '/' },
   { label: 'Beauty Services', href: '/services' },
-  { label: 'Bridal Package', href: '/bridal-package' },
-  { label: 'Book Bridal Consultation', href: '/book-bridal-consultation' },
-  { label: 'Before & After', href: '/before-after' },
+  { label: 'Bridal Package', href: '/bridal' },
+  { label: 'Book Bridal Consultation', href: '/bridal/book' },
+  { label: 'Before & After', href: '/gallery' },
   { label: 'Testimonials', href: '/testimonials' },
   { label: 'Promotions', href: '/promotions' },
   { label: 'About Us', href: '/about' },

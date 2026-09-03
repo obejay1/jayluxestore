@@ -1,0 +1,598 @@
+/* ===== Consolidated from app/jayluxe-mobile-polish.css ===== */
+/* =========================================================
+   JAYLUXE MOBILE POLISH
+   Scope: phones and tablets only (320px–768px).
+   Imported last so desktop styles and business logic remain unchanged.
+========================================================= */
+
+@media (max-width: 768px) {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html,
+  body,
+  .jl-main-content {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
+  }
+
+  /* ---------- Product details ---------- */
+
+  .jl-product-page {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
+  }
+
+  .jl-product-wrap {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+    width: calc(100% - 32px);
+    max-width: 720px;
+    margin-inline: auto;
+    padding: 20px 0 48px;
+  }
+
+  .jl-product-gallery,
+  .jl-product-info,
+  .jl-product-purchase-box,
+  .jl-product-tabs,
+  .jl-related-products {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  /* The link was removed from the page; this also hides stale cached markup. */
+  .jl-product-back {
+    display: none;
+  }
+
+  .jl-product-main-image {
+    width: 100%;
+    max-width: 100%;
+    aspect-ratio: 4 / 5;
+    border-radius: 16px;
+    cursor: default;
+  }
+
+  .jl-product-main-image img {
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    object-fit: cover;
+    transform: none;
+  }
+
+  .jl-product-thumbs {
+    width: 100%;
+    max-width: 100%;
+    margin-top: 10px;
+    padding-bottom: 4px;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+  }
+
+  .jl-product-thumbs button {
+    flex: 0 0 70px;
+    width: 70px;
+    height: 78px;
+  }
+
+  .jl-product-info {
+    width: 100%;
+    padding-top: 0;
+  }
+
+  .jl-product-breadcrumb {
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+
+  .jl-product-info h1 {
+    max-width: 100%;
+    margin-bottom: 13px;
+    font-size: clamp(2rem, 10vw, 3.15rem);
+    line-height: 1.02;
+    overflow-wrap: anywhere;
+  }
+
+  .jl-product-rating,
+  .jl-product-price-row {
+    max-width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .jl-product-meta-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .jl-product-meta-grid > span:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .jl-product-meta-grid strong {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .jl-product-desc {
+    max-width: 100%;
+    font-size: 0.92rem;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+  }
+
+  .jl-product-benefits {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+    margin: 20px 0;
+  }
+
+  .jl-product-benefits > div {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .jl-product-purchase-box {
+    width: 100%;
+    margin-top: 20px;
+    padding: 16px;
+    border-radius: 14px;
+  }
+
+  .jl-product-qty {
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .jl-product-actions {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 9px;
+  }
+
+  .jl-product-actions button,
+  .jl-wishlist-action {
+    grid-column: auto;
+    width: 100%;
+    min-width: 0;
+    min-height: 48px;
+    white-space: normal;
+  }
+
+  .jl-product-tabs {
+    width: calc(100% - 32px);
+    margin: 0 auto 24px;
+    border-radius: 14px;
+  }
+
+  .jl-product-tab-buttons {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+  }
+
+  .jl-product-tab-buttons button {
+    flex: 0 0 auto;
+    min-width: max-content;
+    padding: 14px 16px;
+  }
+
+  .jl-product-tab-content {
+    min-height: 0;
+    padding: 20px 16px;
+    overflow-wrap: anywhere;
+  }
+
+  .jl-spec-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .jl-spec-grid > div {
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .jl-spec-grid strong {
+    min-width: 0;
+    text-align: right;
+    overflow-wrap: anywhere;
+  }
+
+  .jl-related-products {
+    width: calc(100% - 32px);
+    padding: 42px 0;
+  }
+
+  /* ---------- Home feature cards ---------- */
+
+  .jj-trust {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+    width: calc(100% - 32px);
+    margin: 16px auto 0;
+    overflow: visible;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .jj-trust > div {
+    display: grid;
+    grid-template-columns: 38px minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    align-items: center;
+    gap: 3px 12px;
+    width: 100%;
+    min-width: 0;
+    min-height: 92px;
+    padding: 16px;
+    border: 1px solid rgba(41, 34, 24, 0.1);
+    border-radius: 15px;
+    background: #ffffff;
+    text-align: left;
+  }
+
+  .jj-trust > div svg {
+    grid-row: 1 / 3;
+    width: 24px;
+    height: 24px;
+  }
+
+  .jj-trust h3,
+  .jj-trust p {
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  .jj-trust h3 {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.3;
+  }
+
+  .jj-trust p {
+    font-size: 0.76rem;
+    line-height: 1.4;
+  }
+
+  .jj-promo-rail > a {
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
+    height: 100%;
+    padding: 22px 18px;
+  }
+
+  .jj-promo-rail h2,
+  .jj-promo-rail h3,
+  .jj-promo-rail p,
+  .jj-promo-rail strong,
+  .jj-promo-rail span {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  /* ---------- Mobile footer ---------- */
+
+  .global-footer-pro {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
+    padding-bottom: calc(84px + env(safe-area-inset-bottom));
+  }
+
+  .global-footer-shell {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+  }
+
+  .global-footer-newsletter {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+    width: calc(100% - 32px);
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 28px 18px;
+    border-radius: 18px;
+    text-align: center;
+  }
+
+  .global-footer-newsletter > div,
+  .global-footer-newsletter form,
+  .global-footer-newsletter-control {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .global-footer-newsletter > div > span {
+    justify-content: center;
+    max-width: 100%;
+    white-space: normal;
+  }
+
+  .global-footer-newsletter h2 {
+    max-width: 100%;
+    margin-inline: auto;
+    font-size: clamp(1.65rem, 8.5vw, 2.25rem);
+    line-height: 1.12;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+
+  .global-footer-newsletter p {
+    max-width: 100%;
+    font-size: 0.86rem;
+    line-height: 1.6;
+  }
+
+  .global-footer-newsletter form {
+    display: block;
+    min-height: 0;
+    border: 0;
+    background: transparent;
+  }
+
+  .global-footer-newsletter-control {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 48px;
+    gap: 8px;
+    min-height: 50px;
+    padding: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 13px;
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .global-footer-newsletter-control input {
+    width: 100%;
+    min-width: 0;
+    height: 44px;
+    padding: 0 11px;
+    font-size: 0.85rem;
+  }
+
+  .global-footer-newsletter-control button {
+    width: 44px;
+    min-width: 44px;
+    height: 44px;
+    min-height: 44px;
+    margin: 0;
+    padding: 0;
+  }
+
+  .global-footer-newsletter small {
+    position: static;
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+    text-align: center;
+  }
+
+  .global-footer-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    width: calc(100% - 32px);
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 42px 0 28px;
+  }
+
+  .global-footer-brand,
+  .global-footer-links,
+  .global-footer-contact {
+    grid-column: auto;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    padding: 22px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+  }
+
+  .global-footer-contact {
+    border-bottom: 0;
+  }
+
+  .global-footer-wordmark {
+    display: inline-flex;
+    justify-content: center;
+    max-width: 100%;
+    font-size: clamp(2rem, 10vw, 2.8rem);
+  }
+
+  .global-footer-brand p {
+    max-width: 34rem;
+    margin: 14px auto 0;
+    font-size: 0.86rem;
+    line-height: 1.7;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+
+  .global-footer-socials {
+    justify-content: center;
+    width: 100%;
+    margin-top: 20px;
+  }
+
+  .global-footer-socials a {
+    flex: 0 0 auto;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .global-footer-links h3 {
+    margin: 0 0 16px;
+    font-size: 0.75rem;
+  }
+
+  .global-footer-links ul {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    gap: 11px;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  .global-footer-links li,
+  .global-footer-links a,
+  .global-footer-links p {
+    max-width: 100%;
+    margin: 0;
+    font-size: 0.86rem;
+    line-height: 1.55;
+    white-space: normal;
+    word-break: normal;
+  }
+
+  .global-footer-contact > a {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 9px;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 5px 0;
+  }
+
+  .global-footer-contact > a span {
+    min-width: 0;
+    max-width: calc(100% - 28px);
+    text-align: left;
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+
+  .global-footer-bottom {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+    width: calc(100% - 32px);
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 22px 0 28px;
+    text-align: center;
+  }
+
+  .global-footer-bottom p {
+    width: 100%;
+    margin: 0;
+    font-size: 0.72rem;
+    line-height: 1.5;
+    white-space: normal;
+    word-break: normal;
+  }
+
+  /* ---------- General mobile safety ---------- */
+
+  .jl-main-content img,
+  .jl-main-content video,
+  .jl-main-content canvas,
+  .jl-main-content iframe {
+    max-width: 100%;
+  }
+
+  .jl-main-content button,
+  .jl-main-content [role='button'] {
+    max-width: 100%;
+  }
+
+  .jl-main-content input,
+  .jl-main-content select,
+  .jl-main-content textarea {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+@media (min-width: 640px) and (max-width: 768px) {
+  .jj-trust {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .jj-trust > div {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto auto;
+    justify-items: center;
+    min-height: 150px;
+    text-align: center;
+  }
+
+  .jj-trust > div svg {
+    grid-row: auto;
+  }
+}
+
+@media (max-width: 420px) {
+  .jl-product-wrap,
+  .jl-product-tabs,
+  .jl-related-products {
+    width: calc(100% - 28px);
+  }
+
+  .jl-product-gallery-badges {
+    top: 10px;
+    left: 10px;
+  }
+
+  .jl-product-heart {
+    top: 10px;
+    right: 10px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .global-footer-newsletter,
+  .global-footer-grid,
+  .global-footer-bottom {
+    width: calc(100% - 24px);
+  }
+}
+
+@media (max-width: 340px) {
+  .jl-product-wrap,
+  .jl-product-tabs,
+  .jl-related-products {
+    width: calc(100% - 24px);
+  }
+
+  .jl-product-meta-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .jl-product-meta-grid > span:last-child {
+    grid-column: auto;
+  }
+
+  .global-footer-newsletter,
+  .global-footer-grid,
+  .global-footer-bottom {
+    width: calc(100% - 20px);
+  }
+}
+
+@media (max-width: 768px) and (pointer: coarse) {
+  .jl-product-main-image img {
+    transform: none;
+  }
+}

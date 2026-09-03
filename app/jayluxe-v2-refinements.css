@@ -708,42 +708,34 @@
   padding-inline: 0 !important;
 }
 
-/* Mobile: horizontal scroll carousel */
-@media (max-width: 767px) {
-  .jl-home-product-showcase .jj-product-grid,
-  .jl-home-product-showcase .jl-responsive-card-grid {
-    display: flex !important;
-    flex-wrap: nowrap !important;
-    gap: 10px !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    scroll-snap-type: x mandatory !important;
-    scroll-padding-left: var(--v2-gutter-mobile) !important;
-    padding-bottom: 6px !important;
-    padding-inline: var(--v2-gutter-mobile) !important;
-    margin-inline: calc(-1 * var(--v2-gutter-mobile)) !important;
-    /* Hide scrollbar */
-    scrollbar-width: none !important;
-    -ms-overflow-style: none !important;
-    -webkit-overflow-scrolling: touch;
-  }
+/* Home page product showcase grid */
+.jl-home-product-showcase .jj-product-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 10px !important;
+  overflow: visible !important;
+}
 
-  .jl-home-product-showcase .jj-product-grid::-webkit-scrollbar,
-  .jl-home-product-showcase .jl-responsive-card-grid::-webkit-scrollbar {
-    display: none !important;
-  }
+.jl-home-product-showcase .jj-product-grid > * {
+  flex: none !important;
+  width: auto !important;
+  max-width: none !important;
+  min-width: 0 !important;
+}
 
-  .jl-home-product-showcase .jj-product-grid > *,
-  .jl-home-product-showcase .jl-responsive-card-grid > * {
-    flex: 0 0 calc(45vw - 12px) !important;
-    min-width: 0 !important;
-    width: calc(45vw - 12px) !important;
-    max-width: 200px !important;
-    scroll-snap-align: start !important;
+@media (min-width: 768px) {
+  .jl-home-product-showcase .jj-product-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
   }
 }
 
-/* Desktop: clean 4-column grid */
+@media (min-width: 1024px) {
+  .jl-home-product-showcase .jj-product-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: var(--v2-gap-desktop) !important;
+  }
+}
+
 @media (min-width: 1024px) {
   .jl-home-product-showcase .jj-product-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
@@ -2481,3 +2473,121 @@ html {
     font-size: 0.66rem !important;
   }
 }
+
+
+/* JayLuxe luxury experience section refresh */
+.jl-discover-card,
+.jl-home-promo-feature {
+  background: #fcfaf5 !important;
+  border: 1px solid rgba(184, 134, 11, .22) !important;
+  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease !important;
+}
+
+.jl-discover-card:hover,
+.jl-home-promo-feature:hover {
+  transform: translateY(-3px);
+  border-color: rgba(184, 134, 11, .55) !important;
+  box-shadow: 0 12px 30px rgba(0,0,0,.08);
+}
+
+.jl-discover-icon,
+.jl-home-promo-icon {
+  color: #b8860b !important;
+}
+
+.jl-discover-more .jj-section-header h2,
+.jl-home-promo .jj-section-header h2 {
+  letter-spacing: -.02em;
+}
+
+@media (max-width: 767px) {
+  .jl-discover-grid,
+  .jl-home-promo-features {
+    display: flex !important;
+    overflow-x: auto !important;
+    gap: 14px !important;
+    padding-bottom: 8px !important;
+    scrollbar-width: none;
+  }
+
+  .jl-discover-card,
+  .jl-home-promo-feature {
+    min-width: 150px !important;
+    flex: 0 0 150px !important;
+  }
+}
+
+
+/* =========================================================
+   PHASE 31 — Editorial image assets for JayLuxe experience cards
+   ========================================================= */
+
+.jl-discover-card {
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  min-height: 430px !important;
+}
+
+.jl-editorial-image {
+  width: 100% !important;
+  height: 260px !important;
+  flex-shrink: 0 !important;
+  background-size: cover !important;
+  background-position: center !important;
+  transition: transform .35s ease !important;
+}
+
+.jl-discover-card:hover .jl-editorial-image {
+  transform: scale(1.05) !important;
+}
+
+.jl-beauty-image {
+  background-image: none !important; /* Runtime image supplied by app/page.tsx. */
+}
+
+.jl-bridal-image {
+  background-image: none !important; /* Runtime image supplied by app/page.tsx. */
+}
+
+.jl-gallery-image {
+  background-image: none !important; /* Runtime image supplied by app/page.tsx. */
+}
+
+.jl-editorial-copy {
+  padding: 22px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  flex: 1 !important;
+}
+
+.jl-editorial-copy small {
+  color: var(--jl-gold, #b8860b) !important;
+  letter-spacing: .12em !important;
+  font-weight: 700 !important;
+}
+
+.jl-editorial-copy span {
+  margin-top: auto !important;
+  color: var(--jl-gold, #b8860b) !important;
+  font-weight: 600 !important;
+}
+
+@media (max-width: 767px) {
+  .jl-discover-card {
+    min-width: 86vw !important;
+    min-height: 360px !important;
+  }
+
+  .jl-editorial-image {
+    height: 190px !important;
+  }
+
+  .jl-editorial-copy {
+    padding: 16px !important;
+  }
+}
+
+/* Phase 32 editorial image framing */
+.jl-editorial-image { background-position:center; background-size:cover; }

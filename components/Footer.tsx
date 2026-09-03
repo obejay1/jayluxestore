@@ -197,7 +197,7 @@ export default function Footer() {
             <h3>Services &amp; Inspiration</h3>
             <ul>
               <li><Link href="/services">Services</Link></li>
-              <li><Link href="/beauty-services">Beauty Services</Link></li>
+              <li><Link href="/services">Beauty Services</Link></li>
               <li><Link href="/bridal">Bridal Packages</Link></li>
               <li><Link href="/bridal/book">Book Bridal Consultation</Link></li>
               <li><Link href="/gallery">Before &amp; After</Link></li>

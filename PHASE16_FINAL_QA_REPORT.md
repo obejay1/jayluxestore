@@ -1,3 +1,5 @@
+> Historical Phase 16 report. Superseded for current release readiness by `PHASE33_PRODUCTION_STABILIZATION_REPORT.md`.
+
 # JayLuxe Installment System Phase 16 QA Report
 
 ## Completed validation preparation

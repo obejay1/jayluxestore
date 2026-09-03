@@ -47,18 +47,19 @@ async function activeSuperAdminCount(excludingUid?: string) {
 
 export async function GET(
   _request: NextRequest,
-  { params }: { params: { uid: string } },
+  { params }: { params: Promise<{ uid: string }> },
 ) {
+  const { uid } = await params;
   try {
     await requireAdminSession({ roles: ['super_admin'] });
-    const profile = await getAdminProfile(params.uid);
+    const profile = await getAdminProfile(uid);
     if (!profile) {
       return NextResponse.json(
         { ok: false, message: 'Administrator account not found.' },
         { status: 404 },
       );
     }
-    const authUser = await adminAuth.getUser(params.uid);
+    const authUser = await adminAuth.getUser(uid);
     return NextResponse.json({
       ok: true,
       user: {
@@ -76,8 +77,9 @@ export async function GET(
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { uid: string } },
+  { params }: { params: Promise<{ uid: string }> },
 ) {
+  const { uid } = await params;
   if (!hasTrustedRequestOrigin(request)) {
     return NextResponse.json(
       { ok: false, message: 'The request origin is not trusted.' },
@@ -87,7 +89,7 @@ export async function PATCH(
 
   try {
     const session = await requireAdminSession({ roles: ['super_admin'] });
-    const current = await getAdminProfile(params.uid);
+    const current = await getAdminProfile(uid);
     if (!current) {
       return NextResponse.json(
         { ok: false, message: 'Administrator account not found.' },
@@ -122,7 +124,7 @@ export async function PATCH(
     }
 
     if (
-      params.uid === session.user.uid &&
+      uid === session.user.uid &&
       (roleValue !== 'super_admin' || statusValue !== 'active')
     ) {
       return NextResponse.json(
@@ -135,7 +137,7 @@ export async function PATCH(
       current.role === 'super_admin' &&
       current.status === 'active' &&
       (roleValue !== 'super_admin' || statusValue !== 'active') &&
-      (await activeSuperAdminCount(params.uid)) === 0
+      (await activeSuperAdminCount(uid)) === 0
     ) {
       return NextResponse.json(
         { ok: false, message: 'At least one active Super Admin account must remain.' },
@@ -153,24 +155,24 @@ export async function PATCH(
     const permissionsChanged =
       [...permissions].sort().join('|') !==
       [...current.permissions].sort().join('|');
-    const authBefore = await adminAuth.getUser(params.uid);
+    const authBefore = await adminAuth.getUser(uid);
     const previousClaims = authBefore.customClaims || {};
 
     try {
-      await adminAuth.updateUser(params.uid, {
+      await adminAuth.updateUser(uid, {
         displayName: fullName,
         email,
         phoneNumber: phoneNumber || null,
         disabled,
       });
-      await adminAuth.setCustomUserClaims(params.uid, {
+      await adminAuth.setCustomUserClaims(uid, {
         ...previousClaims,
         admin: true,
         role: roleValue,
         permissions,
       });
 
-      await adminDb.collection('adminUsers').doc(params.uid).set(
+      await adminDb.collection('adminUsers').doc(uid).set(
         {
           fullName,
           email,
@@ -190,13 +192,13 @@ export async function PATCH(
       );
     } catch (updateError) {
       await Promise.allSettled([
-        adminAuth.updateUser(params.uid, {
+        adminAuth.updateUser(uid, {
           displayName: authBefore.displayName || null,
           email: authBefore.email,
           phoneNumber: authBefore.phoneNumber || null,
           disabled: authBefore.disabled,
         }),
-        adminAuth.setCustomUserClaims(params.uid, previousClaims),
+        adminAuth.setCustomUserClaims(uid, previousClaims),
       ]);
       throw updateError;
     }
@@ -206,7 +208,7 @@ export async function PATCH(
       roleValue !== current.role ||
       permissionsChanged
     ) {
-      await adminAuth.revokeRefreshTokens(params.uid).catch((revokeError) => {
+      await adminAuth.revokeRefreshTokens(uid).catch((revokeError) => {
         console.error('REVOKE ADMIN USER TOKENS ERROR:', revokeError);
       });
     }
@@ -223,7 +225,7 @@ export async function PATCH(
       action: statusAction,
       description: `Updated ${fullName} (${email}). Role: ${roleValue.replace('_', ' ')}. Status: ${statusValue}.`,
       targetType: 'adminUser',
-      targetId: params.uid,
+      targetId: uid,
       ipAddress: getRequestIp(request),
       browser: getRequestBrowser(request),
       metadata: { previousRole: current.role, role: roleValue, previousStatus: current.status, status: statusValue },
@@ -249,8 +251,9 @@ export async function PATCH(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { uid: string } },
+  { params }: { params: Promise<{ uid: string }> },
 ) {
+  const { uid } = await params;
   if (!hasTrustedRequestOrigin(request)) {
     return NextResponse.json(
       { ok: false, message: 'The request origin is not trusted.' },
@@ -260,14 +263,14 @@ export async function DELETE(
 
   try {
     const session = await requireAdminSession({ roles: ['super_admin'] });
-    if (params.uid === session.user.uid) {
+    if (uid === session.user.uid) {
       return NextResponse.json(
         { ok: false, message: 'You cannot delete your own account.' },
         { status: 400 },
       );
     }
 
-    const current = await getAdminProfile(params.uid);
+    const current = await getAdminProfile(uid);
     if (!current) {
       return NextResponse.json(
         { ok: false, message: 'Administrator account not found.' },
@@ -278,7 +281,7 @@ export async function DELETE(
     if (
       current.role === 'super_admin' &&
       current.status === 'active' &&
-      (await activeSuperAdminCount(params.uid)) === 0
+      (await activeSuperAdminCount(uid)) === 0
     ) {
       return NextResponse.json(
         { ok: false, message: 'At least one active Super Admin account must remain.' },
@@ -286,15 +289,15 @@ export async function DELETE(
       );
     }
 
-    await adminAuth.deleteUser(params.uid);
-    await adminDb.collection('adminUsers').doc(params.uid).delete();
+    await adminAuth.deleteUser(uid);
+    await adminDb.collection('adminUsers').doc(uid).delete();
 
     await writeAdminActivity({
       actor: session.user,
       action: 'Deleted User',
       description: `Deleted ${current.fullName} (${current.email}) from Firebase Authentication and Firestore.`,
       targetType: 'adminUser',
-      targetId: params.uid,
+      targetId: uid,
       ipAddress: getRequestIp(request),
       browser: getRequestBrowser(request),
       metadata: { role: current.role, status: current.status },

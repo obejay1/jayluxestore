@@ -1,0 +1,1903 @@
+/* ===== Consolidated from app/jayluxe-redesign.css ===== */
+/* =========================================================
+   JAYLUXE 2026 REDESIGN LAYER
+   Loaded after globals.css and luxury-theme.css.
+========================================================= */
+
+:root {
+  --jl-ink: #171512;
+  --jl-ink-soft: #403a33;
+  --jl-muted: #746d64;
+  --jl-paper: #fbfaf7;
+  --jl-cream: #f4efe6;
+  --jl-card: #ffffff;
+  --jl-gold: #b88a29;
+  --jl-gold-bright: #d5ad4b;
+  --jl-line: rgba(34, 29, 23, 0.11);
+  --jl-shadow-sm: 0 12px 32px rgba(34, 27, 18, 0.07);
+  --jl-shadow-lg: 0 28px 80px rgba(34, 27, 18, 0.13);
+  --jl-radius-sm: 12px;
+  --jl-radius-md: 20px;
+  --jl-radius-lg: 30px;
+  --jl-content: 1240px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-width: 320px;
+  background: var(--jl-paper);
+  color: var(--jl-ink);
+  font-family: var(--font-jayluxe-sans), system-ui, sans-serif;
+  text-rendering: optimizeLegibility;
+}
+
+.font-serif,
+h1,
+h2 {
+  font-family: var(--font-jayluxe-serif), Georgia, serif;
+}
+
+::selection {
+  background: rgba(184, 138, 41, 0.25);
+  color: var(--jl-ink);
+}
+
+a,
+button,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+a {
+  touch-action: manipulation;
+}
+
+:where(a, button, input, select, textarea):focus-visible {
+  outline: 3px solid rgba(184, 138, 41, 0.34);
+  outline-offset: 3px;
+}
+
+.jl-main-content {
+  min-width: 0;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.jl-site-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+  border-bottom: 1px solid rgba(30, 25, 20, 0.08);
+  background: rgba(251, 250, 247, 0.94);
+  box-shadow: 0 10px 30px rgba(24, 20, 15, 0.05);
+  backdrop-filter: blur(18px) saturate(140%);
+}
+
+.jl-announcement-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  min-height: 31px;
+  padding: 5px 20px;
+  background: var(--jl-ink);
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.045em;
+}
+
+.jl-announcement-bar span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.jl-announcement-bar svg,
+.jl-announcement-bar a {
+  color: var(--jl-gold-bright);
+}
+
+.jl-announcement-bar a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.jl-header-main {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(18px, 2.4vw, 38px);
+  width: min(calc(100% - 36px), 1480px);
+  min-height: 78px;
+  margin: 0 auto;
+}
+
+.jl-header-left,
+.jl-header-actions {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.jl-header-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  color: var(--jl-ink);
+  text-decoration: none;
+}
+
+.jl-header-logo {
+  flex: 0 0 auto;
+  width: 46px;
+  height: 46px;
+  border-radius: 13px;
+  object-fit: contain;
+  box-shadow: 0 8px 22px rgba(31, 25, 18, 0.09);
+}
+
+.jl-header-brand-copy {
+  display: grid;
+  gap: 2px;
+}
+
+.jl-header-brand-copy strong {
+  font-family: var(--font-jayluxe-serif), Georgia, serif;
+  font-size: 1.42rem;
+  font-weight: 650;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.jl-header-brand-copy small {
+  color: var(--jl-muted);
+  font-size: 0.55rem;
+  font-weight: 800;
+  letter-spacing: 0.115em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.jl-header-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(3px, 0.5vw, 10px);
+  min-width: 0;
+}
+
+.jl-header-nav > a,
+.jl-nav-group-trigger {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 42px;
+  padding: 8px 8px;
+  border: 0;
+  background: transparent;
+  color: #413b34;
+  font: inherit;
+  font-size: clamp(0.68rem, 0.72vw, 0.79rem);
+  font-weight: 780;
+  letter-spacing: 0.015em;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.jl-header-nav > a::after,
+.jl-nav-group-trigger::after {
+  position: absolute;
+  right: 8px;
+  bottom: 6px;
+  left: 8px;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--jl-gold);
+  content: '';
+  opacity: 0;
+  transform: scaleX(0.3);
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.jl-header-nav > a:hover::after,
+.jl-header-nav > a.active::after,
+.jl-nav-group:hover .jl-nav-group-trigger::after,
+.jl-nav-group:focus-within .jl-nav-group-trigger::after,
+.jl-nav-group.active .jl-nav-group-trigger::after {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+.jl-header-nav > a.active,
+.jl-nav-group.active .jl-nav-group-trigger {
+  color: var(--jl-ink);
+}
+
+.jl-nav-group {
+  position: relative;
+}
+
+.jl-nav-group-trigger svg {
+  transition: transform 180ms ease;
+}
+
+.jl-nav-group:hover .jl-nav-group-trigger svg,
+.jl-nav-group:focus-within .jl-nav-group-trigger svg {
+  transform: rotate(180deg);
+}
+
+.jl-nav-dropdown {
+  position: absolute;
+  top: calc(100% - 2px);
+  left: 50%;
+  display: grid;
+  width: 230px;
+  padding: 10px;
+  border: 1px solid var(--jl-line);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: var(--jl-shadow-lg);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 9px);
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.jl-nav-group:hover .jl-nav-dropdown,
+.jl-nav-group:focus-within .jl-nav-dropdown {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, 0);
+}
+
+.jl-nav-dropdown a {
+  display: block;
+  padding: 11px 12px;
+  border-radius: 10px;
+  color: var(--jl-ink-soft);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.jl-nav-dropdown a:hover,
+.jl-nav-dropdown a.active {
+  background: var(--jl-cream);
+  color: #8d6617;
+}
+
+.jl-header-actions {
+  justify-content: flex-end;
+  gap: 5px;
+}
+
+.jl-header-icon,
+.jl-header-menu-button,
+.jl-header-back {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--jl-ink);
+  cursor: pointer;
+  text-decoration: none;
+  transition: border-color 160ms ease, background-color 160ms ease, transform 160ms ease;
+}
+
+.jl-header-icon:hover,
+.jl-header-menu-button:hover,
+.jl-header-back:hover {
+  border-color: rgba(184, 138, 41, 0.22);
+  background: rgba(184, 138, 41, 0.09);
+  transform: translateY(-1px);
+}
+
+.jl-header-icon > span {
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  display: grid;
+  place-items: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border: 2px solid var(--jl-paper);
+  border-radius: 999px;
+  background: var(--jl-gold);
+  color: #fff;
+  font-size: 0.58rem;
+  font-weight: 900;
+}
+
+.jl-header-menu-button {
+  display: none;
+}
+
+.jl-header-search-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.jl-header-search {
+  position: absolute;
+  top: calc(100% + 13px);
+  right: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 42px;
+  width: min(360px, calc(100vw - 28px));
+  padding: 8px;
+  border: 1px solid var(--jl-line);
+  border-radius: 15px;
+  background: #fff;
+  box-shadow: var(--jl-shadow-lg);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px);
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.jl-header-search-wrap.open .jl-header-search {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.jl-header-search input {
+  width: 100%;
+  min-width: 0;
+  height: 42px;
+  padding: 0 12px;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--jl-ink);
+  font: inherit;
+}
+
+.jl-header-search button {
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 10px;
+  background: var(--jl-ink);
+  color: #fff;
+  cursor: pointer;
+}
+
+/* =========================================================
+   HOME PAGE
+========================================================= */
+
+.jj-home {
+  overflow-x: clip;
+  background: var(--jl-paper);
+}
+
+.jj-home > section:not(.jj-hero):not(.jj-trust) {
+  width: min(calc(100% - 36px), var(--jl-content));
+  margin-inline: auto;
+}
+
+.jj-hero {
+  position: relative;
+  min-height: clamp(630px, 74vh, 820px);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.jj-hero-img {
+  object-fit: cover;
+  object-position: center 28%;
+  transform: scale(1.015);
+}
+
+.jj-hero-overlay {
+  z-index: 1;
+  background:
+    linear-gradient(90deg, rgba(10, 9, 7, 0.86) 0%, rgba(10, 9, 7, 0.58) 48%, rgba(10, 9, 7, 0.17) 100%),
+    linear-gradient(0deg, rgba(8, 7, 6, 0.42), transparent 48%);
+}
+
+.jj-hero-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: min(calc(100% - 36px), var(--jl-content));
+  min-height: inherit;
+  margin: 0 auto;
+  padding: 100px 0 120px;
+}
+
+.jj-badge {
+  width: fit-content;
+  border: 1px solid rgba(213, 173, 75, 0.48);
+  background: rgba(15, 13, 10, 0.42);
+  backdrop-filter: blur(12px);
+}
+
+.jj-hero h1 {
+  max-width: 760px;
+  margin: 25px 0 20px;
+  font-size: clamp(4rem, 7.2vw, 7rem);
+  line-height: 0.9;
+  letter-spacing: -0.055em;
+}
+
+.jj-hero-content > p {
+  max-width: 620px;
+  font-size: clamp(1rem, 1.4vw, 1.16rem);
+  line-height: 1.8;
+}
+
+.jj-hero-buttons {
+  gap: 12px;
+  margin-top: 34px;
+}
+
+.jj-btn {
+  min-height: 52px;
+  border-radius: 999px;
+  transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+}
+
+.jj-btn:hover {
+  transform: translateY(-2px);
+}
+
+.jj-btn-gold {
+  box-shadow: 0 12px 32px rgba(184, 138, 41, 0.24);
+}
+
+.jj-trust {
+  position: relative;
+  z-index: 4;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  width: min(calc(100% - 36px), 1060px);
+  margin: -54px auto 0;
+  padding: 0;
+}
+
+.jj-trust > div {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 2px 13px;
+  align-items: center;
+  padding: 22px;
+  border: 1px solid var(--jl-line);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: var(--jl-shadow-sm);
+  backdrop-filter: blur(16px);
+}
+
+.jj-trust svg {
+  grid-row: 1 / 3;
+  color: var(--jl-gold);
+}
+
+.jj-categories,
+.jj-products,
+.jj-bridal,
+.jj-transformations,
+.jj-testimonials,
+.jj-services,
+.jj-contact {
+  margin-top: clamp(72px, 9vw, 132px);
+}
+
+.jj-services,
+.jj-contact {
+  border-radius: var(--jl-radius-lg);
+  box-shadow: var(--jl-shadow-sm);
+}
+
+.jj-section-header {
+  align-items: end;
+  margin-bottom: clamp(28px, 4vw, 50px);
+}
+
+.jj-section-header small,
+.jj-bridal-header small,
+.jj-services small {
+  color: var(--jl-gold);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.jj-section-header h2,
+.jj-bridal-header h2,
+.jj-services h2,
+.jj-contact h2 {
+  font-size: clamp(2.35rem, 4.8vw, 4.7rem);
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+}
+
+.jj-category-grid,
+.jj-product-grid,
+.jj-bridal-grid,
+.jj-transformations-grid,
+.jj-testimonials-grid {
+  gap: clamp(16px, 2vw, 28px);
+}
+
+.jj-category-card,
+.jj-bridal-card,
+.jj-transformation-card,
+.jj-testimonial-card {
+  border: 1px solid var(--jl-line);
+  border-radius: var(--jl-radius-md);
+  background: #fff;
+  box-shadow: var(--jl-shadow-sm);
+  transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+}
+
+.jj-category-card:hover,
+.jj-bridal-card:hover,
+.jj-transformation-card:hover,
+.jj-testimonial-card:hover {
+  border-color: rgba(184, 138, 41, 0.34);
+  box-shadow: var(--jl-shadow-lg);
+  transform: translateY(-6px);
+}
+
+.jj-bridal-banner {
+  min-height: 420px;
+  border-radius: var(--jl-radius-lg);
+  overflow: hidden;
+}
+
+.jj-bridal-banner-image {
+  object-fit: cover;
+}
+
+.jj-services,
+.jj-contact {
+  padding: clamp(38px, 7vw, 84px);
+}
+
+.jj-contact {
+  margin-bottom: clamp(72px, 9vw, 120px);
+}
+
+/* =========================================================
+   SHARED PAGE SURFACES
+========================================================= */
+
+.jl-editorial-page,
+.jl-shop-page,
+.jl-services-page,
+.jl-bridal-page,
+.jl-account-page,
+.jl-order-page,
+.jl-gallery-page,
+.jl-product-page,
+.jl-checkout-page,
+.jl-cart-page {
+  background: var(--jl-paper);
+}
+
+:is(.jl-editorial-hero, .jl-shop-hero, .jl-services-hero, .jl-bridal-hero, .jl-account-hero, .jl-order-hero) {
+  border-bottom: 1px solid var(--jl-line);
+}
+
+:is(.jl-form-card, .jl-checkout-summary, .jl-contact-form, .jl-contact-details, .jl-account-card, .table-card) {
+  border: 1px solid var(--jl-line);
+  box-shadow: var(--jl-shadow-sm);
+}
+
+/* Product/card grids never force narrow horizontal strips. */
+:is(.jl-product-grid, .jj-product-grid, .product-grid, .wishlist-grid) {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(14px, 2vw, 26px);
+  min-width: 0;
+}
+
+:is(.jl-product-grid, .jj-product-grid, .product-grid, .wishlist-grid) > * {
+  min-width: 0;
+  width: 100%;
+}
+
+/* =========================================================
+   PROMOTIONS PAGE
+========================================================= */
+
+.jl-promotions-page {
+  min-height: 100vh;
+  background: var(--jl-paper);
+}
+
+.jl-promotions-hero {
+  width: min(calc(100% - 36px), var(--jl-content));
+  margin: 0 auto;
+  padding: clamp(32px, 5vw, 54px) 0 clamp(24px, 4vw, 40px);
+  text-align: center;
+}
+
+.jl-promotions-hero > span {
+  color: var(--jl-gold);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.jl-promotions-hero h1 {
+  max-width: 900px;
+  margin: 15px auto 22px;
+  font-size: clamp(3.1rem, 7vw, 6.8rem);
+  line-height: 0.92;
+  letter-spacing: -0.055em;
+}
+
+.jl-promotions-hero p {
+  max-width: 680px;
+  margin: 0 auto;
+  color: var(--jl-muted);
+  font-size: 1.04rem;
+  line-height: 1.8;
+}
+
+.jl-promotions-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  width: min(calc(100% - 36px), var(--jl-content));
+  margin: 0 auto clamp(32px, 5vw, 52px);
+}
+
+.jl-promo-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: clamp(16px, 2.5vw, 24px);
+  overflow: hidden;
+  border: 1px solid var(--jl-line);
+  border-radius: var(--jl-radius-lg);
+  background: #fff;
+  box-shadow: var(--jl-shadow-sm);
+}
+
+.jl-promo-card.featured {
+  grid-column: span 2;
+  background: var(--jl-ink);
+  color: #fff;
+}
+
+.jl-promo-card > svg {
+  color: var(--jl-gold);
+}
+
+.jl-promo-card span {
+  margin-top: 26px;
+  color: var(--jl-gold);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.jl-promo-card h2 {
+  margin: 10px 0 13px;
+  font-size: clamp(1.8rem, 3vw, 3rem);
+  line-height: 1;
+}
+
+.jl-promo-card p {
+  margin: 0 0 28px;
+  color: var(--jl-muted);
+  line-height: 1.7;
+}
+
+.jl-promo-card.featured p {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.jl-promo-card a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  margin-top: auto;
+  color: inherit;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.jl-promo-card:not(.featured) a {
+  color: #8f6818;
+}
+
+.jl-promo-products {
+  width: min(calc(100% - 36px), var(--jl-content));
+  margin: 0 auto clamp(32px, 5vw, 52px);
+}
+
+/* =========================================================
+   CONTACT
+========================================================= */
+
+.jl-contact-form button[type='submit'] {
+  min-height: 54px;
+}
+
+.jl-contact-form button[type='submit']:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
+.jl-contact-success,
+.jl-contact-error {
+  margin: 0 0 18px;
+  padding: 13px 15px;
+  border-radius: 11px;
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+.jl-contact-success {
+  border: 1px solid rgba(21, 128, 61, 0.2);
+  background: #effaf2;
+  color: #166534;
+}
+
+.jl-contact-error {
+  border: 1px solid rgba(185, 28, 28, 0.2);
+  background: #fff3f3;
+  color: #a61b1b;
+}
+
+.jl-honeypot {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* =========================================================
+   AUTH
+========================================================= */
+
+.jl-auth-page {
+  background: var(--jl-paper);
+}
+
+.jl-auth-card {
+  border: 1px solid var(--jl-line);
+  border-radius: 24px;
+  box-shadow: var(--jl-shadow-lg);
+}
+
+.jl-remember-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.jl-remember-control {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  color: var(--jl-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.jl-remember-control input {
+  width: 17px;
+  height: 17px;
+  min-height: 0;
+  margin: 0;
+  accent-color: var(--jl-gold);
+}
+
+/* =========================================================
+   ADMIN, ACCOUNT, TABLES & INVOICES
+========================================================= */
+
+.admin-layout,
+.jl-account-page {
+  min-width: 0;
+}
+
+.table-card,
+.admin-content,
+.jl-account-content {
+  min-width: 0;
+}
+
+.table-card {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-card table,
+.jl-account-page table {
+  min-width: 720px;
+}
+
+.admin-sidebar-logout {
+  width: 100%;
+}
+
+@media print {
+  .jl-site-header,
+  .jl-announcement-bar,
+  .mobile-bottom-nav,
+  .jl-mobile-bottom-nav {
+    display: none;
+  }
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1240px) {
+  .jl-header-main {
+    width: min(calc(100% - 24px), 1480px);
+    gap: 14px;
+  }
+
+  .jl-header-brand-copy small {
+    display: none;
+  }
+
+  .jl-header-nav > a,
+  .jl-nav-group-trigger {
+    padding-inline: 6px;
+    font-size: 0.7rem;
+  }
+
+  .jl-header-nav > a:nth-last-of-type(-n + 2) {
+    display: none;
+  }
+}
+
+@media (max-width: 1040px) {
+  .jl-header-nav {
+    display: none;
+  }
+
+  .jl-header-main {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .jl-header-menu-button {
+    display: inline-grid;
+  }
+
+  .jl-mobile-menu-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 1200;
+  }
+
+  .jl-mobile-menu-backdrop {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: rgba(12, 10, 8, 0.56);
+    backdrop-filter: blur(4px);
+  }
+
+  .jl-mobile-menu {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    width: min(92vw, 430px);
+    height: 100%;
+    padding: 22px;
+    overflow-y: auto;
+    background: #fff;
+    box-shadow: -20px 0 60px rgba(20, 16, 11, 0.25);
+  }
+
+  .jl-mobile-menu-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--jl-line);
+  }
+
+  .jl-mobile-menu-heading > div {
+    display: grid;
+  }
+
+  .jl-mobile-menu-heading span {
+    color: var(--jl-gold);
+    font-size: 0.65rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .jl-mobile-menu-heading strong {
+    font-family: var(--font-jayluxe-serif), Georgia, serif;
+    font-size: 2rem;
+  }
+
+  .jl-mobile-menu-heading button {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border: 1px solid var(--jl-line);
+    border-radius: 999px;
+    background: #fff;
+  }
+
+  .jl-mobile-search {
+    display: grid;
+    grid-template-columns: 22px minmax(0, 1fr);
+    align-items: center;
+    gap: 8px;
+    margin: 18px 0;
+    padding: 0 14px;
+    border: 1px solid var(--jl-line);
+    border-radius: 13px;
+    background: var(--jl-paper);
+  }
+
+  .jl-mobile-search input {
+    min-width: 0;
+    height: 50px;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    font: inherit;
+  }
+
+  .jl-mobile-menu nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px;
+  }
+
+  .jl-mobile-menu nav a {
+    padding: 12px;
+    border-radius: 10px;
+    color: var(--jl-ink-soft);
+    font-size: 0.84rem;
+    font-weight: 750;
+    text-decoration: none;
+  }
+
+  .jl-mobile-menu nav a:hover,
+  .jl-mobile-menu nav a.active {
+    background: var(--jl-cream);
+    color: #8d6617;
+  }
+
+  .jl-mobile-menu-links {
+    display: grid;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 24px;
+  }
+
+  .jl-mobile-menu-links a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 14px;
+    border: 1px solid var(--jl-line);
+    border-radius: 12px;
+    color: var(--jl-ink);
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .jl-mobile-menu-links b {
+    margin-left: auto;
+    color: var(--jl-gold);
+  }
+
+  :is(.jl-product-grid, .jj-product-grid, .product-grid, .wishlist-grid) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .jl-promotions-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .jl-announcement-bar {
+    justify-content: space-between;
+    font-size: 0.61rem;
+  }
+
+  .jl-announcement-bar span {
+    max-width: 65%;
+  }
+
+  .jl-header-main {
+    min-height: 68px;
+  }
+
+  .jl-header-logo {
+    width: 40px;
+    height: 40px;
+  }
+
+  .jl-header-brand-copy strong {
+    font-size: 1.25rem;
+  }
+
+  .jl-header-icon,
+  .jl-header-menu-button {
+    width: 38px;
+    height: 38px;
+  }
+
+  .jl-header-actions > a:nth-of-type(1),
+  .jl-header-actions > a:nth-of-type(2) {
+    display: none;
+  }
+
+  .jj-hero {
+    min-height: 680px;
+  }
+
+  .jj-hero-img {
+    object-position: 62% center;
+  }
+
+  .jj-hero-overlay {
+    background: linear-gradient(180deg, rgba(10, 9, 7, 0.22) 0%, rgba(10, 9, 7, 0.62) 48%, rgba(10, 9, 7, 0.94) 100%);
+  }
+
+  .jj-hero-content {
+    justify-content: flex-end;
+    width: calc(100% - 28px);
+    padding: 80px 0 76px;
+  }
+
+  .jj-hero h1 {
+    font-size: clamp(3.2rem, 15vw, 5rem);
+  }
+
+  .jj-hero-buttons {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .jj-btn {
+    width: 100%;
+  }
+
+  .jj-trust {
+    grid-template-columns: 1fr;
+    width: calc(100% - 28px);
+    margin-top: -34px;
+  }
+
+  .jj-home > section:not(.jj-hero):not(.jj-trust),
+  .jl-promotions-hero,
+  .jl-promotions-grid,
+  .jl-promo-products {
+    width: calc(100% - 28px);
+  }
+
+  .jj-section-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  :is(.jl-product-grid, .jj-product-grid, .product-grid, .wishlist-grid) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .jl-promotions-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .jl-promo-card.featured {
+    grid-column: auto;
+  }
+
+  .jl-remember-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 430px) {
+  .jl-announcement-bar span {
+    display: none;
+  }
+
+  .jl-announcement-bar {
+    justify-content: center;
+  }
+
+  .jl-header-main {
+    width: calc(100% - 18px);
+  }
+
+  .jl-header-brand {
+    gap: 8px;
+  }
+
+  .jl-header-brand-copy strong {
+    font-size: 1.15rem;
+  }
+
+  .jl-search-toggle,
+  .jl-header-actions > a {
+    display: none;
+  }
+
+  .jl-mobile-menu {
+    width: 100%;
+  }
+
+  .jl-mobile-menu nav {
+    grid-template-columns: 1fr;
+  }
+
+  :is(.jl-product-grid, .jj-product-grid, .product-grid, .wishlist-grid) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .jj-section-header h2,
+  .jj-bridal-header h2,
+  .jj-services h2,
+  .jj-contact h2 {
+    font-size: 2.45rem;
+  }
+}
+
+
+/* ============================================================
+   Homepage + Bridal compact pass — 2026-08-17
+   Keeps the existing JayLuxe system; no additional override file.
+   ============================================================ */
+
+/* Connected homepage rhythm. Adjacent priority sections now share a shallow,
+   intentional gap instead of stacking large section paddings. */
+.jj-home > section:not(.jj-hero):not(.jj-trust) {
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+.jj-home > section.jl-home-tight-section:not(.jj-hero):not(.jj-trust) {
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.jl-home-tight-section .jj-section-header {
+  margin-bottom: 10px;
+}
+
+/* Existing hero remains the only homepage hero, but is more compact. */
+.jj-hero {
+  min-height: clamp(430px, 48svh, 500px);
+  height: auto;
+  max-height: 500px;
+}
+
+/* Curated Departments aligns with the category grid rather than floating
+   centered above it. */
+.jl-category-heading {
+  text-align: left;
+  justify-content: flex-start;
+  align-items: flex-end;
+  margin-bottom: 10px;
+}
+
+.jl-category-heading > div,
+.jl-category-heading small,
+.jl-category-heading h2 {
+  width: 100%;
+  text-align: left;
+}
+
+.jl-category-heading h2 {
+  margin-top: 2px;
+}
+
+/* Bridal benefit strip: three equal primary benefits plus one compact
+   full-width nationwide availability line. */
+.jl-bridal-page .jl-bridal-trust {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  width: min(calc(100% - 24px), 1180px);
+  margin-top: 0;
+}
+
+.jl-bridal-page .jl-bridal-trust > div {
+  min-height: 82px;
+  padding: 12px;
+  border-radius: 12px;
+  box-shadow: 0 8px 22px rgba(45, 35, 18, 0.06);
+}
+
+.jl-bridal-page .jl-bridal-trust svg {
+  width: 20px;
+  height: 20px;
+}
+
+.jl-bridal-page .jl-bridal-trust strong {
+  font-size: 12px;
+}
+
+.jl-bridal-page .jl-bridal-trust span {
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+.jl-bridal-page .jl-bridal-delivery-note {
+  grid-column: 1 / -1;
+  grid-template-columns: 22px auto minmax(0, 1fr);
+  min-height: 46px;
+  padding: 9px 12px;
+  column-gap: 8px;
+}
+
+.jl-bridal-page .jl-bridal-delivery-note svg {
+  grid-row: auto;
+}
+
+.jl-bridal-page .jl-bridal-delivery-note span {
+  justify-self: end;
+  text-align: right;
+}
+
+/* Bridal page density: smaller type, shallower cards and tighter grids. */
+.jl-bridal-page .jl-bridal-intro {
+  padding: 24px 0 16px;
+}
+
+.jl-bridal-page .jl-bridal-intro > span {
+  margin-bottom: 8px;
+  font-size: 10px;
+}
+
+.jl-bridal-page .jl-bridal-intro h2 {
+  font-size: clamp(26px, 3.4vw, 38px);
+  line-height: 1.04;
+}
+
+.jl-bridal-page .jl-bridal-intro p {
+  max-width: 620px;
+  margin-top: 10px;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.jl-bridal-page .jl-bridal-packages {
+  width: min(calc(100% - 24px), 1180px);
+  padding-bottom: 24px;
+}
+
+.jl-bridal-page .jl-bridal-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.jl-bridal-page .jl-bridal-card {
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(42, 33, 19, 0.065);
+}
+
+.jl-bridal-page .jl-bridal-card.popular {
+  box-shadow: 0 10px 28px rgba(156, 114, 20, 0.11);
+}
+
+.jl-bridal-page .jl-popular-badge {
+  top: 8px;
+  left: 8px;
+  max-width: calc(100% - 16px);
+  padding: 5px 7px;
+  font-size: 8px;
+}
+
+.jl-bridal-page .jl-bridal-card-body {
+  padding: 14px;
+}
+
+.jl-bridal-page .jl-bridal-card-top {
+  flex-direction: column;
+  gap: 5px;
+}
+
+.jl-bridal-page .jl-bridal-card-top span {
+  margin-bottom: 3px;
+  font-size: 9px;
+}
+
+.jl-bridal-page .jl-bridal-card h3 {
+  display: -webkit-box;
+  min-height: 2.45em;
+  overflow: hidden;
+  font-size: clamp(15px, 1.8vw, 18px);
+  line-height: 1.22;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.jl-bridal-page .jl-bridal-card-price {
+  gap: 4px;
+}
+
+.jl-bridal-page .jl-bridal-card-price small {
+  font-size: 9px;
+}
+
+.jl-bridal-page .jl-bridal-card-price strong {
+  font-size: 16px;
+}
+
+.jl-bridal-page .jl-bridal-desc {
+  min-height: 2.8em;
+  margin-top: 7px;
+  font-size: 11px;
+  line-height: 1.4;
+  -webkit-line-clamp: 2;
+}
+
+.jl-bridal-page .jl-bridal-features {
+  gap: 5px;
+  margin: 9px 0 11px;
+}
+
+.jl-bridal-page .jl-bridal-features li {
+  gap: 5px;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.jl-bridal-page .jl-bridal-features svg {
+  width: 14px;
+  height: 14px;
+}
+
+.jl-bridal-page .jl-bridal-book {
+  min-height: 36px;
+  margin-top: 7px;
+  padding: 8px 10px;
+  border-radius: 9px;
+  gap: 5px;
+  font-size: 11px;
+}
+
+@media (max-width: 767px) {
+  .jj-home > section:not(.jj-hero):not(.jj-trust) {
+    padding-top: 14px;
+    padding-bottom: 14px;
+  }
+
+  .jj-home > section.jl-home-tight-section:not(.jj-hero):not(.jj-trust) {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .jj-hero {
+    min-height: clamp(360px, 54svh, 400px);
+    height: clamp(360px, 54svh, 400px);
+    max-height: 400px;
+  }
+
+  .jj-hero-content {
+    width: calc(100% - 24px);
+  }
+
+  .jj-hero-content > p {
+    max-width: 430px;
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
+  .jj-hero-buttons {
+    margin-top: 12px;
+  }
+
+  .jl-home-tight-section .jj-section-header,
+  .jl-category-heading {
+    margin-bottom: 8px;
+  }
+
+  .jl-category-heading h2 {
+    font-size: 19px;
+    line-height: 1.15;
+  }
+
+  .jl-category-heading small {
+    font-size: 9px;
+    letter-spacing: .11em;
+  }
+
+  .jj-category-content {
+    padding-top: 6px;
+  }
+
+  /* Three concise bridal benefits remain scannable; the secondary copy is
+     hidden on very small cards while the nationwide row keeps its detail. */
+  .jl-bridal-page .jl-bridal-trust {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 5px;
+    width: calc(100% - 24px);
+    margin-top: 0;
+  }
+
+  .jl-bridal-page .jl-bridal-trust > div:not(.jl-bridal-delivery-note) {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    min-height: 72px;
+    padding: 7px 4px;
+    gap: 4px;
+    text-align: center;
+  }
+
+  .jl-bridal-page .jl-bridal-trust > div:not(.jl-bridal-delivery-note) svg {
+    grid-row: auto;
+    width: 17px;
+    height: 17px;
+  }
+
+  .jl-bridal-page .jl-bridal-trust > div:not(.jl-bridal-delivery-note) strong {
+    font-size: 9px;
+    line-height: 1.2;
+  }
+
+  .jl-bridal-page .jl-bridal-trust > div:not(.jl-bridal-delivery-note) span {
+    display: none;
+  }
+
+  .jl-bridal-page .jl-bridal-delivery-note {
+    grid-column: 1 / -1;
+    grid-template-columns: 18px auto minmax(0, 1fr);
+    min-height: 38px;
+    padding: 7px 9px;
+    gap: 6px;
+  }
+
+  .jl-bridal-page .jl-bridal-delivery-note strong {
+    font-size: 9px;
+  }
+
+  .jl-bridal-page .jl-bridal-delivery-note span {
+    display: block;
+    font-size: 8px;
+  }
+
+  .jl-bridal-page .jl-bridal-intro {
+    width: calc(100% - 24px);
+    padding: 18px 0 12px;
+  }
+
+  .jl-bridal-page .jl-bridal-intro h2 {
+    font-size: 22px;
+  }
+
+  .jl-bridal-page .jl-bridal-intro p {
+    margin-top: 7px;
+    font-size: 11px;
+  }
+
+  .jl-bridal-page .jl-bridal-packages {
+    width: 100%;
+    padding-inline: 12px;
+    padding-bottom: 20px;
+  }
+
+  .jl-bridal-page .jl-bridal-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .jl-bridal-page .jl-bridal-grid.single {
+    grid-template-columns: minmax(0, 1fr);
+    width: min(100%, 240px);
+    margin-inline: auto;
+  }
+
+  .jl-bridal-page .jl-bridal-card {
+    border-radius: 10px;
+    box-shadow: none;
+  }
+
+  .jl-bridal-page .jl-popular-badge {
+    top: 5px;
+    left: 5px;
+    max-width: calc(100% - 10px);
+    padding: 4px 5px;
+    font-size: 7px;
+  }
+
+  .jl-bridal-page .jl-bridal-card-image {
+    aspect-ratio: 4 / 3;
+    min-height: 0;
+  }
+
+  .jl-bridal-page .jl-bridal-card-body {
+    display: block;
+    padding: 8px;
+  }
+
+  .jl-bridal-page .jl-bridal-card-top {
+    display: block;
+  }
+
+  .jl-bridal-page .jl-bridal-card-top span {
+    margin-bottom: 2px;
+    font-size: 8px;
+  }
+
+  .jl-bridal-page .jl-bridal-card h3 {
+    min-height: 2.5em;
+    font-size: 13px;
+    line-height: 1.25;
+  }
+
+  .jl-bridal-page .jl-bridal-card-price {
+    margin-top: 4px;
+    gap: 3px;
+  }
+
+  .jl-bridal-page .jl-bridal-card-price small {
+    font-size: 8px;
+  }
+
+  .jl-bridal-page .jl-bridal-card-price strong {
+    font-size: 14px;
+    line-height: 1.2;
+  }
+
+  .jl-bridal-page .jl-bridal-desc {
+    min-height: 2.7em;
+    margin-top: 5px;
+    font-size: 10px;
+    line-height: 1.35;
+    -webkit-line-clamp: 2;
+  }
+
+  .jl-bridal-page .jl-bridal-features {
+    display: none;
+  }
+
+  .jl-bridal-page .jl-bridal-book {
+    min-height: 30px;
+    margin-top: 7px;
+    padding: 7px;
+    border-radius: 8px;
+    gap: 4px;
+    font-size: 10px;
+    line-height: 1.1;
+  }
+
+  .jl-bridal-page .jl-bridal-book svg {
+    width: 13px;
+    height: 13px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto;
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
+    transition-duration: 0.01ms;
+  }
+}
+
+/* Customer account tracking */
+.jl-order-history-item {
+  align-items: start;
+}
+
+.jl-account-tracking {
+  grid-column: 1 / -1;
+  width: 100%;
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid var(--jl-line);
+}
+
+.jl-account-tracking-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 18px;
+  margin-bottom: 18px;
+  color: var(--jl-muted);
+  font-size: 0.78rem;
+}
+
+.jl-account-tracking-meta > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.jl-account-tracking-meta svg,
+.jl-account-tracking-meta strong {
+  color: var(--jl-ink);
+}
+
+.jl-account-tracking-steps {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.jl-account-tracking-steps li {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  min-width: 0;
+  color: #a29a90;
+  text-align: center;
+  font-size: 0.66rem;
+  font-weight: 750;
+}
+
+.jl-account-tracking-steps li::before {
+  position: absolute;
+  top: 8px;
+  right: 50%;
+  left: -50%;
+  height: 2px;
+  background: #ddd7ce;
+  content: '';
+  z-index: 0;
+}
+
+.jl-account-tracking-steps li:first-child::before {
+  display: none;
+}
+
+.jl-account-tracking-steps svg {
+  position: relative;
+  z-index: 1;
+  background: #fff;
+}
+
+.jl-account-tracking-steps li.complete {
+  color: #8e681b;
+}
+
+.jl-account-tracking-steps li.complete::before {
+  background: var(--jl-gold);
+}
+
+.jl-account-tracking-steps li.complete svg {
+  color: var(--jl-gold);
+}
+
+@media (max-width: 760px) {
+  .jl-account-tracking-steps {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .jl-account-tracking-steps li {
+    grid-template-columns: 22px minmax(0, 1fr);
+    justify-items: start;
+    text-align: left;
+    font-size: 0.76rem;
+  }
+
+  .jl-account-tracking-steps li::before {
+    top: -10px;
+    right: auto;
+    bottom: 18px;
+    left: 8px;
+    width: 2px;
+    height: auto;
+  }
+}
+
+/* Home promotional rail */
+.jj-promo-rail {
+  display: grid;
+  grid-template-columns: 1.45fr repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: clamp(72px, 9vw, 120px);
+}
+
+.jj-promo-rail > a {
+  display: flex;
+  flex-direction: column;
+  min-height: 290px;
+  padding: clamp(26px, 4vw, 44px);
+  border: 1px solid var(--jl-line);
+  border-radius: var(--jl-radius-lg);
+  color: var(--jl-ink);
+  text-decoration: none;
+  box-shadow: var(--jl-shadow-sm);
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+.jj-promo-rail > a:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--jl-shadow-lg);
+}
+
+.jj-promo-featured {
+  background: var(--jl-ink);
+  color: #fff;
+}
+
+.jj-promo-compact {
+  background: #fff;
+}
+
+.jj-promo-rail span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--jl-gold-bright);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.jj-promo-rail h2,
+.jj-promo-rail h3 {
+  margin: 17px 0 12px;
+  font-family: var(--font-jayluxe-serif), Georgia, serif;
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+}
+
+.jj-promo-rail h2 {
+  font-size: clamp(2.6rem, 5vw, 4.8rem);
+}
+
+.jj-promo-rail h3 {
+  font-size: clamp(1.8rem, 3vw, 2.65rem);
+}
+
+.jj-promo-rail p {
+  margin: 0 0 28px;
+  color: var(--jl-muted);
+  line-height: 1.7;
+}
+
+.jj-promo-featured p {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.jj-promo-rail strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  color: inherit;
+}
+
+@media (max-width: 960px) {
+  .jj-promo-rail {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .jj-promo-featured {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 640px) {
+  .jj-promo-rail {
+    grid-template-columns: 1fr;
+  }
+
+  .jj-promo-featured {
+    grid-column: auto;
+  }
+}
+
+/* Admin operational dashboards */
+.admin-insight-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.admin-insight-grid article {
+  min-width: 0;
+  padding: 20px;
+  border: 1px solid var(--jl-line);
+  border-radius: 16px;
+  background: var(--jl-paper);
+}
+
+.admin-insight-grid small {
+  display: block;
+  color: var(--jl-muted);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.admin-insight-grid article > strong {
+  display: block;
+  margin: 8px 0 16px;
+  color: var(--jl-gold);
+  font-size: 2rem;
+}
+
+.admin-insight-grid ul {
+  display: grid;
+  gap: 9px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.admin-insight-grid li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--jl-ink-soft);
+  font-size: 0.78rem;
+}
+
+.admin-insight-grid li span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.admin-insight-grid li b {
+  flex: 0 0 auto;
+  color: var(--jl-ink);
+}
+
+.admin-message-cell {
+  max-width: 320px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 1000px) {
+  .admin-insight-grid {
+    grid-template-columns: 1fr;
+  }
+}

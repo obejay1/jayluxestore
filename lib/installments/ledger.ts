@@ -1,4 +1,5 @@
 import { adminDb } from '@/lib/firebaseAdmin';
+import { isSuccessfulPaymentStatus } from './status';
 
 export type Provider = 'Paystack' | 'OPay' | 'Manual';
 
@@ -27,10 +28,9 @@ export async function calculatePaidAmount(planId:string){
   const snap=await adminDb.collection('installmentPayments').where('planId','==',planId).get();
   return snap.docs.reduce((sum,d)=>{
     const p:any=d.data();
-    return p.status==='successful' ? sum+Number(p.amount||0):sum;
+    return isSuccessfulPaymentStatus(p.status) ? sum+Number(p.amount||0):sum;
   },0);
 }
-
 
 export async function recordRefundTransaction(input:{
   transactionReference:string;

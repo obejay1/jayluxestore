@@ -150,7 +150,7 @@ export default function AdminLoginPage() {
         <aside className={styles.brandPanel}>
           <div className={styles.logoWrap}>
             <Image
-              src="/jayluxe-logo.png"
+              src="/logo.png"
               alt="JayLuxe"
               width={104}
               height={104}

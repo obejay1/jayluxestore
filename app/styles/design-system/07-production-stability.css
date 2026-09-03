@@ -1,0 +1,870 @@
+/* ===== Consolidated from app/jayluxe-production-stability.css ===== */
+/* JayLuxe production stability overrides.
+   This file is imported last so older responsive experiments cannot reintroduce
+   conflicting drawer/contact rules. */
+
+html,
+body {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   Mobile navigation: one explicit stacking context, no backdrop blur/filter.
+   The drawer is rendered through a portal to <body>, so transformed page
+   ancestors cannot trap it behind the application chrome.
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 1040px) {
+  .jl-mobile-menu-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 2147483000;
+    isolation: isolate;
+    display: block;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    max-width: none;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: none;
+    filter: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    transition: opacity 180ms ease, visibility 0s linear 240ms;
+  }
+
+  .jl-mobile-menu-layer.is-open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition-delay: 0s;
+  }
+
+  .jl-mobile-menu-backdrop {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: rgba(16, 13, 10, 0.64);
+    opacity: 0;
+    transform: none;
+    filter: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    transition: opacity 180ms ease;
+  }
+
+  .jl-mobile-menu-layer.is-open .jl-mobile-menu-backdrop {
+    opacity: 1;
+  }
+
+  .jl-mobile-menu {
+    position: absolute;
+    inset: 0 0 0 auto;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    width: min(92vw, 420px);
+    max-width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    min-height: 0;
+    margin: 0;
+    padding:
+      max(18px, env(safe-area-inset-top))
+      max(17px, env(safe-area-inset-right))
+      max(20px, env(safe-area-inset-bottom))
+      17px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border: 0;
+    border-radius: 0;
+    background: #fffdf9;
+    color: #241e18;
+    box-shadow: -22px 0 64px rgba(19, 15, 11, 0.3);
+    opacity: 1;
+    transform: translate3d(102%, 0, 0);
+    filter: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    will-change: transform;
+    transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .jl-mobile-menu-layer.is-open .jl-mobile-menu {
+    transform: translate3d(0, 0, 0);
+  }
+
+  .jl-mobile-menu :is(a, button, input) {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .jl-mobile-menu-close {
+    position: relative;
+    z-index: 2;
+  }
+}
+
+@media (max-width: 430px) {
+  .jl-mobile-menu {
+    width: min(94vw, 390px);
+  }
+}
+
+
+/* ============================================================
+   Homepage + Bridal compact pass — 2026-08-17
+   Keeps the existing JayLuxe system; no additional override file.
+   ============================================================ */
+
+/* Connected homepage rhythm. Adjacent priority sections now share a shallow,
+   intentional gap instead of stacking large section paddings. */
+.jj-home > section:not(.jj-hero):not(.jj-trust) {
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+.jj-home > section.jl-home-tight-section:not(.jj-hero):not(.jj-trust) {
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.jl-home-tight-section .jj-section-header {
+  margin-bottom: 10px;
+}
+
+/* Existing hero remains the only homepage hero, but is more compact. */
+.jj-hero {
+  min-height: clamp(430px, 48svh, 500px);
+  height: auto;
+  max-height: 500px;
+}
+
+/* Curated Departments aligns with the category grid rather than floating
+   centered above it. */
+.jl-category-heading {
+  text-align: left;
+  justify-content: flex-start;
+  align-items: flex-end;
+  margin-bottom: 10px;
+}
+
+.jl-category-heading > div,
+.jl-category-heading small,
+.jl-category-heading h2 {
+  width: 100%;
+  text-align: left;
+}
+
+.jl-category-heading h2 {
+  margin-top: 2px;
+}
+
+/* Bridal benefit strip: three equal primary benefits plus one compact
+   full-width nationwide availability line. */
+.jl-bridal-page .jl-bridal-trust {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  width: min(calc(100% - 24px), 1180px);
+  margin-top: 0;
+}
+
+.jl-bridal-page .jl-bridal-trust > div {
+  min-height: 82px;
+  padding: 12px;
+  border-radius: 12px;
+  box-shadow: 0 8px 22px rgba(45, 35, 18, 0.06);
+}
+
+.jl-bridal-page .jl-bridal-trust svg {
+  width: 20px;
+  height: 20px;
+}
+
+.jl-bridal-page .jl-bridal-trust strong {
+  font-size: 12px;
+}
+
+.jl-bridal-page .jl-bridal-trust span {
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+.jl-bridal-page .jl-bridal-delivery-note {
+  grid-column: 1 / -1;
+  grid-template-columns: 22px auto minmax(0, 1fr);
+  min-height: 46px;
+  padding: 9px 12px;
+  column-gap: 8px;
+}
+
+.jl-bridal-page .jl-bridal-delivery-note svg {
+  grid-row: auto;
+}
+
+.jl-bridal-page .jl-bridal-delivery-note span {
+  justify-self: end;
+  text-align: right;
+}
+
+/* Bridal page density: smaller type, shallower cards and tighter grids. */
+.jl-bridal-page .jl-bridal-intro {
+  padding: 24px 0 16px;
+}
+
+.jl-bridal-page .jl-bridal-intro > span {
+  margin-bottom: 8px;
+  font-size: 10px;
+}
+
+.jl-bridal-page .jl-bridal-intro h2 {
+  font-size: clamp(26px, 3.4vw, 38px);
+  line-height: 1.04;
+}
+
+.jl-bridal-page .jl-bridal-intro p {
+  max-width: 620px;
+  margin-top: 10px;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.jl-bridal-page .jl-bridal-packages {
+  width: min(calc(100% - 24px), 1180px);
+  padding-bottom: 24px;
+}
+
+.jl-bridal-page .jl-bridal-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.jl-bridal-page .jl-bridal-card {
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(42, 33, 19, 0.065);
+}
+
+.jl-bridal-page .jl-bridal-card.popular {
+  box-shadow: 0 10px 28px rgba(156, 114, 20, 0.11);
+}
+
+.jl-bridal-page .jl-popular-badge {
+  top: 8px;
+  left: 8px;
+  max-width: calc(100% - 16px);
+  padding: 5px 7px;
+  font-size: 8px;
+}
+
+.jl-bridal-page .jl-bridal-card-body {
+  padding: 14px;
+}
+
+.jl-bridal-page .jl-bridal-card-top {
+  flex-direction: column;
+  gap: 5px;
+}
+
+.jl-bridal-page .jl-bridal-card-top span {
+  margin-bottom: 3px;
+  font-size: 9px;
+}
+
+.jl-bridal-page .jl-bridal-card h3 {
+  display: -webkit-box;
+  min-height: 2.45em;
+  overflow: hidden;
+  font-size: clamp(15px, 1.8vw, 18px);
+  line-height: 1.22;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.jl-bridal-page .jl-bridal-card-price {
+  gap: 4px;
+}
+
+.jl-bridal-page .jl-bridal-card-price small {
+  font-size: 9px;
+}
+
+.jl-bridal-page .jl-bridal-card-price strong {
+  font-size: 16px;
+}
+
+.jl-bridal-page .jl-bridal-desc {
+  min-height: 2.8em;
+  margin-top: 7px;
+  font-size: 11px;
+  line-height: 1.4;
+  -webkit-line-clamp: 2;
+}
+
+.jl-bridal-page .jl-bridal-features {
+  gap: 5px;
+  margin: 9px 0 11px;
+}
+
+.jl-bridal-page .jl-bridal-features li {
+  gap: 5px;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.jl-bridal-page .jl-bridal-features svg {
+  width: 14px;
+  height: 14px;
+}
+
+.jl-bridal-page .jl-bridal-book {
+  min-height: 36px;
+  margin-top: 7px;
+  padding: 8px 10px;
+  border-radius: 9px;
+  gap: 5px;
+  font-size: 11px;
+}
+
+@media (max-width: 767px) {
+  .jj-home > section:not(.jj-hero):not(.jj-trust) {
+    padding-top: 14px;
+    padding-bottom: 14px;
+  }
+
+  .jj-home > section.jl-home-tight-section:not(.jj-hero):not(.jj-trust) {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .jj-hero {
+    min-height: clamp(360px, 54svh, 400px);
+    height: clamp(360px, 54svh, 400px);
+    max-height: 400px;
+  }
+
+  .jj-hero-content {
+    width: calc(100% - 24px);
+  }
+
+  .jj-hero-content > p {
+    max-width: 430px;
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
+  .jj-hero-buttons {
+    margin-top: 12px;
+  }
+
+  .jl-home-tight-section .jj-section-header,
+  .jl-category-heading {
+    margin-bottom: 8px;
+  }
+
+  .jl-category-heading h2 {
+    font-size: 19px;
+    line-height: 1.15;
+  }
+
+  .jl-category-heading small {
+    font-size: 9px;
+    letter-spacing: .11em;
+  }
+
+  .jj-category-content {
+    padding-top: 6px;
+  }
+
+  /* Three concise bridal benefits remain scannable; the secondary copy is
+     hidden on very small cards while the nationwide row keeps its detail. */
+  .jl-bridal-page .jl-bridal-trust {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 5px;
+    width: calc(100% - 24px);
+    margin-top: 0;
+  }
+
+  .jl-bridal-page .jl-bridal-trust > div:not(.jl-bridal-delivery-note) {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    min-height: 72px;
+    padding: 7px 4px;
+    gap: 4px;
+    text-align: center;
+  }
+
+  .jl-bridal-page .jl-bridal-trust > div:not(.jl-bridal-delivery-note) svg {
+    grid-row: auto;
+    width: 17px;
+    height: 17px;
+  }
+
+  .jl-bridal-page .jl-bridal-trust > div:not(.jl-bridal-delivery-note) strong {
+    font-size: 9px;
+    line-height: 1.2;
+  }
+
+  .jl-bridal-page .jl-bridal-trust > div:not(.jl-bridal-delivery-note) span {
+    display: none;
+  }
+
+  .jl-bridal-page .jl-bridal-delivery-note {
+    grid-column: 1 / -1;
+    grid-template-columns: 18px auto minmax(0, 1fr);
+    min-height: 38px;
+    padding: 7px 9px;
+    gap: 6px;
+  }
+
+  .jl-bridal-page .jl-bridal-delivery-note strong {
+    font-size: 9px;
+  }
+
+  .jl-bridal-page .jl-bridal-delivery-note span {
+    display: block;
+    font-size: 8px;
+  }
+
+  .jl-bridal-page .jl-bridal-intro {
+    width: calc(100% - 24px);
+    padding: 18px 0 12px;
+  }
+
+  .jl-bridal-page .jl-bridal-intro h2 {
+    font-size: 22px;
+  }
+
+  .jl-bridal-page .jl-bridal-intro p {
+    margin-top: 7px;
+    font-size: 11px;
+  }
+
+  .jl-bridal-page .jl-bridal-packages {
+    width: 100%;
+    padding-inline: 12px;
+    padding-bottom: 20px;
+  }
+
+  .jl-bridal-page .jl-bridal-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .jl-bridal-page .jl-bridal-grid.single {
+    grid-template-columns: minmax(0, 1fr);
+    width: min(100%, 240px);
+    margin-inline: auto;
+  }
+
+  .jl-bridal-page .jl-bridal-card {
+    border-radius: 10px;
+    box-shadow: none;
+  }
+
+  .jl-bridal-page .jl-popular-badge {
+    top: 5px;
+    left: 5px;
+    max-width: calc(100% - 10px);
+    padding: 4px 5px;
+    font-size: 7px;
+  }
+
+  .jl-bridal-page .jl-bridal-card-image {
+    aspect-ratio: 4 / 3;
+    min-height: 0;
+  }
+
+  .jl-bridal-page .jl-bridal-card-body {
+    display: block;
+    padding: 8px;
+  }
+
+  .jl-bridal-page .jl-bridal-card-top {
+    display: block;
+  }
+
+  .jl-bridal-page .jl-bridal-card-top span {
+    margin-bottom: 2px;
+    font-size: 8px;
+  }
+
+  .jl-bridal-page .jl-bridal-card h3 {
+    min-height: 2.5em;
+    font-size: 13px;
+    line-height: 1.25;
+  }
+
+  .jl-bridal-page .jl-bridal-card-price {
+    margin-top: 4px;
+    gap: 3px;
+  }
+
+  .jl-bridal-page .jl-bridal-card-price small {
+    font-size: 8px;
+  }
+
+  .jl-bridal-page .jl-bridal-card-price strong {
+    font-size: 14px;
+    line-height: 1.2;
+  }
+
+  .jl-bridal-page .jl-bridal-desc {
+    min-height: 2.7em;
+    margin-top: 5px;
+    font-size: 10px;
+    line-height: 1.35;
+    -webkit-line-clamp: 2;
+  }
+
+  .jl-bridal-page .jl-bridal-features {
+    display: none;
+  }
+
+  .jl-bridal-page .jl-bridal-book {
+    min-height: 30px;
+    margin-top: 7px;
+    padding: 7px;
+    border-radius: 8px;
+    gap: 4px;
+    font-size: 10px;
+    line-height: 1.1;
+  }
+
+  .jl-bridal-page .jl-bridal-book svg {
+    width: 13px;
+    height: 13px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jl-mobile-menu-layer,
+  .jl-mobile-menu-backdrop,
+  .jl-mobile-menu,
+  .jl-mobile-category-panel,
+  .jl-mobile-categories-trigger > svg:last-child {
+    transition-duration: 0.01ms;
+    animation-duration: 0.01ms;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Contact page: explicit contrast and mobile-first sizing.
+   -------------------------------------------------------------------------- */
+
+.jl-contact-page {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+  background: #faf8f4;
+  color: #241f1a;
+}
+
+.jl-contact-hero-new {
+  background: linear-gradient(180deg, #fffdf9 0%, #f7f1e7 100%);
+}
+
+.jl-contact-eyebrow {
+  color: #8b6418;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.jl-contact-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  gap: clamp(18px, 3vw, 32px);
+  width: min(1160px, calc(100% - 32px));
+  max-width: 100%;
+  margin: 0 auto;
+  padding: clamp(42px, 7vw, 84px) 0;
+  align-items: stretch;
+}
+
+.jl-contact-details,
+.jl-contact-form {
+  min-width: 0;
+  border-radius: 22px;
+  box-shadow: 0 18px 50px rgba(45, 34, 21, 0.07);
+}
+
+.jl-contact-details {
+  padding: clamp(22px, 4vw, 34px);
+  border: 1px solid rgba(216, 179, 90, 0.25);
+  background: #211b16;
+  color: #fffaf2;
+}
+
+.jl-contact-details-intro h2 {
+  margin: 5px 0 12px;
+  color: #fff;
+  font-size: clamp(1.8rem, 4vw, 2.55rem);
+  line-height: 1.08;
+}
+
+.jl-contact-details-intro > p:not(.jl-section-kicker) {
+  margin: 0 0 22px;
+  color: #ded6cb;
+  line-height: 1.7;
+}
+
+.jl-contact-details .jl-section-kicker {
+  margin: 0;
+  color: #e1bd66;
+}
+
+.jl-contact-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.jl-contact-info-card {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  min-height: 78px;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.065);
+  color: #fff;
+  text-decoration: none;
+}
+
+.jl-contact-info-card:hover,
+.jl-contact-info-card:focus-visible {
+  border-color: rgba(225, 189, 102, 0.62);
+  background: rgba(225, 189, 102, 0.1);
+  outline: none;
+}
+
+.jl-contact-info-icon {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  background: #d7ac48;
+  color: #201a14;
+}
+
+.jl-contact-info-card > span:last-child {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.jl-contact-info-card small {
+  color: #c7bfb3;
+  font-size: 0.65rem;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.jl-contact-info-card strong {
+  overflow-wrap: anywhere;
+  color: #fff;
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
+.jl-contact-form {
+  display: grid;
+  align-content: start;
+  gap: 17px;
+  padding: clamp(22px, 4vw, 36px);
+  border: 1px solid #e7dfd3;
+  background: #fff;
+  color: #241f1a;
+}
+
+.jl-contact-form-heading h2 {
+  margin: 5px 0 9px;
+  color: #211c17;
+  font-size: clamp(1.75rem, 4vw, 2.45rem);
+  line-height: 1.08;
+}
+
+.jl-contact-form-heading > p:last-child {
+  margin: 0;
+  color: #71685e;
+  line-height: 1.6;
+}
+
+.jl-contact-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  min-width: 0;
+}
+
+.jl-contact-form-grid label {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  color: #3a332c;
+  font-size: 0.75rem;
+  font-weight: 850;
+}
+
+.jl-contact-form-grid label.full {
+  grid-column: 1 / -1;
+}
+
+.jl-contact-form :is(input, select, textarea) {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  margin: 0;
+  padding: 12px 13px;
+  border: 1px solid #d9d0c4;
+  border-radius: 11px;
+  background: #fcfaf7;
+  color: #211c17;
+  font: inherit;
+  font-size: 0.88rem;
+  outline: none;
+}
+
+.jl-contact-form :is(input, select) {
+  min-height: 48px;
+}
+
+.jl-contact-form textarea {
+  min-height: 150px;
+  resize: vertical;
+}
+
+.jl-contact-form :is(input, select, textarea):focus-visible {
+  border-color: #b98a28;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(185, 138, 40, 0.14);
+}
+
+.jl-contact-form > button[type='submit'] {
+  display: inline-flex;
+  width: 100%;
+  min-height: 50px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 0;
+  border: 0;
+  border-radius: 12px;
+  background: #211b16;
+  color: #fff;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.jl-contact-form > button[type='submit']:hover:not(:disabled),
+.jl-contact-form > button[type='submit']:focus-visible:not(:disabled) {
+  background: #a8781c;
+  outline: none;
+}
+
+.jl-contact-form > button[type='submit']:disabled {
+  opacity: 0.62;
+  cursor: wait;
+}
+
+.jl-contact-success,
+.jl-contact-error {
+  padding: 12px 14px;
+  border-radius: 11px;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.jl-contact-success {
+  border: 1px solid #a7d8bf;
+  background: #effaf4;
+  color: #165f3e;
+}
+
+.jl-contact-error {
+  border: 1px solid #efb0aa;
+  background: #fff3f1;
+  color: #9b2d24;
+}
+
+@media (max-width: 820px) {
+  .jl-contact-layout {
+    grid-template-columns: minmax(0, 1fr);
+    width: min(100% - 24px, 680px);
+    padding: 36px 0;
+  }
+}
+
+@media (max-width: 560px) {
+  .jl-contact-info-grid,
+  .jl-contact-form-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .jl-contact-form-grid label.full {
+    grid-column: auto;
+  }
+
+  .jl-contact-details,
+  .jl-contact-form {
+    padding: 18px;
+    border-radius: 17px;
+  }
+}
+
+/* General narrow-screen safeguards for existing pages without redesigning them. */
+@media (max-width: 760px) {
+  .jl-main-content,
+  .jl-main-content > main,
+  .admin-content,
+  .jl-account-content,
+  .jl-checkout-layout,
+  .jl-cart-layout,
+  .jl-shop-layout {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  :is(.admin-form-grid, .jl-form-grid, .jl-contact-form-grid) > * {
+    min-width: 0;
+  }
+
+  :is(button, input, select, textarea) {
+    max-width: 100%;
+  }
+
+  .table-card,
+  .admin-table-wrap,
+  .jl-account-table-wrap,
+  .jl-compare-table-wrap {
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+}

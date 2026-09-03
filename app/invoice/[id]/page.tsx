@@ -8,9 +8,10 @@ import { OFFICIAL_EMAIL } from '@/lib/contact';
 import { auth } from '@/lib/firebase';
 import { PRODUCTION_SITE_URL } from '@/lib/site';
 import type { Order } from '@/lib/types';
+import { buildPrivateOrderUrl, captureOrderAccessToken } from '@/lib/orderAccess';
 import { QRCodeSVG } from 'qrcode.react';
 import Barcode from 'react-barcode';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 
 const money = (amount: number) => `₦${Math.round(amount || 0).toLocaleString()}`;
 
@@ -35,25 +36,29 @@ async function readJsonResponse(response: Response): Promise<InvoiceResponse> {
   }
 }
 
-export default function InvoicePage({ params }: { params: { id: string } }) {
+export default function InvoicePage() {
+  const params = useParams<{ id: string }>();
   const [order, setOrder] = useState<InvoiceOrder | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
   const [pdfError, setPdfError] = useState('');
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const [accessToken, setAccessToken] = useState('');
 
   useEffect(() => {
     let cancelled = false;
-    const accessToken = searchParams.get('token');
+    const capturedToken = captureOrderAccessToken(String(params.id));
+    setAccessToken(capturedToken);
 
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       try {
         const idToken = user ? await user.getIdToken() : null;
-        const query = accessToken ? `?token=${encodeURIComponent(accessToken)}` : '';
-        const response = await fetch(`/api/orders/${encodeURIComponent(params.id)}${query}`, {
-          headers: idToken ? { Authorization: `Bearer ${idToken}` } : undefined,
+        const response = await fetch(`/api/orders/${encodeURIComponent(params.id)}`, {
+          headers: {
+            ...(idToken ? { Authorization: `Bearer ${idToken}` } : {}),
+            ...(capturedToken ? { 'X-Order-Access-Token': capturedToken } : {}),
+          },
           cache: 'no-store',
         });
         const data = await readJsonResponse(response);
@@ -81,7 +86,7 @@ export default function InvoicePage({ params }: { params: { id: string } }) {
       cancelled = true;
       unsubscribe();
     };
-  }, [params.id, searchParams]);
+  }, [params.id]);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -151,16 +156,13 @@ export default function InvoicePage({ params }: { params: { id: string } }) {
   const tax = order.tax || 0;
   const discount = order.discount || 0;
   const total = order.total || 0;
-  const accessToken = searchParams.get('token') || order.accessToken || '';
   const appOrigin =
     process.env.NODE_ENV === 'production'
       ? PRODUCTION_SITE_URL
       : typeof window !== 'undefined'
         ? window.location.origin
         : process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_SITE_URL || '';
-  const invoiceUrl = `${appOrigin}/invoice/${encodeURIComponent(order.id)}${
-    accessToken ? `?token=${encodeURIComponent(accessToken)}` : ''
-  }`;
+  const invoiceUrl = `${appOrigin}${buildPrivateOrderUrl(`/invoice/${encodeURIComponent(order.id)}`, accessToken)}`;
 
   let watermarkText = 'JAYLUXE';
   let watermarkColor = 'rgba(0, 0, 0, 0.05)';

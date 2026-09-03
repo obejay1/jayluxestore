@@ -1,0 +1,2976 @@
+/* ===== Consolidated from app/jayluxe-card-system.css ===== */
+/* =========================================================
+   JAYLUXE UNIFIED CARD SYSTEM
+   Imported last so the redesigned card layouts remain
+   consistent without changing business logic.
+========================================================= */
+
+/* ---------- Home promotions ---------- */
+.jj-promo-rail {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(16px, 2vw, 24px);
+  align-items: stretch;
+}
+
+.jj-promo-featured,
+.jj-promo-pair,
+.jj-promo-pair > a {
+  min-width: 0;
+  width: 100%;
+}
+
+.jj-promo-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
+  gap: clamp(16px, 2vw, 24px);
+  align-items: stretch;
+}
+
+.jj-promo-pair > a {
+  display: flex;
+  height: 100%;
+  min-height: 270px;
+  flex-direction: column;
+  justify-content: flex-start;
+  border-radius: 16px;
+}
+
+.jj-promo-pair > a strong {
+  margin-top: auto;
+}
+
+/* ---------- Shared 2 / 3 / 4 responsive grids ---------- */
+:is(
+  .jj-product-grid,
+  .jl-shop-grid,
+  .wishlist-grid,
+  .jl-related-grid,
+  .jl-product-grid,
+  .product-grid,
+  .jj-category-grid,
+  .jl-category-page-grid,
+  .jl-services-featured-grid,
+  .jl-services-grid,
+  .jl-bridal-grid
+) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: auto;
+  align-items: stretch;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+}
+
+:is(
+  .jj-product-grid,
+  .jl-shop-grid,
+  .wishlist-grid,
+  .jl-related-grid,
+  .jl-product-grid,
+  .product-grid,
+  .jj-category-grid,
+  .jl-category-page-grid,
+  .jl-services-featured-grid,
+  .jl-services-grid,
+  .jl-bridal-grid
+) > * {
+  min-width: 0;
+  width: 100%;
+  height: 100%;
+}
+
+@media (min-width: 768px) {
+  :is(
+    .jj-product-grid,
+    .jl-shop-grid,
+    .wishlist-grid,
+    .jl-related-grid,
+    .jl-product-grid,
+    .product-grid,
+    .jj-category-grid,
+    .jl-category-page-grid,
+    .jl-services-featured-grid,
+    .jl-services-grid,
+    .jl-bridal-grid
+  ) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+}
+
+@media (min-width: 1024px) {
+  :is(
+    .jj-product-grid,
+    .jl-shop-grid,
+    .wishlist-grid,
+    .jl-related-grid,
+    .jl-product-grid,
+    .product-grid,
+    .jj-category-grid,
+    .jl-category-page-grid,
+    .jl-services-featured-grid,
+    .jl-services-grid,
+    .jl-bridal-grid
+  ) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px;
+  }
+}
+
+.jl-bridal-grid.single {
+  grid-template-columns: minmax(0, 520px);
+  justify-content: center;
+}
+
+
+.jl-category-loading,
+.jl-category-error {
+  grid-column: 1 / -1;
+}
+
+/* ---------- Shared product cards ---------- */
+.lux-product-card {
+  height: 100%;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 12px 32px rgba(32, 26, 18, 0.08);
+}
+
+.lux-product-image {
+  flex: 0 0 auto;
+  aspect-ratio: 4 / 5;
+}
+
+.lux-product-info {
+  height: 100%;
+}
+
+.lux-product-rating-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 20px;
+  margin: 0 0 10px;
+  color: #c59627;
+}
+
+.lux-product-rating-row > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+}
+
+.lux-product-rating-row small {
+  color: #81796f;
+  font-size: 0.67rem;
+  font-weight: 700;
+}
+
+.lux-product-pricing {
+  margin-top: auto;
+}
+
+/* ---------- Category cards ---------- */
+.jj-category-card,
+.jl-category-page-card {
+  display: flex;
+  height: 100%;
+  min-width: 0;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid rgba(48, 39, 27, 0.1);
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 12px 32px rgba(32, 26, 18, 0.07);
+  transition:
+    transform 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.jj-category-card:hover,
+.jl-category-page-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(200, 162, 75, 0.55);
+  box-shadow: 0 20px 45px rgba(32, 26, 18, 0.12);
+}
+
+.jj-category-image,
+.jl-category-page-media {
+  position: relative;
+  display: block;
+  width: 100%;
+  min-height: 0;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  flex: 0 0 auto;
+}
+
+.jj-category-image img,
+.jl-category-page-media img {
+  object-fit: cover;
+}
+
+.jj-category-content,
+.jl-category-page-copy {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  padding: clamp(14px, 2vw, 20px);
+}
+
+.jj-category-content strong,
+.jl-category-page-copy h2 {
+  overflow-wrap: anywhere;
+}
+
+.jj-category-explore,
+.jl-category-link {
+  margin-top: auto;
+}
+
+/* ---------- Services ---------- */
+.jl-unified-service-card {
+  display: flex;
+  height: 100%;
+  min-width: 0;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid rgba(48, 39, 27, 0.1);
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 12px 32px rgba(32, 26, 18, 0.08);
+  transition:
+    transform 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.jl-unified-service-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(200, 162, 75, 0.55);
+  box-shadow: 0 22px 48px rgba(32, 26, 18, 0.14);
+}
+
+.jl-unified-service-media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  flex: 0 0 auto;
+  background: #f4efe7;
+}
+
+.jl-unified-service-media img {
+  object-fit: cover;
+  transition: transform 450ms ease;
+}
+
+.jl-unified-service-card:hover .jl-unified-service-media img {
+  transform: scale(1.045);
+}
+
+.jl-unified-service-category,
+.jl-unified-service-featured {
+  position: absolute;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  font-size: 0.61rem;
+  font-weight: 850;
+  line-height: 1;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.jl-unified-service-category {
+  bottom: 10px;
+  left: 10px;
+  max-width: calc(100% - 20px);
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.94);
+  color: #8f6814;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.jl-unified-service-featured {
+  top: 10px;
+  left: 10px;
+  background: #c8a24b;
+  color: #17130f;
+}
+
+.jl-unified-service-body {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  padding: clamp(14px, 2vw, 20px);
+}
+
+.jl-unified-service-body h3 {
+  display: -webkit-box;
+  min-height: 2.7em;
+  margin: 0 0 9px;
+  overflow: hidden;
+  color: #1b1814;
+  font-family: var(--font-jayluxe-serif), Georgia, serif;
+  font-size: clamp(1rem, 1.55vw, 1.25rem);
+  font-weight: 600;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.jl-unified-service-body > p {
+  display: -webkit-box;
+  min-height: 4.5em;
+  margin: 0 0 16px;
+  overflow: hidden;
+  color: #736c63;
+  font-size: 0.84rem;
+  line-height: 1.5;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.jl-unified-service-price {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: auto;
+  margin-bottom: 14px;
+  padding-top: 13px;
+  border-top: 1px solid #ebe5da;
+}
+
+.jl-unified-service-price span {
+  color: #837a70;
+  font-size: 0.68rem;
+  font-weight: 750;
+  text-transform: uppercase;
+}
+
+.jl-unified-service-price strong {
+  color: #9e7419;
+  font-size: 1rem;
+  white-space: nowrap;
+}
+
+.jl-unified-service-body button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: 100%;
+  min-height: 46px;
+  margin-top: 0;
+  padding: 10px 12px;
+  border: 1px solid #1b1814;
+  border-radius: 11px;
+  background: #1b1814;
+  color: #ffffff;
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 850;
+  cursor: pointer;
+  transition: background-color 180ms ease, border-color 180ms ease, color 180ms ease;
+}
+
+.jl-unified-service-body button:hover {
+  border-color: #c8a24b;
+  background: #c8a24b;
+  color: #17130f;
+}
+
+/* ---------- Bridal package cards ---------- */
+.jl-bridal-card {
+  display: flex;
+  height: 100%;
+  min-width: 0;
+  flex-direction: column;
+  border-radius: 14px;
+  box-shadow: 0 12px 34px rgba(32, 26, 18, 0.08);
+}
+
+.jl-bridal-card-image {
+  width: 100%;
+  min-height: 0;
+  aspect-ratio: 4 / 3;
+  flex: 0 0 auto;
+}
+
+.jl-bridal-card-body {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  padding: clamp(14px, 2vw, 20px);
+}
+
+.jl-bridal-card-top {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.jl-bridal-card-top h3 {
+  display: -webkit-box;
+  min-height: 2.5em;
+  overflow: hidden;
+  font-size: clamp(1rem, 1.6vw, 1.3rem);
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.jl-bridal-card-price {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.jl-bridal-card-price small {
+  color: #857b70;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.jl-bridal-card-price strong {
+  color: #9e7419;
+  font-size: 1rem;
+  white-space: normal;
+}
+
+.jl-bridal-desc {
+  display: -webkit-box;
+  min-height: 4.5em;
+  margin-top: 12px;
+  overflow: hidden;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.jl-bridal-features {
+  gap: 8px;
+  margin: 16px 0 18px;
+}
+
+.jl-bridal-features li {
+  min-width: 0;
+  font-size: 0.78rem;
+  overflow-wrap: anywhere;
+}
+
+.jl-bridal-more-features {
+  padding-left: 27px;
+  color: #9a721b;
+  font-weight: 800;
+}
+
+.jl-bridal-book {
+  margin-top: auto;
+}
+
+/* ---------- Bridal booking premium summary ---------- */
+.jl-bridal-booking-shell {
+  width: min(calc(100% - 32px), 1180px);
+  margin: 0 auto;
+  padding: var(--jl-section-space) 0;
+}
+
+.jl-bridal-booking-shell .jl-bridal-booking-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  margin: 0 0 22px;
+  padding: 10px 14px;
+  border: 1px solid rgba(158, 116, 25, 0.25);
+  border-radius: 999px;
+  background: #ffffff;
+  color: #8f6814;
+  font-size: 0.8rem;
+  font-weight: 850;
+  text-decoration: none;
+  box-shadow: 0 8px 22px rgba(32, 26, 18, 0.06);
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.jl-bridal-booking-shell .jl-bridal-booking-back:hover {
+  transform: translateX(-3px);
+  border-color: #c8a24b;
+  box-shadow: 0 12px 28px rgba(32, 26, 18, 0.1);
+}
+
+.jl-bridal-booking-shell .jl-bridal-booking-wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  align-items: start;
+  gap: clamp(20px, 3vw, 34px);
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+.jl-bridal-booking-info {
+  min-width: 0;
+  padding: 0;
+  overflow: visible;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  box-shadow: none;
+}
+
+.jl-bridal-summary-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0;
+  border: 1px solid rgba(48, 39, 27, 0.1);
+  border-radius: 16px;
+  background: #ffffff;
+  color: #201b16;
+  box-shadow: 0 20px 55px rgba(32, 26, 18, 0.1);
+}
+
+.jl-bridal-summary-media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: #f3ede3;
+}
+
+.jl-bridal-summary-media img {
+  object-fit: cover;
+}
+
+.jl-bridal-summary-media::after {
+  position: absolute;
+  inset: 0;
+  content: '';
+  background: linear-gradient(180deg, transparent 48%, rgba(17, 14, 11, 0.52));
+  pointer-events: none;
+}
+
+.jl-bridal-summary-media > span {
+  position: absolute;
+  bottom: 14px;
+  left: 14px;
+  z-index: 2;
+  padding: 8px 11px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.94);
+  color: #8f6814;
+  font-size: 0.65rem;
+  font-weight: 900;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.jl-bridal-summary-body {
+  display: grid;
+  gap: 20px;
+  padding: clamp(20px, 3vw, 30px);
+}
+
+.jl-bridal-summary-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.jl-bridal-summary-heading small {
+  display: block;
+  margin-bottom: 5px;
+  color: #9d741b;
+  font-size: 0.65rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.jl-bridal-summary-heading h2 {
+  margin: 0;
+  color: #1c1814;
+  font-family: var(--font-jayluxe-serif), Georgia, serif;
+  font-size: clamp(1.6rem, 3vw, 2.25rem);
+  font-weight: 550;
+  line-height: 1.08;
+}
+
+.jl-bridal-summary-heading > strong {
+  flex: 0 0 auto;
+  color: #a1791f;
+  font-size: 1.1rem;
+  white-space: nowrap;
+}
+
+.jl-bridal-summary-body > p {
+  margin: 0;
+  color: #716960;
+  font-size: 0.88rem;
+  line-height: 1.65;
+}
+
+.jl-bridal-summary-meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.jl-bridal-summary-meta > div {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 0;
+  padding: 13px;
+  border-radius: 12px;
+  background: #faf7f1;
+}
+
+.jl-bridal-summary-meta svg {
+  flex: 0 0 auto;
+  color: #b18422;
+}
+
+.jl-bridal-summary-meta span {
+  min-width: 0;
+}
+
+.jl-bridal-summary-meta small,
+.jl-bridal-summary-meta strong {
+  display: block;
+}
+
+.jl-bridal-summary-meta small {
+  margin-bottom: 3px;
+  color: #8d857b;
+  font-size: 0.63rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.jl-bridal-summary-meta strong {
+  color: #29231d;
+  font-size: 0.77rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.jl-bridal-summary-services,
+.jl-bridal-summary-booking {
+  padding-top: 18px;
+  border-top: 1px solid #ebe4d9;
+}
+
+.jl-bridal-summary-services h3,
+.jl-bridal-summary-booking h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px;
+  color: #29231d;
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.jl-bridal-summary-services ul {
+  display: grid;
+  gap: 9px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.jl-bridal-summary-services li {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  color: #514a42;
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.jl-bridal-summary-services li svg {
+  flex: 0 0 auto;
+  margin-top: 1px;
+  color: #af8427;
+}
+
+.jl-bridal-summary-booking dl {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+
+.jl-bridal-summary-booking dl > div {
+  display: grid;
+  grid-template-columns: 105px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.jl-bridal-summary-booking dt {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #81786e;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.jl-bridal-summary-booking dd {
+  min-width: 0;
+  margin: 0;
+  color: #2b251f;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.jl-bridal-summary-card .jl-bridal-booking-note {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0;
+  padding: 13px 14px;
+  border-radius: 12px;
+  background: #1e1915;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 0.76rem;
+  line-height: 1.4;
+}
+
+.jl-bridal-booking-shell .jl-bridal-booking-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  min-width: 0;
+  padding: clamp(22px, 4vw, 38px);
+  border: 1px solid rgba(48, 39, 27, 0.1);
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 20px 55px rgba(32, 26, 18, 0.09);
+}
+
+.jl-bridal-booking-form .jl-bridal-form-heading span {
+  display: block;
+  margin-bottom: 7px;
+  color: #9c731a;
+  font-size: 0.66rem;
+  font-weight: 900;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.jl-bridal-booking-form .jl-bridal-form-heading h2 {
+  margin: 0;
+  color: #1d1915;
+  font-family: var(--font-jayluxe-serif), Georgia, serif;
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  font-weight: 550;
+}
+
+.jl-bridal-booking-form .jl-bridal-form-heading p {
+  margin: 9px 0 0;
+  color: #756d64;
+  font-size: 0.84rem;
+  line-height: 1.55;
+}
+
+.jl-bridal-booking-success {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 13px;
+  border-radius: 11px;
+  background: #f3fbf5;
+  color: #176b35;
+  text-align: left;
+}
+
+/* ---------- Responsive refinements ---------- */
+@media (max-width: 1023px) {
+  .jj-promo-pair {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .jj-promo-pair > a {
+    min-height: 230px;
+  }
+
+  .jl-bridal-booking-shell .jl-bridal-booking-wrap {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .jj-promo-pair > a {
+    min-height: 0;
+  }
+
+  .lux-product-rating-row {
+    gap: 4px;
+    margin-bottom: 7px;
+  }
+
+  .lux-product-rating-row svg {
+    width: 11px;
+    height: 11px;
+  }
+
+  .lux-product-rating-row small {
+    font-size: 0.58rem;
+  }
+
+  .jj-category-content,
+  .jl-category-page-copy,
+  .jl-unified-service-body,
+  .jl-bridal-card-body {
+    padding: 12px;
+  }
+
+  .jj-category-content small,
+  .jl-category-page-copy p {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .jl-unified-service-body h3 {
+    min-height: 2.65em;
+    font-size: clamp(0.84rem, 4vw, 1rem);
+  }
+
+  .jl-unified-service-body > p {
+    min-height: 4.35em;
+    margin-bottom: 12px;
+    font-size: 0.72rem;
+    line-height: 1.45;
+  }
+
+  .jl-unified-service-price {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 3px;
+    margin-bottom: 10px;
+  }
+
+  .jl-unified-service-price span {
+    font-size: 0.56rem;
+  }
+
+  .jl-unified-service-price strong {
+    font-size: 0.86rem;
+  }
+
+  .jl-unified-service-body button {
+    min-height: 42px;
+    padding-inline: 7px;
+    font-size: 0.68rem;
+  }
+
+  .jl-unified-service-category,
+  .jl-unified-service-featured {
+    padding: 6px 7px;
+    font-size: 0.5rem;
+  }
+
+  .jl-bridal-card-top h3 {
+    min-height: 2.55em;
+    font-size: 0.9rem;
+  }
+
+  .jl-bridal-card-price strong {
+    font-size: 0.85rem;
+  }
+
+  .jl-bridal-desc {
+    min-height: 4.25em;
+    font-size: 0.7rem;
+  }
+
+  .jl-bridal-features li {
+    gap: 6px;
+    font-size: 0.67rem;
+  }
+
+  .jl-bridal-features svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .jl-bridal-book {
+    min-height: 43px;
+    padding: 9px 7px;
+    font-size: 0.65rem;
+  }
+
+  .jl-bridal-booking-shell {
+    width: min(calc(100% - 28px), 1180px);
+    padding-top: 28px;
+  }
+
+  .jl-bridal-summary-heading {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .jl-bridal-summary-meta {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .jl-bridal-summary-booking dl > div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+  }
+
+  .jl-bridal-summary-booking dd {
+    text-align: left;
+  }
+
+  .jl-bridal-booking-shell .jl-bridal-booking-form {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 20px 16px;
+  }
+
+  .jl-bridal-booking-form .full {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 360px) {
+  :is(
+    .jj-product-grid,
+    .jl-shop-grid,
+    .wishlist-grid,
+    .jl-related-grid,
+    .jl-product-grid,
+    .product-grid,
+    .jj-category-grid,
+    .jl-category-page-grid,
+    .jl-services-featured-grid,
+    .jl-services-grid,
+    .jl-bridal-grid
+  ) {
+    gap: 9px;
+  }
+
+  .jj-category-content,
+  .jl-category-page-copy,
+  .jl-unified-service-body,
+  .jl-bridal-card-body {
+    padding: 10px;
+  }
+}
+
+
+/* ============================================================
+   Homepage + Bridal compact pass — 2026-08-17
+   Keeps the existing JayLuxe system; no additional override file.
+   ============================================================ */
+
+/* Connected homepage rhythm. Adjacent priority sections now share a shallow,
+   intentional gap instead of stacking large section paddings. */
+.jj-home > section:not(.jj-hero):not(.jj-trust) {
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+.jj-home > section.jl-home-tight-section:not(.jj-hero):not(.jj-trust) {
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.jl-home-tight-section .jj-section-header {
+  margin-bottom: 10px;
+}
+
+/* Existing hero remains the only homepage hero, but is more compact. */
+.jj-hero {
+  min-height: clamp(430px, 48svh, 500px);
+  height: auto;
+  max-height: 500px;
+}
+
+/* Curated Departments aligns with the category grid rather than floating
+   centered above it. */
+.jl-category-heading {
+  text-align: left;
+  justify-content: flex-start;
+  align-items: flex-end;
+  margin-bottom: 10px;
+}
+
+.jl-category-heading > div,
+.jl-category-heading small,
+.jl-category-heading h2 {
+  width: 100%;
+  text-align: left;
+}
+
+.jl-category-heading h2 {
+  margin-top: 2px;
+}
+
+/* Bridal benefit strip: three equal primary benefits plus one compact
+   full-width nationwide availability line. */
+.jl-bridal-page .jl-bridal-trust {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  width: min(calc(100% - 24px), 1180px);
+  margin-top: 0;
+}
+
+.jl-bridal-page .jl-bridal-trust > div {
+  min-height: 82px;
+  padding: 12px;
+  border-radius: 12px;
+  box-shadow: 0 8px 22px rgba(45, 35, 18, 0.06);
+}
+
+.jl-bridal-page .jl-bridal-trust svg {
+  width: 20px;
+  height: 20px;
+}
+
+.jl-bridal-page .jl-bridal-trust strong {
+  font-size: 12px;
+}
+
+.jl-bridal-page .jl-bridal-trust span {
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+.jl-bridal-page .jl-bridal-delivery-note {
+  grid-column: 1 / -1;
+  grid-template-columns: 22px auto minmax(0, 1fr);
+  min-height: 46px;
+  padding: 9px 12px;
+  column-gap: 8px;
+}
+
+.jl-bridal-page .jl-bridal-delivery-note svg {
+  grid-row: auto;
+}
+
+.jl-bridal-page .jl-bridal-delivery-note span {
+  justify-self: end;
+  text-align: right;
+}
+
+/* Bridal page density: smaller type, shallower cards and tighter grids. */
+.jl-bridal-page .jl-bridal-intro {
+  padding: 24px 0 16px;
+}
+
+.jl-bridal-page .jl-bridal-intro > span {
+  margin-bottom: 8px;
+  font-size: 10px;
+}
+
+.jl-bridal-page .jl-bridal-intro h2 {
+  font-size: clamp(26px, 3.4vw, 38px);
+  line-height: 1.04;
+}
+
+.jl-bridal-page .jl-bridal-intro p {
+  max-width: 620px;
+  margin-top: 10px;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.jl-bridal-page .jl-bridal-packages {
+  width: min(calc(100% - 24px), 1180px);
+  padding-bottom: 24px;
+}
+
+.jl-bridal-page .jl-bridal-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.jl-bridal-page .jl-bridal-card {
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(42, 33, 19, 0.065);
+}
+
+.jl-bridal-page .jl-bridal-card.popular {
+  box-shadow: 0 10px 28px rgba(156, 114, 20, 0.11);
+}
+
+.jl-bridal-page .jl-popular-badge {
+  top: 8px;
+  left: 8px;
+  max-width: calc(100% - 16px);
+  padding: 5px 7px;
+  font-size: 8px;
+}
+
+.jl-bridal-page .jl-bridal-card-body {
+  padding: 14px;
+}
+
+.jl-bridal-page .jl-bridal-card-top {
+  flex-direction: column;
+  gap: 5px;
+}
+
+.jl-bridal-page .jl-bridal-card-top span {
+  margin-bottom: 3px;
+  font-size: 9px;
+}
+
+.jl-bridal-page .jl-bridal-card h3 {
+  display: -webkit-box;
+  min-height: 2.45em;
+  overflow: hidden;
+  font-size: clamp(15px, 1.8vw, 18px);
+  line-height: 1.22;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.jl-bridal-page .jl-bridal-card-price {
+  gap: 4px;
+}
+
+.jl-bridal-page .jl-bridal-card-price small {
+  font-size: 9px;
+}
+
+.jl-bridal-page .jl-bridal-card-price strong {
+  font-size: 16px;
+}
+
+.jl-bridal-page .jl-bridal-desc {
+  min-height: 2.8em;
+  margin-top: 7px;
+  font-size: 11px;
+  line-height: 1.4;
+  -webkit-line-clamp: 2;
+}
+
+.jl-bridal-page .jl-bridal-features {
+  gap: 5px;
+  margin: 9px 0 11px;
+}
+
+.jl-bridal-page .jl-bridal-features li {
+  gap: 5px;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.jl-bridal-page .jl-bridal-features svg {
+  width: 14px;
+  height: 14px;
+}
+
+.jl-bridal-page .jl-bridal-book {
+  min-height: 36px;
+  margin-top: 7px;
+  padding: 8px 10px;
+  border-radius: 9px;
+  gap: 5px;
+  font-size: 11px;
+}
+
+@media (max-width: 767px) {
+  .jj-home > section:not(.jj-hero):not(.jj-trust) {
+    padding-top: 14px;
+    padding-bottom: 14px;
+  }
+
+  .jj-home > section.jl-home-tight-section:not(.jj-hero):not(.jj-trust) {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .jj-hero {
+    min-height: clamp(360px, 54svh, 400px);
+    height: clamp(360px, 54svh, 400px);
+    max-height: 400px;
+  }
+
+  .jj-hero-content {
+    width: calc(100% - 24px);
+  }
+
+  .jj-hero-content > p {
+    max-width: 430px;
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
+  .jj-hero-buttons {
+    margin-top: 12px;
+  }
+
+  .jl-home-tight-section .jj-section-header,
+  .jl-category-heading {
+    margin-bottom: 8px;
+  }
+
+  .jl-category-heading h2 {
+    font-size: 19px;
+    line-height: 1.15;
+  }
+
+  .jl-category-heading small {
+    font-size: 9px;
+    letter-spacing: .11em;
+  }
+
+  .jj-category-content {
+    padding-top: 6px;
+  }
+
+  /* Three concise bridal benefits remain scannable; the secondary copy is
+     hidden on very small cards while the nationwide row keeps its detail. */
+  .jl-bridal-page .jl-bridal-trust {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 5px;
+    width: calc(100% - 24px);
+    margin-top: 0;
+  }
+
+  .jl-bridal-page .jl-bridal-trust > div:not(.jl-bridal-delivery-note) {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    min-height: 72px;
+    padding: 7px 4px;
+    gap: 4px;
+    text-align: center;
+  }
+
+  .jl-bridal-page .jl-bridal-trust > div:not(.jl-bridal-delivery-note) svg {
+    grid-row: auto;
+    width: 17px;
+    height: 17px;
+  }
+
+  .jl-bridal-page .jl-bridal-trust > div:not(.jl-bridal-delivery-note) strong {
+    font-size: 9px;
+    line-height: 1.2;
+  }
+
+  .jl-bridal-page .jl-bridal-trust > div:not(.jl-bridal-delivery-note) span {
+    display: none;
+  }
+
+  .jl-bridal-page .jl-bridal-delivery-note {
+    grid-column: 1 / -1;
+    grid-template-columns: 18px auto minmax(0, 1fr);
+    min-height: 38px;
+    padding: 7px 9px;
+    gap: 6px;
+  }
+
+  .jl-bridal-page .jl-bridal-delivery-note strong {
+    font-size: 9px;
+  }
+
+  .jl-bridal-page .jl-bridal-delivery-note span {
+    display: block;
+    font-size: 8px;
+  }
+
+  .jl-bridal-page .jl-bridal-intro {
+    width: calc(100% - 24px);
+    padding: 18px 0 12px;
+  }
+
+  .jl-bridal-page .jl-bridal-intro h2 {
+    font-size: 22px;
+  }
+
+  .jl-bridal-page .jl-bridal-intro p {
+    margin-top: 7px;
+    font-size: 11px;
+  }
+
+  .jl-bridal-page .jl-bridal-packages {
+    width: 100%;
+    padding-inline: 12px;
+    padding-bottom: 20px;
+  }
+
+  .jl-bridal-page .jl-bridal-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .jl-bridal-page .jl-bridal-grid.single {
+    grid-template-columns: minmax(0, 1fr);
+    width: min(100%, 240px);
+    margin-inline: auto;
+  }
+
+  .jl-bridal-page .jl-bridal-card {
+    border-radius: 10px;
+    box-shadow: none;
+  }
+
+  .jl-bridal-page .jl-popular-badge {
+    top: 5px;
+    left: 5px;
+    max-width: calc(100% - 10px);
+    padding: 4px 5px;
+    font-size: 7px;
+  }
+
+  .jl-bridal-page .jl-bridal-card-image {
+    aspect-ratio: 4 / 3;
+    min-height: 0;
+  }
+
+  .jl-bridal-page .jl-bridal-card-body {
+    display: block;
+    padding: 8px;
+  }
+
+  .jl-bridal-page .jl-bridal-card-top {
+    display: block;
+  }
+
+  .jl-bridal-page .jl-bridal-card-top span {
+    margin-bottom: 2px;
+    font-size: 8px;
+  }
+
+  .jl-bridal-page .jl-bridal-card h3 {
+    min-height: 2.5em;
+    font-size: 13px;
+    line-height: 1.25;
+  }
+
+  .jl-bridal-page .jl-bridal-card-price {
+    margin-top: 4px;
+    gap: 3px;
+  }
+
+  .jl-bridal-page .jl-bridal-card-price small {
+    font-size: 8px;
+  }
+
+  .jl-bridal-page .jl-bridal-card-price strong {
+    font-size: 14px;
+    line-height: 1.2;
+  }
+
+  .jl-bridal-page .jl-bridal-desc {
+    min-height: 2.7em;
+    margin-top: 5px;
+    font-size: 10px;
+    line-height: 1.35;
+    -webkit-line-clamp: 2;
+  }
+
+  .jl-bridal-page .jl-bridal-features {
+    display: none;
+  }
+
+  .jl-bridal-page .jl-bridal-book {
+    min-height: 30px;
+    margin-top: 7px;
+    padding: 7px;
+    border-radius: 8px;
+    gap: 4px;
+    font-size: 10px;
+    line-height: 1.1;
+  }
+
+  .jl-bridal-page .jl-bridal-book svg {
+    width: 13px;
+    height: 13px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jj-promo-pair > a,
+  .lux-product-card,
+  .jj-category-card,
+  .jl-category-page-card,
+  .jl-unified-service-card,
+  .jl-bridal-card,
+  .jl-bridal-booking-shell .jl-bridal-booking-back {
+    transition: none;
+  }
+}
+
+/* Shared product/service grids. These replace the small Tailwind utility layer
+   with regular CSS so the project builds without a Tailwind runtime dependency. */
+.jl-responsive-card-grid,
+.jl-responsive-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: auto;
+  align-items: stretch;
+  gap: 12px;
+  min-width: 0;
+}
+
+@media (min-width: 768px) {
+  .jl-responsive-card-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .jl-responsive-gallery-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .jl-responsive-card-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px;
+  }
+
+  .jl-responsive-gallery-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+  }
+}
+
+
+/* =========================================================
+   JAYLUXE MOBILE COMPACT CARD + HOMEPAGE FLOW REPAIR
+   Keeps the existing components/data, but gives mobile one
+   predictable responsive source of truth.
+========================================================= */
+
+/* Natural-height category cards: the legacy theme used a 330px minimum. */
+.jj-category-card,
+.jl-category-page-card {
+  min-height: 0;
+}
+
+/* Shared gallery cards join the same compact visual language. */
+.jl-gallery-card {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid rgba(48, 39, 27, 0.1);
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 12px 32px rgba(32, 26, 18, 0.07);
+}
+
+.jl-gallery-image {
+  position: relative;
+  width: 100%;
+  min-height: 0;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: #f4efe7;
+}
+
+.jl-gallery-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.jl-gallery-card-body {
+  min-width: 0;
+}
+
+.jl-gallery-card-body h3,
+.jl-gallery-card-body p,
+.jj-category-content strong,
+.jj-category-content small,
+.lux-product-info h3,
+.jl-unified-service-body h3,
+.jl-unified-service-body > p {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 767px) {
+  /* Homepage sections size to their real content; no viewport/fixed-height spacers. */
+  .jl-home-category-section,
+  .jl-home-product-showcase,
+  .jl-home-help-section {
+    min-height: 0;
+    height: auto;
+  }
+
+  .jl-home-category-section,
+  .jl-home-product-showcase {
+    padding-block: 24px;
+  }
+
+  .jl-home-category-section .jj-section-header,
+  .jl-home-product-showcase .jj-section-header {
+    margin-bottom: 14px;
+  }
+
+  .jl-home-category-section .jj-section-header small,
+  .jl-home-product-showcase .jj-section-header small {
+    font-size: 0.62rem;
+    letter-spacing: 0.1em;
+  }
+
+  .jl-home-category-section .jj-section-header h2,
+  .jl-home-product-showcase .jj-section-header h2 {
+    margin-top: 5px;
+    font-size: clamp(1.65rem, 8.6vw, 2.35rem);
+    line-height: 1.05;
+  }
+
+  .jl-home-product-showcase .jj-section-header > a {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    min-height: 0;
+    padding: 7px 0;
+    font-size: 0.72rem;
+  }
+
+  /* Categories: 2 columns across normal phone widths and natural row height. */
+  .jj-category-grid,
+  .jl-responsive-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: auto;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .jj-category-card {
+    height: 100%;
+    min-height: 0;
+  }
+
+  .jj-category-image {
+    min-height: 0;
+    height: auto;
+    aspect-ratio: 4 / 3;
+  }
+
+  .jj-category-content {
+    padding: 10px;
+  }
+
+  .jj-category-content strong {
+    min-height: 2.5em;
+    font-size: 0.78rem;
+    line-height: 1.25;
+  }
+
+  .jj-category-content small {
+    min-height: 2.7em;
+    margin-top: 4px;
+    font-size: 0.62rem;
+    line-height: 1.35;
+  }
+
+  .jj-category-explore {
+    padding-top: 8px;
+    font-size: 0.63rem;
+  }
+
+  /* Product cards: same treatment on homepage, Shop, wishlist and related products. */
+  .lux-product-card {
+    min-height: 0;
+    border-radius: 12px;
+  }
+
+  .lux-product-image {
+    min-height: 0;
+    aspect-ratio: 4 / 5;
+  }
+
+  .lux-product-info {
+    height: auto;
+    padding: 9px;
+  }
+
+  .lux-product-category {
+    margin-bottom: 4px;
+    font-size: 0.52rem;
+  }
+
+  .lux-product-info h3 {
+    min-height: 2.55em;
+    margin-bottom: 6px;
+    font-size: 0.76rem;
+    line-height: 1.28;
+  }
+
+  .lux-product-rating-row {
+    min-height: 16px;
+    margin-bottom: 6px;
+  }
+
+  .lux-product-pricing {
+    min-width: 0;
+    margin-bottom: 7px;
+  }
+
+  .lux-product-price {
+    font-size: 0.84rem;
+  }
+
+  .lux-product-old-price {
+    font-size: 0.62rem;
+  }
+
+  .lux-product-add-btn {
+    min-height: 40px;
+    padding: 7px 5px;
+    border-radius: 9px;
+    font-size: 0.59rem;
+    line-height: 1.15;
+  }
+
+  /* Services share the same compact rhythm while keeping booking callbacks intact. */
+  .jl-unified-service-card {
+    min-height: 0;
+    border-radius: 12px;
+  }
+
+  .jl-unified-service-media {
+    min-height: 0;
+    aspect-ratio: 4 / 3;
+  }
+
+  .jl-unified-service-body {
+    padding: 10px;
+  }
+
+  .jl-unified-service-body h3 {
+    min-height: 2.55em;
+    margin-bottom: 6px;
+    font-size: 0.82rem;
+    line-height: 1.28;
+  }
+
+  .jl-unified-service-body > p {
+    min-height: 3.9em;
+    margin-bottom: 9px;
+    font-size: 0.66rem;
+    line-height: 1.35;
+    -webkit-line-clamp: 3;
+  }
+
+  .jl-unified-service-price {
+    gap: 2px;
+    margin-bottom: 8px;
+    padding-top: 8px;
+  }
+
+  .jl-unified-service-body button {
+    min-height: 40px;
+    padding: 7px 5px;
+    border-radius: 9px;
+    font-size: 0.63rem;
+  }
+
+  /* Gallery: two compact tiles per row; card detail remains accessible. */
+  .jl-responsive-gallery-grid,
+  .jl-gallery-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: auto;
+    gap: 10px;
+  }
+
+  .jl-gallery-card {
+    min-height: 0;
+    border-radius: 12px;
+  }
+
+  .jl-gallery-image {
+    min-height: 0;
+    aspect-ratio: 4 / 3;
+  }
+
+  .jl-gallery-card-body {
+    padding: 10px;
+  }
+
+  .jl-gallery-card-body h3 {
+    display: -webkit-box;
+    min-height: 2.5em;
+    margin-bottom: 5px;
+    overflow: hidden;
+    font-size: 0.78rem;
+    line-height: 1.25;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .jl-gallery-card-body p {
+    display: -webkit-box;
+    min-height: 3.7em;
+    margin-bottom: 8px;
+    overflow: hidden;
+    font-size: 0.64rem;
+    line-height: 1.3;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+
+  .jl-gallery-card-body button {
+    min-height: 38px;
+    padding: 7px 8px;
+    font-size: 0.62rem;
+  }
+
+  /* Homepage support/booking block: compact cards instead of a tall loose section. */
+  .jl-home-help-section {
+    margin-bottom: 40px;
+    padding: 26px 14px;
+    border-radius: 18px;
+  }
+
+  .jl-home-help-section h2 {
+    margin: 0 auto 8px;
+    font-size: clamp(1.55rem, 8vw, 2.2rem);
+    line-height: 1.05;
+  }
+
+  .jl-home-help-section > p {
+    max-width: 560px;
+    margin: 0 auto 14px;
+    font-size: 0.76rem;
+    line-height: 1.5;
+  }
+
+  .jl-home-help-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+    margin-bottom: 12px;
+  }
+
+  .jl-home-help-grid a {
+    min-width: 0;
+    min-height: 70px;
+    padding: 10px;
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
+    text-align: center;
+  }
+
+  .jl-home-help-grid a span {
+    min-width: 0;
+    max-width: 100%;
+    font-size: 0.62rem;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+
+  .jl-home-help-grid svg {
+    width: 19px;
+    height: 19px;
+  }
+
+  .jl-home-help-section .jj-whatsapp {
+    min-height: 40px;
+    padding: 8px 12px;
+    font-size: 0.68rem;
+  }
+}
+
+@media (max-width: 340px) {
+  .jj-category-grid,
+  .jl-responsive-card-grid,
+  .jl-responsive-gallery-grid,
+  .jl-gallery-grid {
+    gap: 7px;
+  }
+
+  .jj-category-content,
+  .lux-product-info,
+  .jl-unified-service-body,
+  .jl-gallery-card-body {
+    padding: 8px;
+  }
+}
+
+
+/* =========================================================
+   PRODUCTION COMPACT DESIGN SYSTEM
+   Final shared layer: consistent density without changing
+   application behavior, data flow, or route structure.
+========================================================= */
+
+/* Common content rhythm */
+:is(
+  .jl-shop-section,
+  .jl-cart-layout,
+  .jl-checkout-layout,
+  .jl-account-content,
+  .wishlist-content,
+  .jl-gallery-section,
+  .jl-services-list-section,
+  .jl-booking-section,
+  .jl-contact-layout,
+  .jl-categories-page .jl-editorial-cta,
+  .jl-promotions-page .jl-promotions-grid,
+  .jl-testimonials-page .jl-testimonial-page-grid
+) {
+  width: min(calc(100% - (var(--jl-content-gutter) * 2)), var(--jl-content-max));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+:is(
+  .jj-categories,
+  .jl-home-category-section,
+  .jj-transformations,
+  .jj-testimonials,
+  .jj-services,
+  .jj-contact,
+  .jl-shop-section,
+  .jl-gallery-section,
+  .jl-services-list-section,
+  .jl-booking-section,
+  .jl-contact-layout,
+  .jl-order-history,
+  .jl-related-products,
+  .jl-product-description,
+  .jl-product-specifications
+) {
+  margin-top: var(--jl-section-space);
+  margin-bottom: var(--jl-section-space);
+}
+
+:is(
+  .jj-section-header,
+  .jl-services-section-head,
+  .jl-gallery-heading,
+  .jl-cart-card-heading,
+  .jl-order-history-header,
+  .jl-contact-form-heading
+) {
+  margin-bottom: var(--jl-space-4);
+  gap: var(--jl-space-3);
+}
+
+:is(
+  .jj-section-header h2,
+  .jl-services-section-head h2,
+  .jl-gallery-heading h2,
+  .jl-cart-card-heading h2,
+  .jl-order-history-header h2,
+  .jl-contact-form-heading h2
+) {
+  font-size: var(--jl-type-section);
+  line-height: 1.18;
+}
+
+:is(
+  .jj-section-header p,
+  .jl-services-section-head p,
+  .jl-gallery-heading p,
+  .jl-contact-form-heading p
+) {
+  margin-top: var(--jl-space-2);
+  font-size: var(--jl-type-body);
+  line-height: 1.5;
+}
+
+/* Compact surfaces */
+:is(
+  .lux-product-card,
+  .jj-category-card,
+  .jl-category-page-card,
+  .jl-unified-service-card,
+  .jl-gallery-card,
+  .jl-cart-items-card,
+  .jl-cart-summary-card,
+  .jl-form-card,
+  .jl-auth-card,
+  .jl-contact-info-card,
+  .jl-booking-summary,
+  .jl-order-history-item,
+  .jl-promo-card
+) {
+  border-radius: var(--jl-compact-radius);
+}
+
+:is(
+  .jl-cart-items-card,
+  .jl-cart-summary-card,
+  .jl-form-card,
+  .jl-auth-card,
+  .jl-contact-info-card,
+  .jl-booking-summary,
+  .jl-order-history-item,
+  .jl-promo-card
+) {
+  padding: var(--jl-card-pad);
+}
+
+:is(
+  .jl-form-grid,
+  .jl-contact-form-grid,
+  .jl-booking-form,
+  .jl-summary-items,
+  .jl-cart-items-list,
+  .jl-account-overview,
+  .jl-contact-info-grid,
+  .jl-promotions-grid,
+  .jl-testimonial-page-grid
+) {
+  gap: var(--jl-space-3);
+}
+
+/* Controls: compact, but retain accessible touch target. */
+:is(
+  .btn,
+  .jl-auth-submit,
+  .jl-cart-checkout-button,
+  .jl-place-order-btn,
+  .jl-gallery-btn,
+  .jl-services-btn,
+  .wishlist-add-all,
+  .wishlist-shop-link,
+  .jl-filter-toggle,
+  .jl-clear-filters,
+  .jl-pagination button
+) {
+  min-height: var(--jl-control-h);
+  padding: 9px 14px;
+  border-radius: var(--jl-compact-radius-sm);
+  font-size: .78rem;
+  line-height: 1.2;
+}
+
+:is(
+  .input,
+  .jl-auth-input,
+  .jl-form-group input,
+  .jl-form-group select,
+  .jl-form-group textarea,
+  .jl-contact-form input,
+  .jl-contact-form select,
+  .jl-contact-form textarea,
+  .jl-booking-form input,
+  .jl-booking-form select,
+  .jl-booking-form textarea,
+  .jl-shop-search-panel input,
+  .jl-services-search input,
+  .jl-gallery-search input
+) {
+  min-height: var(--jl-control-h);
+  padding: 9px 11px;
+  border-radius: var(--jl-compact-radius-sm);
+  font-size: .82rem;
+}
+
+:is(
+  .jl-form-group textarea,
+  .jl-contact-form textarea,
+  .jl-booking-form textarea
+) {
+  min-height: 88px;
+}
+
+/* Page titles/hero copy: premium but restrained. */
+:is(
+  .jl-shop-hero-content h1,
+  .jl-cart-hero h1,
+  .jl-checkout-hero h1,
+  .jl-account-hero h1,
+  .wishlist-hero h1,
+  .jl-gallery-hero-content h1,
+  .jl-services-hero-content h1,
+  .jl-categories-hero h1,
+  .jl-promotions-hero h1,
+  .jl-editorial-hero h1,
+  .jl-contact-hero-new h1,
+  .jl-auth-heading h1
+) {
+  font-size: var(--jl-type-page);
+  line-height: 1.08;
+}
+
+:is(
+  .jl-shop-hero-content p,
+  .jl-cart-hero p,
+  .jl-checkout-hero p,
+  .jl-account-hero p,
+  .wishlist-hero p,
+  .jl-gallery-hero-content p,
+  .jl-services-hero-content p,
+  .jl-promotions-hero p,
+  .jl-editorial-hero p,
+  .jl-contact-hero-new p,
+  .jl-auth-heading p
+) {
+  font-size: var(--jl-type-body);
+  line-height: 1.55;
+}
+
+:is(
+  .jl-cart-hero,
+  .jl-checkout-hero,
+  .jl-account-hero,
+  .wishlist-hero,
+  .jl-shop-hero-content,
+  .jl-gallery-hero-content,
+  .jl-services-hero-content,
+  .jl-categories-hero,
+  .jl-promotions-hero,
+  .jl-editorial-hero-content,
+  .jl-contact-hero-new,
+  .jl-auth-content
+) {
+  padding-top: clamp(24px, 4vw, 42px);
+  padding-bottom: clamp(24px, 4vw, 42px);
+}
+
+/* Product details */
+.jl-product-page {
+  padding-bottom: var(--jl-section-space);
+}
+
+.jl-product-details,
+.jl-product-info {
+  gap: var(--jl-space-4);
+}
+
+.jl-product-meta-grid,
+.jl-spec-grid {
+  gap: var(--jl-space-2);
+}
+
+.jl-product-meta-grid > *,
+.jl-spec-grid > * {
+  padding: var(--jl-space-3);
+}
+
+/* Cart / checkout */
+.jl-cart-layout,
+.jl-checkout-layout {
+  gap: clamp(14px, 2.4vw, 24px);
+}
+
+.jl-cart-item {
+  gap: var(--jl-space-3);
+  padding: var(--jl-space-3) 0;
+}
+
+.jl-summary-line,
+.jl-summary-total {
+  margin-block: var(--jl-space-2);
+}
+
+.jl-checkout-main,
+.jl-checkout-summary {
+  min-width: 0;
+}
+
+/* Account / auth */
+.jl-account-content,
+.jl-auth-layout {
+  gap: clamp(14px, 2.4vw, 24px);
+}
+
+.jl-account-overview {
+  margin-bottom: var(--jl-space-4);
+}
+
+.jl-auth-card,
+.jl-auth-aside {
+  min-height: 0;
+}
+
+.jl-auth-form {
+  gap: var(--jl-space-3);
+}
+
+/* Header/footer density */
+.jl-header-main {
+  min-height: 60px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.jl-header-nav {
+  min-height: 40px;
+}
+
+.global-footer-shell {
+  padding-top: clamp(30px, 4vw, 48px);
+}
+
+.global-footer-grid {
+  gap: clamp(18px, 3vw, 34px);
+  padding-bottom: clamp(24px, 3vw, 38px);
+}
+
+.global-footer-links h3,
+.global-footer-brand h2 {
+  margin-bottom: var(--jl-space-3);
+}
+
+.global-footer-links ul,
+.global-footer-contact {
+  gap: var(--jl-space-2);
+}
+
+/* Invoice: keep desktop layout, reduce oversized whitespace and protect mobile. */
+.invoice-page {
+  padding: clamp(14px, 3vw, 28px);
+}
+
+.invoice-container {
+  padding: clamp(18px, 4vw, 34px);
+  border-radius: var(--jl-compact-radius);
+}
+
+.invoice-header-grid,
+.invoice-status-grid,
+.invoice-customer-grid {
+  gap: var(--jl-space-4);
+  margin-bottom: var(--jl-space-5);
+}
+
+/* Mobile density and overflow safeguards. */
+@media (max-width: 700px) {
+  :is(
+    .jl-shop-page,
+    .jl-product-page,
+    .jl-cart-page,
+    .jl-checkout-page,
+    .jl-account-page,
+    .wishlist-page,
+    .jl-auth-page,
+    .jl-services-page,
+    .jl-gallery-page,
+    .jl-categories-page,
+    .jl-contact-page,
+    .jl-editorial-page
+  ) {
+    overflow-x: clip;
+  }
+
+  :is(
+    .jl-shop-section,
+    .jl-cart-layout,
+    .jl-checkout-layout,
+    .jl-account-content,
+    .wishlist-content,
+    .jl-gallery-section,
+    .jl-services-list-section,
+    .jl-booking-section,
+    .jl-contact-layout
+  ) {
+    width: min(calc(100% - 24px), var(--jl-content-max));
+  }
+
+  .jl-account-overview {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+  }
+
+  .jl-cart-layout,
+  .jl-checkout-layout,
+  .jl-contact-layout,
+  .jl-booking-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .jl-cart-items-card,
+  .jl-cart-summary-card,
+  .jl-form-card,
+  .jl-auth-card,
+  .jl-contact-info-card,
+  .jl-booking-summary,
+  .jl-order-history-item {
+    padding: 12px;
+  }
+
+  .jl-header-main {
+    min-height: 54px;
+    padding: 6px 10px;
+  }
+
+  .global-footer-shell {
+    padding-top: 28px;
+  }
+
+  .global-footer-grid {
+    gap: 18px;
+  }
+
+  .invoice-container {
+    padding: 14px;
+  }
+
+  .invoice-header-grid,
+  .invoice-status-grid,
+  .invoice-customer-grid {
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .invoice-customer-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 299px) {
+  .jl-account-overview {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Order, bridal and editorial route density */
+:is(
+  .jl-order-container,
+  .jl-bridal-intro,
+  .jl-bridal-packages,
+  .jl-bridal-showcase,
+  .jl-bridal-compare,
+  .jl-bridal-faq,
+  .jl-bridal-final-cta,
+  .jl-bridal-booking-wrap,
+  .jl-policy-layout
+) {
+  width: min(calc(100% - (var(--jl-content-gutter) * 2)), var(--jl-content-max));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+:is(
+  .jl-order-container,
+  .jl-bridal-intro,
+  .jl-bridal-packages,
+  .jl-bridal-showcase,
+  .jl-bridal-compare,
+  .jl-bridal-faq,
+  .jl-bridal-final-cta,
+  .jl-policy-layout
+) {
+  margin-top: var(--jl-section-space);
+  margin-bottom: var(--jl-section-space);
+}
+
+:is(
+  .jl-order-info-card,
+  .jl-order-summary,
+  .jl-order-item,
+  .jl-bridal-card,
+  .jl-bridal-showcase-card,
+  .jl-bridal-booking-card,
+  .jl-bridal-summary-card,
+  .jl-policy-content > section,
+  .jl-policy-help
+) {
+  border-radius: var(--jl-compact-radius);
+}
+
+:is(
+  .jl-order-info-card,
+  .jl-order-summary,
+  .jl-order-item,
+  .jl-bridal-card-body,
+  .jl-bridal-booking-card,
+  .jl-bridal-summary-body,
+  .jl-policy-content > section,
+  .jl-policy-help
+) {
+  padding: var(--jl-card-pad);
+}
+
+:is(
+  .jl-order-details-grid,
+  .jl-order-items,
+  .jl-bridal-packages,
+  .jl-bridal-showcase,
+  .jl-faq-grid,
+  .jl-bridal-booking-shell,
+  .jl-policy-layout
+) {
+  gap: var(--jl-space-4);
+}
+
+:is(
+  .jl-order-hero h1,
+  .jl-bridal-hero-content h1,
+  .jl-bridal-booking-hero h1,
+  .jl-policy-hero h1
+) {
+  font-size: var(--jl-type-page);
+  line-height: 1.08;
+}
+
+:is(
+  .jl-order-hero,
+  .jl-bridal-booking-hero,
+  .jl-policy-hero
+) {
+  padding-top: clamp(24px, 4vw, 42px);
+  padding-bottom: clamp(24px, 4vw, 42px);
+}
+
+.jl-policy-layout {
+  padding-bottom: var(--jl-section-space);
+}
+
+.jl-policy-content {
+  gap: var(--jl-space-4);
+}
+
+.jl-policy-content > section {
+  margin-bottom: 0;
+}
+
+.jl-policy-content h2 {
+  margin-top: 0;
+  margin-bottom: var(--jl-space-3);
+  font-size: var(--jl-type-section);
+}
+
+@media (max-width: 700px) {
+  :is(
+    .jl-order-container,
+    .jl-bridal-intro,
+    .jl-bridal-packages,
+    .jl-bridal-showcase,
+    .jl-bridal-compare,
+    .jl-bridal-faq,
+    .jl-bridal-final-cta,
+    .jl-bridal-booking-wrap,
+    .jl-policy-layout
+  ) {
+    width: min(calc(100% - 24px), var(--jl-content-max));
+  }
+
+  .jl-order-details-grid,
+  .jl-bridal-booking-shell,
+  .jl-policy-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .jl-order-info-card,
+  .jl-order-summary,
+  .jl-order-item,
+  .jl-bridal-booking-card,
+  .jl-bridal-summary-body,
+  .jl-policy-content > section,
+  .jl-policy-help {
+    padding: 12px;
+  }
+}
+
+/* =========================================================
+   JAYLUXE GLOBAL DENSITY AUTHORITY
+   Final shared UI rhythm for storefront, customer and
+   editorial routes. Imported last; business logic untouched.
+========================================================= */
+
+/* Bounded page content: prevent desktop stretch without changing route data. */
+:is(
+  .jj-products,
+  .jj-categories,
+  .jj-transformations,
+  .jj-testimonials,
+  .jj-services,
+  .jj-contact,
+  .jl-shop-toolbar,
+  .jl-shop-section,
+  .jl-product-wrap,
+  .jl-product-tabs,
+  .jl-related-products,
+  .wishlist-content,
+  .jl-cart-layout,
+  .jl-account-content,
+  .jl-order-container,
+  .jl-gallery-section,
+  .jl-services-list-section,
+  .jl-contact-layout,
+  .jl-about-story,
+  .jl-category-page-grid,
+  .jl-policy-layout
+) {
+  max-width: var(--jl-content-max);
+}
+
+/* Functional heroes: short, informative, no viewport-sized dead space. */
+:is(
+  .wishlist-hero,
+  .jl-account-hero,
+  .jl-cart-hero,
+  .jl-checkout-hero,
+  .jl-order-hero,
+  .jl-policy-hero
+) {
+  min-height: var(--jl-hero-functional-min);
+  padding-block: var(--jl-hero-pad);
+  padding-inline: var(--jl-content-gutter);
+}
+
+/* Marketing/editorial heroes retain visual presence, but stay restrained. */
+:is(
+  .jj-hero,
+  .jl-shop-hero,
+  .jl-services-hero,
+  .jl-gallery-hero,
+  .jl-editorial-hero,
+  .jl-bridal-booking-hero
+) {
+  min-height: var(--jl-hero-marketing-min);
+}
+
+:is(
+  .jj-hero-content,
+  .jl-shop-hero-content,
+  .jl-services-hero-content,
+  .jl-gallery-hero-content,
+  .jl-editorial-hero,
+  .jl-bridal-booking-hero
+) {
+  padding-top: var(--jl-hero-pad);
+  padding-bottom: var(--jl-hero-pad);
+}
+
+:is(
+  .jj-hero-content h1,
+  .jl-shop-hero h1,
+  .jl-services-hero h1,
+  .jl-gallery-hero h1,
+  .jl-editorial-hero h1,
+  .jl-bridal-booking-hero h1
+) {
+  font-size: clamp(2.15rem, 5.1vw, 4.35rem);
+  line-height: 1;
+  margin-top: var(--jl-space-3);
+  margin-bottom: var(--jl-space-3);
+}
+
+:is(
+  .wishlist-hero h1,
+  .jl-account-hero h1,
+  .jl-cart-hero h1,
+  .jl-checkout-hero h1,
+  .jl-order-hero h1,
+  .jl-policy-hero h1
+) {
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  line-height: 1.05;
+  margin-block: var(--jl-space-2);
+}
+
+:is(
+  .jj-hero-content p,
+  .jl-shop-hero p,
+  .jl-services-hero p,
+  .jl-gallery-hero p,
+  .jl-editorial-hero p,
+  .jl-bridal-booking-hero p,
+  .wishlist-hero p,
+  .jl-account-hero p,
+  .jl-cart-hero p,
+  .jl-checkout-hero p
+) {
+  font-size: clamp(.82rem, 1.2vw, .96rem);
+  line-height: 1.55;
+}
+
+/* Natural section rhythm across major route families. */
+:is(
+  .jj-products,
+  .jj-categories,
+  .jj-transformations,
+  .jj-testimonials,
+  .jj-services,
+  .jj-contact,
+  .jl-shop-section,
+  .jl-related-products,
+  .wishlist-content,
+  .jl-account-content,
+  .jl-order-container,
+  .jl-gallery-section,
+  .jl-services-list-section,
+  .jl-booking-section,
+  .jl-about-story,
+  .jl-contact-layout,
+  .jl-category-page-grid,
+  .jl-bridal-intro,
+  .jl-bridal-packages,
+  .jl-bridal-showcase,
+  .jl-bridal-compare,
+  .jl-bridal-faq,
+  .jl-bridal-final-cta,
+  .jl-bridal-booking-wrap,
+  .jl-policy-layout
+) {
+  padding-top: var(--jl-section-space);
+  padding-bottom: var(--jl-section-space);
+}
+
+/* Remove legacy overlap tricks from common commerce surfaces. */
+.jl-shop-toolbar,
+.jl-cart-layout,
+.jl-checkout-layout {
+  margin-top: var(--jl-space-5);
+}
+
+/* Shared compact panels/cards. */
+:is(
+  .jl-cart-items-card,
+  .jl-cart-summary-card,
+  .jl-form-card,
+  .jl-auth-card,
+  .jl-contact-details,
+  .jl-contact-form,
+  .jl-contact-info-card,
+  .jl-booking-summary,
+  .jl-booking-form,
+  .jl-order-history-item,
+  .jl-order-info-card,
+  .jl-order-summary,
+  .jl-policy-content > section,
+  .jl-policy-help,
+  .wishlist-empty
+) {
+  padding: var(--jl-panel-pad);
+  border-radius: var(--jl-compact-radius);
+}
+
+:is(
+  .jl-cart-items-list,
+  .jl-summary-items,
+  .jl-account-overview,
+  .jl-order-history,
+  .jl-contact-info-grid,
+  .jl-contact-form-grid,
+  .jl-booking-form,
+  .jl-gallery-grid,
+  .jl-services-grid,
+  .jl-services-featured-grid,
+  .jl-category-page-grid,
+  .jl-product-grid,
+  .jl-related-grid,
+  .jj-product-grid,
+  .jj-category-grid
+) {
+  gap: clamp(8px, 1.5vw, 16px);
+}
+
+/* Inputs and actions: compact but retain practical touch targets. */
+:is(
+  .jl-auth-form input,
+  .jl-auth-input,
+  .jl-form-group input,
+  .jl-form-group select,
+  .jl-contact-form input,
+  .jl-contact-form select,
+  .jl-booking-form input,
+  .jl-booking-form select,
+  .jl-shop-search-panel input,
+  .jl-services-search input,
+  .jl-gallery-search input
+) {
+  min-height: var(--jl-control-h);
+  padding: 8px 11px;
+  font-size: var(--jl-type-body);
+}
+
+:is(
+  .jl-auth-form textarea,
+  .jl-form-group textarea,
+  .jl-contact-form textarea,
+  .jl-booking-form textarea
+) {
+  min-height: 84px;
+  padding: 9px 11px;
+}
+
+:is(
+  .jj-btn,
+  .jl-services-btn,
+  .jl-gallery-btn,
+  .jl-cart-checkout-button,
+  .jl-auth-submit,
+  .jl-place-order-btn,
+  .wishlist-add-all,
+  .wishlist-shop-link,
+  .jl-pagination button
+) {
+  min-height: var(--jl-control-h);
+  padding: 8px 13px;
+  font-size: .76rem;
+}
+
+/* Product detail density without reducing image clarity. */
+.jl-product-wrap {
+  gap: clamp(18px, 3vw, 32px);
+  padding-top: var(--jl-section-space);
+  padding-bottom: var(--jl-section-space);
+}
+
+.jl-product-info {
+  gap: var(--jl-space-3);
+}
+
+.jl-product-tab-buttons button {
+  padding: 12px 16px;
+}
+
+.jl-product-tab-content {
+  min-height: 0;
+  padding: var(--jl-panel-pad);
+  line-height: 1.6;
+}
+
+.jl-related-head {
+  margin-bottom: var(--jl-space-4);
+}
+
+/* Account/order/wishlist states should size to content rather than mimic full pages. */
+:is(
+  .wishlist-empty,
+  .jl-cart-state,
+  .jl-account-empty-orders,
+  .jl-product-not-found
+) {
+  min-height: 220px;
+  padding: var(--jl-space-5);
+}
+
+/* Auth: desktop remains split-screen, but inner content is materially denser. */
+.jl-auth-aside {
+  padding: clamp(28px, 5vw, 56px);
+}
+
+.jl-auth-card {
+  padding: clamp(18px, 3vw, 26px);
+}
+
+.jl-auth-card h2 {
+  font-size: clamp(1.65rem, 3vw, 2.1rem);
+}
+
+.jl-auth-intro,
+.jl-auth-switch {
+  margin-bottom: var(--jl-space-4);
+}
+
+/* Header/footer density. */
+.jl-header-main {
+  min-height: 56px;
+  padding-block: 6px;
+}
+
+.global-footer-shell {
+  padding-top: var(--jl-section-space);
+}
+
+.global-footer-grid {
+  padding-top: 0;
+  padding-bottom: var(--jl-space-5);
+  gap: clamp(16px, 2.5vw, 28px);
+}
+
+/* Mobile-specific density: keep required two-column systems and natural flow. */
+@media (max-width: 700px) {
+  :is(
+    .jj-hero,
+    .jl-shop-hero,
+    .jl-services-hero,
+    .jl-gallery-hero,
+    .jl-editorial-hero,
+    .jl-bridal-booking-hero
+  ) {
+    min-height: clamp(230px, 68vw, 310px);
+  }
+
+  :is(
+    .wishlist-hero,
+    .jl-account-hero,
+    .jl-cart-hero,
+    .jl-checkout-hero,
+    .jl-order-hero,
+    .jl-policy-hero
+  ) {
+    min-height: 0;
+    padding: 26px 14px;
+  }
+
+  :is(
+    .jj-products,
+    .jj-categories,
+    .jj-transformations,
+    .jj-testimonials,
+    .jj-services,
+    .jj-contact,
+    .jl-shop-section,
+    .jl-related-products,
+    .wishlist-content,
+    .jl-account-content,
+    .jl-order-container,
+    .jl-gallery-section,
+    .jl-services-list-section,
+    .jl-booking-section,
+    .jl-about-story,
+    .jl-contact-layout,
+    .jl-category-page-grid,
+    .jl-policy-layout
+  ) {
+    width: min(calc(100% - 24px), var(--jl-content-max));
+    padding-top: clamp(22px, 6vw, 30px);
+    padding-bottom: clamp(22px, 6vw, 30px);
+  }
+
+  .jl-account-overview,
+  .jj-product-grid,
+  .jj-category-grid,
+  .jl-shop-grid,
+  .wishlist-grid,
+  .jl-gallery-grid,
+  .jl-category-page-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  :is(
+    .jl-cart-items-card,
+    .jl-cart-summary-card,
+    .jl-form-card,
+    .jl-auth-card,
+    .jl-contact-details,
+    .jl-contact-form,
+    .jl-contact-info-card,
+    .jl-booking-summary,
+    .jl-booking-form,
+    .jl-order-history-item,
+    .jl-order-info-card,
+    .jl-order-summary,
+    .jl-policy-content > section,
+    .jl-policy-help,
+    .wishlist-empty
+  ) {
+    padding: 12px;
+  }
+
+  .jl-auth-page {
+    min-height: 0;
+  }
+
+  .jl-auth-aside {
+    min-height: 240px;
+    padding: 28px 16px;
+  }
+
+  .jl-auth-panel {
+    padding: 18px 12px 28px;
+  }
+
+  .global-footer-shell {
+    padding-top: 26px;
+  }
+}
+
+@media (max-width: 340px) {
+  .jl-account-overview,
+  .jj-product-grid,
+  .jj-category-grid,
+  .jl-shop-grid,
+  .wishlist-grid,
+  .jl-gallery-grid,
+  .jl-category-page-grid {
+    gap: 7px;
+  }
+}
+
+/* Compact system/account state surfaces that do not use the ordinary card classes. */
+:is(.jl-account-state, .jl-system-page) {
+  min-height: 220px;
+  margin: var(--jl-section-space) auto;
+  padding: var(--jl-space-5);
+  border-radius: var(--jl-compact-radius);
+}
+
+@media (max-width: 700px) {
+  :is(.jl-account-state, .jl-system-page) {
+    width: min(calc(100% - 24px), 720px);
+    min-height: 180px;
+    margin: 24px auto;
+    padding: 18px 14px;
+  }
+}
+
+/* =========================================================
+   ACCOUNT MOBILE POLISH AUTHORITY
+   Tightens signed-in Account flow without changing behavior.
+========================================================= */
+@media (max-width: 700px) {
+  /* Account mobile polish authority */
+  .jl-account-overview {
+    gap: 9px;
+    margin-bottom: 0;
+  }
+
+  .jl-account-overview article,
+  .jl-account-overview > a {
+    min-height: 72px;
+    padding: 11px;
+    gap: 10px;
+  }
+
+  .jl-account-overview svg {
+    width: 20px;
+    height: 20px;
+    flex: 0 0 auto;
+  }
+
+  .jl-account-overview small {
+    font-size: .62rem;
+    line-height: 1.2;
+  }
+
+  .jl-account-overview strong {
+    margin-top: 2px;
+    font-size: .78rem;
+    line-height: 1.25;
+  }
+
+  .jl-account-content {
+    padding-top: 12px;
+    padding-bottom: 24px;
+  }
+
+  .jl-account-profile-bar {
+    align-items: center;
+    flex-direction: row;
+    gap: 10px;
+    margin-bottom: 12px;
+    padding: 12px 13px;
+    border-radius: 12px;
+  }
+
+  .jl-account-profile-bar > div {
+    min-width: 0;
+    gap: 3px;
+  }
+
+  .jl-account-profile-bar small {
+    font-size: .61rem;
+  }
+
+  .jl-account-profile-bar strong {
+    font-size: .82rem;
+    line-height: 1.25;
+  }
+
+  .jl-account-profile-bar button {
+    width: auto;
+    min-height: 36px;
+    flex: 0 0 auto;
+    gap: 6px;
+    padding: 0 11px;
+    border-radius: 9px;
+    font-size: .72rem;
+  }
+
+  .jl-order-history {
+    gap: 10px;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .jl-order-history-header {
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 10px;
+    text-align: left;
+  }
+
+  .jl-order-history-header > div {
+    min-width: 0;
+  }
+
+  .jl-order-history-header small {
+    font-size: .63rem;
+    line-height: 1.2;
+  }
+
+  .jl-order-history-header h2 {
+    margin: 2px 0 0;
+    font-size: 24px;
+    line-height: 1.08;
+  }
+
+  .jl-order-history-header button {
+    display: inline-flex;
+    min-height: 35px;
+    width: auto;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 0 10px;
+    border: 1px solid color-mix(in srgb, var(--jl-gold-rich, #a57a1f) 45%, #dedede);
+    border-radius: 9px;
+    background: #ffffff;
+    color: var(--jl-gold-rich, #a57a1f);
+    font-size: .7rem;
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  .jl-order-history-header button:hover:not(:disabled),
+  .jl-order-history-header button:focus-visible {
+    border-color: var(--jl-gold-rich, #a57a1f);
+    background: #fffaf0;
+  }
+
+  .jl-order-history-header button:disabled {
+    cursor: wait;
+    opacity: .6;
+  }
+}
+
+@media (max-width: 420px) {
+  /* Narrow Account header polish */
+  .jl-order-history-header {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .jl-order-history-header > div {
+    min-width: 0;
+  }
+
+  .jl-order-history-header button {
+    width: auto;
+    padding-inline: 9px;
+  }
+}

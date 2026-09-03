@@ -24,7 +24,7 @@ import { getSafeImageSource } from '@/lib/images';
 import PageHeroIcon from '@/components/PageHeroIcon';
 import { BRIDAL_GRID_CLASSES } from '@/lib/layoutClasses';
 
-const fallbackImage = '/product-placeholder.png';
+const fallbackImage = '/hero-banner.png';
 
 type BridalPackageWithPopular = BridalPackage & {
   popular?: boolean;

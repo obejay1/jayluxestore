@@ -3,13 +3,14 @@ import { getAdminInstallments } from '@/lib/installments/adminService';
 
 const money=(v:number)=>`₦${Number(v||0).toLocaleString('en-NG')}`;
 
-export default async function AdminInstallmentsPage({searchParams}:{searchParams?:{q?:string,status?:string,provider?:string}}){
+export default async function AdminInstallmentsPage({searchParams}:{searchParams?:Promise<{q?:string,status?:string,provider?:string}>}){
+ const resolvedSearchParams = searchParams ? await searchParams : undefined;
  const plans:any[]=await getAdminInstallments();
- const q=(searchParams?.q||'').toLowerCase();
+ const q=(resolvedSearchParams?.q||'').toLowerCase();
 
  const filtered=plans.filter(p=>{
   const text=`${p.customerName||''} ${p.customerEmail||''} ${p.customerId||''} ${p.orderId||''} ${p.productName||''} ${p.provider||''} ${p.transactionReference||''}`.toLowerCase();
-  return (!q||text.includes(q)) && (!searchParams?.status||p.status===searchParams.status) && (!searchParams?.provider||p.provider===searchParams.provider);
+  return (!q||text.includes(q)) && (!resolvedSearchParams?.status||p.status===resolvedSearchParams.status) && (!resolvedSearchParams?.provider||p.provider===resolvedSearchParams.provider);
  });
 
  const collected=filtered.reduce((s,p)=>s+Number(p.paidAmount||0),0);

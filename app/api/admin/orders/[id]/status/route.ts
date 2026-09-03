@@ -38,8 +38,9 @@ function clean(value: unknown, maxLength: number) {
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
+  const { id } = await params;
   if (!hasTrustedRequestOrigin(request)) {
     return NextResponse.json({ ok: false, message: 'The request origin is not trusted.' }, { status: 403 });
   }
@@ -51,7 +52,7 @@ export async function PATCH(
     return NextResponse.json(response.body, { status: response.status });
   }
 
-  const orderId = clean(params.id, 120);
+  const orderId = clean(id, 120);
   if (!orderId) {
     return NextResponse.json({ ok: false, message: 'Invalid order ID.' }, { status: 400 });
   }

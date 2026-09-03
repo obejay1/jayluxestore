@@ -119,6 +119,13 @@ export default function Home() {
       ? activeProducts.filter((product) => product.isNew)
       : activeProducts
   ).slice(0, 8);
+  const editorialServiceImage = products.find(
+    (product) => product.type === 'service' && product.active !== false && product.image,
+  )?.image;
+  const editorialBridalImage = bridalPackages.find((item) => item.image)?.image;
+  const editorialGalleryImage = transformations.find(
+    (item) => item.afterImage || item.beforeImage,
+  );
   const categoryImage = (category: Category) => {
     if (category.image) return getSafeImageSource(category.image);
     const match = products.find(
@@ -215,24 +222,36 @@ export default function Home() {
         <div className="jj-section-header">
           <div>
             <small>Explore JayLuxe</small>
-            <h2 id="discover-more-title">Discover More</h2>
+            <h2 id="discover-more-title">Your Luxury Experience</h2>
           </div>
         </div>
         <div className="jl-discover-grid" aria-label="Discover more JayLuxe experiences">
           <Link href="/services" className="jl-discover-card">
-            <span className="jl-discover-icon" aria-hidden="true"><Scissors /></span>
-            <span><strong>Beauty Services</strong><small>Book polished care for every occasion</small></span>
-            <ArrowRight aria-hidden="true" />
+            <div className="jl-editorial-image jl-beauty-image"><ResponsiveImage src={editorialServiceImage} fallbackSrc="/hero-banner.png" alt="JayLuxe beauty services" fill sizes="(max-width: 767px) 86vw, 33vw" /></div>
+            <div className="jl-editorial-copy">
+              <small>BEAUTY SERVICES</small>
+              <strong>Beauty Services</strong>
+              <p>Professional beauty care for every occasion.</p>
+              <span>Explore Services →</span>
+            </div>
           </Link>
           <Link href="/bridal" className="jl-discover-card">
-            <span className="jl-discover-icon" aria-hidden="true"><Gem /></span>
-            <span><strong>Bridal Experience</strong><small>Explore packages and consultation options</small></span>
-            <ArrowRight aria-hidden="true" />
+            <div className="jl-editorial-image jl-bridal-image"><ResponsiveImage src={editorialBridalImage} fallbackSrc="/hero-banner.png" alt="JayLuxe bridal experience" fill sizes="(max-width: 767px) 86vw, 33vw" /></div>
+            <div className="jl-editorial-copy">
+              <small>BRIDAL EXPERIENCE</small>
+              <strong>Your Bridal Moment</strong>
+              <p>Curated bridal packages designed around your special day.</p>
+              <span>Explore Bridal →</span>
+            </div>
           </Link>
           <Link href="/gallery" className="jl-discover-card">
-            <span className="jl-discover-icon" aria-hidden="true"><Images /></span>
-            <span><strong>Transformation Gallery</strong><small>See real JayLuxe beauty results</small></span>
-            <ArrowRight aria-hidden="true" />
+            <div className="jl-editorial-image jl-gallery-image"><ResponsiveImage src={editorialGalleryImage?.afterImage || editorialGalleryImage?.beforeImage} fallbackSrc="/hero-banner.png" alt="JayLuxe transformation gallery" fill sizes="(max-width: 767px) 86vw, 33vw" /></div>
+            <div className="jl-editorial-copy">
+              <small>TRANSFORMATION GALLERY</small>
+              <strong>See The Transformation</strong>
+              <p>Explore real JayLuxe beauty transformations.</p>
+              <span>View Gallery →</span>
+            </div>
           </Link>
         </div>
       </section>
@@ -242,21 +261,22 @@ export default function Home() {
           <div>
             <small>Current edits</small>
             <h2 id="home-promotions-title">Promotions &amp; Popular Picks</h2>
+            <p>Discover what's trending, limited, and worth adding to your wardrobe.</p>
           </div>
           <Link href="/promotions">View All <ArrowRight size={16} aria-hidden="true" /></Link>
         </div>
         <div className="jl-home-promo-features" aria-label="JayLuxe promotional collections">
           <Link href="/flash-sale" className="jl-home-promo-feature jl-home-promo-flash">
             <span className="jl-home-promo-icon" aria-hidden="true"><Zap size={26} strokeWidth={2.1} /></span>
-            <span className="jl-home-promo-copy"><strong>Flash Sale</strong><small>Limited Time</small></span>
+            <span className="jl-home-promo-copy"><strong>Limited Drops</strong><small>Exclusive offers</small></span>
           </Link>
           <Link href="/promotions" className="jl-home-promo-feature jl-home-promo-seasonal">
             <span className="jl-home-promo-icon" aria-hidden="true"><Gift size={26} strokeWidth={2.1} /></span>
-            <span className="jl-home-promo-copy"><strong>Seasonal Promotions</strong><small>Special Offers</small></span>
+            <span className="jl-home-promo-copy"><strong>Seasonal Favourites</strong><small>Curated collections</small></span>
           </Link>
           <Link href="/best-sellers" className="jl-home-promo-feature jl-home-promo-bestselling">
             <span className="jl-home-promo-icon" aria-hidden="true"><TrendingUp size={26} strokeWidth={2.1} /></span>
-            <span className="jl-home-promo-copy"><strong>Best Selling</strong><small>Trending Now</small></span>
+            <span className="jl-home-promo-copy"><strong>Best Sellers</strong><small>Customer favourites</small></span>
           </Link>
         </div>
       </section>
@@ -483,7 +503,7 @@ export default function Home() {
                 <div className="jj-testimonial-customer">
                   <ResponsiveImage
                     src={t.image}
-                    fallbackSrc="/jayluxe-logo.png"
+                    fallbackSrc="/logo.png"
                     alt={t.customerName}
                     width={48}
                     height={48}

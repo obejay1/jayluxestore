@@ -1,0 +1,25 @@
+/* JayLuxe Phase 38 final consistency layer */
+.jl-card,
+.card,
+.product-card {
+  box-sizing: border-box;
+}
+
+img {
+  max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  max-width: 100%;
+}
+
+@media (max-width: 640px) {
+  .container,
+  .section-container {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+}

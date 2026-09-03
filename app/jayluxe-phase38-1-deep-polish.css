@@ -1,0 +1,69 @@
+/* JayLuxe Phase 38.1 deep frontend polish layer */
+
+:root {
+  --jl-content-gap: clamp(1rem, 2vw, 1.75rem);
+  --jl-card-radius: 18px;
+}
+
+.jl-card,
+.card,
+.product-card,
+.installment-card {
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.product-card img,
+.product-image img,
+.product-gallery img {
+  max-width: 100%;
+  height: auto;
+}
+
+.product-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.product-card .price,
+.product-card .product-price {
+  line-height: 1.2;
+}
+
+button,
+[role="button"] {
+  min-height: 40px;
+}
+
+table {
+  max-width: 100%;
+}
+
+@media (max-width: 768px) {
+  .section,
+  section {
+    scroll-margin-top: 80px;
+  }
+
+  .container,
+  .section-container {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .product-card,
+  .card {
+    border-radius: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 { line-height: 1.15; }
+  h2 { line-height: 1.2; }
+
+  button,
+  .btn {
+    width: auto;
+    max-width: 100%;
+  }
+}

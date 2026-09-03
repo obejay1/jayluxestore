@@ -1,0 +1,824 @@
+/* ================================
+   Jayluxe Professional Shop Page
+================================ */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.jl-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 50px;
+  font-family: var(--font-sans);
+}
+
+.jl-pagination button {
+  background: var(--white);
+  color: var(--black);
+  border: 1px solid var(--border-color);
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.jl-pagination button:hover:not(:disabled) {
+  background: var(--black);
+  color: var(--gold-primary);
+  border-color: var(--black);
+}
+
+.jl-pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.jl-pagination span {
+  font-weight: 600;
+  color: var(--text-body);
+}
+
+/* =======================================
+   Jayluxe Professional Product Detail Page
+======================================= */
+
+.jl-product-page {
+  background-color: var(--ivory);
+  color: var(--text-body);
+  font-family: var(--font-sans);
+}
+
+.jl-product-wrap {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 70px 40px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 44px;
+  align-items: start;
+}
+
+.jl-product-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--gold-rich);
+  text-decoration: none;
+  font-weight: 700;
+  margin-bottom: 20px;
+  transition: color 0.3s;
+}
+.jl-product-back:hover {
+  color: var(--black);
+}
+
+.jl-product-main-image {
+  position: relative;
+  background: var(--white);
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.07);
+}
+
+.jl-product-main-image img {
+  width: 100%;
+  height: 580px;
+  object-fit: cover;
+  transition: transform 0.3s ease-out;
+}
+
+.jl-product-heart {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  border: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--white);
+  color: var(--black);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+}
+.jl-product-heart:hover {
+  background: var(--ivory);
+}
+.jl-product-heart.active {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.jl-product-thumbs {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.jl-product-thumbs button {
+  width: 86px;
+  height: 86px;
+  border-radius: 16px;
+  border: 2px solid transparent;
+  background: var(--white);
+  overflow: hidden;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: all 0.3s;
+}
+.jl-product-thumbs button:hover {
+  opacity: 1;
+}
+.jl-product-thumbs button.active {
+  border-color: var(--gold-primary);
+  opacity: 1;
+}
+.jl-product-thumbs img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.jl-product-info {
+  padding-top: 30px;
+}
+
+.jl-product-breadcrumb {
+  color: var(--text-body);
+  font-weight: 600;
+  margin-bottom: 18px;
+}
+.jl-product-breadcrumb a {
+  color: var(--gold-rich);
+}
+
+.jl-product-info h1 {
+  margin: 16px 0 12px;
+  font-size: 48px;
+  line-height: 1.1;
+  letter-spacing: -1px;
+}
+
+.jl-product-price-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+.jl-product-price-row strong {
+  color: var(--gold-primary);
+  font-size: 36px;
+}
+.jl-product-price-row .in-stock { background: #dcfce7; color: #166534; border-radius: 20px; padding: 8px 14px; font-size: 13px; font-weight: 700;}
+
+.jl-product-desc {
+  line-height: 1.7;
+  font-size: 16px;
+  margin-bottom: 24px;
+}
+
+.jl-product-benefits {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.jl-product-benefits div {
+  background: var(--white);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+}
+.jl-product-benefits svg { color: var(--gold-primary); }
+
+.jl-product-purchase-box {
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 18px;
+  background: var(--white);
+  margin-bottom: 24px;
+}
+
+.jl-product-qty {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.jl-product-qty span { font-weight: 700; }
+.jl-product-qty div { display: flex; align-items: center; gap: 12px; }
+.jl-product-qty button { border: none; width: 36px; height: 36px; border-radius: 50%; background: var(--ivory); color: var(--black); cursor: pointer; font-size: 18px; }
+.jl-product-qty strong { font-size: 18px; }
+
+.jl-product-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.jl-product-actions button { border: none; border-radius: 8px; padding: 16px; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.3s; }
+.jl-add-cart { background: var(--black); color: var(--white); }
+.jl-add-cart:hover { background: var(--gold-primary); color: var(--black); }
+.jl-buy-now { background: var(--gold-primary); color: var(--black); }
+.jl-buy-now:hover { background: var(--black); color: var(--white); }
+
+.jl-product-tabs { margin-top: 30px; }
+.jl-product-tab-buttons { display: flex; gap: 4px; border-bottom: 1px solid var(--border-color); }
+.jl-product-tab-buttons button { border: none; background: transparent; padding: 14px 20px; font-weight: 700; cursor: pointer; color: var(--text-body); border-bottom: 3px solid transparent; }
+.jl-product-tab-buttons button.active { color: var(--black); border-bottom-color: var(--gold-primary); }
+.jl-product-tab-content { padding: 24px 0; line-height: 1.7; }
+
+.jl-related-products { padding: 20px 40px 80px; }
+.jl-related-head { text-align: center; margin-bottom: 40px; }
+.jl-related-head h2 { font-family: var(--font-serif); font-size: 42px; }
+.jl-related-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; }
+
+.jl-product-not-found { min-height: 60vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; }
+.jl-product-not-found h1 { font-family: var(--font-serif); font-size: 48px; margin-bottom: 12px; }
+.jl-product-not-found-btn { margin-top: 24px; display: inline-flex; align-items: center; gap: 8px; background: var(--black); color: var(--white); text-decoration: none; border-radius: 8px; padding: 14px 24px; font-weight: 700; }
+
+@media (max-width: 768px){
+  .jl-product-wrap { grid-template-columns: 1fr; padding: 20px; }
+  .jl-product-main-image img { height: 420px; }
+  .jl-related-grid { grid-template-columns: 1fr 1fr; }
+}
+
+.jl-product-rating {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.jl-product-rating span {
+  display: inline-flex;
+  color: var(--gold-primary);
+  gap: 3px;
+}
+.jl-product-rating p {
+  margin: 0;
+  color: var(--text-body);
+  font-weight: 800;
+}
+
+.jl-product-reviews {
+  display: grid;
+  gap: 24px;
+}
+
+.jl-review-card {
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 20px;
+}
+.jl-review-card:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.jl-review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.jl-review-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.jl-review-author img {
+  border-radius: 50%;
+  object-fit: cover;
+}
+.jl-review-author strong {
+  display: block;
+  font-weight: 900;
+}
+.jl-review-author small {
+  color: var(--text-body);
+}
+
+.jl-review-rating {
+  display: flex;
+  gap: 2px;
+  color: var(--gold-primary);
+}
+
+/* ==========================================
+   JAYLUXE OFFICIAL BRAND COLOR PALETTE
+========================================== */
+:root {
+  /* ===== PRIMARY COLORS ===== */
+  --black: #111111;
+  --charcoal: #2B2B2B;
+  --dark-gray: #444444;
+  --gray: #8A8A8A;
+  --light-gray: #E8E8E8;
+
+  /* ===== GOLD COLORS ===== */
+  --gold: #D4AF37;
+  --gold-dark: #B8891E;
+  --gold-light: #F3D67A;
+  --gold-soft: #E6C766;
+
+  /* ===== BACKGROUND COLORS ===== */
+  --white: #FFFFFF;
+  --ivory: #FAF8F4;
+  --beige: #F3EEE6;
+  --section: #F8F6F2;
+
+  /* ===== TEXT COLORS ===== */
+  --text-primary: #111111;
+  --text-secondary: #444444;
+  --text-light: #8A8A8A;
+  --text-white: #FFFFFF;
+
+  /* ===== BORDER & SHADOW ===== */
+  --border: #E8E8E8;
+  --shadow: rgba(0, 0, 0, 0.08);
+
+  /* ===== STATUS COLORS ===== */
+  --success: #28A745;
+  --danger: #DC3545;
+  --warning: #FFC107;
+
+  /* ===== GRADIENTS ===== */
+  --gold-gradient: linear-gradient(135deg, #F3D67A 0%, #D4AF37 45%, #B8891E 100%);
+  --luxury-gradient: linear-gradient(90deg, #111111 0%, #2B2B2B 100%);
+  --hero-gradient: linear-gradient(180deg, #FAF8F4 0%, #F3EEE6 100%);
+}
+
+/* Base Body Styles */
+body {
+  background-color: var(--ivory);
+  color: var(--text-primary);
+  font-family: var(--font-jayluxe-sans), sans-serif;
+}
+
+/* ==========================================
+   BRAND BUTTON UTILITIES
+========================================== */
+.btn-primary {
+  background-color: var(--black);
+  color: var(--white);
+  transition: all 0.3s ease;
+}
+.btn-primary:hover {
+  background-color: var(--charcoal);
+}
+
+.btn-gold {
+  background-color: var(--gold);
+  color: var(--white);
+  transition: all 0.3s ease;
+}
+.btn-gold:hover {
+  background-color: var(--gold-dark);
+}
+
+.btn-outline {
+  background-color: transparent;
+  border: 2px solid var(--gold);
+  color: var(--gold);
+  transition: all 0.3s ease;
+}
+.btn-outline:hover {
+  background-color: var(--gold);
+  color: var(--white);
+}
+
+/* ==========================================
+   CARDS & PRODUCT DESIGN
+========================================== */
+.card {
+  background-color: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 8px 25px var(--shadow);
+}
+
+.product-card {
+  background-color: var(--white);
+  border: 1px solid var(--border);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+}
+
+/* Prices & Links */
+.price {
+  color: var(--gold);
+  font-weight: 700;
+}
+.old-price {
+  color: var(--gray);
+  text-decoration: line-through;
+}
+
+a {
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+a:hover {
+  color: var(--gold);
+}
+
+.bg-gold-gradient {
+  background: var(--gold-gradient);
+}
+.bg-luxury-gradient {
+  background: var(--luxury-gradient);
+}
+.bg-hero-gradient {
+  background: var(--hero-gradient);
+}
+
+
+/* ==========================================
+   JAYLUXE BRAND COLOR PALETTE & CSS VARIABLES
+========================================== */
+:root {
+  /* ===== PRIMARY BRAND COLORS ===== */
+  --black: #111111;
+  --charcoal: #2B2B2B;
+  --dark-gray: #444444;
+  --gray: #8A8A8A;
+  --light-gray: #E8E8E8;
+
+  /* ===== ACCENT GOLD PALETTE ===== */
+  --gold: #D4AF37;
+  --gold-dark: #B8891E;
+  --gold-light: #F3D67A;
+  --gold-soft: #E6C766;
+
+  /* ===== BACKGROUND SURFACES ===== */
+  --white: #FFFFFF;
+  --ivory: #FAF8F4;
+  --beige: #F3EEE6;
+  --section: #F8F6F2;
+
+  /* ===== TYPOGRAPHY COLORS ===== */
+  --text-primary: #111111;
+  --text-secondary: #444444;
+  --text-muted: #8A8A8A;
+  --text-white: #FFFFFF;
+
+  /* ===== BORDER & SHADOWS ===== */
+  --border: #E8E8E8;
+  --shadow-subtle: rgba(0, 0, 0, 0.04);
+  --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.08);
+
+  /* ===== FONTS ===== */
+  --font-serif: var(--font-jayluxe-serif), Georgia, serif;
+  --font-sans: var(--font-jayluxe-sans), -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* ==========================================
+   BASE & RESET STYLES
+========================================== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--ivory);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+/* Custom Text Highlight/Selection */
+::selection {
+  background-color: var(--gold);
+  color: var(--white);
+}
+
+/* ==========================================
+   TYPOGRAPHY UTILITIES
+========================================== */
+.font-serif {
+  font-family: var(--font-serif);
+}
+
+.font-sans {
+  font-family: var(--font-sans);
+}
+
+/* ==========================================
+   CUSTOM BUTTON COMPONENTS
+========================================== */
+.btn-primary {
+  background-color: var(--black);
+  color: var(--white);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-primary:hover {
+  background-color: var(--charcoal);
+  transform: translateY(-1px);
+}
+
+.btn-gold {
+  background-color: var(--gold);
+  color: var(--white);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-gold:hover {
+  background-color: var(--gold-dark);
+  transform: translateY(-1px);
+}
+
+.btn-outline {
+  background-color: transparent;
+  border: 1px solid var(--black);
+  color: var(--black);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-outline:hover {
+  background-color: var(--black);
+  color: var(--white);
+}
+
+.btn-outline-gold {
+  background-color: transparent;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-outline-gold:hover {
+  background-color: var(--gold);
+  color: var(--black);
+}
+
+/* ==========================================
+   PRODUCT CARDS & HOVER EFFECTS
+========================================== */
+.product-card {
+  background-color: var(--white);
+  border: 1px solid var(--border);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px var(--shadow-subtle);
+  border-color: var(--gold-light);
+}
+
+/* Image Zoom Effect inside Cards */
+.img-zoom {
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.group:hover .img-zoom {
+  transform: scale(1.05);
+}
+
+/* ==========================================
+   CUSTOM SCROLLBAR
+========================================== */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--ivory);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #D8D2C6;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gold);
+}
+
+/* JayLuxe production compact design tokens — shared across storefront and admin. */
+:root {
+  --jl-space-1: 4px;
+  --jl-space-2: 8px;
+  --jl-space-3: 12px;
+  --jl-space-4: 16px;
+  --jl-space-5: 24px;
+  --jl-space-6: 32px;
+  --jl-section-space: clamp(24px, 3.6vw, 40px);
+  --jl-card-pad: clamp(12px, 1.8vw, 18px);
+  --jl-control-h: 42px;
+  --jl-content-max: 1240px;
+  --jl-content-gutter: clamp(14px, 3vw, 28px);
+  --jl-compact-radius: 14px;
+  --jl-compact-radius-sm: 10px;
+  --jl-type-page: clamp(1.5rem, 3.2vw, 2.25rem);
+  --jl-type-section: clamp(1.15rem, 2.2vw, 1.6rem);
+  --jl-type-card: clamp(.86rem, 1.25vw, 1rem);
+  --jl-type-body: clamp(.78rem, 1vw, .92rem);
+  --jl-type-meta: clamp(.68rem, .85vw, .78rem);
+  --jl-hero-functional-min: clamp(170px, 22vw, 240px);
+  --jl-hero-marketing-min: clamp(280px, 36vw, 420px);
+  --jl-hero-pad: clamp(28px, 4.5vw, 48px);
+  --jl-panel-pad: clamp(14px, 2vw, 20px);
+}
+
+
+/* Home page product grid: 2 mobile, 4 tablet and desktop only */
+.jl-home-product-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .jl-home-product-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .jl-home-product-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+
+ /* Phase 22: Force home page product grid only */
+.jl-home-product-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 1rem !important;
+}
+
+@media (min-width: 768px) {
+  .jl-home-product-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .jl-home-product-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+}
+
+
+/* JayLuxe Gallery Luxury Lightbox Override */
+.jl-gallery-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,.88);
+  padding: 24px;
+}
+
+.jl-gallery-modal-card {
+  position: relative;
+  width: min(1200px, 96vw);
+  height: min(820px, 88vh);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  overflow: hidden;
+  border-radius: 20px;
+  background: #0b0b0b;
+  border: 1px solid rgba(201,162,39,.45);
+}
+
+.jl-gallery-modal-image {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#000;
+  min-width:0;
+}
+
+.jl-gallery-modal-image img,
+.jl-gallery-lightbox-image {
+  width:100%;
+  height:100%;
+  object-fit:contain !important;
+}
+
+.jl-gallery-modal-info {
+  padding:32px;
+  background:#fffdf8;
+}
+
+.jl-gallery-modal-close,
+.jl-gallery-nav {
+  background:rgba(0,0,0,.75);
+  color:#c9a227;
+  border:1px solid rgba(201,162,39,.7);
+  box-shadow:0 8px 30px rgba(0,0,0,.25);
+}
+
+.jl-gallery-modal-close {
+  position:absolute;
+  top:18px;
+  right:18px;
+  z-index:10;
+  border-radius:999px;
+  padding:10px;
+}
+
+.jl-gallery-nav {
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  z-index:10;
+  border-radius:999px;
+  padding:12px;
+}
+
+.jl-gallery-nav.prev { left:18px; }
+.jl-gallery-nav.next { right:338px; }
+
+@media(max-width:800px){
+ .jl-gallery-modal {padding:12px;}
+ .jl-gallery-modal-card{
+   width:100%;
+   height:90vh;
+   display:flex;
+   flex-direction:column;
+ }
+ .jl-gallery-modal-image{height:70%;}
+ .jl-gallery-modal-info{height:30%;padding:18px;overflow:auto;}
+ .jl-gallery-nav.next{right:18px;}
+ .jl-gallery-modal-close{top:calc(env(safe-area-inset-top) + 14px);right:14px;}
+}

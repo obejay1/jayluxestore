@@ -34,8 +34,7 @@ import {
 
 import Footer from '@/components/Footer';
 import PageHeroIcon from '@/components/PageHeroIcon';
-import { auth, db } from '@/lib/firebase';
-import { collection, onSnapshot, query, where } from 'firebase/firestore';
+import { auth } from '@/lib/firebase';
 import { getCart, getWishlist, money } from '@/lib/store';
 import type { Order } from '@/lib/types';
 
@@ -51,6 +50,7 @@ type InstallmentPlan = {
   nextPaymentAmount?: number;
   status?: string;
   totalInstallments?: number;
+  installmentCount?: number;
   completedInstallments?: number;
 };
 
@@ -154,30 +154,29 @@ export default function AccountPage() {
   const [installmentsLoading, setInstallmentsLoading] = useState(true);
 
   useEffect(() => {
-    if (!firebaseUser) {
-      setInstallmentPlans([]);
-      setInstallmentsLoading(false);
-      return;
+    let cancelled = false;
+    async function loadInstallments() {
+      if (!firebaseUser) {
+        setInstallmentPlans([]);
+        setInstallmentsLoading(false);
+        return;
+      }
+      setInstallmentsLoading(true);
+      try {
+        const token = await firebaseUser.getIdToken();
+        const response = await fetch('/api/account/installments', { headers: { Authorization: `Bearer ${token}` }, cache: 'no-store' });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Unable to load installment plans');
+        if (!cancelled) setInstallmentPlans(Array.isArray(data.plans) ? data.plans : []);
+      } catch (error) {
+        console.error('Account installment plans failed to load', error);
+        if (!cancelled) setInstallmentPlans([]);
+      } finally {
+        if (!cancelled) setInstallmentsLoading(false);
+      }
     }
-
-    const q = query(
-      collection(db, 'installmentPlans'),
-      where('userId', '==', firebaseUser.uid)
-    );
-
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      setInstallmentPlans(
-        snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...(doc.data() as Omit<InstallmentPlan, 'id'>),
-        }))
-      );
-      setInstallmentsLoading(false);
-    }, () => {
-      setInstallmentsLoading(false);
-    });
-
-    return () => unsubscribe();
+    void loadInstallments();
+    return () => { cancelled = true; };
   }, [firebaseUser]);
 
   useEffect(() => {
@@ -844,7 +843,7 @@ export default function AccountPage() {
               ) : (
                 <div className="jl-installment-list">
                   {installmentPlans.map((plan) => {
-                    const total = Number(plan.totalInstallments || 0);
+                    const total = Number(plan.installmentCount || plan.totalInstallments || 0);
                     const completed = Number(plan.completedInstallments || 0);
                     const progress = total
                       ? Math.min(100, Math.round((completed / total) * 100))

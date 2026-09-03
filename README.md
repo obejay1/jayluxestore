@@ -1,8 +1,10 @@
 # JayLuxe E-commerce Website
 
-JayLuxe is a responsive luxury e-commerce application built with Next.js 14, React 18, TypeScript, Firebase Authentication/Firestore/Storage, Firebase Admin, Paystack, Resend, Cloudinary, and optional Termii/OPay integrations.
+JayLuxe is a responsive luxury e-commerce application built with Next.js 16.3.3, React 19.2.7, TypeScript, Firebase Authentication/Firestore, Firebase Admin, Paystack, Resend, Cloudinary, and optional Termii integration and an intentionally disabled OPay placeholder.
 
 **Canonical production URL:** `https://jayluxestore.com`
+
+Current release-readiness authority: `PHASE34_SECURITY_PAYMENT_INTEGRITY_REPORT.md`. Older phase reports are retained only as historical implementation records.
 
 `https://www.jayluxestore.com` is supported as an alternate hostname and is redirected permanently by `next.config.js` to the apex canonical domain. The hosting/DNS layer must also enforce HTTPS.
 
@@ -12,7 +14,7 @@ JayLuxe is a responsive luxury e-commerce application built with Next.js 14, Rea
 - npm
 - Firebase project `jayjaystyles` with Email/Password Authentication, Firestore, and Storage enabled
 - Firebase Admin credentials or Application Default Credentials for server routes
-- Paystack credentials for checkout
+- Paystack secret key for server-initialized checkout
 - Optional: Resend, Cloudinary, Termii, OPay, and Google Analytics
 
 ## Local setup
@@ -22,7 +24,7 @@ npm install
 cp .env.example .env.local
 ```
 
-The previous archive contained an internally inconsistent `package-lock.json`: it labeled `firebase-admin` as `12.7.0` while still pointing at the `14.2.0` tarball/dependency tree, which can reproduce the `jwks-rsa`/`jose` ESM failure on a clean Vercel build. That corrupt lockfile has been removed. `firebase-admin` is pinned exactly to `12.7.0`; the first successful `npm install` will generate a fresh lockfile. Commit that newly generated lockfile before the final production rollout so Vercel and local installs use the same dependency graph.
+`firebase-admin` is pinned exactly to `12.7.0`. The application dependencies have been updated to the current patched Next.js 16 Active LTS line and React 19.2.7. A package lock could not be regenerated inside the stabilization environment because the npm registry was unreachable. Before deployment, run `npm install` once in a network-enabled environment, review/commit the resulting `package-lock.json`, then use `npm ci` for repeatable builds.
 
 For local development, override these two values in `.env.local`:
 
@@ -59,13 +61,13 @@ In Firebase Console:
 3. Keep `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN` set to the auth domain shown for the existing Firebase web app unless a custom Firebase Auth redirect/email-action domain has been explicitly configured. Do not simply replace it with `jayluxestore.com`.
 4. For fully branded password-recovery/action emails, optionally configure the custom Authentication email/action domain under **Authentication → Templates** and complete Firebase's required DNS verification. The application already sets the password-reset continuation URL back to `https://jayluxestore.com/login` in production.
 5. Confirm Firestore is enabled in the `jayjaystyles` project.
-6. Confirm Firebase Storage is enabled if the existing bridal/testimonial/transformation upload features are used.
+6. Confirm Cloudinary credentials are configured for all admin-managed catalog/content image uploads.
 7. Configure the browser Firebase values from this same Firebase web app using the `NEXT_PUBLIC_FIREBASE_*` variables.
 8. Configure Firebase Admin with server-only `FIREBASE_ADMIN_*` values or Application Default Credentials.
 9. Deploy the checked-in Firestore and Storage rules after reviewing them:
 
 ```bash
-firebase deploy --only firestore:rules,storage
+firebase deploy --only firestore:rules
 ```
 
 The browser Firebase configuration is public application configuration. Firebase Admin credentials and private keys are never exposed through `NEXT_PUBLIC_*` variables.
@@ -96,7 +98,6 @@ FIREBASE_ADMIN_PROJECT_ID=
 FIREBASE_ADMIN_CLIENT_EMAIL=
 FIREBASE_ADMIN_PRIVATE_KEY=
 
-NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY=
 PAYSTACK_SECRET_KEY=
 
 RESEND_API_KEY=
@@ -176,25 +177,20 @@ Keep the existing recipient/reply-to addresses unless the business intentionally
 Configure the real production credentials in the hosting environment only:
 
 ```env
-NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY=
 PAYSTACK_SECRET_KEY=
 ```
 
-Do not commit live keys. The current popup checkout remains unchanged. The order API independently reloads product/stock/pricing data and verifies the Paystack transaction on the server, including reference, successful status, `NGN` currency, amount, customer email, and payment-reference reuse before creating the order and decrementing stock.
+Do not commit live keys. Standard and first-installment checkout is initialized on the server through `/api/checkout/initialize`; the browser never decides the trusted Paystack amount or reference. The server snapshots authoritative products/settings/coupons, reserves managed inventory, creates a short-lived checkout intent, and then initializes Paystack. Abandoned/failed reservations are releasable and expired reservations are cleaned opportunistically during later checkout initialization.
 
-No Paystack webhook endpoint is currently implemented in this codebase. Do not enter an invented webhook URL in Paystack. If a webhook is later added, it must verify Paystack's `x-paystack-signature` before processing events and preserve the existing duplicate-payment protections.
+The callback returns to `/checkout/complete`, while the signed webhook at `/api/paystack/webhook` can finalize the same checkout intent even if the customer's browser closes. Finalization verifies reference, successful status, `NGN` currency, amount, email and payment-reference reuse, and is idempotent. Order access credentials are not stored in query strings; guest links use a URL fragment that is captured into session storage and then removed from the visible URL.
 
-## Cloudinary and Firebase Storage
+## Cloudinary media uploads
 
-The existing architecture is preserved:
-
-- Cloudinary server uploads keep the API secret server-side.
-- Firebase Storage remains available for the existing bridal/testimonial/transformation media flows.
-- Next.js image configuration continues allowing Cloudinary, Firebase Storage, Google Storage, and Unsplash sources used by the application.
+Admin-managed product, category, bridal, gallery, transformation, testimonial and service images use signed Cloudinary uploads. The Cloudinary API secret remains server-only; the browser receives only a short-lived signature after the admin session and folder permission are verified. Legacy Firebase/Google Storage image URLs remain readable by Next.js image configuration for existing records, but new admin uploads use Cloudinary.
 
 ## Analytics
 
-Google Analytics is loaded only when `NEXT_PUBLIC_GA_ID` is configured. Do not invent a measurement ID.
+Google Analytics is loaded only when `NEXT_PUBLIC_GA_ID` is configured. There is no hard-coded fallback measurement ID. Manual page views deliberately send only the pathname, excluding query strings and fragments so checkout/order credentials cannot be forwarded to analytics. Do not invent a measurement ID.
 
 ## Admin and staff bootstrap
 
@@ -206,14 +202,21 @@ npm run admin:bootstrap
 
 Then sign in at `/admin/login`. Passwords remain in Firebase Authentication; they are not stored in Firestore or environment variables.
 
+
+### CSS source layout
+
+`app/globals.css` and `app/jayluxe-design-system.css` are generated compatibility bundles. Edit the ordered source modules under `app/styles/globals/` and `app/styles/design-system/`, then run `npm run css:build`. `predev` and `prebuild` regenerate the bundles automatically. This keeps the existing cascade visually stable while making changes reviewable by section.
+
 ## Validation before deployment
 
-Run:
+First generate and commit `package-lock.json` from a network-enabled environment if this archive does not already contain one. After the lockfile exists, run:
 
 ```bash
-npm install
+npm ci
+npm run verify:security
+npm test
 npm run lint
-npx tsc --noEmit --incremental false
+npm run typecheck --incremental false
 npm run build
 ```
 
@@ -228,7 +231,7 @@ When Firebase CLI access is available, also validate/deploy the production rules
 5. Confirm `.firebaserc` still targets `jayjaystyles` and deploy Firestore/Storage rules.
 6. Verify `jayluxestore.com` in Resend before enabling domain sender addresses.
 7. Add genuine Paystack live credentials; perform a low-value live checkout test and confirm server verification/order creation.
-8. Confirm Cloudinary/Firebase Storage uploads from the admin dashboard.
+8. Confirm signed Cloudinary uploads from the admin dashboard across product, category and content folders.
 9. Confirm `sitemap.xml`, `robots.txt`, canonical tags, password reset, order email links, admin login/logout, and checkout on the production domain.
 10. Confirm `https://www.jayluxestore.com/...` permanently redirects to `https://jayluxestore.com/...` without loops.
 
@@ -253,12 +256,11 @@ JayLuxe is deployed as a full-stack Next.js application. On Vercel, keep all Fir
 
 ## Product and category image uploads
 
-Admin product/category images use the existing Firebase Storage application. New catalog uploads are written to the `products/` or `categories/` Storage paths, then the resulting HTTPS download URL is stored in the existing Firestore image field. `storage.rules` allows public reads for these catalog images and restricts writes to authenticated administrators with the matching `products` or `categories` permission. Accepted upload types are JPEG, PNG and WebP up to 8 MB. Existing legacy `data:image/...` records remain readable for backwards compatibility, but new saves use durable Storage URLs.
+Admin catalog/content images use the Cloudinary upload pipeline in `lib/imageUpload.ts` and `/api/upload`. The admin API verifies the session and per-folder permission before issuing a signed upload. Do not deploy new catalog media through Firebase Storage; legacy storage URLs are supported only for backwards compatibility.
 
 Deploy Storage rules after changing them:
 
 ```bash
-firebase deploy --only storage
 ```
 
 ## Production email system (Resend)
@@ -349,17 +351,17 @@ Wishlist notifications are intentionally not enabled yet because the current wis
 7. Subscribe to the newsletter: verify one subscription record and one welcome email; use the unsubscribe link and confirm `marketingConsent=false`.
 8. Configure the Resend webhook and use Resend test events to confirm `providerStatus` updates in `emailEvents`.
 9. Confirm the production domain and sender addresses are verified before live customer email testing.
-10. Run `npm run lint`, `npx tsc --noEmit --incremental false`, and `npm run build` before production deployment.
+10. Run `npm run lint`, `npm run typecheck --incremental false`, and `npm run build` before production deployment.
 
-## Production UI + Firebase Storage checklist (2026-08-13)
+## Production UI + Cloudinary checklist (updated 2026-08-31)
 
-JayLuxe keeps catalog images in the existing Firebase Storage bucket and stores the returned HTTPS download URL in the existing product/category `image` field.
+JayLuxe stores new admin-managed media in Cloudinary and saves the returned HTTPS URL/public ID in the existing records.
 
 Before testing Admin image uploads in production:
 
 1. Confirm the Firebase project is on the Blaze plan. Cloud Storage for Firebase requires Blaze to maintain bucket access as of February 3, 2026.
 2. In Firebase Console → Storage → Files, copy the exact default bucket name into `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`. The client normalizes an accidental `gs://` prefix, but the value must still belong to the same Firebase project used by the other `NEXT_PUBLIC_FIREBASE_*` settings.
-3. Deploy `storage.rules` with `firebase deploy --only storage` and sign out/in to refresh admin custom claims.
+3. Verify Cloudinary credentials and admin upload permissions, then sign out/in if admin claims were changed.
 4. Product/category uploads remain restricted to JPG/PNG/WebP, maximum 8 MB, under `products/*` and `categories/*`.
 5. The Admin upload UI reports progress, preserves the existing saved image when a replacement fails, and exposes Firebase error codes in DevTools instead of remaining indefinitely on “Uploading image…”.
 
@@ -367,9 +369,10 @@ Verification commands:
 
 ```bash
 node scripts/verify-production-ui-storage.mjs
+node scripts/verify-phase34-security.mjs
 node scripts/verify-mobile-layout.mjs
 node scripts/verify-admin-dashboard-refactor.mjs
 npm run lint
-npx tsc --noEmit --incremental false
+npm run typecheck --incremental false
 npm run build
 ```

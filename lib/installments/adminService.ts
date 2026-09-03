@@ -1,8 +1,12 @@
 import { adminDb } from '@/lib/firebaseAdmin';
+import { installmentStatusLabel, normalizeInstallmentStatus } from './status';
 
 export type InstallmentSummary = {
   id:string;
   customerId?:string;
+  customerName?:string;
+  customerEmail?:string;
+  customerPhone?:string;
   orderId?:string;
   productName?:string;
   totalAmount:number;
@@ -10,8 +14,12 @@ export type InstallmentSummary = {
   outstanding:number;
   progress:number;
   status:string;
+  statusKey:string;
   provider?:string;
+  transactionReference?:string;
   nextPaymentDate?:string;
+  nextPaymentAmount?:number;
+  planDuration?:string;
 };
 
 const moneyNumber=(v:any)=>Number(v||0);
@@ -25,23 +33,33 @@ export async function getAdminInstallments(): Promise<InstallmentSummary[]> {
     const total = moneyNumber(d.totalAmount ?? d.totalInstallmentAmount);
     const paid = moneyNumber(d.paidAmount ?? d.amountPaid);
     const outstanding = Math.max(0,total-paid);
-    let status = d.status || 'Active';
+    let statusKey = normalizeInstallmentStatus(d.status);
 
-    if (outstanding===0) status='Completed';
-    else if (d.nextPaymentDate && new Date(d.nextPaymentDate)<now) status='Overdue';
+    if (outstanding === 0) statusKey='completed';
+    else if (d.nextPaymentDate) {
+      const due = new Date(d.nextPaymentDate);
+      if (!Number.isNaN(due.getTime()) && due < now) statusKey='overdue';
+    }
 
     return {
       id:doc.id,
       customerId:d.userId || d.customerId,
+      customerName:d.customerName,
+      customerEmail:d.customerEmail || d.email,
+      customerPhone:d.customerPhone || d.phone,
       orderId:d.orderId,
       productName:d.productName,
       totalAmount:total,
       paidAmount:paid,
       outstanding,
       progress: total ? Math.min(100,Math.round((paid/total)*100)) : 0,
-      status,
+      status: installmentStatusLabel(statusKey),
+      statusKey,
       provider:d.provider,
+      transactionReference:d.transactionReference || d.paymentReference,
       nextPaymentDate:d.nextPaymentDate,
+      nextPaymentAmount:moneyNumber(d.nextPaymentAmount),
+      planDuration:d.planDuration || (d.installmentCount ? `${d.installmentCount} payments` : undefined),
     };
   });
 }

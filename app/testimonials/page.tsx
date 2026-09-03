@@ -38,7 +38,7 @@ export default function TestimonialsPage() {
             </div>
             <blockquote>“{item.testimonial || item.review}”</blockquote>
             <footer>
-              <ResponsiveImage src={item.image} fallbackSrc="/jayluxe-logo.png" alt={item.customerName} width={44} height={44} />
+              <ResponsiveImage src={item.image} fallbackSrc="/logo.png" alt={item.customerName} width={44} height={44} />
               <span><strong>{item.customerName}</strong><small>{item.productOrService || 'Verified JayLuxe Customer'}</small></span>
             </footer>
           </article>

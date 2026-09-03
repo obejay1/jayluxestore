@@ -2,8 +2,9 @@ import { getInstallmentDetails } from '@/lib/installments/adminService';
 import Link from 'next/link';
 const money=(v:any)=>`₦${Number(v||0).toLocaleString('en-NG')}`;
 
-export default async function InstallmentDetails({params}:{params:{id:string}}){
- const plan:any=await getInstallmentDetails(params.id);
+export default async function InstallmentDetails({params}:{params:Promise<{id:string}>}){
+ const { id } = await params;
+ const plan:any=await getInstallmentDetails(id);
  if(!plan) return <div className="amu-card">Installment not found.</div>;
  const total=Number(plan.totalAmount||0), paid=Number(plan.paidAmount||0), progress=Math.min(100,Math.round(paid/Math.max(total,1)*100));
  return <div className="amu-page-content space-y-6">

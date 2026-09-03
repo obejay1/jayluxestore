@@ -21,8 +21,9 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { uid: string } },
+  { params }: { params: Promise<{ uid: string }> },
 ) {
+  const { uid } = await params;
   if (!hasTrustedRequestOrigin(request)) {
     return NextResponse.json(
       { ok: false, message: 'The request origin is not trusted.' },
@@ -32,7 +33,7 @@ export async function POST(
 
   try {
     const session = await requireAdminSession({ roles: ['super_admin'] });
-    const profile = await getAdminProfile(params.uid);
+    const profile = await getAdminProfile(uid);
     if (!profile) {
       return NextResponse.json(
         { ok: false, message: 'Administrator account not found.' },

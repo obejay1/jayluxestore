@@ -1477,3 +1477,63 @@ p {
     scroll-behavior: auto !important;
   }
 }
+
+
+/* JayLuxe Phase 29 Editorial Discovery */
+.jl-discover-grid {
+  display:grid !important;
+  grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  gap:20px !important;
+}
+.jl-discover-card {
+  display:block !important;
+  overflow:hidden !important;
+  border-radius:18px !important;
+  border:1px solid rgba(184,134,11,.18) !important;
+  background:#fff !important;
+  text-decoration:none !important;
+  transition:transform .25s ease, box-shadow .25s ease !important;
+}
+.jl-discover-card:hover {
+  transform:translateY(-4px) !important;
+}
+.jl-editorial-image {
+  height:260px;
+  background-size:cover;
+  background-position:center;
+  transition:transform .35s ease;
+}
+.jl-discover-card:hover .jl-editorial-image { transform:scale(1.04); }
+.jl-beauty-image { background-image:url('/hero-banner.png'); }
+.jl-bridal-image { background-image:url('/hero-banner.png'); }
+.jl-gallery-image { background-image:url('/product-placeholder.png'); }
+.jl-editorial-copy { padding:18px; }
+.jl-editorial-copy small { color:#b8860b; letter-spacing:.12em; font-size:.65rem; }
+.jl-editorial-copy strong { display:block; font-family:inherit; font-size:1.25rem; margin:8px 0; color:#111; }
+.jl-editorial-copy p { color:#666; margin:0 0 14px; font-size:.9rem; }
+.jl-editorial-copy span { color:#b8860b; font-weight:600; }
+
+.jl-home-promo-feature {
+  position:relative !important;
+  min-height:180px !important;
+  border-radius:18px !important;
+  overflow:hidden !important;
+  background:#111 !important;
+  color:white !important;
+}
+.jl-home-promo-feature::before {
+  content:"";
+  position:absolute; inset:0;
+  background:linear-gradient(90deg,rgba(0,0,0,.65),rgba(0,0,0,.15));
+}
+.jl-home-promo-copy { position:relative; z-index:1; }
+@media(max-width:767px){
+ .jl-discover-grid {
+   display:flex !important;
+   overflow-x:auto !important;
+   scroll-snap-type:x mandatory;
+   gap:14px !important;
+ }
+ .jl-discover-card { min-width:88% !important; scroll-snap-align:start; }
+ .jl-editorial-image { height:150px; }
+}

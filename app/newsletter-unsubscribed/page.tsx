@@ -5,8 +5,9 @@ export const metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function NewsletterUnsubscribedPage({ searchParams }: { searchParams: { status?: string } }) {
-  const success = searchParams.status === 'success';
+export default async function NewsletterUnsubscribedPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
+  const resolvedSearchParams = await searchParams;
+  const success = resolvedSearchParams.status === 'success';
   return (
     <main style={{ minHeight: '60vh', display: 'grid', placeItems: 'center', padding: '48px 20px' }}>
       <section style={{ maxWidth: 620, textAlign: 'center' }}>

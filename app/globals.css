@@ -1,3 +1,4 @@
+/* GENERATED BUNDLE. Edit app/styles/globals/*.css, then run npm run css:build. */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -1079,6 +1080,7 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
 /* ========== LOADING SPINNER ========== */
 
 .spinner {
@@ -1628,6 +1630,7 @@ textarea:focus {
     grid-template-columns: 1fr;
   }
 }
+
 /* ===== SERVICES PAGE ===== */
 
 .services-desktop-page{
@@ -2605,6 +2608,7 @@ textarea:focus {
     position: static;
   }
 }
+
 /* ===== JAYJAYSTYLES LUXURY SHOP ===== */
 
 .lux-shop {
@@ -4687,6 +4691,7 @@ html, body {
   font-size: 18px;
   line-height: 1.7;
 }
+
 /* ================================
    JayLuxe Public Gallery Page
 ================================ */
@@ -6975,6 +6980,7 @@ html, body {
     border-radius: 26px;
   }
 }
+
 /* ================================
    Jayluxe Professional Shop Page
 ================================ */
@@ -9734,4 +9740,132 @@ body {
   --jl-hero-marketing-min: clamp(280px, 36vw, 420px);
   --jl-hero-pad: clamp(28px, 4.5vw, 48px);
   --jl-panel-pad: clamp(14px, 2vw, 20px);
+}
+
+
+/* Home page product grid: 2 mobile, 4 tablet and desktop only */
+.jl-home-product-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .jl-home-product-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .jl-home-product-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+
+ /* Phase 22: Force home page product grid only */
+.jl-home-product-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 1rem !important;
+}
+
+@media (min-width: 768px) {
+  .jl-home-product-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .jl-home-product-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+}
+
+
+/* JayLuxe Gallery Luxury Lightbox Override */
+.jl-gallery-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,.88);
+  padding: 24px;
+}
+
+.jl-gallery-modal-card {
+  position: relative;
+  width: min(1200px, 96vw);
+  height: min(820px, 88vh);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  overflow: hidden;
+  border-radius: 20px;
+  background: #0b0b0b;
+  border: 1px solid rgba(201,162,39,.45);
+}
+
+.jl-gallery-modal-image {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#000;
+  min-width:0;
+}
+
+.jl-gallery-modal-image img,
+.jl-gallery-lightbox-image {
+  width:100%;
+  height:100%;
+  object-fit:contain !important;
+}
+
+.jl-gallery-modal-info {
+  padding:32px;
+  background:#fffdf8;
+}
+
+.jl-gallery-modal-close,
+.jl-gallery-nav {
+  background:rgba(0,0,0,.75);
+  color:#c9a227;
+  border:1px solid rgba(201,162,39,.7);
+  box-shadow:0 8px 30px rgba(0,0,0,.25);
+}
+
+.jl-gallery-modal-close {
+  position:absolute;
+  top:18px;
+  right:18px;
+  z-index:10;
+  border-radius:999px;
+  padding:10px;
+}
+
+.jl-gallery-nav {
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  z-index:10;
+  border-radius:999px;
+  padding:12px;
+}
+
+.jl-gallery-nav.prev { left:18px; }
+.jl-gallery-nav.next { right:338px; }
+
+@media(max-width:800px){
+ .jl-gallery-modal {padding:12px;}
+ .jl-gallery-modal-card{
+   width:100%;
+   height:90vh;
+   display:flex;
+   flex-direction:column;
+ }
+ .jl-gallery-modal-image{height:70%;}
+ .jl-gallery-modal-info{height:30%;padding:18px;overflow:auto;}
+ .jl-gallery-nav.next{right:18px;}
+ .jl-gallery-modal-close{top:calc(env(safe-area-inset-top) + 14px);right:14px;}
 }

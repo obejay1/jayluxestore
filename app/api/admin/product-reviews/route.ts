@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import { adminAuthErrorResponse, requireAdminSession } from '@/lib/adminServerAuth';
+import { hasTrustedRequestOrigin } from '@/lib/adminRequest';
 import { adminDb } from '@/lib/firebaseAdmin';
 import { serialiseReview, syncProductReviewSummary } from '@/lib/productReviewServer';
 
@@ -23,6 +24,10 @@ export async function GET() {
 }
 
 export async function DELETE(request: NextRequest) {
+  if (!hasTrustedRequestOrigin(request)) {
+    return NextResponse.json({ ok: false, message: 'The request origin is not trusted.' }, { status: 403 });
+  }
+
   try {
     await requireAdminSession({ permission: 'products' });
     const id = new URL(request.url).searchParams.get('id')?.trim();

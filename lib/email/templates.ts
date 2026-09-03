@@ -40,7 +40,7 @@ function shell(title: string, body: string, options?: { eyebrow?: string; footer
     process.env.SUPPORT_EMAIL?.trim() ||
     process.env.CONTACT_TO_EMAIL?.trim() ||
     'support@jayluxestore.com';
-  const logoUrl = process.env.NEXT_PUBLIC_EMAIL_LOGO_URL?.trim() || `${siteUrl}/jayluxe-logo.png`;
+  const logoUrl = process.env.NEXT_PUBLIC_EMAIL_LOGO_URL?.trim() || `${siteUrl}/logo.png`;
 
   return `<!doctype html>
 <html>
@@ -105,7 +105,7 @@ function totals(order: Order): string {
 
 export function orderConfirmationTemplate(order: Order) {
   const siteUrl = PRODUCTION_SITE_URL;
-  const orderUrl = `${siteUrl}/order/${encodeURIComponent(order.id)}${order.accessToken ? `?token=${encodeURIComponent(order.accessToken)}` : ''}`;
+  const orderUrl = `${siteUrl}/order/${encodeURIComponent(order.id)}${order.accessToken ? `#access_token=${encodeURIComponent(order.accessToken)}` : ''}`;
   const body = `
     <p style="margin:0 0 18px;font-size:16px;line-height:1.7">Hello <strong>${esc(order.customerName || 'Customer')}</strong>, thank you for shopping with JayLuxe. Your order has been confirmed and is now being prepared.</p>
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin:18px 0;background:#faf7f1;border:1px solid #eee4d5;border-radius:14px">
@@ -129,7 +129,7 @@ export function orderConfirmationTemplate(order: Order) {
 
 export function paymentConfirmationTemplate(order: Order) {
   const siteUrl = PRODUCTION_SITE_URL;
-  const orderUrl = `${siteUrl}/order/${encodeURIComponent(order.id)}${order.accessToken ? `?token=${encodeURIComponent(order.accessToken)}` : ''}`;
+  const orderUrl = `${siteUrl}/order/${encodeURIComponent(order.id)}${order.accessToken ? `#access_token=${encodeURIComponent(order.accessToken)}` : ''}`;
   const body = `
     <p style="font-size:16px;line-height:1.7">Hello <strong>${esc(order.customerName || 'Customer')}</strong>, we successfully verified your payment for JayLuxe order <strong>#${esc(order.id)}</strong>.</p>
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin:20px 0;background:#faf7f1;border:1px solid #eee4d5;border-radius:14px">
@@ -192,7 +192,7 @@ export function adminPaymentTemplate(order: Order) {
 
 export function orderStatusTemplate(order: Order, status: string) {
   const siteUrl = PRODUCTION_SITE_URL;
-  const orderUrl = `${siteUrl}/order/${encodeURIComponent(order.id)}${order.accessToken ? `?token=${encodeURIComponent(order.accessToken)}` : ''}`;
+  const orderUrl = `${siteUrl}/order/${encodeURIComponent(order.id)}${order.accessToken ? `#access_token=${encodeURIComponent(order.accessToken)}` : ''}`;
   const normalized = status.trim();
   const headingByStatus: Record<string, string> = {
     Pending: 'We Received Your Order',

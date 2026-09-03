@@ -439,9 +439,10 @@ export default function GalleryPage() {
                   <ResponsiveImage
                     src={selectedImage.image}
                     alt={selectedImage.title}
-                    width={1100}
-                    height={900}
-                    sizes="(max-width: 760px) 100vw, 62vw"
+                    width={1600}
+                    height={1200}
+                    sizes="100vw"
+                    className="jl-gallery-lightbox-image"
                   />
                 </div>
 

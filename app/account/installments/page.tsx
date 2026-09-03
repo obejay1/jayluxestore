@@ -3,10 +3,9 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { onAuthStateChanged } from 'firebase/auth';
-import { collection, onSnapshot, query, where } from 'firebase/firestore';
-import { Wallet, ShieldCheck, CreditCard, BarChart3, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Wallet, CreditCard, BarChart3, ArrowRight, CheckCircle2 } from 'lucide-react';
 import Footer from '@/components/Footer';
-import { auth, db } from '@/lib/firebase';
+import { auth } from '@/lib/firebase';
 
 type InstallmentPlan = {
   id: string;
@@ -51,15 +50,29 @@ export default function InstallmentsPage() {
   }
 
   useEffect(() => {
-    let unsubscribePlans: (() => void) | undefined;
-    const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+    const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
       if (!user) { setPlans([]); return; }
-      const q = query(collection(db, 'installmentPlans'), where('userId', '==', user.uid));
-      unsubscribePlans = onSnapshot(q, (snap) => {
-        setPlans(snap.docs.map((doc) => ({ id: doc.id, ...(doc.data() as Omit<InstallmentPlan, 'id'>) })));
-      });
+      try {
+        const token = await user.getIdToken();
+        const reference = new URLSearchParams(window.location.search).get('reference') || new URLSearchParams(window.location.search).get('trxref');
+        if (reference) {
+          await fetch('/api/installments/verify', {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ reference }),
+          });
+          window.history.replaceState({}, '', window.location.pathname);
+        }
+        const response = await fetch('/api/account/installments', { headers: { Authorization: `Bearer ${token}` }, cache: 'no-store' });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Unable to load installments');
+        setPlans(Array.isArray(data.plans) ? data.plans : []);
+      } catch (error) {
+        console.error('Installment plans failed to load', error);
+        setPlans([]);
+      }
     });
-    return () => { unsubscribeAuth(); unsubscribePlans?.(); };
+    return unsubscribeAuth;
   }, []);
 
   return <>
@@ -89,6 +102,21 @@ export default function InstallmentsPage() {
           </div>
         </section>
 
+        {plans.length > 0 && (() => {
+          const totalPlans = plans.length;
+          const activePlans = plans.filter((p) => (p.status || 'Active') !== 'Completed').length;
+          const completedPlans = plans.filter((p) => p.status === 'Completed').length;
+          const outstanding = plans.reduce((sum, p) => sum + Number(p.remainingBalance || 0), 0);
+          return <section className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+            {[
+              ['Total Plans', totalPlans],
+              ['Active Plans', activePlans],
+              ['Completed', completedPlans],
+              ['Outstanding', money(outstanding)],
+            ].map(([label, value]) => <div key={String(label)} className="rounded-2xl border p-4 bg-white shadow-sm"><small className="text-neutral-500">{label}</small><strong className="block text-xl mt-1">{value}</strong></div>)}
+          </section>;
+        })()}
+
         {plans.length === 0 ? (
           <section className="jl-installment-empty">
             <Wallet size={45} />
@@ -100,7 +128,7 @@ export default function InstallmentsPage() {
           const total = Number(plan.totalAmount || 0);
           const paid = Number(plan.paidAmount || 0);
           const progress = total ? Math.min(100, Math.round((paid / total) * 100)) : 0;
-          return <section className="jl-installment-card" key={plan.id}>
+          return <section className="jl-installment-card rounded-2xl border bg-white p-5 shadow-sm" key={plan.id}>
             <div className="jl-installment-card-head">
               <div>
                 <small>YOUR INSTALLMENT PLAN</small>
@@ -111,7 +139,7 @@ export default function InstallmentsPage() {
             </div>
             <div className="jl-installment-body">
               <div className="jl-progress-title"><span>Payment Progress</span><b>{progress}%</b></div>
-              <div className="jl-progress"><div style={{width:`${progress}%`}} /></div>
+              <div className="jl-progress h-3 overflow-hidden rounded-full bg-neutral-200"><div className="h-full rounded-full transition-all" style={{width:`${progress}%`}} /></div>
               <p>{progress}% completed</p>
               <div className="jl-installment-summary">
                 <div><small>Total</small><b>{money(total)}</b></div>
