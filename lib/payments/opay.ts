@@ -1,10 +1,33 @@
 import crypto from "crypto";
 
+function sortObject(value: any): any {
+  if (Array.isArray(value)) {
+    return value.map(sortObject);
+  }
+
+  if (value !== null && typeof value === "object") {
+    return Object.keys(value)
+      .sort()
+      .reduce((result: any, key) => {
+        result[key] = sortObject(value[key]);
+        return result;
+      }, {});
+  }
+
+  return value;
+}
+
+/**
+ * Creates the OPay request signature.
+ * The payload is deeply sorted so the signature matches
+ * the exact canonical representation sent to OPay.
+ */
 export function createOpaySignature(payload: unknown, secret: string) {
-  const sorted = JSON.stringify(payload, Object.keys(payload as any).sort());
+  const canonicalPayload = JSON.stringify(sortObject(payload));
+
   return crypto
     .createHmac("sha512", secret)
-    .update(sorted)
+    .update(canonicalPayload)
     .digest("hex");
 }
 

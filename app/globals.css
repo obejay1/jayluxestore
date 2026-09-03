@@ -9869,3 +9869,15 @@ body {
  .jl-gallery-nav.next{right:18px;}
  .jl-gallery-modal-close{top:calc(env(safe-area-inset-top) + 14px);right:14px;}
 }
+
+/* Phase 37.4 installment experience polish */
+.jl-installment-progress { margin: 1rem 0; }
+.jl-progress-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:.5rem; font-size:.9rem; }
+.jl-progress-track { height:10px; border-radius:999px; background:#e5e5e5; overflow:hidden; }
+.jl-progress-fill { height:100%; border-radius:999px; background:#111; transition:width .3s ease; }
+.jl-installment-progress p { margin-top:.5rem; font-size:.85rem; color:#666; }
+
+@media (max-width:640px){
+ .jl-installment-card { padding:1rem !important; }
+ .jl-installment-summary { gap:.75rem !important; }
+}

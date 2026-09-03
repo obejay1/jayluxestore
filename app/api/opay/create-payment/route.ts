@@ -41,9 +41,16 @@ export async function POST(req: Request) {
         description: `Customer: ${name || email}`,
       },
       notify: {
-        notifyUserEmail: email,
-        notifyUserMobile: phone,
-        notifyUserName: name,
+        notifyLanguage: "en",
+        ...(email && {
+          notifyUserEmail: email,
+        }),
+        ...(phone && {
+          notifyUserMobile: phone,
+        }),
+        ...(name && {
+          notifyUserName: name,
+        }),
       },
       payMethod: "ReferenceCode",
     };
