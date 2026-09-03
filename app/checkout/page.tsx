@@ -28,6 +28,28 @@ async function readJsonResponse<T>(response: Response): Promise<T> {
   }
 }
 
+type OpayCheckoutResponse = {
+  success?: boolean;
+  code?: string | null;
+  error?: string | null;
+  message?: string | null;
+  notifyLanguage?: string | null;
+  reference?: string | null;
+  amount?: number | null;
+  url?: string | null;
+  paymentUrl?: string | null;
+  cashierUrl?: string | null;
+  data?: {
+    url?: string | null;
+    paymentUrl?: string | null;
+    cashierUrl?: string | null;
+    reference?: string | null;
+    orderNo?: string | null;
+    status?: string | null;
+    referenceCode?: string | null;
+  } | null;
+};
+
 export default function Checkout() {
   const [products, setProducts] = useState<Product[]>([]);
   const [cart, setCart] = useState<{ id: string; qty: number }[]>([]);
@@ -55,6 +77,7 @@ export default function Checkout() {
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [userId, setUserId] = useState<string | undefined>();
   const [checkoutError, setCheckoutError] = useState('');
+  const [opayReferenceCode, setOpayReferenceCode] = useState('');
 
   const opayEnabled = process.env.NEXT_PUBLIC_OPAY_ENABLED === 'true';
   const paystackEnabled = true;
@@ -173,92 +196,87 @@ export default function Checkout() {
       return;
     }
 
+    if (isProcessingOPay) return;
+
     try {
       setIsProcessingOPay(true);
-
       setCheckoutError('');
-      const orderId = crypto.randomUUID();
-      const accessToken = crypto.randomUUID().replaceAll('-', '');
-      
-      const estDate = new Date();
-      estDate.setDate(estDate.getDate() + deliveryDaysCount);
-      const estimatedDeliveryDate = estDate.toISOString();
+      setOpayReferenceCode('');
 
-      sessionStorage.setItem(
-        'opay_checkout_data',
-        JSON.stringify({
-          id: orderId,
-          userId,
-          accessToken,
-          items,
-          subtotal,
-          shipping,
-          tax,
-          total,
-          taxRate,
-          shippingFee,
-          discountAmount,
-          paymentMethod: 'OPay',
-          customerEmail: email.trim(),
-          customerEmailLower: email.trim().toLowerCase(),
-          customerName: fullName,
-          customerPhone: phone,
-          customerAddress: address,
-          status: 'Processing',
-          paymentStatus: 'Pending',
-          createdAt: new Date().toISOString(),
-          deliveryDays: deliveryDaysText,
-          estimatedDeliveryDate,
-        })
-      );
-
+      const idToken = auth.currentUser ? await auth.currentUser.getIdToken() : null;
       const response = await fetch('/api/opay/create-payment', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...(idToken ? { Authorization: `Bearer ${idToken}` } : {}),
         },
         body: JSON.stringify({
-          amount: total,
-          email,
-          name: fullName,
-          phone,
-          orderId,
-          productName: items.map((item) => item.name).join(', ').slice(0, 120),
+          items: items.map((item) => ({ id: item.id, qty: item.qty })),
+          customerName: fullName.trim(),
+          customerEmail: email.trim(),
+          customerPhone: phone.trim(),
+          customerAddress: address.trim(),
+          couponCode: appliedCouponCode,
+          // JayLuxe keeps the compact locale code internally. The API route
+          // maps this safely to OPay's provider-specific enum.
+          notifyLanguage: 'en',
         }),
       });
 
-      const data = await readJsonResponse<{
-        url?: string;
-        paymentUrl?: string;
-        data?: { paymentUrl?: string };
-        error?: string;
-        message?: string;
-      }>(response);
+      const data = await readJsonResponse<OpayCheckoutResponse>(response);
+      const notifyLanguage = data?.notifyLanguage ?? 'en';
+      void notifyLanguage;
 
-      const opayUrl =
-        data.url ||
-        data.paymentUrl ||
-        data.data?.paymentUrl;
-
-      if (response.ok && opayUrl) {
-        window.location.href = opayUrl;
+      if (!response.ok || data?.success === false) {
+        const paymentError =
+          data?.error?.trim() ||
+          data?.message?.trim() ||
+          'Could not initialize OPay payment. Please try again.';
+        setCheckoutError(paymentError);
+        showToast(paymentError, 'error');
         return;
       }
 
-      const paymentError =
-        data.error ||
-        data.message ||
-        'Could not initialize OPay payment';
-      setCheckoutError(paymentError);
-      showToast(paymentError, 'error');
-      setIsProcessingOPay(false);
+      const opayUrl =
+        data?.url ??
+        data?.paymentUrl ??
+        data?.cashierUrl ??
+        data?.data?.url ??
+        data?.data?.paymentUrl ??
+        data?.data?.cashierUrl ??
+        null;
+
+      if (opayUrl) {
+        window.location.assign(opayUrl);
+        return;
+      }
+
+      // The current OPay provider mode is ReferenceCode. A returned reference
+      // code is a pending payment instruction, not proof of payment. Only the
+      // verified OPay webhook can complete the checkout and create the order.
+      const referenceCode = data?.data?.referenceCode?.trim() || '';
+      if (referenceCode) {
+        setOpayReferenceCode(referenceCode);
+        showToast('OPay payment reference created. Complete the payment with OPay.', 'success');
+        return;
+      }
+
+      const unexpectedResponse =
+        'OPay responded successfully but did not return a payment link or reference code.';
+      setCheckoutError(unexpectedResponse);
+      showToast(unexpectedResponse, 'error');
     } catch (error) {
-      console.error(error);
-      setCheckoutError('OPay payment initialization failed. Please try again.');
-      showToast('OPay payment initialization failed', 'error');
+      const message =
+        error instanceof Error && error.message
+          ? error.message
+          : 'OPay payment initialization failed. Please try again.';
+      setCheckoutError(message);
+      showToast(message, 'error');
+    } finally {
       setIsProcessingOPay(false);
     }
   }
+
 
   async function initializePaystackCheckout() {
     if (isPlacingOrder) return;
@@ -375,6 +393,7 @@ export default function Checkout() {
                 }`}
                 onClick={() => {
                   setCheckoutError('');
+                  setOpayReferenceCode('');
                   setPaymentMethod('Paystack');
                 }}
               >
@@ -396,6 +415,7 @@ export default function Checkout() {
                 className={`jl-payment-option ${paymentMethod === 'Installment' ? 'active' : ''}`}
                 onClick={() => {
                   setCheckoutError('');
+                  setOpayReferenceCode('');
                   setPaymentMethod('Installment');
                 }}
               >
@@ -417,6 +437,7 @@ export default function Checkout() {
                 onClick={() => {
                   if (!opayEnabled) return;
                   setCheckoutError('');
+                  setOpayReferenceCode('');
                   setPaymentMethod('OPay');
                 }}
               >

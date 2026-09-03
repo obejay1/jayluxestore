@@ -28,7 +28,7 @@ type CouponData = {
   active?: boolean;
 };
 
-export type CheckoutPaymentType = 'Paystack' | 'Installment';
+export type CheckoutPaymentType = 'Paystack' | 'Installment' | 'OPay';
 
 export type CheckoutIntent = {
   reference: string;
@@ -187,7 +187,8 @@ export async function prepareCheckoutIntent(input: {
   const customerPhone = cleanText(input.customerPhone, 50);
   const customerAddress = cleanText(input.customerAddress, 500);
   const couponCode = cleanText(input.couponCode, 40).toUpperCase();
-  const paymentType: CheckoutPaymentType = cleanText(input.paymentType, 24) === 'Installment' ? 'Installment' : 'Paystack';
+  const rawPaymentType = cleanText(input.paymentType, 24);
+  const paymentType: CheckoutPaymentType = rawPaymentType === 'Installment' ? 'Installment' : rawPaymentType === 'OPay' ? 'OPay' : 'Paystack';
   const installmentCount = paymentType === 'Installment' ? safeInstallmentCount(input.installmentCount) : null;
 
   if (!customerName || !validEmail(customerEmail) || !customerPhone || !customerAddress) {
@@ -304,7 +305,7 @@ export async function markCheckoutInitializationFailed(reference: string) {
   await releaseIntentReservation(reference, 'initialization_failed');
 }
 
-type VerifiedPayment = {
+export type VerifiedPayment = {
   status?: string;
   amount?: number;
   reference?: string;
@@ -325,7 +326,7 @@ async function verifyPayment(reference: string): Promise<VerifiedPayment> {
 }
 
 function validatePayment(intent: CheckoutIntent, payment: VerifiedPayment) {
-  if (payment.status && payment.status !== 'success') throw new CheckoutError('The payment is not successful.', 402);
+  if (payment.status && payment.status.toLowerCase() !== 'success') throw new CheckoutError('The payment is not successful.', 402);
   if (payment.reference && payment.reference !== intent.reference) throw new CheckoutError('The payment reference does not match this checkout.', 400);
   if (payment.currency && payment.currency !== 'NGN') throw new CheckoutError('Unexpected payment currency.', 400);
   if (Number(payment.amount) !== intent.expectedAmountKobo) throw new CheckoutError('The verified payment amount does not match the amount due.', 400);
@@ -333,7 +334,11 @@ function validatePayment(intent: CheckoutIntent, payment: VerifiedPayment) {
   if (paidEmail && paidEmail !== intent.customerEmail) throw new CheckoutError('The payment email does not match the checkout email.', 400);
 }
 
-export async function finalizeCheckoutIntent(reference: string, suppliedPayment?: VerifiedPayment) {
+export async function finalizeCheckoutIntent(
+  reference: string,
+  suppliedPayment?: VerifiedPayment,
+  suppliedProvider?: 'Paystack' | 'OPay',
+) {
   const intentRef = adminDb.collection('checkoutIntents').doc(reference);
   const initial = await intentRef.get();
   if (!initial.exists) throw new CheckoutError('This checkout session could not be found.', 404);
@@ -347,6 +352,7 @@ export async function finalizeCheckoutIntent(reference: string, suppliedPayment?
   }
   if (intent.status === 'expired' || intent.status === 'initialization_failed') throw new CheckoutError('This checkout session has expired. Please return to your cart and try again.', 410);
 
+  const provider: 'Paystack' | 'OPay' = suppliedProvider || (intent.paymentType === 'OPay' ? 'OPay' : 'Paystack');
   const payment = suppliedPayment || await verifyPayment(reference);
   validatePayment(intent, payment);
 
@@ -372,7 +378,7 @@ export async function finalizeCheckoutIntent(reference: string, suppliedPayment?
     taxRate: intent.taxRate,
     shippingFee: intent.shippingFee,
     discountAmount: intent.discountAmount,
-    paymentMethod: intent.paymentType === 'Installment' ? 'Installment (Paystack)' : 'Paystack',
+    paymentMethod: intent.paymentType === 'Installment' ? 'Installment (Paystack)' : intent.paymentType === 'OPay' ? 'OPay' : 'Paystack',
     paymentReference: reference,
     paymentStatus: intent.paymentType === 'Installment' && remainingBalance > 0 ? 'Partially Paid' : 'Paid',
     status: 'Processing',
@@ -411,7 +417,7 @@ export async function finalizeCheckoutIntent(reference: string, suppliedPayment?
 
     const orderRef = adminDb.collection('orders').doc(orderId);
     transaction.create(orderRef, order);
-    transaction.create(paymentRef, { provider: 'Paystack', paymentReference: reference, orderId, installmentPlanId: installmentPlanId || null, createdAt: createdAt.toISOString() });
+    transaction.create(paymentRef, { provider, paymentReference: reference, orderId, installmentPlanId: installmentPlanId || null, createdAt: createdAt.toISOString() });
     transaction.set(intentRef, { status: 'completed', reservationStatus: 'consumed', cleanupAt: null, orderId, updatedAt: createdAt.toISOString() }, { merge: true });
 
     if (installmentPlanId) {

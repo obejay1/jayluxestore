@@ -1,89 +1,183 @@
-import { NextResponse } from "next/server";
-import { createOpaySignature } from "@/lib/payments/opay";
+import { NextRequest, NextResponse } from "next/server";
+import {
+  checkoutCompletionCookieName,
+  CheckoutError,
+  CHECKOUT_COMPLETION_MAX_AGE_SECONDS,
+  markCheckoutInitializationFailed,
+  prepareCheckoutIntent,
+} from "@/lib/checkout/server";
+import {
+  createOpaySignature,
+  normalizeJayLuxeNotifyLanguage,
+  normalizeNigerianPhone,
+  toOpayNotifyLanguage,
+  type OpayCreatePaymentResponse,
+} from "@/lib/payments/opay";
+import { getVerifiedCustomer } from "@/lib/requestAuth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-export async function POST(req: Request) {
+type CreateOpayPaymentRequest = {
+  items?: unknown;
+  customerName?: unknown;
+  customerEmail?: unknown;
+  customerPhone?: unknown;
+  customerAddress?: unknown;
+  couponCode?: unknown;
+  notifyLanguage?: unknown;
+};
+
+export async function POST(req: NextRequest) {
+  let checkoutReference = "";
+
   try {
-    const { amount, email, name, phone, orderId, productName } = await req.json();
+    const body = (await req.json()) as CreateOpayPaymentRequest;
+    const customer = await getVerifiedCustomer(req);
+    const notifyLanguage = normalizeJayLuxeNotifyLanguage(body.notifyLanguage);
 
-    if (!amount || !orderId) {
-      return NextResponse.json(
-        { error: "Missing payment information" },
-        { status: 400 }
-      );
-    }
+    const { intent, browserSecret } = await prepareCheckoutIntent({
+      items: body.items,
+      customerName: body.customerName,
+      customerEmail: body.customerEmail,
+      customerPhone: body.customerPhone,
+      customerAddress: body.customerAddress,
+      couponCode: body.couponCode,
+      paymentType: "OPay",
+      ...(customer?.uid ? { userId: customer.uid } : {}),
+    });
 
-    const merchantId = process.env.OPAY_MERCHANT_ID;
-    const secret = process.env.OPAY_SECRET_KEY;
-    const baseUrl = process.env.OPAY_BASE_URL;
+    checkoutReference = intent.reference;
+
+    const merchantId = process.env.OPAY_MERCHANT_ID?.trim();
+    const secret = process.env.OPAY_SECRET_KEY?.trim();
+    const baseUrl = process.env.OPAY_BASE_URL?.replace(/\/+$/, "");
 
     if (!merchantId || !secret || !baseUrl) {
-      return NextResponse.json(
-        { error: "OPay is not configured" },
-        { status: 503 }
-      );
+      await markCheckoutInitializationFailed(intent.reference);
+      return NextResponse.json({ error: "OPay is not configured" }, { status: 503 });
     }
+
+    const productName =
+      intent.items.map((item) => item.name).filter(Boolean).join(", ").slice(0, 120) ||
+      "Jayluxestore Order";
 
     const payload = {
       amount: {
         currency: "NGN",
-        total: Math.round(Number(amount)),
+        total: intent.expectedAmountKobo,
       },
       callbackUrl:
         process.env.OPAY_CALLBACK_URL ||
         "https://jayluxestore.com/api/opay/webhook",
       country: "NG",
-      reference: orderId,
+      expireAt: 30,
+      merchantName: "Jayluxestore",
+      reference: intent.reference,
       product: {
-        name: productName || "Jayluxestore Order",
-        description: `Customer: ${name || email}`,
+        name: productName,
+        description: `Jayluxestore order for ${intent.customerName}`,
       },
       notify: {
-        notifyLanguage: "en",
-        ...(email && {
-          notifyUserEmail: email,
-        }),
-        ...(phone && {
-          notifyUserMobile: phone,
-        }),
-        ...(name && {
-          notifyUserName: name,
-        }),
+        // JayLuxe sends "en" internally. OPay's provider enum requires the
+        // documented value "English", so conversion happens only here.
+        notifyLanguage: toOpayNotifyLanguage(notifyLanguage),
+        notifyMethod: "BOTH",
+        notifyUserEmail: intent.customerEmail,
+        notifyUserMobile: normalizeNigerianPhone(intent.customerPhone),
+        notifyUserName: intent.customerName,
       },
-      payMethod: "ReferenceCode",
+      payMethod: "USER_PAYMENT",
     };
 
     const signature = createOpaySignature(payload, secret);
+    const response = await fetch(`${baseUrl}/api/v1/international/payment/create`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${signature}`,
+        MerchantId: merchantId,
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(payload),
+      cache: "no-store",
+    });
 
-    const response = await fetch(
-      `${baseUrl}/api/v1/international/payment/create`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${signature}`,
-          MerchantId: merchantId,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
+    const raw = await response.text();
+    let data: OpayCreatePaymentResponse = {};
+
+    if (raw) {
+      try {
+        data = JSON.parse(raw) as OpayCreatePaymentResponse;
+      } catch {
+        await markCheckoutInitializationFailed(intent.reference);
+        return NextResponse.json(
+          { error: "OPay returned an invalid response. Please try again." },
+          { status: 502 },
+        );
       }
-    );
+    }
 
-    const data = await response.json();
+    if (!response.ok || (data.code && data.code !== "00000")) {
+      await markCheckoutInitializationFailed(intent.reference);
+      console.error("OPAY_CREATE_REJECTED", {
+        httpStatus: response.status,
+        code: data.code ?? null,
+        message: data.message ?? null,
+        reference: intent.reference,
+      });
 
-    if (!response.ok) {
       return NextResponse.json(
-        { error: "OPay payment creation failed", details: data },
-        { status: 502 }
+        {
+          error: data.message || data.error || "OPay payment creation failed",
+          code: data.code ?? null,
+        },
+        { status: 502 },
       );
     }
 
-    return NextResponse.json(data);
+    const apiResponse = NextResponse.json({
+      success: true,
+      code: data.code ?? "00000",
+      message: data.message ?? "SUCCESSFUL",
+      data: data.data ?? null,
+      reference: intent.reference,
+      amount: intent.expectedPaymentAmount,
+      notifyLanguage,
+    });
+
+    // Preserve the same browser-bound completion protection used by the
+    // hardened checkout architecture. The webhook remains authoritative.
+    apiResponse.cookies.set(
+      checkoutCompletionCookieName(intent.reference),
+      `${intent.reference}.${browserSecret}`,
+      {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        path: "/",
+        maxAge: CHECKOUT_COMPLETION_MAX_AGE_SECONDS,
+      },
+    );
+
+    return apiResponse;
   } catch (error) {
+    if (checkoutReference) {
+      await markCheckoutInitializationFailed(checkoutReference).catch(() => undefined);
+    }
+
+    console.error("OPAY_CREATE_PAYMENT_FAILED", {
+      message: error instanceof Error ? error.message : String(error),
+      reference: checkoutReference || null,
+    });
+
+    if (error instanceof CheckoutError) {
+      return NextResponse.json({ error: error.message }, { status: error.status });
+    }
+
     return NextResponse.json(
       { error: "Unable to initialize OPay payment" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

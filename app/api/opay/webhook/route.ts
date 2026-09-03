@@ -1,4 +1,9 @@
 import { NextResponse } from "next/server";
+import {
+  CheckoutError,
+  finalizeCheckoutIntent,
+  type VerifiedPayment,
+} from "@/lib/checkout/server";
 import { verifyOpayCallbackSignature } from "@/lib/payments/opay";
 import { adminDb } from "@/lib/firebaseAdmin";
 
@@ -7,78 +12,91 @@ export const runtime = "nodejs";
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const secret = process.env.OPAY_SECRET_KEY;
+    const secret = process.env.OPAY_SECRET_KEY?.trim();
 
     if (!secret) {
       return NextResponse.json({ error: "Missing configuration" }, { status: 500 });
     }
 
-    const payload = body.payload;
-    const signature = body.sha512;
+    const payload = body?.payload as Record<string, unknown> | undefined;
+    const signature = String(body?.sha512 ?? "");
 
-    if (!payload || !verifyOpayCallbackSignature(payload, signature, secret)) {
+    if (!payload || !signature || !verifyOpayCallbackSignature(payload, signature, secret)) {
       return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
     }
 
-    const orderId = payload.reference;
+    const reference = String(payload.reference ?? "").trim();
+    const transactionId = String(payload.transactionId ?? "").trim();
+    const status = String(payload.status ?? "").trim().toUpperCase();
+    const amountKobo = Number(payload.amount);
+    const currency = String(payload.currency ?? "NGN").trim().toUpperCase();
 
-    // Production safety: require successful payment payload fields
-    if (payload.status === "SUCCESS" && (!payload.transactionId || !payload.amount)) {
-      return NextResponse.json({ error: "Incomplete payment payload" }, { status: 400 });
-    }
-
-    if (!orderId) {
+    if (!reference) {
       return NextResponse.json({ error: "Missing order reference" }, { status: 400 });
     }
 
-    const paymentRef = adminDb.collection("payments").doc(String(payload.transactionId || orderId));
-    const orderRef = adminDb.collection("orders").doc(String(orderId));
+    const paymentRef = adminDb.collection("payments").doc(transactionId || reference);
 
-    if (payload.status !== "SUCCESS") {
-      await paymentRef.set({
-        provider: "opay",
-        reference: orderId,
-        transactionId: payload.transactionId || null,
-        status: payload.status || "FAILED",
-        updatedAt: new Date(),
-      }, { merge: true });
+    if (status !== "SUCCESS") {
+      await paymentRef.set(
+        {
+          provider: "opay",
+          reference,
+          transactionId: transactionId || null,
+          status: status || "FAILED",
+          amount: Number.isFinite(amountKobo) ? amountKobo : null,
+          currency,
+          updatedAt: new Date(),
+        },
+        { merge: true },
+      );
 
       return NextResponse.json({ received: true });
     }
 
-    await adminDb.runTransaction(async (transaction) => {
-      const paymentSnap = await transaction.get(paymentRef);
-      const orderSnap = await transaction.get(orderRef);
+    if (!transactionId || !Number.isFinite(amountKobo) || amountKobo <= 0) {
+      return NextResponse.json({ error: "Incomplete payment payload" }, { status: 400 });
+    }
 
-      // Idempotency: ignore already completed payments
-      if (paymentSnap.exists && paymentSnap.data()?.status === "SUCCESS") {
-        return;
-      }
+    const suppliedPayment: VerifiedPayment = {
+      status: "success",
+      amount: amountKobo,
+      reference,
+      currency,
+    };
 
-      transaction.set(paymentRef, {
+    // This is the only point where an OPay payment can complete a JayLuxe
+    // checkout. HTTP 200 from create-payment never marks the order paid.
+    const result = await finalizeCheckoutIntent(reference, suppliedPayment, "OPay");
+
+    await paymentRef.set(
+      {
         provider: "opay",
-        reference: orderId,
-        transactionId: payload.transactionId || null,
-        amount: payload.amount?.total || null,
-        currency: payload.amount?.currency || "NGN",
+        reference,
+        transactionId,
+        amount: amountKobo,
+        currency,
         status: "SUCCESS",
+        orderId: result.order.id,
         paidAt: new Date(),
         updatedAt: new Date(),
-      }, { merge: true });
-
-      if (orderSnap.exists) {
-        transaction.set(orderRef, {
-          paymentStatus: "paid",
-          status: "processing",
-          paymentMethod: "opay",
-          updatedAt: new Date(),
-        }, { merge: true });
-      }
-    });
+      },
+      { merge: true },
+    );
 
     return NextResponse.json({ received: true });
   } catch (error) {
-    console.error("OPay webhook error", error);
+    if (error instanceof CheckoutError) {
+      console.error("OPAY_WEBHOOK_RECONCILIATION_FAILED", {
+        message: error.message,
+        status: error.status,
+      });
+      return NextResponse.json({ error: "Payment reconciliation failed" }, { status: 409 });
+    }
+
+    console.error("OPAY_WEBHOOK_ERROR", {
+      message: error instanceof Error ? error.message : String(error),
+    });
     return NextResponse.json({ error: "Invalid callback" }, { status: 400 });
   }
 }
