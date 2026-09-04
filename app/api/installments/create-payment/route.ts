@@ -113,9 +113,9 @@ export async function POST(request: NextRequest) {
       const customerEmail = customer.email?.trim().toLowerCase();
 
       if (!customerEmail) {
-        return NextResponse.json(
-          { error: "Customer email is required for installment payment" },
-          { status: 400 }
+        throw Object.assign(
+          new Error('Customer email is required for installment payment'),
+          { status: 400 },
         );
       }
 
