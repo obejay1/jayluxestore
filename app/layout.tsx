@@ -6,6 +6,8 @@ import {
 
 import './globals.css';
 import './jayluxe-design-system.css';
+import './jayluxe-phase37-5-polish.css';
+import './jayluxe-phase38-1-deep-polish.css';
 
 import GoogleAnalytics from '@/components/GoogleAnalytics';
 import HeroImageController from '@/components/HeroImageController';

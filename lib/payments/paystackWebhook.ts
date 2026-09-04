@@ -1,6 +1,8 @@
 import { createHash, createHmac, timingSafeEqual } from 'node:crypto';
 
 import { adminDb } from '@/lib/firebaseAdmin';
+import { recordPaymentEvent } from '@/lib/operations/audit';
+import { CheckoutError, finalizeCheckoutIntent } from '@/lib/checkout/server';
 import {
   InstallmentSettlementError,
   settleVerifiedInstallmentPayment,
@@ -39,6 +41,48 @@ export async function handlePaystackWebhook(rawBody: string, signature: string |
   const data = payload?.data || {};
   const reference = String(data.reference || '').trim();
   if (!reference) return { status: 200, body: { received: true } };
+
+  const checkoutIntent = await adminDb.collection('checkoutIntents').doc(reference).get();
+  if (checkoutIntent.exists) {
+    try {
+      const finalized = await finalizeCheckoutIntent(reference, {
+        reference,
+        status: String(data.status || ''),
+        amount: Number(data.amount || 0),
+        currency: String(data.currency || ''),
+        customer: { email: String(data.customer?.email || '') },
+      });
+      await recordPaymentEvent({
+        paymentId: reference,
+        orderId: finalized.order.id,
+        state: 'completed',
+        reference,
+        metadata: { provider: 'Paystack', duplicate: finalized.duplicate },
+      });
+      return {
+        status: 200,
+        body: { received: true, checkout: true, duplicate: finalized.duplicate, orderId: finalized.order.id },
+      };
+    } catch (error) {
+      if (error instanceof CheckoutError) {
+        const paymentReferenceId = createHash('sha256').update(reference).digest('hex');
+        await adminDb.collection('paymentRecoveries').doc(paymentReferenceId).set({
+          provider: 'Paystack',
+          reference,
+          amountKobo: Number(data.amount || 0),
+          currency: String(data.currency || ''),
+          customerEmail: String(data.customer?.email || '').trim().toLowerCase() || null,
+          providerStatus: String(data.status || ''),
+          status: 'reconciliation_required',
+          reconciliationReason: error.message,
+          receivedAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        }, { merge: true });
+        return { status: 200, body: { received: true, checkout: true, reconciliationRequired: true } };
+      }
+      throw error;
+    }
+  }
 
   const installmentPayment = await adminDb.collection('installmentPayments').doc(reference).get();
   if (installmentPayment.exists) {
@@ -89,9 +133,7 @@ export async function handlePaystackWebhook(rawBody: string, signature: string |
     }
   }
 
-  // Standard checkout payments originate in Paystack's inline client flow.
-  // Persist an independent provider event so a successful payment is never
-  // invisible if the browser closes before /api/orders finishes.
+  // Legacy or unknown Paystack references still go to the recovery ledger.
   const paymentReferenceId = createHash('sha256').update(reference).digest('hex');
   const linkedPayment = await adminDb.collection('paymentReferences').doc(paymentReferenceId).get();
   const linkedOrderId = linkedPayment.exists ? String(linkedPayment.data()?.orderId || '') : '';

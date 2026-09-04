@@ -66,7 +66,7 @@ import {
 } from '@/lib/testimonials';
 import { getCoupons, saveCoupon, removeCoupon, Coupon } from '@/lib/coupons';
 import { getCheckoutSettings, saveCheckoutSettings } from '@/lib/settings';
-import { Product, Order, Category } from '@/lib/types';
+import { Product, Category } from '@/lib/types';
 import type { ProductReview } from '@/lib/productReviews';
 import { showToast } from '@/lib/toast';
 import { recordAdminActivity } from '@/lib/adminActivityClient';
@@ -74,63 +74,11 @@ import AdminPagination from '@/components/admin/AdminPagination';
 import AdminImageUploadField from '@/components/admin/AdminImageUploadField';
 import ResponsiveImage from '@/components/ResponsiveImage';
 import { deleteAdminImage } from '@/lib/imageUpload';
+import { escapeCsv } from '@/lib/security/output';
+import type { AdminOrder, Customer } from '@/lib/admin/types';
+import { buildCustomerPrintHtml, buildOrderInvoicePrintHtml } from '@/lib/admin/printTemplates';
 
 
-type AdminOrder = Omit<Order, 'items'> & {
-  customerName?: string;
-  customerEmail?: string;
-  customerPhone?: string;
-  shippingAddress?: string;
-  customerAddress?: string;
-  address?: string;
-  deliveryDays?: string;
-  deliveryDaysText?: string;
-  estimatedDeliveryDate?: string;
-  paymentMethod?: string;
-  paymentReference?: string;
-  subtotal?: number;
-  shipping?: number;
-  tax?: number;
-  total?: number;
-  createdAt?: string;
-  status?: string;
-  confirmationEmailStatus?: string;
-  confirmationEmailError?: string | null;
-  paymentEmailStatus?: string;
-  paymentEmailError?: string | null;
-  statusEmailStatus?: string;
-  statusEmailError?: string | null;
-  statusEmailLastStatus?: string;
-  lastEmailType?: string;
-  lastEmailStatus?: string;
-  lastEmailSentAt?: string;
-  lastEmailDeliveryStatus?: string;
-  lastEmailProviderEvent?: string;
-  lastEmailProviderEventAt?: string;
-  items?: Array<{
-    id?: string;
-    name?: string;
-    category?: string;
-    price?: number;
-    qty?: number;
-    quantity?: number;
-    image?: string;
-    description?: string;
-    stock?: number;
-  }>;
-};
-
-type Customer = {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  address?: string;
-  orderCount: number;
-  totalSpent: number;
-  lastOrderDate?: string;
-  orders: AdminOrder[];
-};
 
 const blankProduct: Product = {
   id: '',
@@ -1084,17 +1032,16 @@ export default function Admin() {
 
   const exportCustomersCSV = () => {
     const headers = ['Name', 'Email', 'Phone', 'Address', 'Orders', 'Total Spent', 'Last Order'];
-    const rows = filteredCustomers.map(c => [
-      `"${(c.name || '').replace(/"/g, '""')}"`,
-      `"${(c.email || '').replace(/"/g, '""')}"`,
-      `"${(c.phone || '').replace(/"/g, '""')}"`,
-      `"${(c.address || 'N/A').replace(/"/g, '""')}"`,
-      c.orderCount,
-      c.totalSpent,
-      `"${c.lastOrderDate ? new Date(c.lastOrderDate).toLocaleString() : 'N/A'}"`
+    const rows = filteredCustomers.map((customer) => [
+      customer.name || '',
+      customer.email || '',
+      customer.phone || '',
+      customer.address || 'N/A',
+      customer.orderCount,
+      customer.totalSpent,
+      customer.lastOrderDate ? new Date(customer.lastOrderDate).toLocaleString() : 'N/A',
     ]);
-
-    const csvContent = [headers.join(','), ...rows.map(row => row.join(','))].join('\n');
+    const csvContent = [headers.map(escapeCsv).join(','), ...rows.map((row) => row.map(escapeCsv).join(','))].join('\n');
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -1106,20 +1053,19 @@ export default function Admin() {
 
   const exportOrdersCSV = () => {
     const headers = ['Order ID', 'Status', 'Total', 'Payment Method', 'Payment Reference', 'Date', 'Customer Name', 'Customer Email', 'Customer Phone', 'Estimated Delivery Date'];
-    const rows = filteredOrders.map(o => [
-      `"${o.id}"`,
-      `"${o.status || 'Processing'}"`,
-      Number(o.total || 0),
-      `"${o.paymentMethod || 'Paystack'}"`,
-      `"${o.paymentReference || 'N/A'}"`,
-      `"${o.createdAt ? new Date(o.createdAt).toLocaleString() : 'N/A'}"`,
-      `"${(o.customerName || 'N/A').replace(/"/g, '""')}"`,
-      `"${(o.customerEmail || 'N/A').replace(/"/g, '""')}"`,
-      `"${(o.customerPhone || 'N/A').replace(/"/g, '""')}"`,
-      `"${getEstimatedDeliveryDisplay(o)}"`
+    const rows = filteredOrders.map((order) => [
+      order.id,
+      order.status || 'Processing',
+      Number(order.total || 0),
+      order.paymentMethod || 'Paystack',
+      order.paymentReference || 'N/A',
+      order.createdAt ? new Date(order.createdAt).toLocaleString() : 'N/A',
+      order.customerName || 'N/A',
+      order.customerEmail || 'N/A',
+      order.customerPhone || 'N/A',
+      getEstimatedDeliveryDisplay(order),
     ]);
-
-    const csvContent = [headers.join(','), ...rows.map(row => row.join(','))].join('\n');
+    const csvContent = [headers.map(escapeCsv).join(','), ...rows.map((row) => row.map(escapeCsv).join(','))].join('\n');
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -1131,173 +1077,20 @@ export default function Admin() {
 
   const exportCustomerPDF = () => {
     if (!selectedCustomer) return;
-
     const printWindow = window.open('', '_blank');
     if (!printWindow) return;
-
-    const html = `
-      <html>
-        <head>
-          <title>Customer Details - ${selectedCustomer.name}</title>
-          <style>
-            body { font-family: system-ui, -apple-system, sans-serif; padding: 40px; color: #1a1a1a; }
-            h2 { border-bottom: 2px solid #eaeaea; padding-bottom: 10px; }
-            .details-grid { display: flex; gap: 40px; margin-bottom: 40px; background: #f8fafc; padding: 20px; border-radius: 8px; }
-            .details-grid p { margin: 8px 0; }
-            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-            th, td { border: 1px solid #e2e8f0; padding: 12px; text-align: left; }
-            th { background-color: #f1f5f9; font-weight: 600; }
-          </style>
-        </head>
-        <body>
-          <h2>Customer Details</h2>
-          <div class="details-grid">
-            <div>
-              <p><strong>Name:</strong> ${selectedCustomer.name}</p>
-              <p><strong>Email:</strong> ${selectedCustomer.email}</p>
-              <p><strong>Phone:</strong> ${selectedCustomer.phone}</p>
-              <p><strong>Address:</strong> ${selectedCustomer.address}</p>
-            </div>
-            <div>
-              <p><strong>Total Orders:</strong> ${selectedCustomer.orderCount}</p>
-              <p><strong>Total Spent:</strong> ${money(selectedCustomer.totalSpent)}</p>
-              <p><strong>Last Order:</strong> ${selectedCustomer.lastOrderDate ? new Date(selectedCustomer.lastOrderDate).toLocaleString() : 'N/A'}</p>
-            </div>
-          </div>
-
-          <h3>Order History</h3>
-          ${selectedCustomer.orders.length === 0 ? '<p>No orders yet.</p>' : `
-            <table>
-              <thead>
-                <tr><th>Order ID</th><th>Date</th><th>Status</th><th>Total</th></tr>
-              </thead>
-              <tbody>
-                ${selectedCustomer.orders.map(o => `<tr><td>#${o.id}</td><td>${o.createdAt ? new Date(o.createdAt).toLocaleDateString() : 'N/A'}</td><td>${o.status || 'Processing'}</td><td>${money(Number(o.total || 0))}</td></tr>`).join('')}
-              </tbody>
-            </table>
-          `}
-          <script>window.onload = () => setTimeout(() => { window.print(); window.close(); }, 250);</script>
-        </body>
-      </html>
-    `;
-    printWindow.document.write(html);
+    printWindow.opener = null;
+    printWindow.document.open();
+    printWindow.document.write(buildCustomerPrintHtml(selectedCustomer, money));
     printWindow.document.close();
   };
 
   const exportOrderInvoicePDF = (order: AdminOrder) => {
     const printWindow = window.open('', '_blank');
     if (!printWindow) return;
-
-    const items = order.items || [];
-    const subtotal = order.subtotal || order.total || 0;
-    const shipping = order.shipping || 0;
-    const tax = order.tax || 0;
-    const total = order.total || 0;
-
-    const html = `
-      <html>
-        <head>
-          <title>Invoice - Order #${order.id}</title>
-          <style>
-            body { font-family: system-ui, -apple-system, sans-serif; padding: 40px; color: #1a1a1a; max-width: 800px; margin: 0 auto; }
-            .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #eaeaea; padding-bottom: 20px; margin-bottom: 30px; }
-            .header h1 { margin: 0; color: #d4af37; }
-            .header p { margin: 4px 0; color: #666; }
-            .invoice-details { display: flex; gap: 40px; margin-bottom: 40px; }
-            .invoice-details div { flex: 1; }
-            h3 { border-bottom: 1px solid #eaeaea; padding-bottom: 8px; margin-bottom: 16px; font-size: 16px; }
-            table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
-            th, td { border-bottom: 1px solid #e2e8f0; padding: 12px 8px; text-align: left; }
-            th { background-color: #f8fafc; font-weight: 600; color: #333; }
-            .totals { width: 300px; margin-left: auto; }
-            .totals-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f8fafc; }
-            .totals-row.grand-total { font-weight: bold; font-size: 1.1em; border-bottom: none; border-top: 2px solid #eaeaea; padding-top: 12px; margin-top: 8px; }
-            .badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; }
-            .badge.green { background: #dcfce7; color: #166534; }
-            .badge.gold { background: #fef08a; color: #92400e; }
-          </style>
-        </head>
-        <body>
-          <div class="header">
-            <div>
-              <h1>JayLuxe</h1>
-              <p>Luxury Beauty, Fashion &amp; Lifestyle Store</p>
-            </div>
-            <div style="text-align: right;">
-              <h2 style="margin: 0 0 8px 0;">INVOICE</h2>
-              <p><strong>Order ID:</strong> #${order.id}</p>
-              <p><strong>Date:</strong> ${order.createdAt ? new Date(order.createdAt).toLocaleString() : 'N/A'}</p>
-              ${getDeliveryLabel(order) !== 'N/A' ? `<p><strong>Estimated Delivery:</strong> ${getDeliveryLabel(order)}</p>` : ''}
-              <p><strong>Status:</strong> <span class="badge ${order.status === 'Delivered' ? 'green' : 'gold'}">${order.status || 'Processing'}</span></p>
-            </div>
-          </div>
-
-          <div class="invoice-details">
-            <div>
-              <h3>Bill To:</h3>
-              <p><strong>${order.customerName || 'N/A'}</strong></p>
-              <p>${order.customerEmail || 'N/A'}</p>
-              <p>${order.customerPhone || 'N/A'}</p>
-            </div>
-            <div>
-              <h3>Ship To:</h3>
-              <p>${order.shippingAddress || order.customerAddress || order.address || 'N/A'}</p>
-            </div>
-            <div>
-              <h3>Payment Info:</h3>
-              <p><strong>Method:</strong> ${order.paymentMethod || 'Paystack'}</p>
-              <p><strong>Reference:</strong> ${order.paymentReference || 'N/A'}</p>
-            </div>
-          </div>
-
-          <table>
-            <thead>
-              <tr>
-                <th>Item</th>
-                <th>Price</th>
-                <th>Qty</th>
-                <th style="text-align: right;">Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${items.length > 0 ? items.map((item) => `
-                <tr>
-                  <td>
-                    <div style="font-weight: 500;">${item.name || 'Product'}</div>
-                    <div style="font-size: 0.9em; color: #666;">${item.category || ''}</div>
-                  </td>
-                  <td>${money(Number(item.price || 0))}</td>
-                  <td>${item.qty || item.quantity || 1}</td>
-                  <td style="text-align: right;">${money(Number(item.price || 0) * Number(item.qty || item.quantity || 1))}</td>
-                </tr>
-              `).join('') : `<tr><td colSpan="4" style="text-align: center;">No items found.</td></tr>`}
-            </tbody>
-          </table>
-
-          <div class="totals">
-            <div class="totals-row">
-              <span>Subtotal:</span>
-              <span>${money(Number(subtotal))}</span>
-            </div>
-            <div class="totals-row">
-              <span>Shipping:</span>
-              <span>${money(Number(shipping))}</span>
-            </div>
-            <div class="totals-row">
-              <span>Tax:</span>
-              <span>${money(Number(tax))}</span>
-            </div>
-            <div class="totals-row grand-total">
-              <span>Total:</span>
-              <span>${money(Number(total))}</span>
-            </div>
-          </div>
-
-          <script>window.onload = () => setTimeout(() => { window.print(); window.close(); }, 250);</script>
-        </body>
-      </html>
-    `;
-    printWindow.document.write(html);
+    printWindow.opener = null;
+    printWindow.document.open();
+    printWindow.document.write(buildOrderInvoicePrintHtml(order, getDeliveryLabel(order), money));
     printWindow.document.close();
   };
 

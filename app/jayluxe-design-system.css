@@ -1,7 +1,4 @@
-/* JayLuxe consolidated global design system.
-   Legacy theme layers are retained below in their historical cascade order for compatibility.
-   Premium UI V2 tokens and canonical refinements live at the end of this file. */
-
+/* GENERATED BUNDLE. Edit app/styles/design-system/*.css, then run npm run css:build. */
 /* ===== Consolidated from app/luxury-theme.css ===== */
 /* JayLuxe luxury redesign. Navigation components are intentionally not restyled. */
 :root {
@@ -7180,7 +7177,6 @@ textarea:disabled {
   }
 }
 
-
 /* ===== Consolidated from app/jayluxe-redesign.css ===== */
 /* =========================================================
    JAYLUXE 2026 REDESIGN LAYER
@@ -9085,7 +9081,6 @@ a {
   }
 }
 
-
 /* ===== Consolidated from app/jayluxe-refactor.css ===== */
 /* =========================================================
    JAYLUXE FINAL REFACTOR LAYER
@@ -10877,7 +10872,6 @@ body.jl-remove-hero-images .jl-main-content :is(
   }
 }
 
-
 /* ===== Consolidated from app/jayluxe-mobile.css ===== */
 /* =========================================================
    JAYLUXE MOBILE-ONLY REFINEMENT
@@ -12134,7 +12128,6 @@ body.jl-remove-hero-images .jl-main-content :is(
   }
 }
 
-
 /* ===== Consolidated from app/jayluxe-mobile-polish.css ===== */
 /* =========================================================
    JAYLUXE MOBILE POLISH
@@ -12733,7 +12726,6 @@ body.jl-remove-hero-images .jl-main-content :is(
     transform: none;
   }
 }
-
 
 /* ===== Consolidated from app/jayluxe-consistency-fixes.css ===== */
 /* =========================================================
@@ -14447,7 +14439,6 @@ body .global-footer-newsletter p {
   color: var(--jl-gold-rich, #9a711d);
 }
 
-
 /* ===== Consolidated from app/jayluxe-production-stability.css ===== */
 /* JayLuxe production stability overrides.
    This file is imported last so older responsive experiments cannot reintroduce
@@ -15318,7 +15309,6 @@ canvas {
     -webkit-overflow-scrolling: touch;
   }
 }
-
 
 /* ===== Consolidated from app/jayluxe-feature-update.css ===== */
 /* JayLuxe 2026 feature refinements: product reviews, sizes and lightweight promotion motion. */
@@ -16747,7 +16737,6 @@ canvas {
     transition: none;
   }
 }
-
 
 /* ===== Consolidated from app/jayluxe-card-system.css ===== */
 /* =========================================================
@@ -19725,7 +19714,6 @@ canvas {
     padding-inline: 9px;
   }
 }
-
 
 /* ===== Consolidated from app/jayluxe-production-system.css ===== */
 /* =========================================================
@@ -26030,4 +26018,110 @@ textarea.input {
    min-height:360px !important;
  }
  .jl-editorial-image {height:190px;}
+}
+
+
+/* =========================================================
+   PHASE 37 - FRONTEND UI/UX REFINEMENT
+   Premium compact spacing + ecommerce image handling
+========================================================= */
+
+.lux-product-card,
+.lux-product-card-compact {
+  min-height: 0 !important;
+  border-radius: 16px !important;
+}
+
+.lux-product-image {
+  aspect-ratio: 4 / 5 !important;
+  background: #faf7f1 !important;
+  display: block !important;
+}
+
+.lux-product-image img,
+.lux-product-img {
+  object-fit: contain !important;
+  object-position: center !important;
+  padding: 8px !important;
+}
+
+.lux-product-info {
+  padding: 12px !important;
+  gap: 6px !important;
+}
+
+.lux-product-info h3 {
+  margin: 0 !important;
+  line-height: 1.35 !important;
+}
+
+.lux-product-category {
+  margin: 0 !important;
+}
+
+.lux-product-pricing {
+  margin-top: 4px !important;
+}
+
+.lux-product-add-btn {
+  margin-top: 8px !important;
+  min-height: 40px !important;
+}
+
+/* Reduce oversized section whitespace while preserving luxury feel */
+section {
+  scroll-margin-top: 90px;
+}
+
+.jl-section,
+.jay-section,
+.home-section {
+  padding-top: clamp(28px, 4vw, 56px) !important;
+  padding-bottom: clamp(28px, 4vw, 56px) !important;
+}
+
+/* Responsive safety */
+img {
+  max-width: 100%;
+}
+
+@media (max-width: 767px) {
+  .lux-product-info {
+    padding: 10px !important;
+  }
+
+  .lux-product-image img,
+  .lux-product-img {
+    padding: 12px !important;
+  }
+}
+
+
+/* Phase 37.2 UI refinement overrides */
+.lux-product-image {
+  aspect-ratio: 4 / 5;
+  background: #faf8f4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lux-product-image .lux-product-img {
+  object-fit: contain !important;
+  object-position: center;
+  padding: clamp(8px, 1.2vw, 16px);
+}
+
+.lux-product-info {
+  gap: 0.45rem;
+}
+
+.lux-product-card-compact {
+  min-height: 0;
+}
+
+@media (max-width: 640px) {
+  .lux-product-image {
+    aspect-ratio: 1 / 1.18;
+  }
 }

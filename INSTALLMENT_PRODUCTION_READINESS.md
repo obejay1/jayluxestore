@@ -1,4 +1,4 @@
-# JayLuxe Installment Production Readiness — Phase 33
+# JayLuxe Installment Production Readiness — Phase 34
 
 ## Source-level readiness completed
 
@@ -8,10 +8,10 @@
 - Overpayment/mismatch conditions are flagged for reconciliation.
 - Status values and success-status interpretation are normalized across ledger/reporting/admin calculations.
 - Reminder queries use valid Firestore operators and timestamp-safe date parsing.
-- Initial installment checkout records the first successful installment and schedule atomically with the order.
+- Initial installment checkout is initialized from a server-created checkout intent, reserves inventory before payment, and records the first successful installment and schedule atomically with the order.
 - Admin installment financial routes are restricted to admin/super-admin roles.
 - OPay is intentionally disabled until a complete verified lifecycle exists.
-- Repository installment verification scripts pass.
+- Repository installment verification scripts and Phase 34 security/unit tests pass.
 
 ## Required deployment validation
 

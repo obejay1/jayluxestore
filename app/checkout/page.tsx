@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import dynamic from 'next/dynamic';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { getCart, getProducts, money, setCart as persistCart } from '@/lib/store';
@@ -9,18 +8,12 @@ import { trackEvent } from '@/lib/analytics';
 import { getCheckoutSettings } from '@/lib/settings';
 import { validateCoupon } from '@/lib/coupons';
 import type { Product } from '@/lib/types';
-import { useRouter } from 'next/navigation';
 import { showToast } from '@/lib/toast';
 import Footer from '@/components/Footer';
 import ResponsiveImage from '@/components/ResponsiveImage';
 import PageHeroIcon from '@/components/PageHeroIcon';
 import { CreditCard, Lock } from 'lucide-react';
 import { auth, db } from '@/lib/firebase';
-
-const PaystackButton = dynamic(
-  () => import('react-paystack').then((mod) => mod.PaystackButton),
-  { ssr: false }
-);
 
 async function readJsonResponse<T>(response: Response): Promise<T> {
   const text = await response.text();
@@ -34,6 +27,28 @@ async function readJsonResponse<T>(response: Response): Promise<T> {
     );
   }
 }
+
+type OpayCheckoutResponse = {
+  success?: boolean;
+  code?: string | null;
+  error?: string | null;
+  message?: string | null;
+  notifyLanguage?: string | null;
+  reference?: string | null;
+  amount?: number | null;
+  url?: string | null;
+  paymentUrl?: string | null;
+  cashierUrl?: string | null;
+  data?: {
+    url?: string | null;
+    paymentUrl?: string | null;
+    cashierUrl?: string | null;
+    reference?: string | null;
+    orderNo?: string | null;
+    status?: string | null;
+    referenceCode?: string | null;
+  } | null;
+};
 
 export default function Checkout() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -62,11 +77,10 @@ export default function Checkout() {
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [userId, setUserId] = useState<string | undefined>();
   const [checkoutError, setCheckoutError] = useState('');
+  const [opayReferenceCode, setOpayReferenceCode] = useState('');
 
-  const r = useRouter();
   const opayEnabled = process.env.NEXT_PUBLIC_OPAY_ENABLED === 'true';
-  const paystackPublicKey = process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY || '';
-  const paystackEnabled = Boolean(paystackPublicKey);
+  const paystackEnabled = true;
   const safeInstallmentCount = Number(installmentCount || 1);
 
   useEffect(() => {
@@ -182,103 +196,100 @@ export default function Checkout() {
       return;
     }
 
+    if (isProcessingOPay) return;
+
     try {
       setIsProcessingOPay(true);
-
       setCheckoutError('');
-      const orderId = crypto.randomUUID();
-      const accessToken = crypto.randomUUID().replaceAll('-', '');
-      
-      const estDate = new Date();
-      estDate.setDate(estDate.getDate() + deliveryDaysCount);
-      const estimatedDeliveryDate = estDate.toISOString();
+      setOpayReferenceCode('');
 
-      sessionStorage.setItem(
-        'opay_checkout_data',
-        JSON.stringify({
-          id: orderId,
-          userId,
-          accessToken,
-          items,
-          subtotal,
-          shipping,
-          tax,
-          total,
-          taxRate,
-          shippingFee,
-          discountAmount,
-          paymentMethod: 'OPay',
-          customerEmail: email.trim(),
-          customerEmailLower: email.trim().toLowerCase(),
-          customerName: fullName,
-          customerPhone: phone,
-          customerAddress: address,
-          status: 'Processing',
-          paymentStatus: 'Pending',
-          createdAt: new Date().toISOString(),
-          deliveryDays: deliveryDaysText,
-          estimatedDeliveryDate,
-        })
-      );
-
+      const idToken = auth.currentUser ? await auth.currentUser.getIdToken() : null;
       const response = await fetch('/api/opay/create-payment', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          amount: total,
-          email,
-          name: fullName,
-          phone,
-          orderId,
-        }),
-      });
-
-      const data = await readJsonResponse<{
-        url?: string;
-        error?: string;
-        message?: string;
-      }>(response);
-
-      if (response.ok && data.url) {
-        window.location.href = data.url;
-        return;
-      }
-
-      const paymentError =
-        data.error ||
-        data.message ||
-        'Could not initialize OPay payment';
-      setCheckoutError(paymentError);
-      showToast(paymentError, 'error');
-      setIsProcessingOPay(false);
-    } catch (error) {
-      console.error(error);
-      setCheckoutError('OPay payment initialization failed. Please try again.');
-      showToast('OPay payment initialization failed', 'error');
-      setIsProcessingOPay(false);
-    }
-  }
-
-  async function saveOrder(reference: string) {
-    if (isPlacingOrder) return;
-
-    setIsPlacingOrder(true);
-    setCheckoutError('');
-
-    try {
-      const idToken = auth.currentUser
-        ? await auth.currentUser.getIdToken()
-        : null;
-      const response = await fetch('/api/orders', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           ...(idToken ? { Authorization: `Bearer ${idToken}` } : {}),
         },
         body: JSON.stringify({
-          reference,
+          items: items.map((item) => ({ id: item.id, qty: item.qty })),
+          customerName: fullName.trim(),
+          customerEmail: email.trim(),
+          customerPhone: phone.trim(),
+          customerAddress: address.trim(),
+          couponCode: appliedCouponCode,
+          // JayLuxe keeps the compact locale code internally. The API route
+          // maps this safely to OPay's provider-specific enum.
+          notifyLanguage: 'en',
+        }),
+      });
+
+      const data = await readJsonResponse<OpayCheckoutResponse>(response);
+      const notifyLanguage = data?.notifyLanguage ?? 'en';
+      void notifyLanguage;
+
+      if (!response.ok || data?.success === false) {
+        const paymentError =
+          data?.error?.trim() ||
+          data?.message?.trim() ||
+          'Could not initialize OPay payment. Please try again.';
+        setCheckoutError(paymentError);
+        showToast(paymentError, 'error');
+        return;
+      }
+
+      const opayUrl =
+        data?.url ??
+        data?.paymentUrl ??
+        data?.cashierUrl ??
+        data?.data?.url ??
+        data?.data?.paymentUrl ??
+        data?.data?.cashierUrl ??
+        null;
+
+      if (opayUrl) {
+        window.location.assign(opayUrl);
+        return;
+      }
+
+      // Cashier flow requires cashierUrl. A missing URL is not a successful payment.
+      const referenceCode = data?.data?.referenceCode?.trim() || '';
+      if (referenceCode) {
+        setOpayReferenceCode(referenceCode);
+        showToast('OPay did not return a checkout page. Please try again.', 'success');
+        return;
+      }
+
+      const unexpectedResponse =
+        'OPay responded successfully but did not return a payment link or reference code.';
+      setCheckoutError(unexpectedResponse);
+      showToast(unexpectedResponse, 'error');
+    } catch (error) {
+      const message =
+        error instanceof Error && error.message
+          ? error.message
+          : 'OPay payment initialization failed. Please try again.';
+      setCheckoutError(message);
+      showToast(message, 'error');
+    } finally {
+      setIsProcessingOPay(false);
+    }
+  }
+
+
+  async function initializePaystackCheckout() {
+    if (isPlacingOrder) return;
+    setIsPlacingOrder(true);
+    setCheckoutError('');
+
+    try {
+      const idToken = auth.currentUser ? await auth.currentUser.getIdToken() : null;
+      const response = await fetch('/api/checkout/initialize', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(idToken ? { Authorization: `Bearer ${idToken}` } : {}),
+        },
+        body: JSON.stringify({
           items: items.map((item) => ({ id: item.id, qty: item.qty })),
           customerName: fullName,
           customerEmail: email,
@@ -287,36 +298,16 @@ export default function Checkout() {
           couponCode: appliedCouponCode,
           paymentType: paymentMethod,
           installmentCount: paymentMethod === 'Installment' ? installmentCount : null,
-          installmentAmount: paymentMethod === 'Installment' ? installmentInitialAmount : null,
         }),
       });
-      const data = await readJsonResponse<{
-        orderId?: string;
-        accessToken?: string;
-        order?: { total?: number };
-        message?: string;
-      }>(response);
-
-      if (!response.ok || !data.orderId || !data.accessToken) {
-        throw new Error(data.message || 'The payment could not be verified.');
+      const data = await readJsonResponse<{ authorizationUrl?: string; message?: string; amount?: number }>(response);
+      if (!response.ok || !data.authorizationUrl) {
+        throw new Error(data.message || 'Secure payment could not be initialized.');
       }
 
-      persistCart([]);
-      setCart([]);
-
-      void fetch('/api/termii/send-order-sms', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          orderId: data.orderId,
-          accessToken: data.accessToken,
-        }),
-      }).catch((error) => console.error('Order SMS failed:', error));
-
-      trackEvent('purchase', {
-        transaction_id: reference,
+      trackEvent('begin_checkout', {
         currency: 'NGN',
-        value: Number(data.order?.total ?? total),
+        value: Number(data.amount ?? (paymentMethod === 'Installment' ? installmentInitialAmount : total)),
         items: items.map((item) => ({
           item_id: item.id,
           item_name: item.name,
@@ -326,23 +317,12 @@ export default function Checkout() {
         })),
       });
 
-      showToast('Payment verified. Your order has been placed!', 'success');
-      r.push(
-        `/order/${data.orderId}?token=${encodeURIComponent(data.accessToken)}`,
-      );
-      r.refresh();
+      window.location.assign(data.authorizationUrl);
     } catch (error) {
-      console.error('ORDER_CREATION_FAILED', {
-        message: error instanceof Error ? error.message : String(error),
-        reference,
-        timestamp: new Date().toISOString(),
-      });
-      setCheckoutError(
-        error instanceof Error
-          ? error.message
-          : 'The order could not be created. Please contact support.',
-      );
-    } finally {
+      console.error('CHECKOUT_INITIALIZATION_FAILED', error);
+      const message = error instanceof Error ? error.message : 'Payment initialization failed. Please try again.';
+      setCheckoutError(message);
+      showToast(message, 'error');
       setIsPlacingOrder(false);
     }
   }
@@ -361,17 +341,6 @@ export default function Checkout() {
   const installmentAccountReady = paymentMethod !== 'Installment' || Boolean(userId);
   const canPay = formComplete && selectedPaymentEnabled && installmentAccountReady;
 
-  const paystackConfig = {
-    email: email.trim(),
-    amount: Math.round((paymentMethod === 'Installment' ? installmentInitialAmount : total) * 100),
-    publicKey: paystackPublicKey,
-    text: paymentMethod === 'Installment' ? `Pay ${money(installmentInitialAmount)} & Start Plan` : `Pay ${money(total)}`,
-    onSuccess: (response: unknown) =>
-      void saveOrder((response as { reference: string }).reference),
-    onClose: () => {
-      setCheckoutError('Payment was cancelled. Your cart is still saved.');
-    },
-  };
 
   return (
     <main className="jl-checkout-page">
@@ -422,6 +391,7 @@ export default function Checkout() {
                 }`}
                 onClick={() => {
                   setCheckoutError('');
+                  setOpayReferenceCode('');
                   setPaymentMethod('Paystack');
                 }}
               >
@@ -443,6 +413,7 @@ export default function Checkout() {
                 className={`jl-payment-option ${paymentMethod === 'Installment' ? 'active' : ''}`}
                 onClick={() => {
                   setCheckoutError('');
+                  setOpayReferenceCode('');
                   setPaymentMethod('Installment');
                 }}
               >
@@ -464,6 +435,7 @@ export default function Checkout() {
                 onClick={() => {
                   if (!opayEnabled) return;
                   setCheckoutError('');
+                  setOpayReferenceCode('');
                   setPaymentMethod('OPay');
                 }}
               >
@@ -577,31 +549,36 @@ export default function Checkout() {
           {checkoutError ? <p className="jl-checkout-error" role="alert">{checkoutError}</p> : null}
 
           {mounted && canPay ? (
-            paymentMethod === 'Paystack' ? (
-              <PaystackButton
-                className="jl-place-order-btn"
-                {...paystackConfig}
-                disabled={isPlacingOrder}
-              />
-            ) : (
+            paymentMethod === 'OPay' ? (
               <button
                 type="button"
                 className="jl-place-order-btn jl-opay-pay-button"
                 onClick={() => void handleOPayPayment()}
                 disabled={isProcessingOPay || isPlacingOrder}
               >
-                {isProcessingOPay
-                  ? 'Connecting to OPay…'
-                  : `Pay ${money(total)} with OPay`}
+                {isProcessingOPay ? 'Connecting to OPay…' : `Pay ${money(total)} with OPay`}
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="jl-place-order-btn"
+                onClick={() => void initializePaystackCheckout()}
+                disabled={isPlacingOrder}
+              >
+                {isPlacingOrder
+                  ? 'Preparing secure payment…'
+                  : paymentMethod === 'Installment'
+                    ? `Pay ${money(installmentInitialAmount)} & Start Plan`
+                    : `Pay ${money(total)}`}
               </button>
             )
           ) : (
             <button type="button" className="jl-place-order-btn" disabled>
               {!formComplete
                 ? 'Fill all details to pay'
-                : paymentMethod === 'Paystack' && !paystackEnabled
-                  ? 'Paystack setup required'
-                  : 'OPay setup required'}
+                : paymentMethod === 'OPay' && !opayEnabled
+                  ? 'OPay setup required'
+                  : 'Payment setup required'}
             </button>
           )}
 

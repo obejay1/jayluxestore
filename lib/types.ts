@@ -20,6 +20,8 @@ export type Product = {
   stock?: number;
   sizes?: string[];
   active?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 };
 export type Category={id:string;name:string;slug?:string;type:'product'|'service';description?:string;image?:string;imagePublicId?:string;active?:boolean;createdAt?:string;};
 export type Order={

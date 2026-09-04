@@ -20,6 +20,7 @@ import {
 } from 'recharts';
 
 import styles from '@/components/admin/AdminReportsClient.module.css';
+import { escapeCsv } from '@/lib/security/output';
 
 interface OrderItem {
   id?: string;
@@ -251,7 +252,6 @@ export default function AdminReportsClient() {
     setExporting('csv');
     try {
       const headers = ['Order ID', 'Date', 'Customer Name', 'Customer Email', 'Status', 'Payment Method', 'Total Amount'];
-      const escapeCsv = (value: unknown) => `"${String(value ?? '').replaceAll('"', '""')}"`;
       const rows = filteredOrders.map((order) => [
         order.id || '',
         new Date(order.createdAt || 0).toLocaleString(),
@@ -269,39 +269,6 @@ export default function AdminReportsClient() {
       link.download = `jayluxe-financial-report-${toDateInput(new Date())}.csv`;
       link.click();
       URL.revokeObjectURL(url);
-    } finally {
-      setExporting('');
-    }
-  }
-
-  async function exportExcel() {
-    setExporting('excel');
-    try {
-      const XLSX = await import('xlsx');
-      const rows = filteredOrders.map((order) => ({
-        'Order ID': order.id || '',
-        Date: new Date(order.createdAt || 0).toLocaleString(),
-        Customer: order.customerName || '',
-        Email: order.customerEmail || '',
-        Status: normaliseStatus(order.status),
-        'Payment Method': order.paymentMethod || '',
-        Total: getOrderTotal(order),
-      }));
-      const summary = [
-        { Metric: 'Total Revenue', Value: analytics.totalRevenue },
-        { Metric: 'Total Orders', Value: filteredOrders.length },
-        { Metric: 'Total Customers', Value: users.length },
-        { Metric: 'Total Products', Value: products.length },
-        { Metric: 'Average Order Value', Value: analytics.averageOrderValue },
-        { Metric: 'Delivered Revenue', Value: analytics.deliveredRevenue },
-        { Metric: 'Pending/Processing Revenue', Value: analytics.pendingRevenue },
-      ];
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(summary), 'Summary');
-      XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(rows), 'Orders');
-      XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(analytics.topProducts), 'Top Products');
-      XLSX.utils.book_append_sheet(workbook, XLSX.utils.json_to_sheet(analytics.topCustomers), 'Top Customers');
-      XLSX.writeFile(workbook, `jayluxe-financial-report-${toDateInput(new Date())}.xlsx`);
     } finally {
       setExporting('');
     }
@@ -401,7 +368,6 @@ export default function AdminReportsClient() {
           </div>
           <div className={styles.exports}>
             <button type="button" className={`${styles.exportButton} ${styles.secondary}`} onClick={exportCSV} disabled={Boolean(exporting)}>{exporting === 'csv' ? 'Exporting…' : 'CSV'}</button>
-            <button type="button" className={`${styles.exportButton} ${styles.secondary}`} onClick={() => void exportExcel()} disabled={Boolean(exporting)}>{exporting === 'excel' ? 'Exporting…' : 'Excel'}</button>
             <button type="button" className={styles.exportButton} onClick={() => void exportPDF()} disabled={Boolean(exporting)}>{exporting === 'pdf' ? 'Exporting…' : 'PDF'}</button>
           </div>
         </section>

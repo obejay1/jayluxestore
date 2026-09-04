@@ -46,7 +46,7 @@ function formatOrderTemplateMoney(value: number) {
 
 function getOrderUrl(order: Order) {
   const siteUrl = getSiteUrlString();
-  return `${siteUrl}/order/${encodeURIComponent(order.id)}${order.accessToken ? `?token=${encodeURIComponent(order.accessToken)}` : ''}`;
+  return `${siteUrl}/order/${encodeURIComponent(order.id)}${order.accessToken ? `#access_token=${encodeURIComponent(order.accessToken)}` : ''}`;
 }
 
 function getOrderConfirmationTemplateVariables(order: Order) {

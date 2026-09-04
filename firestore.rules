@@ -79,8 +79,7 @@ service cloud.firestore {
     }
 
     match /coupons/{document=**} {
-      allow read: if true;
-      allow write: if hasPermission('promotions');
+      allow read, write: if hasPermission('promotions');
     }
 
     match /users/{userId} {
