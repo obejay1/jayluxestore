@@ -251,13 +251,11 @@ export default function Checkout() {
         return;
       }
 
-      // The current OPay provider mode is ReferenceCode. A returned reference
-      // code is a pending payment instruction, not proof of payment. Only the
-      // verified OPay webhook can complete the checkout and create the order.
+      // Cashier flow requires cashierUrl. A missing URL is not a successful payment.
       const referenceCode = data?.data?.referenceCode?.trim() || '';
       if (referenceCode) {
         setOpayReferenceCode(referenceCode);
-        showToast('OPay payment reference created. Complete the payment with OPay.', 'success');
+        showToast('OPay did not return a checkout page. Please try again.', 'success');
         return;
       }
 

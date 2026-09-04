@@ -51,9 +51,10 @@ export async function POST(req: NextRequest) {
 
     const merchantId = process.env.OPAY_MERCHANT_ID?.trim();
     const secret = process.env.OPAY_SECRET_KEY?.trim();
-    const baseUrl = process.env.OPAY_BASE_URL?.replace(/\/+$/, "");
+    const publicKey = process.env.OPAY_PUBLIC_KEY?.trim();
+    const baseUrl = (process.env.OPAY_BASE_URL?.replace(/\/+$/, "") || "https://api.opaycheckout.com");
 
-    if (!merchantId || !secret || !baseUrl) {
+    if (!merchantId || !publicKey || !baseUrl) {
       await markCheckoutInitializationFailed(intent.reference);
       return NextResponse.json({ error: "OPay is not configured" }, { status: 503 });
     }
@@ -70,6 +71,12 @@ export async function POST(req: NextRequest) {
       callbackUrl:
         process.env.OPAY_CALLBACK_URL ||
         "https://jayluxestore.com/api/opay/webhook",
+      returnUrl:
+        process.env.OPAY_RETURN_URL ||
+        "https://jayluxestore.com/checkout/opay/return",
+      cancelUrl:
+        process.env.OPAY_CANCEL_URL ||
+        "https://jayluxestore.com/checkout/opay/cancel",
       country: "NG",
       expireAt: 30,
       merchantName: "Jayluxestore",
@@ -87,14 +94,13 @@ export async function POST(req: NextRequest) {
         notifyUserMobile: normalizeNigerianPhone(intent.customerPhone),
         notifyUserName: intent.customerName,
       },
-      payMethod: "USER_PAYMENT",
+      payMethod: "OPayWallet",
     };
 
-    const signature = createOpaySignature(payload, secret);
-    const response = await fetch(`${baseUrl}/api/v1/international/payment/create`, {
+    const response = await fetch(`${baseUrl}/api/v1/international/cashier/create`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${signature}`,
+        Authorization: `Bearer ${publicKey}`,
         MerchantId: merchantId,
         "Content-Type": "application/json",
         Accept: "application/json",
@@ -136,10 +142,24 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const cashierUrl =
+      data?.data?.cashierUrl ??
+      data?.cashierUrl ??
+      null;
+
+    if (!cashierUrl) {
+      await markCheckoutInitializationFailed(intent.reference);
+      return NextResponse.json(
+        { error: "OPay Cashier did not return a payment URL." },
+        { status: 502 },
+      );
+    }
+
     const apiResponse = NextResponse.json({
       success: true,
       code: data.code ?? "00000",
       message: data.message ?? "SUCCESSFUL",
+      cashierUrl,
       data: data.data ?? null,
       reference: intent.reference,
       amount: intent.expectedPaymentAmount,
