@@ -94,7 +94,7 @@ export async function POST(req: NextRequest) {
         notifyUserMobile: normalizeNigerianPhone(intent.customerPhone),
         notifyUserName: intent.customerName,
       },
-      payMethod: "opaywallet",
+      payMethod: "BankCard",
     };
 
     const response = await fetch(`${baseUrl}/api/v1/international/cashier/create`, {
