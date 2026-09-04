@@ -110,7 +110,14 @@ export async function POST(request: NextRequest) {
       const amountKobo = Math.round(amount * 100);
       const createdAt = new Date().toISOString();
       const customerName = String(plan.customerName || customer.name || 'JayLuxe Customer').trim();
-      const customerEmail = customer.email.trim().toLowerCase();
+      const customerEmail = customer.email?.trim().toLowerCase();
+
+      if (!customerEmail) {
+        return NextResponse.json(
+          { error: "Customer email is required for installment payment" },
+          { status: 400 }
+        );
+      }
 
       transaction.create(paymentRef, {
         reference,
