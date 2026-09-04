@@ -1,4 +1,7 @@
-/* GENERATED BUNDLE. Edit app/styles/design-system/*.css, then run npm run css:build. */
+/* JayLuxe consolidated global design system.
+   Legacy theme layers are retained below in their historical cascade order for compatibility.
+   Premium UI V2 tokens and canonical refinements live at the end of this file. */
+
 /* ===== Consolidated from app/luxury-theme.css ===== */
 /* JayLuxe luxury redesign. Navigation components are intentionally not restyled. */
 :root {
@@ -7177,6 +7180,7 @@ textarea:disabled {
   }
 }
 
+
 /* ===== Consolidated from app/jayluxe-redesign.css ===== */
 /* =========================================================
    JAYLUXE 2026 REDESIGN LAYER
@@ -9081,6 +9085,7 @@ a {
   }
 }
 
+
 /* ===== Consolidated from app/jayluxe-refactor.css ===== */
 /* =========================================================
    JAYLUXE FINAL REFACTOR LAYER
@@ -10872,6 +10877,7 @@ body.jl-remove-hero-images .jl-main-content :is(
   }
 }
 
+
 /* ===== Consolidated from app/jayluxe-mobile.css ===== */
 /* =========================================================
    JAYLUXE MOBILE-ONLY REFINEMENT
@@ -12128,6 +12134,7 @@ body.jl-remove-hero-images .jl-main-content :is(
   }
 }
 
+
 /* ===== Consolidated from app/jayluxe-mobile-polish.css ===== */
 /* =========================================================
    JAYLUXE MOBILE POLISH
@@ -12726,6 +12733,7 @@ body.jl-remove-hero-images .jl-main-content :is(
     transform: none;
   }
 }
+
 
 /* ===== Consolidated from app/jayluxe-consistency-fixes.css ===== */
 /* =========================================================
@@ -14439,6 +14447,7 @@ body .global-footer-newsletter p {
   color: var(--jl-gold-rich, #9a711d);
 }
 
+
 /* ===== Consolidated from app/jayluxe-production-stability.css ===== */
 /* JayLuxe production stability overrides.
    This file is imported last so older responsive experiments cannot reintroduce
@@ -15309,6 +15318,7 @@ canvas {
     -webkit-overflow-scrolling: touch;
   }
 }
+
 
 /* ===== Consolidated from app/jayluxe-feature-update.css ===== */
 /* JayLuxe 2026 feature refinements: product reviews, sizes and lightweight promotion motion. */
@@ -16737,6 +16747,7 @@ canvas {
     transition: none;
   }
 }
+
 
 /* ===== Consolidated from app/jayluxe-card-system.css ===== */
 /* =========================================================
@@ -19714,6 +19725,7 @@ canvas {
     padding-inline: 9px;
   }
 }
+
 
 /* ===== Consolidated from app/jayluxe-production-system.css ===== */
 /* =========================================================

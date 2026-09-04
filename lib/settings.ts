@@ -78,22 +78,20 @@ export async function getCheckoutSettings(): Promise<CheckoutSettings> {
         new Date(settings.maintenanceEndDate).getTime() <= Date.now();
 
       if (maintenanceHasEnded) {
-        // Public storefront clients have read-only access to checkout settings.
-        // Treat an expired maintenance window as live locally; persistence is an
-        // admin/server responsibility and must never turn a successful read into
-        // a failed customer checkout because Firestore correctly rejects writes.
         const liveSettings: CheckoutSettings = {
           ...settings,
           storeMode: 'Live',
           maintenanceEndDate: '',
+          updatedAt: new Date().toISOString(),
         };
 
+        await setDoc(ref, liveSettings, { merge: true });
+
         if (typeof window !== 'undefined') {
-          try {
-            localStorage.setItem('jj-checkout-settings', JSON.stringify(liveSettings));
-          } catch {
-            /* ignore */
-          }
+          localStorage.setItem(
+            'jj-checkout-settings',
+            JSON.stringify(liveSettings)
+          );
         }
 
         return liveSettings;

@@ -32,7 +32,7 @@ export async function GET(
     }
 
     const order = { ...(snapshot.data() as Order), id: snapshot.id };
-    const suppliedAccessToken = request.headers.get('x-order-access-token')?.trim() || '';
+    const suppliedAccessToken = request.nextUrl.searchParams.get('token');
     const customer = await getVerifiedCustomer(request);
     let adminSession = false;
     try {

@@ -8,10 +8,9 @@ import { OFFICIAL_EMAIL } from '@/lib/contact';
 import { auth } from '@/lib/firebase';
 import { PRODUCTION_SITE_URL } from '@/lib/site';
 import type { Order } from '@/lib/types';
-import { buildPrivateOrderUrl, captureOrderAccessToken } from '@/lib/orderAccess';
 import { QRCodeSVG } from 'qrcode.react';
 import Barcode from 'react-barcode';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 
 const money = (amount: number) => `₦${Math.round(amount || 0).toLocaleString()}`;
 
@@ -44,21 +43,18 @@ export default function InvoicePage() {
   const [pdfError, setPdfError] = useState('');
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const router = useRouter();
-  const [accessToken, setAccessToken] = useState('');
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     let cancelled = false;
-    const capturedToken = captureOrderAccessToken(String(params.id));
-    setAccessToken(capturedToken);
+    const accessToken = searchParams.get('token');
 
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       try {
         const idToken = user ? await user.getIdToken() : null;
-        const response = await fetch(`/api/orders/${encodeURIComponent(params.id)}`, {
-          headers: {
-            ...(idToken ? { Authorization: `Bearer ${idToken}` } : {}),
-            ...(capturedToken ? { 'X-Order-Access-Token': capturedToken } : {}),
-          },
+        const query = accessToken ? `?token=${encodeURIComponent(accessToken)}` : '';
+        const response = await fetch(`/api/orders/${encodeURIComponent(params.id)}${query}`, {
+          headers: idToken ? { Authorization: `Bearer ${idToken}` } : undefined,
           cache: 'no-store',
         });
         const data = await readJsonResponse(response);
@@ -86,7 +82,7 @@ export default function InvoicePage() {
       cancelled = true;
       unsubscribe();
     };
-  }, [params.id]);
+  }, [params.id, searchParams]);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -156,13 +152,16 @@ export default function InvoicePage() {
   const tax = order.tax || 0;
   const discount = order.discount || 0;
   const total = order.total || 0;
+  const accessToken = searchParams.get('token') || order.accessToken || '';
   const appOrigin =
     process.env.NODE_ENV === 'production'
       ? PRODUCTION_SITE_URL
       : typeof window !== 'undefined'
         ? window.location.origin
         : process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_SITE_URL || '';
-  const invoiceUrl = `${appOrigin}${buildPrivateOrderUrl(`/invoice/${encodeURIComponent(order.id)}`, accessToken)}`;
+  const invoiceUrl = `${appOrigin}/invoice/${encodeURIComponent(order.id)}${
+    accessToken ? `?token=${encodeURIComponent(accessToken)}` : ''
+  }`;
 
   let watermarkText = 'JAYLUXE';
   let watermarkColor = 'rgba(0, 0, 0, 0.05)';
