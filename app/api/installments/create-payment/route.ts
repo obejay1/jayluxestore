@@ -113,6 +113,14 @@ export async function POST(request: NextRequest) {
       const amountKobo = Math.round(amount * 100);
       const createdAt = new Date().toISOString();
       const customerName = String(plan.customerName || customer.name || 'JayLuxe Customer').trim();
+
+      if (!customer.email) {
+        return NextResponse.json(
+          { error: 'Customer email is required to make this payment.' },
+          { status: 400 },
+        );
+      }
+
       const customerEmail = customer.email.trim().toLowerCase();
 
       transaction.create(paymentRef, {
