@@ -114,13 +114,6 @@ export async function POST(request: NextRequest) {
       const createdAt = new Date().toISOString();
       const customerName = String(plan.customerName || customer.name || 'JayLuxe Customer').trim();
 
-      if (!customer.email) {
-        return NextResponse.json(
-          { error: 'Customer email is required to make this payment.' },
-          { status: 400 },
-        );
-      }
-
       const customerEmail = customer.email.trim().toLowerCase();
 
       transaction.create(paymentRef, {
@@ -146,6 +139,10 @@ export async function POST(request: NextRequest) {
 
       return { amount, amountKobo, orderId, customerName, customerEmail };
     });
+
+    if (prepared instanceof NextResponse) {
+      return prepared;
+    }
 
     const siteUrl = (
       process.env.NEXT_PUBLIC_SITE_URL?.trim()

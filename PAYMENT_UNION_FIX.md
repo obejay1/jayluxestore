@@ -1,0 +1,1 @@
+Fixed installment payment prepared result union by removing NextResponse return from Firestore transaction callback and adding explicit narrowing before accessing payment data.
