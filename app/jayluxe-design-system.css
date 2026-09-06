@@ -26019,3 +26019,109 @@ textarea.input {
  }
  .jl-editorial-image {height:190px;}
 }
+
+
+/* =========================================================
+   PHASE 37 - FRONTEND UI/UX REFINEMENT
+   Premium compact spacing + ecommerce image handling
+========================================================= */
+
+.lux-product-card,
+.lux-product-card-compact {
+  min-height: 0 !important;
+  border-radius: 16px !important;
+}
+
+.lux-product-image {
+  aspect-ratio: 4 / 5 !important;
+  background: #faf7f1 !important;
+  display: block !important;
+}
+
+.lux-product-image img,
+.lux-product-img {
+  object-fit: contain !important;
+  object-position: center !important;
+  padding: 8px !important;
+}
+
+.lux-product-info {
+  padding: 12px !important;
+  gap: 6px !important;
+}
+
+.lux-product-info h3 {
+  margin: 0 !important;
+  line-height: 1.35 !important;
+}
+
+.lux-product-category {
+  margin: 0 !important;
+}
+
+.lux-product-pricing {
+  margin-top: 4px !important;
+}
+
+.lux-product-add-btn {
+  margin-top: 8px !important;
+  min-height: 40px !important;
+}
+
+/* Reduce oversized section whitespace while preserving luxury feel */
+section {
+  scroll-margin-top: 90px;
+}
+
+.jl-section,
+.jay-section,
+.home-section {
+  padding-top: clamp(28px, 4vw, 56px) !important;
+  padding-bottom: clamp(28px, 4vw, 56px) !important;
+}
+
+/* Responsive safety */
+img {
+  max-width: 100%;
+}
+
+@media (max-width: 767px) {
+  .lux-product-info {
+    padding: 10px !important;
+  }
+
+  .lux-product-image img,
+  .lux-product-img {
+    padding: 12px !important;
+  }
+}
+
+
+/* Phase 37.2 UI refinement overrides */
+.lux-product-image {
+  aspect-ratio: 4 / 5;
+  background: #faf8f4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lux-product-image .lux-product-img {
+  object-fit: contain !important;
+  object-position: center;
+  padding: clamp(8px, 1.2vw, 16px);
+}
+
+.lux-product-info {
+  gap: 0.45rem;
+}
+
+.lux-product-card-compact {
+  min-height: 0;
+}
+
+@media (max-width: 640px) {
+  .lux-product-image {
+    aspect-ratio: 1 / 1.18;
+  }
+}
