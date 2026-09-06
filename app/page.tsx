@@ -226,31 +226,28 @@ export default function Home() {
           </div>
         </div>
         <div className="jl-discover-grid" aria-label="Discover more JayLuxe experiences">
-          <Link href="/services" className="jl-discover-card">
-            <div className="jl-editorial-image jl-beauty-image"><ResponsiveImage src={editorialServiceImage} fallbackSrc="/hero-banner.png" alt="JayLuxe beauty services" fill sizes="(max-width: 767px) 86vw, 33vw" /></div>
+          <Link href="/services" className="jl-discover-card jl-compact-experience-card">
+            <span className="jl-home-feature-icon"><Scissors size={28} /></span>
             <div className="jl-editorial-copy">
               <small>BEAUTY SERVICES</small>
-              <strong>Beauty Services</strong>
-              <p>Professional beauty care for every occasion.</p>
-              <span>Explore Services →</span>
+              <strong>Beauty Care</strong>
+              <p>Professional beauty treatments for every occasion.</p>
             </div>
           </Link>
-          <Link href="/bridal" className="jl-discover-card">
-            <div className="jl-editorial-image jl-bridal-image"><ResponsiveImage src={editorialBridalImage} fallbackSrc="/hero-banner.png" alt="JayLuxe bridal experience" fill sizes="(max-width: 767px) 86vw, 33vw" /></div>
+          <Link href="/bridal" className="jl-discover-card jl-compact-experience-card">
+            <span className="jl-home-feature-icon"><Gem size={28} /></span>
             <div className="jl-editorial-copy">
               <small>BRIDAL EXPERIENCE</small>
-              <strong>Your Bridal Moment</strong>
-              <p>Curated bridal packages designed around your special day.</p>
-              <span>Explore Bridal →</span>
+              <strong>Bridal Moments</strong>
+              <p>Curated packages for your special day.</p>
             </div>
           </Link>
-          <Link href="/gallery" className="jl-discover-card">
-            <div className="jl-editorial-image jl-gallery-image"><ResponsiveImage src={editorialGalleryImage?.afterImage || editorialGalleryImage?.beforeImage} fallbackSrc="/hero-banner.png" alt="JayLuxe transformation gallery" fill sizes="(max-width: 767px) 86vw, 33vw" /></div>
+          <Link href="/gallery" className="jl-discover-card jl-compact-experience-card">
+            <span className="jl-home-feature-icon"><Images size={28} /></span>
             <div className="jl-editorial-copy">
-              <small>TRANSFORMATION GALLERY</small>
-              <strong>See The Transformation</strong>
-              <p>Explore real JayLuxe beauty transformations.</p>
-              <span>View Gallery →</span>
+              <small>TRANSFORMATION</small>
+              <strong>Beauty Gallery</strong>
+              <p>Explore real JayLuxe transformations.</p>
             </div>
           </Link>
         </div>
@@ -518,6 +515,35 @@ export default function Home() {
           </div>
         </section>
       )}
+
+
+      <section className="jl-story-section">
+        <div className="jl-story-card">
+          <span>THE JAYLUXE EXPERIENCE</span>
+          <h2>Luxury Essentials Crafted For Your Lifestyle</h2>
+          <p>
+            Discover premium beauty, fashion and lifestyle pieces carefully selected
+            to help you look confident and live beautifully every day.
+          </p>
+          <Link href="/about" className="jj-btn jj-btn-gold">
+            Discover JayLuxe <ArrowRight size={18} />
+          </Link>
+        </div>
+      </section>
+
+      <section className="jl-why-section">
+        <div className="jj-section-header">
+          <div>
+            <small>Why JayLuxe</small>
+            <h2>A Premium Shopping Experience</h2>
+          </div>
+        </div>
+        <div className="jl-benefit-grid">
+          <div><Gem /><h3>Premium Selection</h3><p>Curated products chosen for quality and style.</p></div>
+          <div><Package /><h3>Secure Shopping</h3><p>Trusted payment options with safe checkout.</p></div>
+          <div><Truck /><h3>Reliable Delivery</h3><p>Fast and convenient delivery experience.</p></div>
+        </div>
+      </section>
 
 
       <section className="jj-contact jl-home-help-section">

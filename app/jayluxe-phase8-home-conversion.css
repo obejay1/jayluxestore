@@ -1,0 +1,11 @@
+.jl-story-section,.jl-why-section{padding:72px 5%;}
+.jl-story-card{max-width:900px;margin:auto;text-align:center;padding:70px 40px;border-radius:28px;background:var(--card,#fff);box-shadow:0 18px 60px rgba(0,0,0,.08);}
+.jl-story-card span{letter-spacing:.18em;font-size:.75rem;color:#b08d57;font-weight:700;}
+.jl-story-card h2{font-size:clamp(2rem,4vw,3.5rem);margin:18px 0;}
+.jl-story-card p{max-width:650px;margin:0 auto 28px;line-height:1.8;color:#666;}
+.jl-benefit-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+.jl-benefit-grid>div{padding:30px;border-radius:20px;background:#fff;box-shadow:0 10px 35px rgba(0,0,0,.06);}
+.jl-benefit-grid svg{color:#b08d57;}
+.jl-benefit-grid h3{margin:16px 0 8px;}
+.jl-benefit-grid p{color:#666;}
+@media(max-width:768px){.jl-story-section,.jl-why-section{padding:40px 20px}.jl-story-card{padding:40px 20px}.jl-benefit-grid{grid-template-columns:1fr;}}

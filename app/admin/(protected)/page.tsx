@@ -843,6 +843,23 @@ export default function Admin() {
 
   const revenue = orders.reduce((sum, order) => sum + Number(order.total || 0), 0);
   const averageOrderValue = orders.length > 0 ? revenue / orders.length : 0;
+
+  const paymentStatusSummary = orders.reduce(
+    (summary, order) => {
+      const status = String(order.paymentStatus || order.status || 'pending').toLowerCase();
+      if (status.includes('paid') || status.includes('success') || status.includes('completed')) {
+        summary.success += 1;
+      } else if (status.includes('cancel')) {
+        summary.cancelled += 1;
+      } else if (status.includes('fail')) {
+        summary.failed += 1;
+      } else {
+        summary.pending += 1;
+      }
+      return summary;
+    },
+    { success: 0, pending: 0, failed: 0, cancelled: 0 }
+  );
   const activeCategories = categories.filter((c) => c.active).length;
   const productCategories = categories.filter((c) => c.type === 'product').length;
   const serviceCategories = categories.filter((c) => c.type === 'service').length;
@@ -1197,6 +1214,13 @@ export default function Admin() {
             <div><h3>Average Order Value</h3><h1>{money(averageOrderValue)}</h1><p>Revenue per recorded order</p></div>
           </motion.article>
         </div>
+
+        <section className="admin-payment-overview" aria-label="Payment overview">
+          <article><small>Successful Payments</small><strong>{paymentStatusSummary.success}</strong><span>Confirmed transactions</span></article>
+          <article><small>Pending Payments</small><strong>{paymentStatusSummary.pending}</strong><span>Awaiting confirmation</span></article>
+          <article><small>Failed Payments</small><strong>{paymentStatusSummary.failed}</strong><span>Not completed</span></article>
+          <article><small>Cancelled Payments</small><strong>{paymentStatusSummary.cancelled}</strong><span>Released orders</span></article>
+        </section>
 
         <div className="admin-operational-metrics" aria-label="Operational metrics">
           <article>

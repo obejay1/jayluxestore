@@ -70,7 +70,7 @@ export default function Checkout() {
   const [deliveryDaysCount, setDeliveryDaysCount] = useState(5);
 
   const [paymentMethod, setPaymentMethod] = useState<'Paystack' | 'OPay' | 'Installment'>(
-    'Paystack'
+    'OPay'
   );
   const [installmentCount, setInstallmentCount] = useState(4);
   const [isProcessingOPay, setIsProcessingOPay] = useState(false);
@@ -80,7 +80,7 @@ export default function Checkout() {
   const [opayReferenceCode, setOpayReferenceCode] = useState('');
 
   const opayEnabled = process.env.NEXT_PUBLIC_OPAY_ENABLED === 'true';
-  const paystackEnabled = true;
+  const paystackEnabled = false;
   const safeInstallmentCount = Number(installmentCount || 1);
 
   useEffect(() => {
@@ -159,6 +159,22 @@ export default function Checkout() {
   const installmentInitialAmount = Math.ceil(
     safeTotal / safeInstallmentCount
   );
+
+  const installmentPlans = [2, 3, 4].map((count) => {
+    const firstPayment = Math.ceil(safeTotal / count);
+    const remainingBalance = Math.max(0, safeTotal - firstPayment);
+    const remainingPayments = count - 1;
+
+    return {
+      count,
+      firstPayment,
+      remainingBalance,
+      remainingPayments,
+      nextPayment: remainingPayments > 0
+        ? Math.ceil(remainingBalance / remainingPayments)
+        : 0,
+    };
+  });
 
   async function applyCoupon() {
     if (couponLoading) return;
@@ -337,13 +353,35 @@ export default function Checkout() {
   );
 
   const selectedPaymentEnabled =
-    paymentMethod === 'Paystack' || paymentMethod === 'Installment' ? paystackEnabled : opayEnabled;
+    paymentMethod === 'Paystack' ? paystackEnabled : opayEnabled;
   const installmentAccountReady = paymentMethod !== 'Installment' || Boolean(userId);
   const canPay = formComplete && selectedPaymentEnabled && installmentAccountReady;
 
 
-  return (
-    <main className="jl-checkout-page">
+  
+  const installmentInfo = installmentCount > 1 ? (
+    <div className="jl-installment-summary-card">
+      <h3>Pay in Installments</h3>
+      <p>Split your purchase into manageable payments.</p>
+      <div className="jl-installment-grid">
+        <div>
+          <span>Total order</span>
+          <strong>{money(total)}</strong>
+        </div>
+        <div>
+          <span>Payments</span>
+          <strong>{installmentCount}</strong>
+        </div>
+      </div>
+      <p className="jl-installment-opay">
+        Payments securely processed with OPay Wallet
+      </p>
+    </div>
+  ) : null;
+
+return (
+        <main className="jl-checkout-page">
+
 
       <section className="jl-checkout-hero">
         <PageHeroIcon icon={CreditCard} label="Secure checkout" />
@@ -390,10 +428,10 @@ export default function Checkout() {
                   paymentMethod === 'Paystack' ? 'active' : ''
                 }`}
                 onClick={() => {
-                  setCheckoutError('');
-                  setOpayReferenceCode('');
-                  setPaymentMethod('Paystack');
+                  setCheckoutError('Paystack is currently unavailable.');
                 }}
+                disabled
+                aria-disabled="true"
               >
                 <span className="jl-payment-option-header">
                   <strong className="jl-payment-option-title">Paystack</strong>
@@ -402,7 +440,7 @@ export default function Checkout() {
                   ) : null}
                 </span>
                 <span className="jl-payment-option-description">
-                  Card, bank transfer and USSD
+                  Currently unavailable
                 </span>
               </button>
 
@@ -440,7 +478,7 @@ export default function Checkout() {
                 }}
               >
                 <span className="jl-payment-option-header">
-                  <strong className="jl-payment-option-title">OPay</strong>
+                  <strong className="jl-payment-option-title">OPay Wallet</strong>
                   {opayEnabled ? (
                     paymentMethod === 'OPay' ? (
                       <span className="jl-payment-selected">Selected</span>
@@ -450,7 +488,7 @@ export default function Checkout() {
                   )}
                 </span>
                 <span className="jl-payment-option-description">
-                  OPay wallet and bank transfer
+                  Pay securely using your OPay Wallet account
                 </span>
               </button>
             </div>
@@ -458,23 +496,48 @@ export default function Checkout() {
               <p className="jl-payment-notice">Sign in to your JayLuxe account before starting an installment plan so your balance and future payments can be tracked securely.</p>
             ) : null}
             {paymentMethod === 'Installment' ? (
-              <div className="jl-payment-notice">
-                <strong>Choose installment plan</strong>
-                <div>
-                  {[2,3,4].map((count) => (
-                    <button key={count} type="button" onClick={() => setInstallmentCount(count)} className={installmentCount === count ? 'active' : ''}>
-                      {count} payments
+              <div className="jl-installment-plan-section">
+                <div className="jl-installment-plan-header">
+                  <span>Choose installment plan</span>
+                  <h3>Select your preferred payment schedule</h3>
+                  <p>
+                    Pay your first installment today with OPay Wallet.
+                    Remaining balance will be scheduled automatically.
+                  </p>
+                </div>
+
+                <div className="jl-installment-plan-cards">
+                  {installmentPlans.map((plan) => (
+                    <button
+                      key={plan.count}
+                      type="button"
+                      className={`jl-installment-plan-card ${installmentCount === plan.count ? 'active' : ''}`}
+                      onClick={() => setInstallmentCount(plan.count)}
+                    >
+                      <strong>{plan.count} Payments</strong>
+
+                      <div>
+                        <small>Pay today</small>
+                        <h4>{money(plan.firstPayment)}</h4>
+                      </div>
+
+                      <p>
+                        Remaining: {money(plan.remainingBalance)}
+                      </p>
+
+                      <p>
+                        {plan.remainingPayments > 0
+                          ? `${plan.remainingPayments} future payments of about ${money(plan.nextPayment)}`
+                          : 'Complete payment today'}
+                      </p>
+
+                      {installmentCount === plan.count && (
+                        <span>Selected</span>
+                      )}
                     </button>
                   ))}
                 </div>
-                <p>Pay today {money(installmentInitialAmount)}. Remaining balance will be scheduled.</p>
               </div>
-            ) : null}
-            {!opayEnabled ? (
-              <p className="jl-payment-notice">
-                OPay remains disabled until the merchant callback and webhook
-                configuration is complete.
-              </p>
             ) : null}
           </div>
         </div>
@@ -562,23 +625,21 @@ export default function Checkout() {
               <button
                 type="button"
                 className="jl-place-order-btn"
-                onClick={() => void initializePaystackCheckout()}
+                onClick={() => void handleOPayPayment()}
                 disabled={isPlacingOrder}
               >
                 {isPlacingOrder
                   ? 'Preparing secure payment…'
                   : paymentMethod === 'Installment'
-                    ? `Pay ${money(installmentInitialAmount)} & Start Plan`
-                    : `Pay ${money(total)}`}
+                    ? `Pay ${money(installmentInitialAmount)} with OPay`
+                    : `Pay ${money(total)} with OPay`}
               </button>
             )
           ) : (
             <button type="button" className="jl-place-order-btn" disabled>
               {!formComplete
                 ? 'Fill all details to pay'
-                : paymentMethod === 'OPay' && !opayEnabled
-                  ? 'OPay setup required'
-                  : 'Payment setup required'}
+                : 'Payment setup required'}
             </button>
           )}
 

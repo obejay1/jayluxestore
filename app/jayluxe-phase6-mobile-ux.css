@@ -1,0 +1,82 @@
+/* JayLuxe Phase 6 - Mobile UX polish */
+
+@media (max-width: 768px) {
+  .cart-item {
+    grid-template-columns: 72px minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .cart-img {
+    width: 72px;
+    height: 72px;
+  }
+
+  .summary-total {
+    font-size: 21px;
+  }
+
+  .btn.full,
+  .fixed-action .btn {
+    min-height: 52px;
+    font-size: 15px;
+  }
+
+  .pay-option {
+    padding: 14px;
+    gap: 12px;
+  }
+
+  .detail-hero {
+    height: 300px;
+  }
+
+  .detail-title {
+    font-size: 25px;
+  }
+
+  .desc {
+    font-size: 16px;
+  }
+
+  .admin-shell {
+    padding: 14px;
+  }
+
+  .admin-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .app {
+    padding-bottom: 100px;
+  }
+
+  button,
+  .btn,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+@media (max-width: 420px) {
+  .container {
+    padding: 14px;
+  }
+
+  .page-title {
+    font-size: 24px;
+  }
+
+  .section-title {
+    font-size: 21px;
+  }
+
+  .grid {
+    gap: 12px;
+  }
+}

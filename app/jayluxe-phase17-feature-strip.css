@@ -1,0 +1,107 @@
+
+/* JayLuxe Phase 17 - compact feature strip */
+
+.jl-feature-strip,
+.luxury-experience-grid,
+.promotion-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+}
+
+.jl-feature-item,
+.luxury-experience-card,
+.promotion-card {
+  min-height: 130px;
+  padding: 18px 14px;
+  text-align: center;
+  border-radius: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.jl-feature-item svg,
+.luxury-experience-card svg,
+.promotion-card svg {
+  width: 28px;
+  height: 28px;
+  margin-bottom: 10px;
+  color: #c8a24b;
+}
+
+.jl-feature-item h3,
+.luxury-experience-card h3,
+.promotion-card h3 {
+  font-size: 0.95rem;
+  margin: 0 0 5px;
+  font-weight: 700;
+}
+
+.jl-feature-item p,
+.luxury-experience-card p,
+.promotion-card p {
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.4;
+}
+
+@media (max-width: 640px) {
+  .jl-feature-strip,
+  .luxury-experience-grid,
+  .promotion-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 4px;
+  }
+
+  .jl-feature-item,
+  .luxury-experience-card,
+  .promotion-card {
+    min-height: 105px;
+    padding: 10px 5px;
+  }
+
+  .jl-feature-item svg,
+  .luxury-experience-card svg,
+  .promotion-card svg {
+    width: 22px;
+    height: 22px;
+    margin-bottom: 6px;
+  }
+
+  .jl-feature-item h3,
+  .luxury-experience-card h3,
+  .promotion-card h3 {
+    font-size: 11px;
+  }
+
+  .jl-feature-item p,
+  .luxury-experience-card p,
+  .promotion-card p {
+    font-size: 9px;
+  }
+}
+
+.jl-category-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.jl-category-grid img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+@media (max-width: 768px) {
+  .jl-category-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+}

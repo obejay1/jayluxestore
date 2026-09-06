@@ -147,9 +147,9 @@ export default function CartPage() {
               <span>
                 <ShoppingBag size={36} aria-hidden="true" />
               </span>
-              <h3 className="font-serif">Your cart is empty</h3>
-              <p>Explore the collection and add something you love.</p>
-              <Link href="/shop">Browse Products</Link>
+              <h3 className="font-serif">Your luxury collection awaits</h3>
+              <p>Discover premium pieces curated for your style.</p>
+              <Link href="/shop">Continue Shopping</Link>
             </div>
           ) : (
             <div className="jl-cart-items-list">
@@ -249,7 +249,7 @@ export default function CartPage() {
             Proceed to Checkout
           </button>
 
-          <p className="jl-cart-security-note">Secure checkout powered by Paystack.</p>
+          <p className="jl-cart-security-note">Secure checkout with trusted payment options.</p>
         </aside>
       </section>
 

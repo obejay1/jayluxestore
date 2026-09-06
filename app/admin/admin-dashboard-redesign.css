@@ -1001,3 +1001,33 @@
     padding: 12px !important;
   }
 }
+
+
+.admin-payment-overview {
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:16px;
+  margin:20px 0;
+}
+
+.admin-payment-overview article {
+  background:#fff;
+  border:1px solid #eadfce;
+  border-radius:18px;
+  padding:18px;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.admin-payment-overview small { color:#6b7280; }
+.admin-payment-overview strong { font-size:28px; color:#111; }
+.admin-payment-overview span { color:#8a7350; font-size:13px; }
+
+@media (max-width: 900px) {
+  .admin-payment-overview { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+
+@media (max-width: 520px) {
+  .admin-payment-overview { grid-template-columns:1fr; }
+}

@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebaseAdmin';
 import { getVerifiedCustomer } from '@/lib/requestAuth';
 import { normalizeInstallmentStatus } from '@/lib/installments/status';
+import { normalizeNigerianPhone, getOpayRedirectUrl, type OpayCreatePaymentResponse } from '@/lib/payments/opay';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -39,9 +40,11 @@ async function releasePaymentLock(planId: string, reference: string, status: str
 }
 
 export async function POST(request: NextRequest) {
-  const paystackSecret = process.env.PAYSTACK_SECRET_KEY?.trim();
-  if (!paystackSecret) {
-    return NextResponse.json({ error: 'Paystack is not configured.' }, { status: 503 });
+  const opayPublicKey = process.env.OPAY_PUBLIC_KEY?.trim();
+  const merchantId = process.env.OPAY_MERCHANT_ID?.trim();
+  const baseUrl = (process.env.OPAY_BASE_URL?.replace(/\/+$/, '') || 'https://api.opaycheckout.com');
+  if (!opayPublicKey || !merchantId) {
+    return NextResponse.json({ error: 'OPay is not configured.' }, { status: 503 });
   }
 
   try {
@@ -110,14 +113,7 @@ export async function POST(request: NextRequest) {
       const amountKobo = Math.round(amount * 100);
       const createdAt = new Date().toISOString();
       const customerName = String(plan.customerName || customer.name || 'JayLuxe Customer').trim();
-      const customerEmail = customer.email?.trim().toLowerCase();
-
-      if (!customerEmail) {
-        throw Object.assign(
-          new Error('Customer email is required for installment payment'),
-          { status: 400 },
-        );
-      }
+      const customerEmail = customer.email.trim().toLowerCase();
 
       transaction.create(paymentRef, {
         reference,
@@ -129,7 +125,7 @@ export async function POST(request: NextRequest) {
         amount,
         expectedAmountKobo: amountKobo,
         currency: 'NGN',
-        provider: 'Paystack',
+        provider: 'OPay',
         status: 'pending',
         createdAt,
       });
@@ -151,23 +147,33 @@ export async function POST(request: NextRequest) {
 
     let response: Response;
     try {
-      response = await fetch('https://api.paystack.co/transaction/initialize', {
+      response = await fetch(`${baseUrl}/api/v1/international/cashier/create`, {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${paystackSecret}`,
+          Authorization: `Bearer ${opayPublicKey}`,
+          MerchantId: merchantId,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          email: prepared.customerEmail,
-          amount: prepared.amountKobo,
-          currency: 'NGN',
+          country: 'NG',
           reference,
-          callback_url: `${siteUrl}/account/installments`,
-          metadata: {
-            type: 'installment',
-            planId,
-            orderId: prepared.orderId,
+          amount: {
+            total: prepared.amountKobo,
+            currency: 'NGN',
+          },
+          returnUrl: `${siteUrl}/account/installments`,
+          callbackUrl: process.env.OPAY_CALLBACK_URL || `${siteUrl}/api/opay/webhook`,
+          cancelUrl: `${siteUrl}/account/installments`,
+          payMethod: 'OpayWalletNg',
+          userInfo: {
             userId: customer.uid,
+            userName: prepared.customerName,
+            userMobile: normalizeNigerianPhone(customer.phone || ''),
+            userEmail: prepared.customerEmail,
+          },
+          product: {
+            name: 'JayLuxe Installment Payment',
+            description: `Installment payment for ${prepared.orderId}`,
           },
         }),
         cache: 'no-store',
@@ -177,22 +183,20 @@ export async function POST(request: NextRequest) {
       throw error;
     }
 
-    const data = await response.json() as {
-      status?: boolean;
-      message?: string;
-      data?: { authorization_url?: string };
-    };
+    const data = await response.json() as OpayCreatePaymentResponse;
 
-    if (!response.ok || !data.status || !data.data?.authorization_url) {
+    const authorizationUrl = getOpayRedirectUrl(data);
+
+    if (!response.ok || !authorizationUrl) {
       await releasePaymentLock(planId, reference, 'initialization_failed');
       return NextResponse.json(
-        { error: data.message || 'Unable to initialize payment' },
+        { error: data.message || 'Unable to initialize OPay Wallet payment' },
         { status: 502 },
       );
     }
 
     return NextResponse.json({
-      authorizationUrl: data.data.authorization_url,
+      authorizationUrl,
       reference,
     });
   } catch (error) {

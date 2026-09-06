@@ -353,6 +353,15 @@ export async function finalizeCheckoutIntent(
   if (intent.status === 'expired' || intent.status === 'initialization_failed') throw new CheckoutError('This checkout session has expired. Please return to your cart and try again.', 410);
 
   const provider: 'Paystack' | 'OPay' = suppliedProvider || (intent.paymentType === 'OPay' ? 'OPay' : 'Paystack');
+
+  // OPay returns customers through a browser redirect after Cashier checkout.
+  // A redirect alone is never proof of payment. OPay orders must only be
+  // finalized after the server has supplied a verified OPay payment result
+  // (normally from the webhook/server verification flow).
+  if (intent.paymentType === 'OPay' && !suppliedPayment) {
+    throw new CheckoutError('OPay payment confirmation is still pending. The order cannot be finalized from the return page.', 409);
+  }
+
   const payment = suppliedPayment || await verifyPayment(reference);
   validatePayment(intent, payment);
 

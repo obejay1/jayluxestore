@@ -1,0 +1,62 @@
+
+/* Mobile compact luxury experience + promotions */
+
+@media (max-width: 640px) {
+
+  .luxury-experience-grid,
+  .jl-luxury-experience-grid,
+  .promotion-grid,
+  .jl-promotion-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+    overflow: visible !important;
+  }
+
+  .luxury-experience-card,
+  .jl-luxury-experience-card,
+  .promotion-card,
+  .jl-promotion-card {
+    min-height: 120px !important;
+    height: auto !important;
+    padding: 10px 6px !important;
+    border-radius: 14px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    text-align: center !important;
+  }
+
+  .luxury-experience-card svg,
+  .jl-luxury-experience-card svg,
+  .promotion-card svg,
+  .jl-promotion-card svg {
+    width: 24px !important;
+    height: 24px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .luxury-experience-card h3,
+  .jl-luxury-experience-card h3,
+  .promotion-card h3,
+  .jl-promotion-card h3 {
+    font-size: 12px !important;
+    line-height: 1.2 !important;
+    margin: 4px 0 !important;
+  }
+
+  .luxury-experience-card p,
+  .jl-luxury-experience-card p,
+  .promotion-card p,
+  .jl-promotion-card p {
+    font-size: 9px !important;
+    line-height: 1.25 !important;
+    margin: 0 !important;
+  }
+
+  .product-grid,
+  .products-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+}

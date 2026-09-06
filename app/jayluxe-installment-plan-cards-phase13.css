@@ -1,0 +1,62 @@
+
+.jl-installment-plan-section{margin-top:24px;padding:24px;border:1px solid #eadfcf;border-radius:24px;background:#fff;}
+.jl-installment-plan-header span{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:#b08a32;font-weight:700;}
+.jl-installment-plan-header h3{margin:8px 0;font-size:24px;}
+.jl-installment-plan-header p{color:#6b7280;}
+.jl-installment-plan-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px;}
+.jl-installment-plan-card{padding:20px;text-align:left;border:1px solid #e8dfd2;border-radius:22px;background:#fff;cursor:pointer;transition:.2s;}
+.jl-installment-plan-card:hover{transform:translateY(-3px);box-shadow:0 15px 30px rgba(0,0,0,.08);}
+.jl-installment-plan-card.active{border-color:#c8a24b;box-shadow:0 0 0 3px rgba(200,162,75,.15);}
+.jl-installment-plan-card strong{font-size:20px;}
+.jl-installment-plan-card h4{font-size:24px;margin:8px 0;}
+.jl-installment-plan-card small{color:#777;}
+.jl-installment-plan-card p{color:#666;font-size:14px;}
+.jl-installment-plan-card span{display:inline-block;background:#111;color:white;padding:6px 12px;border-radius:20px;font-size:12px;}
+@media(max-width:900px){.jl-installment-plan-cards{grid-template-columns:1fr;}}
+
+
+/* Phase 14 - compact installment cards */
+.jl-installment-plan-cards {
+  gap: 12px;
+}
+
+.jl-installment-plan-card {
+  padding: 16px;
+  gap: 10px;
+  min-height: auto;
+}
+
+.jl-installment-plan-card-top strong {
+  font-size: 1.05rem;
+}
+
+.jl-installment-plan-price {
+  padding: 10px 12px;
+}
+
+.jl-installment-plan-price strong {
+  font-size: 1.15rem;
+}
+
+.jl-installment-plan-meta {
+  gap: 8px;
+}
+
+.jl-installment-plan-meta > div {
+  padding: 10px;
+}
+
+.jl-installment-plan-meta strong {
+  font-size: 0.85rem;
+}
+
+.jl-installment-plan-foot {
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+@media (max-width: 640px) {
+  .jl-installment-plan-card {
+    padding: 14px;
+  }
+}

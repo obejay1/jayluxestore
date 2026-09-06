@@ -1,13 +1,22 @@
+import './jayluxe-installment-ui-phase11.css';
+import './jayluxe-phase17-feature-strip.css';
+import './jayluxe-mobile-luxury-compact-fix.css';
+import './jayluxe-phase15-home-luxury-compact.css';
+
 import type { Metadata, Viewport } from 'next';
 import {
   Playfair_Display,
   Plus_Jakarta_Sans,
 } from 'next/font/google';
 
+import './jayluxe-phase8-home-conversion.css';
 import './globals.css';
 import './jayluxe-design-system.css';
 import './jayluxe-phase37-5-polish.css';
 import './jayluxe-phase38-1-deep-polish.css';
+import './jayluxe-phase6-mobile-ux.css';
+import './jayluxe-phase7-luxury-brand.css';
+import './jayluxe-installment-plan-cards-phase13.css';
 
 import GoogleAnalytics from '@/components/GoogleAnalytics';
 import HeroImageController from '@/components/HeroImageController';
@@ -57,12 +66,20 @@ const organizationJsonLd = {
 export const metadata: Metadata = {
   metadataBase: getSiteUrl(),
   title: {
-    default: 'JayLuxe',
+    default: 'JayLuxe | Luxury Fashion, Beauty & Lifestyle',
     template: '%s | JayLuxe',
   },
-  description: 'Luxury beauty, fashion, bridal and lifestyle essentials.',
+  description:
+    'Shop JayLuxe luxury fashion, beauty, bridal and lifestyle essentials with secure checkout, trusted payments and premium customer service.',
   applicationName: 'JayLuxe',
   category: 'shopping',
+  keywords: [
+    'JayLuxe',
+    'luxury fashion Nigeria',
+    'premium beauty products',
+    'bridal collections',
+    'luxury lifestyle store',
+  ],
   alternates: { canonical: '/' },
   icons: {
     icon: '/logo.png',

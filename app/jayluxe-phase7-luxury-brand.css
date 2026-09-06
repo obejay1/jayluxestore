@@ -1,0 +1,86 @@
+
+/* Phase 7 - Luxury Brand Visual Refinement */
+.jj-home {
+  overflow:hidden;
+}
+
+.jj-hero {
+  min-height: min(78vh, 760px);
+  border-radius: 0 0 36px 36px;
+}
+
+.jj-hero-overlay {
+  background:
+    linear-gradient(90deg, rgba(0,0,0,.72), rgba(0,0,0,.18));
+}
+
+.jj-hero-content {
+  max-width: 620px;
+  padding: 48px 24px;
+}
+
+.jj-hero-content h1 {
+  font-family: var(--font-jayluxe-serif), Georgia, serif;
+  font-size: clamp(42px, 6vw, 72px);
+  letter-spacing: -1px;
+  line-height: 1.02;
+}
+
+.jj-hero-content p {
+  max-width: 520px;
+  font-size: 18px;
+  line-height: 1.7;
+  opacity: .95;
+}
+
+.jj-btn {
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.jj-btn:hover {
+  transform: translateY(-2px);
+}
+
+.jj-products,
+.jj-trust {
+  padding-top: 72px;
+  padding-bottom: 72px;
+}
+
+.jj-product-grid > * {
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.jj-product-grid > *:hover {
+  transform: translateY(-6px);
+}
+
+.jj-section-header h2 {
+  font-family: var(--font-jayluxe-serif), Georgia, serif;
+  letter-spacing: -.4px;
+}
+
+@media (max-width: 640px) {
+  .jj-hero {
+    min-height: 620px;
+    border-radius: 0 0 24px 24px;
+  }
+
+  .jj-hero-content {
+    padding: 32px 18px;
+  }
+
+  .jj-hero-content h1 {
+    font-size: 42px;
+  }
+
+  .jj-hero-content p {
+    font-size: 15px;
+  }
+
+  .jj-products,
+  .jj-trust {
+    padding-top: 44px;
+    padding-bottom: 44px;
+  }
+}

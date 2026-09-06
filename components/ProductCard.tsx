@@ -77,7 +77,7 @@ export default function ProductCard({ p, onQuickView }: ProductCardProps) {
         <div className="lux-product-badges" aria-label="Product labels">
           {p.isNew && <span className="lux-badge lux-badge-new">New</span>}
           {discount > 0 && <span className="lux-badge lux-badge-sale">-{discount}%</span>}
-          {outOfStock && <span className="lux-badge lux-badge-stock">Sold out</span>}
+          {outOfStock && <span className="lux-badge lux-badge-stock">Unavailable</span>}
         </div>
 
         <button
@@ -117,13 +117,17 @@ export default function ProductCard({ p, onQuickView }: ProductCardProps) {
           )}
         </div>
 
+        <p className={`lux-product-availability${outOfStock ? ' unavailable' : ''}`}>
+          {outOfStock ? 'Out of stock' : '✓ Available for purchase'}
+        </p>
+
         <button
           type="button"
           onClick={handleAddToCart}
           className="lux-product-add-btn tw-mt-0 tw-w-full"
           disabled={outOfStock}
         >
-          <ShoppingBag size={13} /> {outOfStock ? 'Out of Stock' : 'Add to Cart'}
+          <ShoppingBag size={13} /> {outOfStock ? 'Out of stock' : 'Add to Cart'}
         </button>
       </div>
     </article>
