@@ -49,8 +49,10 @@ export async function POST(request: NextRequest) {
 
   try {
     const customer = await getVerifiedCustomer(request);
-    if (!customer?.uid || !customer.email) {
-      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+    const customerEmail = customer?.email?.trim().toLowerCase();
+
+    if (!customer?.uid || !customerEmail) {
+      return NextResponse.json({ error: 'Customer email is required to make this payment.' }, { status: 400 });
     }
 
     const body = await request.json();
@@ -114,7 +116,7 @@ export async function POST(request: NextRequest) {
       const createdAt = new Date().toISOString();
       const customerName = String(plan.customerName || customer.name || 'JayLuxe Customer').trim();
 
-      const customerEmail = customer.email.trim().toLowerCase();
+      
 
       transaction.create(paymentRef, {
         reference,
