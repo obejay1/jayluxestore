@@ -3,5 +3,3 @@
  * Preflight is disabled in tailwind.config.js so the existing JayLuxe
  * desktop styling and form defaults are not reset.
  */
-@tailwind components;
-@tailwind utilities;
