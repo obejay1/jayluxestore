@@ -218,29 +218,6 @@ export default function Home() {
       </section>
 
 
-      <section className="jl-discover-more jl-home-tight-section" aria-labelledby="discover-more-title">
-        <div className="jj-section-header">
-          <div>
-            <small>Explore JayLuxe</small>
-            <h2 id="discover-more-title">Your Luxury Experience</h2>
-          </div>
-        </div>
-        <div className="jl-discover-grid" aria-label="Discover more JayLuxe experiences">
-          <Link href="/services" className="jl-discover-card jl-compact-experience-card jl-icon-only-experience">
-            <span className="jl-home-feature-icon"><Scissors size={28} /></span>
-            <strong>Beauty</strong>
-          </Link>
-          <Link href="/bridal" className="jl-discover-card jl-compact-experience-card jl-icon-only-experience">
-            <span className="jl-home-feature-icon"><Gem size={28} /></span>
-            <strong>Bridal</strong>
-          </Link>
-          <Link href="/gallery" className="jl-discover-card jl-compact-experience-card jl-icon-only-experience">
-            <span className="jl-home-feature-icon"><Images size={28} /></span>
-            <strong>Gallery</strong>
-          </Link>
-        </div>
-      </section>
-
       <section className={`jj-home-promotions jl-home-tight-section ${PRODUCT_SECTION_SHELL_CLASS}`} aria-labelledby="home-promotions-title">
         <div className="jj-section-header">
           <div>
