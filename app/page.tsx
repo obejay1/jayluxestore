@@ -216,33 +216,6 @@ export default function Home() {
           <p>We are here for you</p>
         </motion.div>
       </section>
-
-
-      <section className={`jj-home-promotions jl-home-tight-section ${PRODUCT_SECTION_SHELL_CLASS}`} aria-labelledby="home-promotions-title">
-        <div className="jj-section-header">
-          <div>
-            <small>Current edits</small>
-            <h2 id="home-promotions-title">Promotions &amp; Popular Picks</h2>
-            <p>Discover what's trending, limited, and worth adding to your wardrobe.</p>
-          </div>
-          <Link href="/promotions">View All <ArrowRight size={16} aria-hidden="true" /></Link>
-        </div>
-        <div className="jl-home-promo-features" aria-label="JayLuxe promotional collections">
-          <Link href="/flash-sale" className="jl-home-promo-feature jl-home-promo-flash">
-            <span className="jl-home-promo-icon" aria-hidden="true"><Zap size={26} strokeWidth={2.1} /></span>
-            <span className="jl-home-promo-copy"><strong>Limited Drops</strong><small>Exclusive offers</small></span>
-          </Link>
-          <Link href="/promotions" className="jl-home-promo-feature jl-home-promo-seasonal">
-            <span className="jl-home-promo-icon" aria-hidden="true"><Gift size={26} strokeWidth={2.1} /></span>
-            <span className="jl-home-promo-copy"><strong>Seasonal Favourites</strong><small>Curated collections</small></span>
-          </Link>
-          <Link href="/best-sellers" className="jl-home-promo-feature jl-home-promo-bestselling">
-            <span className="jl-home-promo-icon" aria-hidden="true"><TrendingUp size={26} strokeWidth={2.1} /></span>
-            <span className="jl-home-promo-copy"><strong>Best Sellers</strong><small>Customer favourites</small></span>
-          </Link>
-        </div>
-      </section>
-
       <section className={`jj-categories jl-home-category-section jl-home-tight-section ${PRODUCT_SECTION_SHELL_CLASS}`}>
         <div className="jj-section-header jl-category-heading">
           <div>
