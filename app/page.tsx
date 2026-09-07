@@ -226,29 +226,17 @@ export default function Home() {
           </div>
         </div>
         <div className="jl-discover-grid" aria-label="Discover more JayLuxe experiences">
-          <Link href="/services" className="jl-discover-card jl-compact-experience-card">
+          <Link href="/services" className="jl-discover-card jl-compact-experience-card jl-icon-only-experience">
             <span className="jl-home-feature-icon"><Scissors size={28} /></span>
-            <div className="jl-editorial-copy">
-              <small>BEAUTY SERVICES</small>
-              <strong>Beauty Care</strong>
-              <p>Professional beauty treatments for every occasion.</p>
-            </div>
+            <strong>Beauty</strong>
           </Link>
-          <Link href="/bridal" className="jl-discover-card jl-compact-experience-card">
+          <Link href="/bridal" className="jl-discover-card jl-compact-experience-card jl-icon-only-experience">
             <span className="jl-home-feature-icon"><Gem size={28} /></span>
-            <div className="jl-editorial-copy">
-              <small>BRIDAL EXPERIENCE</small>
-              <strong>Bridal Moments</strong>
-              <p>Curated packages for your special day.</p>
-            </div>
+            <strong>Bridal</strong>
           </Link>
-          <Link href="/gallery" className="jl-discover-card jl-compact-experience-card">
+          <Link href="/gallery" className="jl-discover-card jl-compact-experience-card jl-icon-only-experience">
             <span className="jl-home-feature-icon"><Images size={28} /></span>
-            <div className="jl-editorial-copy">
-              <small>TRANSFORMATION</small>
-              <strong>Beauty Gallery</strong>
-              <p>Explore real JayLuxe transformations.</p>
-            </div>
+            <strong>Gallery</strong>
           </Link>
         </div>
       </section>

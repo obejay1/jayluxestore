@@ -154,3 +154,27 @@
     border-radius: 8px;
   }
 }
+
+
+/* Icon-only Explore JayLuxe mobile refinement */
+@media (max-width: 768px) {
+  .jl-icon-only-experience {
+    min-height: 0 !important;
+    height: 92px !important;
+    padding: 10px 6px !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 6px !important;
+    box-shadow: none !important;
+  }
+
+  .jl-icon-only-experience .jl-home-feature-icon {
+    width: 38px !important;
+    height: 38px !important;
+  }
+
+  .jl-icon-only-experience strong {
+    font-size: 12px !important;
+    text-align: center;
+  }
+}
