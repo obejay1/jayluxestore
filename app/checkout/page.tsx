@@ -207,8 +207,15 @@ export default function Checkout() {
   }
 
   async function handleOPayPayment() {
+    if (!formComplete) {
+      const message = 'Please complete your checkout information before continuing.';
+      setCheckoutError(message);
+      showToast(message, 'error');
+      return;
+    }
+
     if (!opayEnabled) {
-      setCheckoutError('OPay is not currently available. Please use Paystack.');
+      setCheckoutError('OPay is not currently available. Please try again later.');
       return;
     }
 
@@ -477,7 +484,7 @@ return (
                 }}
               >
                 <span className="jl-payment-option-header">
-                  <strong className="jl-payment-option-title">OPay Wallet</strong>
+                  <strong className="jl-payment-option-title">OPay</strong>
                   {opayEnabled ? (
                     paymentMethod === 'OPay' ? (
                       <span className="jl-payment-selected">Selected</span>
@@ -487,7 +494,7 @@ return (
                   )}
                 </span>
                 <span className="jl-payment-option-description">
-                  Pay securely using your OPay Wallet account
+                  Pay securely with OPay.
                 </span>
               </button>
             </div>
@@ -618,7 +625,7 @@ return (
                 onClick={() => void handleOPayPayment()}
                 disabled={isProcessingOPay || isPlacingOrder}
               >
-                {isProcessingOPay ? 'Connecting to OPay…' : `Pay ${money(total)} with OPay`}
+                {isProcessingOPay ? 'Connecting to OPay…' : 'Continue to Pay with OPay'}
               </button>
             ) : (
               <button
