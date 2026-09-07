@@ -79,7 +79,9 @@ export default function Checkout() {
   const [checkoutError, setCheckoutError] = useState('');
   const [opayReferenceCode, setOpayReferenceCode] = useState('');
 
-  const opayEnabled = process.env.NEXT_PUBLIC_OPAY_ENABLED === 'true';
+  // OPay availability is controlled server-side. Do not block customers from selecting it
+  // based on a browser environment variable.
+  const opayEnabled = true;
   const paystackEnabled = false;
   const safeInstallmentCount = Number(installmentCount || 1);
 
@@ -360,7 +362,7 @@ export default function Checkout() {
   );
 
   const selectedPaymentEnabled =
-    paymentMethod === 'Paystack' ? paystackEnabled : opayEnabled;
+    paymentMethod === 'Paystack' ? paystackEnabled : true;
   const installmentAccountReady = paymentMethod !== 'Installment' || Boolean(userId);
   const canPay = formComplete && selectedPaymentEnabled && installmentAccountReady;
 
@@ -645,7 +647,7 @@ return (
             <button type="button" className="jl-place-order-btn" disabled>
               {!formComplete
                 ? 'Fill all details to pay'
-                : 'Payment setup required'}
+                : 'Continue to Pay with OPay'}
             </button>
           )}
 
