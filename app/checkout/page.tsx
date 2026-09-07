@@ -465,13 +465,12 @@ return (
                 type="button"
                 role="radio"
                 aria-checked={paymentMethod === 'OPay'}
-                aria-disabled={!opayEnabled}
-                disabled={!opayEnabled}
+                aria-disabled={false}
+                disabled={false}
                 className={`jl-payment-option jl-payment-opay ${
                   paymentMethod === 'OPay' ? 'active' : ''
                 }`}
                 onClick={() => {
-                  if (!opayEnabled) return;
                   setCheckoutError('');
                   setOpayReferenceCode('');
                   setPaymentMethod('OPay');

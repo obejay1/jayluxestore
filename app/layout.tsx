@@ -1,4 +1,6 @@
 import './jayluxe-installment-ui-phase11.css';
+import './jayluxe-phase40-ui-fixes.css';
+import './jayluxe-ui-compact-polish.css';
 import './jayluxe-phase17-feature-strip.css';
 import './jayluxe-mobile-luxury-compact-fix.css';
 import './jayluxe-phase15-home-luxury-compact.css';

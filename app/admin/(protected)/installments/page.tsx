@@ -23,14 +23,14 @@ export default async function AdminInstallmentsPage({searchParams}:{searchParams
  const cards=[['Active Plans',filtered.filter(p=>p.status==='Active').length],['Completed',filtered.filter(p=>p.status==='Completed').length],['Overdue',overdue.length],['Due Soon',upcoming.length],['Total Collected',money(collected)],['Outstanding',money(outstanding)]];
  const recentPayments=[...filtered].sort((a:any,b:any)=>Number(b.paidAmount||0)-Number(a.paidAmount||0)).slice(0,5);
 
- return <div className="amu-page-content space-y-6">
-  <section className="amu-card flex justify-between gap-4 flex-wrap">
+ return <div className="amu-page-content space-y-5">
+  <section className="amu-card flex justify-between gap-3 flex-wrap">
    <div><h1 className="font-serif text-3xl">Installment Management</h1><p>Monitor customer installment plans, payment progress, balances and upcoming payments.</p></div>
    <div className="flex gap-2"><a className="border px-4 py-2 rounded" href="/api/admin/installments/export">Export</a><a className="border px-4 py-2 rounded" href="/admin/installments">Refresh</a></div>
   </section>
 
-  <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-6">
-   {cards.map(([a,b])=><div className="amu-card" key={String(a)}><p className="text-sm">{a}</p><strong className="text-2xl">{b}</strong></div>)}
+  <section className="grid grid-cols-2 gap-3 xl:grid-cols-6">
+   {cards.map(([a,b])=><div className="amu-card p-3" key={String(a)}><p className="text-xs text-neutral-500">{a}</p><strong className="text-xl">{b}</strong></div>)}
   </section>
 
   <section className="grid grid-cols-1 lg:grid-cols-2 gap-5">

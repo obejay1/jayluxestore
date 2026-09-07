@@ -1566,6 +1566,87 @@ export default function Admin() {
           </div>
         </section>
 
+<section className="table-card admin-catalog-editor" id="products" hidden={!can('products')}>
+          <div className="admin-section-title">
+            <div>
+              <h2>{form.id ? 'Edit Product or Service' : 'Add Product or Service'}</h2>
+              <p>Keep product information, pricing, inventory and status clearly separated.</p>
+            </div>
+          </div>
+
+          <div className="admin-product-form-sections">
+            <fieldset className="admin-form-section">
+              <legend>Product Information</legend>
+              <div className="admin-form-grid">
+                <label className="admin-field"><span>Name</span><input className="input" placeholder="Product name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /></label>
+                <label className="admin-field"><span>Category</span><select className="input" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}><option value="">Select Category</option>{categories.filter((c) => c.active).map((cat) => <option key={String(cat.id)} value={cat.name}>{cat.name}</option>)}</select></label>
+                <label className="admin-field"><span>Type</span><select className="input" value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value as 'product' | 'service', sizes: e.target.value === 'service' ? [] : form.sizes })}><option value="product">Product</option><option value="service">Service</option></select></label>
+                <label className="admin-field admin-field-wide"><span>Description</span><textarea className="input" rows={5} placeholder="Detailed product description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} /></label>
+                <AdminImageUploadField
+                  id="product-image-upload"
+                  label="Product Image"
+                  value={form.image}
+                  folder={form.type === 'service' ? 'jayluxe/services' : 'jayluxe/products'}
+                  shape={form.type === 'service' ? 'landscape' : 'portrait'}
+                  className="admin-field-wide"
+                  onUploadingChange={(uploading) => markUploadActive('product', uploading)}
+                  onChange={(url, result) => setForm((current) => ({
+                    ...current,
+                    image: url,
+                    imagePublicId: result?.publicId || (url ? current.imagePublicId : ''),
+                  }))}
+                  emptyText="Choose an image to add a storefront product thumbnail."
+                />
+                <div className="admin-product-gallery-upload-grid admin-field-wide">
+                  {[0, 1, 2].map((index) => (
+                    <AdminImageUploadField
+                      key={index}
+                      id={`product-gallery-image-${index + 1}`}
+                      label={`Additional Image ${index + 1}`}
+                      value={form.gallery?.[index] || ''}
+                      folder={form.type === 'service' ? 'jayluxe/services' : 'jayluxe/products'}
+                      shape={form.type === 'service' ? 'landscape' : 'portrait'}
+                      onUploadingChange={(uploading) => markUploadActive(`product-gallery-${index}`, uploading)}
+                      onChange={(url, result) => setProductGalleryImage(index, url, result?.publicId)}
+                      description="Optional product gallery image. Uploads independently from the other image slots."
+                      emptyText="Choose an optional gallery image."
+                    />
+                  ))}
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset className="admin-form-section">
+              <legend>Pricing</legend>
+              <div className="admin-form-grid">
+                <label className="admin-field"><span>Selling Price</span><input className="input" placeholder="Price" type="number" min="0" value={form.price} onChange={(e) => setForm({ ...form, price: +e.target.value })} /></label>
+                <label className="admin-field"><span>Compare-at Price <small>Optional</small></span><input className="input" placeholder="Original price" type="number" min="0" value={form.oldPrice || ''} onChange={(e) => setForm({ ...form, oldPrice: e.target.value ? +e.target.value : undefined })} /></label>
+              </div>
+            </fieldset>
+
+            <fieldset className="admin-form-section">
+              <legend>Inventory</legend>
+              <div className="admin-form-grid">
+                <label className="admin-field"><span>Stock Quantity</span><input className="input" placeholder="Stock" type="number" min="0" value={form.stock} onChange={(e) => setForm({ ...form, stock: +e.target.value })} /></label>
+                {form.type === 'product' ? <div className="admin-field admin-field-wide"><span>Available Sizes</span><div className="admin-size-picker">{PRODUCT_SIZE_OPTIONS.map((size) => { const selected = form.sizes?.includes(size) || false; return <label key={size} className={selected ? 'selected' : ''}><input type="checkbox" checked={selected} onChange={(e) => setForm({ ...form, sizes: e.target.checked ? Array.from(new Set([...(form.sizes || []), size])) : (form.sizes || []).filter((item) => item !== size) })} /><span>{size}</span></label>; })}</div><small className="admin-help-text">Sizes are optional. Existing products without sizes continue to work normally.</small></div> : null}
+              </div>
+            </fieldset>
+
+            <fieldset className="admin-form-section">
+              <legend>Status</legend>
+              <div className="admin-toggle-row">
+                <label><input type="checkbox" checked={form.featured || false} onChange={(e) => setForm({ ...form, featured: e.target.checked })} /><span>Featured</span></label>
+                <label><input type="checkbox" checked={form.active ?? true} onChange={(e) => setForm({ ...form, active: e.target.checked })} /><span>Active / available for sale</span></label>
+              </div>
+            </fieldset>
+          </div>
+
+          <div className="admin-form-actions">
+            <button className="btn" onClick={submitProduct} disabled={uploadActive('product', 'product-gallery-0', 'product-gallery-1', 'product-gallery-2')}>{uploadActive('product', 'product-gallery-0', 'product-gallery-1', 'product-gallery-2') ? 'Uploading product image…' : form.id ? 'Update Product / Service' : 'Save Product / Service'}</button>
+            {form.id ? <button className="btn light" type="button" onClick={() => setForm(blankProduct)}>Cancel Edit</button> : null}
+          </div>
+        </section>
+
         <div className="stats-grid">
           <motion.div initial={{ opacity: 0, scale: 0.98 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.3 }} className="stat-card">
             <h3>Total Categories</h3>
@@ -2121,86 +2202,7 @@ export default function Admin() {
           )}
         </section>
 
-        <section className="table-card admin-catalog-editor" id="products" hidden={!can('products')}>
-          <div className="admin-section-title">
-            <div>
-              <h2>{form.id ? 'Edit Product or Service' : 'Add Product or Service'}</h2>
-              <p>Keep product information, pricing, inventory and status clearly separated.</p>
-            </div>
-          </div>
-
-          <div className="admin-product-form-sections">
-            <fieldset className="admin-form-section">
-              <legend>Product Information</legend>
-              <div className="admin-form-grid">
-                <label className="admin-field"><span>Name</span><input className="input" placeholder="Product name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /></label>
-                <label className="admin-field"><span>Category</span><select className="input" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}><option value="">Select Category</option>{categories.filter((c) => c.active).map((cat) => <option key={String(cat.id)} value={cat.name}>{cat.name}</option>)}</select></label>
-                <label className="admin-field"><span>Type</span><select className="input" value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value as 'product' | 'service', sizes: e.target.value === 'service' ? [] : form.sizes })}><option value="product">Product</option><option value="service">Service</option></select></label>
-                <label className="admin-field admin-field-wide"><span>Description</span><textarea className="input" rows={5} placeholder="Detailed product description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} /></label>
-                <AdminImageUploadField
-                  id="product-image-upload"
-                  label="Product Image"
-                  value={form.image}
-                  folder={form.type === 'service' ? 'jayluxe/services' : 'jayluxe/products'}
-                  shape={form.type === 'service' ? 'landscape' : 'portrait'}
-                  className="admin-field-wide"
-                  onUploadingChange={(uploading) => markUploadActive('product', uploading)}
-                  onChange={(url, result) => setForm((current) => ({
-                    ...current,
-                    image: url,
-                    imagePublicId: result?.publicId || (url ? current.imagePublicId : ''),
-                  }))}
-                  emptyText="Choose an image to add a storefront product thumbnail."
-                />
-                <div className="admin-product-gallery-upload-grid admin-field-wide">
-                  {[0, 1, 2].map((index) => (
-                    <AdminImageUploadField
-                      key={index}
-                      id={`product-gallery-image-${index + 1}`}
-                      label={`Additional Image ${index + 1}`}
-                      value={form.gallery?.[index] || ''}
-                      folder={form.type === 'service' ? 'jayluxe/services' : 'jayluxe/products'}
-                      shape={form.type === 'service' ? 'landscape' : 'portrait'}
-                      onUploadingChange={(uploading) => markUploadActive(`product-gallery-${index}`, uploading)}
-                      onChange={(url, result) => setProductGalleryImage(index, url, result?.publicId)}
-                      description="Optional product gallery image. Uploads independently from the other image slots."
-                      emptyText="Choose an optional gallery image."
-                    />
-                  ))}
-                </div>
-              </div>
-            </fieldset>
-
-            <fieldset className="admin-form-section">
-              <legend>Pricing</legend>
-              <div className="admin-form-grid">
-                <label className="admin-field"><span>Selling Price</span><input className="input" placeholder="Price" type="number" min="0" value={form.price} onChange={(e) => setForm({ ...form, price: +e.target.value })} /></label>
-                <label className="admin-field"><span>Compare-at Price <small>Optional</small></span><input className="input" placeholder="Original price" type="number" min="0" value={form.oldPrice || ''} onChange={(e) => setForm({ ...form, oldPrice: e.target.value ? +e.target.value : undefined })} /></label>
-              </div>
-            </fieldset>
-
-            <fieldset className="admin-form-section">
-              <legend>Inventory</legend>
-              <div className="admin-form-grid">
-                <label className="admin-field"><span>Stock Quantity</span><input className="input" placeholder="Stock" type="number" min="0" value={form.stock} onChange={(e) => setForm({ ...form, stock: +e.target.value })} /></label>
-                {form.type === 'product' ? <div className="admin-field admin-field-wide"><span>Available Sizes</span><div className="admin-size-picker">{PRODUCT_SIZE_OPTIONS.map((size) => { const selected = form.sizes?.includes(size) || false; return <label key={size} className={selected ? 'selected' : ''}><input type="checkbox" checked={selected} onChange={(e) => setForm({ ...form, sizes: e.target.checked ? Array.from(new Set([...(form.sizes || []), size])) : (form.sizes || []).filter((item) => item !== size) })} /><span>{size}</span></label>; })}</div><small className="admin-help-text">Sizes are optional. Existing products without sizes continue to work normally.</small></div> : null}
-              </div>
-            </fieldset>
-
-            <fieldset className="admin-form-section">
-              <legend>Status</legend>
-              <div className="admin-toggle-row">
-                <label><input type="checkbox" checked={form.featured || false} onChange={(e) => setForm({ ...form, featured: e.target.checked })} /><span>Featured</span></label>
-                <label><input type="checkbox" checked={form.active ?? true} onChange={(e) => setForm({ ...form, active: e.target.checked })} /><span>Active / available for sale</span></label>
-              </div>
-            </fieldset>
-          </div>
-
-          <div className="admin-form-actions">
-            <button className="btn" onClick={submitProduct} disabled={uploadActive('product', 'product-gallery-0', 'product-gallery-1', 'product-gallery-2')}>{uploadActive('product', 'product-gallery-0', 'product-gallery-1', 'product-gallery-2') ? 'Uploading product image…' : form.id ? 'Update Product / Service' : 'Save Product / Service'}</button>
-            {form.id ? <button className="btn light" type="button" onClick={() => setForm(blankProduct)}>Cancel Edit</button> : null}
-          </div>
-        </section>
+        
 
         <section className="table-card" id="inventory" hidden={!can('products')}>
           <div className="admin-section-title"><div><h2>Products &amp; Inventory</h2><p>Review descriptions, pricing, sizes, stock and availability at a glance.</p></div></div>

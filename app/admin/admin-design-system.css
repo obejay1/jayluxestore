@@ -2417,3 +2417,68 @@
     max-height: 34px;
   }
 }
+
+/* ==========================================================================\n   ADMIN COMMERCE ANALYTICS MOBILE WIDTH FIX\n   Keeps the Commerce Analytics section flush with the admin content width.\n   ========================================================================== */
+#analytics.table-card {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin-inline: 0;
+  box-sizing: border-box;
+}
+
+#analytics .admin-insight-grid {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+#analytics .admin-insight-grid > article {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+@media (max-width: 767px) {
+  .admin-content {
+    width: 100%;
+    max-width: 100%;
+    margin-inline: 0;
+  }
+
+  #analytics.table-card {
+    padding-inline: 12px !important;
+  }
+
+  #analytics .admin-section-title,
+  #analytics .admin-insight-grid,
+  #analytics .admin-insight-grid > article {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  #analytics .admin-insight-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  #analytics .admin-insight-grid > article {
+    padding: 16px !important;
+  }
+
+  #analytics .admin-insight-grid li {
+    width: 100%;
+    align-items: baseline;
+  }
+
+  #analytics .admin-insight-grid li span {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  #analytics .admin-insight-grid li b {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+}

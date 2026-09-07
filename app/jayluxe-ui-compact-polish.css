@@ -1,0 +1,105 @@
+
+/* JayLuxe compact polish: feature strips + mobile density */
+
+.jl-discover-grid,
+.jl-home-promo-features {
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:0;
+}
+
+.jl-discover-card,
+.jl-home-promo-feature {
+  min-height:132px !important;
+  padding:18px 14px !important;
+  border-radius:18px !important;
+  display:flex !important;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
+
+.jl-home-feature-icon,
+.jl-home-promo-icon {
+  margin-bottom:8px !important;
+}
+
+.jl-home-feature-icon svg,
+.jl-home-promo-icon svg {
+  width:26px;
+  height:26px;
+}
+
+.jl-editorial-copy,
+.jl-home-promo-copy {
+  gap:4px !important;
+}
+
+.jl-editorial-copy strong,
+.jl-home-promo-copy strong {
+  font-size:15px !important;
+}
+
+.jl-editorial-copy p,
+.jl-home-promo-copy small {
+  font-size:11px !important;
+  line-height:1.35;
+}
+
+.jj-category-grid {
+  grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+  gap:14px !important;
+}
+
+.jj-category-image-element {
+  object-fit:contain !important;
+}
+
+@media (max-width: 767px) {
+  .jl-discover-grid,
+  .jl-home-promo-features {
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:6px;
+    overflow:visible !important;
+  }
+
+  .jl-discover-card,
+  .jl-home-promo-feature {
+    min-height:108px !important;
+    padding:10px 5px !important;
+    border-radius:14px !important;
+  }
+
+  .jl-home-feature-icon svg,
+  .jl-home-promo-icon svg {
+    width:22px;
+    height:22px;
+  }
+
+  .jl-editorial-copy strong,
+  .jl-home-promo-copy strong {
+    font-size:11px !important;
+  }
+
+  .jl-editorial-copy small,
+  .jl-editorial-copy p,
+  .jl-home-promo-copy small {
+    font-size:8px !important;
+  }
+
+  .jj-category-grid {
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:10px !important;
+  }
+}
+
+/* product gallery cleanup */
+.product-gallery,
+.jl-product-gallery {
+  max-height:720px;
+}
+
+.product-gallery img,
+.jl-product-gallery img {
+  object-fit:contain;
+}
