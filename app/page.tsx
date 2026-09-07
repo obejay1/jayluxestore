@@ -216,6 +216,41 @@ export default function Home() {
           <p>We are here for you</p>
         </motion.div>
       </section>
+      <section className="jl-explore-jayluxe">
+        <div className="jj-section-header jl-category-heading">
+          <div>
+            <small>Explore JayLuxe</small>
+            <h2>Your Luxury Experience</h2>
+          </div>
+        </div>
+
+        <div className="jl-explore-grid">
+          <Link href="/beauty-services" className="jl-explore-card">
+            <span className="jl-explore-icon"><Scissors /></span>
+            <h3>Beauty Services</h3>
+            <p>Professional beauty treatments</p>
+          </Link>
+
+          <Link href="/bridal" className="jl-explore-card">
+            <span className="jl-explore-icon"><Gem /></span>
+            <h3>Bridal Packages</h3>
+            <p>Elegant bridal experiences</p>
+          </Link>
+
+          <Link href="/before-after" className="jl-explore-card">
+            <span className="jl-explore-icon"><Zap /></span>
+            <h3>Transformation</h3>
+            <p>See amazing beauty changes</p>
+          </Link>
+
+          <Link href="/gallery" className="jl-explore-card">
+            <span className="jl-explore-icon"><Images /></span>
+            <h3>Before & After</h3>
+            <p>Real JayLuxe results</p>
+          </Link>
+        </div>
+      </section>
+
       <section className={`jj-categories jl-home-category-section jl-home-tight-section ${PRODUCT_SECTION_SHELL_CLASS}`}>
         <div className="jj-section-header jl-category-heading">
           <div>

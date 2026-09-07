@@ -1745,3 +1745,22 @@ canvas {
 .invoice-items-table {
   max-width: 100% !important;
 }
+
+
+/* Product card image full-bleed luxury treatment */
+.lux-product-image {
+  aspect-ratio: 1 / 1.08 !important;
+  overflow: hidden !important;
+}
+
+.lux-product-image .lux-product-img,
+.lux-product-img {
+  object-fit: cover !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* keep product card spacing/layout unchanged */
+.lux-product-card {
+  overflow: hidden !important;
+}

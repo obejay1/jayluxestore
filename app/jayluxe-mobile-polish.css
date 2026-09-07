@@ -54,16 +54,19 @@
   .jl-product-main-image {
     width: 100% !important;
     max-width: 100% !important;
-    aspect-ratio: 4 / 5 !important;
+    aspect-ratio: 1 / 1.15 !important;
     border-radius: 16px !important;
-    cursor: default !important;
+    overflow: hidden !important;
+    cursor: grab !important;
+    touch-action: pan-y !important;
+    background: #f8f5ef !important;
   }
 
   .jl-product-main-image img {
     width: 100% !important;
     height: 100% !important;
     max-width: 100% !important;
-    object-fit: cover !important;
+    object-fit: contain !important;
     transform: none !important;
   }
 

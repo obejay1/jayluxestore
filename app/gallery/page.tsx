@@ -131,6 +131,27 @@ export default function GalleryPage() {
     ? filteredItems.findIndex((item) => item.id === selectedImage.id)
     : -1;
 
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+
+
+  function handleGalleryTouchStart(event: React.TouchEvent<HTMLDivElement>) {
+    setTouchStartX(event.touches[0]?.clientX ?? null);
+  }
+
+  function handleGalleryTouchEnd(event: React.TouchEvent<HTMLDivElement>) {
+    if (touchStartX === null) return;
+
+    const endX = event.changedTouches[0]?.clientX ?? touchStartX;
+    const distance = touchStartX - endX;
+
+    if (Math.abs(distance) > 50) {
+      if (distance > 0) nextImage();
+      else previousImage();
+    }
+
+    setTouchStartX(null);
+  }
+
   function changeCategory(category: string) {
     setActiveCategory(category);
     setCurrentPage(1);
@@ -336,7 +357,19 @@ export default function GalleryPage() {
                   viewport={{ once: true, amount: 0.25 }}
                   transition={{ duration: 0.45, delay: index * 0.04 }}
                 >
-                  <div className="jl-gallery-image">
+                  <div
+                    className="jl-gallery-image cursor-pointer"
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => { setShareMessage(''); setSelectedImage(item); }}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        setShareMessage('');
+                        setSelectedImage(item);
+                      }
+                    }}
+                    aria-label={`Open ${item.title}`}
+                  >
                     {item.image ? (
                       <ResponsiveImage src={item.image} alt={item.title} width={900} height={760} sizes="(max-width: 768px) 50vw, (max-width: 1100px) 50vw, 33vw" />
                     ) : (
@@ -435,7 +468,11 @@ export default function GalleryPage() {
                   <X size={22} aria-hidden="true" />
                 </button>
 
-                <div className="jl-gallery-modal-image">
+                <div
+                  className="jl-gallery-modal-image"
+                  onTouchStart={handleGalleryTouchStart}
+                  onTouchEnd={handleGalleryTouchEnd}
+                >
                   <ResponsiveImage
                     src={selectedImage.image}
                     alt={selectedImage.title}

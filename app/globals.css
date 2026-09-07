@@ -10156,3 +10156,85 @@ body {
     font-size: 10px !important;
   }
 }
+
+
+/* JayLuxe Explore Experience Feature Grid */
+.jl-explore-jayluxe {
+  padding: 24px 0;
+}
+
+.jl-explore-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.jl-explore-card {
+  background: #fffdf8;
+  border: 1px solid #eadfca;
+  border-radius: 22px;
+  padding: 22px 16px;
+  text-align: center;
+  text-decoration: none;
+  color: inherit;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.jl-explore-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(0,0,0,.08);
+}
+
+.jl-explore-icon {
+  width: 54px;
+  height: 54px;
+  margin: 0 auto 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #f7efd9;
+  color: #b58a28;
+}
+
+.jl-explore-icon svg {
+  width: 26px;
+  height: 26px;
+}
+
+.jl-explore-card h3 {
+  font-family: Georgia, serif;
+  margin: 0 0 8px;
+  font-size: 17px;
+}
+
+.jl-explore-card p {
+  margin: 0;
+  color: #777;
+  font-size: 13px;
+}
+
+@media (max-width: 768px) {
+  .jl-explore-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .jl-explore-card {
+    padding: 18px 10px;
+    border-radius: 16px;
+  }
+
+  .jl-explore-icon {
+    width: 42px;
+    height: 42px;
+  }
+
+  .jl-explore-card h3 {
+    font-size: 14px;
+  }
+
+  .jl-explore-card p {
+    font-size: 11px;
+  }
+}
