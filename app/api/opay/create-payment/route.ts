@@ -8,6 +8,7 @@ import {
 } from "@/lib/checkout/server";
 import {
   createOpaySignature,
+  getOpayRedirectUrl,
   normalizeJayLuxeNotifyLanguage,
   normalizeNigerianPhone,
   toOpayNotifyLanguage,
@@ -52,9 +53,10 @@ export async function POST(req: NextRequest) {
     const merchantId = process.env.OPAY_MERCHANT_ID?.trim();
     const secret = process.env.OPAY_SECRET_KEY?.trim();
     const publicKey = process.env.OPAY_PUBLIC_KEY?.trim();
+    const privateKey = process.env.OPAY_PRIVATE_KEY?.trim();
     const baseUrl = (process.env.OPAY_BASE_URL?.replace(/\/+$/, "") || "https://api.opaycheckout.com");
 
-    if (!merchantId || !publicKey || !baseUrl) {
+    if (!merchantId || !publicKey || !baseUrl || (!privateKey && !secret)) {
       await markCheckoutInitializationFailed(intent.reference);
       return NextResponse.json({ error: "OPay is not configured" }, { status: 503 });
     }
@@ -97,11 +99,15 @@ export async function POST(req: NextRequest) {
       payMethod: "OpayWalletNg",
     };
 
+    const signingKey = privateKey || secret;
+    const signature = signingKey ? createOpaySignature(payload, signingKey) : "";
+
     const response = await fetch(`${baseUrl}/api/v1/international/cashier/create`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${publicKey}`,
         MerchantId: merchantId,
+        Signature: signature,
         "Content-Type": "application/json",
         Accept: "application/json",
       },
@@ -142,10 +148,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const cashierUrl =
-      data?.data?.cashierUrl ??
-      data?.cashierUrl ??
-      null;
+    const cashierUrl = getOpayRedirectUrl(data);
 
     if (!cashierUrl) {
       await markCheckoutInitializationFailed(intent.reference);
