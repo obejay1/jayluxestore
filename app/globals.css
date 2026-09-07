@@ -10068,3 +10068,91 @@ body {
     display: none !important;
   }
 }
+
+
+/* FINAL MOBILE HOMEPAGE DENSITY FIX
+   Explore JayLuxe + Promotions & Popular Picks */
+@media (max-width: 768px) {
+
+  /* Explore JayLuxe */
+  .jl-discover-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+    overflow: visible !important;
+    padding: 0 !important;
+  }
+
+  .jl-discover-card.jl-compact-experience-card {
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 120px !important;
+    min-height: 120px !important;
+    padding: 10px 5px !important;
+    border-radius: 12px !important;
+    justify-content: flex-start !important;
+    gap: 5px !important;
+  }
+
+  .jl-discover-card.jl-compact-experience-card .jl-home-feature-icon {
+    width: 30px !important;
+    height: 30px !important;
+    margin: 0 auto !important;
+  }
+
+  .jl-discover-card.jl-compact-experience-card .jl-home-feature-icon svg {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  .jl-discover-card.jl-compact-experience-card .jl-editorial-copy {
+    gap: 0 !important;
+  }
+
+  .jl-discover-card.jl-compact-experience-card .jl-editorial-copy small,
+  .jl-discover-card.jl-compact-experience-card .jl-editorial-copy p {
+    display: none !important;
+  }
+
+  .jl-discover-card.jl-compact-experience-card .jl-editorial-copy strong {
+    font-size: 11px !important;
+    line-height: 1.2 !important;
+  }
+
+
+  /* Promotions */
+  .jl-home-promo-features {
+    width: 100% !important;
+    margin: 14px 0 24px !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+
+  .jl-home-promo-feature {
+    min-height: 130px !important;
+    height: 130px !important;
+    padding: 10px 5px !important;
+    border-radius: 14px !important;
+    gap: 6px !important;
+    justify-content: flex-start !important;
+  }
+
+  .jl-home-promo-icon {
+    width: 30px !important;
+    height: 30px !important;
+  }
+
+  .jl-home-promo-icon svg {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  .jl-home-promo-copy strong {
+    font-size: 11px !important;
+    line-height: 1.2 !important;
+  }
+
+  .jl-home-promo-copy small {
+    font-size: 10px !important;
+  }
+}
