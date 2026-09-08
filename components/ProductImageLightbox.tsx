@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight, Loader2, RefreshCw, X } from 'lucide-react';
 import ResponsiveImage from '@/components/ResponsiveImage';
 
@@ -15,6 +15,8 @@ export default function ProductImageLightbox({ images, initialIndex, productName
   const [index, setIndex] = useState(initialIndex);
   const [scale, setScale] = useState(1);
   const [touchStart, setTouchStart] = useState<number | null>(null);
+  const pinchStart = useRef<number | null>(null);
+  const pinchScaleStart = useRef(1);
   const [status, setStatus] = useState<'loading' | 'loaded' | 'error'>('loading');
   const [retryKey, setRetryKey] = useState(0);
 
@@ -63,6 +65,26 @@ export default function ProductImageLightbox({ images, initialIndex, productName
     setTouchStart(null);
   };
 
+  const handlePinchMove = (e: React.TouchEvent) => {
+    if (e.touches.length !== 2 || pinchStart.current === null) return;
+    const distance = Math.hypot(
+      e.touches[0].clientX - e.touches[1].clientX,
+      e.touches[0].clientY - e.touches[1].clientY,
+    );
+    setScale(Math.min(3, Math.max(1, pinchScaleStart.current * (distance / pinchStart.current))));
+  };
+
+  const handlePinchStart = (e: React.TouchEvent) => {
+    if (e.touches.length === 2) {
+      const distance = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY,
+      );
+      pinchStart.current = distance;
+      pinchScaleStart.current = scale;
+    }
+  };
+
   return (
     <div
       className="fixed inset-0 z-[9999] flex h-[100dvh] w-screen items-center justify-center overflow-hidden bg-black/95 p-2 md:p-6"
@@ -72,8 +94,15 @@ export default function ProductImageLightbox({ images, initialIndex, productName
       role="dialog"
       aria-modal="true"
       aria-label="Product image viewer"
-      onTouchStart={(e) => setTouchStart(e.changedTouches[0]?.clientX ?? null)}
-      onTouchEnd={handleTouchEnd}
+      onTouchStart={(e) => {
+        setTouchStart(e.changedTouches[0]?.clientX ?? null);
+        handlePinchStart(e);
+      }}
+      onTouchMove={handlePinchMove}
+      onTouchEnd={(e) => {
+        handleTouchEnd(e);
+        pinchStart.current = null;
+      }}
     >
       <div aria-live="polite" className="sr-only">
         {status === 'loading' ? 'Loading image' : status === 'error' ? 'Unable to load image' : 'Image loaded'}
