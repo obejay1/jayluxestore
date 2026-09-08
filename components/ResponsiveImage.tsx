@@ -10,7 +10,7 @@ import {
   isLegacyDataImageSource,
 } from '@/lib/images';
 
-type ResponsiveImageProps = Omit<ImageProps, 'src' | 'onError'> & {
+type ResponsiveImageProps = Omit<ImageProps, 'src'> & {
   src?: string | null;
   fallbackSrc?: string;
 };
@@ -19,6 +19,7 @@ export default function ResponsiveImage({
   src,
   fallbackSrc = '/product-placeholder.png',
   alt,
+  onError,
   ...props
 }: ResponsiveImageProps) {
   const [imageSource, setImageSource] = useState(getSafeImageSource(src, fallbackSrc));
@@ -34,9 +35,12 @@ export default function ResponsiveImage({
       alt={alt}
       loader={isCloudinaryImageSource(imageSource) ? cloudinaryImageLoader : props.loader}
       unoptimized={isLegacyDataImageSource(imageSource) || props.unoptimized}
-      onError={() => {
+      onError={(event) => {
         const safeFallback = getSafeImageSource(null, fallbackSrc);
-        if (imageSource !== safeFallback) setImageSource(safeFallback);
+        if (imageSource !== safeFallback) {
+          setImageSource(safeFallback);
+        }
+        onError?.(event);
       }}
     />
   );
