@@ -12,6 +12,10 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: NextRequest) {
+  // Paystack is intentionally disabled. OPay is the active checkout provider.
+  // Keep this endpoint and Paystack integration code intact for future reactivation.
+  return NextResponse.json({ message: 'Paystack is currently unavailable. Please use OPay.' }, { status: 503 });
+
   const paystackSecret = process.env.PAYSTACK_SECRET_KEY?.trim();
   if (!paystackSecret) return NextResponse.json({ message: 'Paystack is not configured.' }, { status: 503 });
 

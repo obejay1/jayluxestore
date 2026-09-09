@@ -26,6 +26,9 @@ type CreateOpayPaymentRequest = {
   customerAddress?: unknown;
   couponCode?: unknown;
   notifyLanguage?: unknown;
+  paymentType?: unknown;
+  installmentCount?: unknown;
+  installmentPlan?: Record<string, unknown> | null;
 };
 
 export async function POST(req: NextRequest) {
@@ -43,7 +46,9 @@ export async function POST(req: NextRequest) {
       customerPhone: body.customerPhone,
       customerAddress: body.customerAddress,
       couponCode: body.couponCode,
-      paymentType: "OPay",
+      paymentType: body.paymentType === 'Installment' ? 'Installment' : 'OPay',
+      installmentCount: body.installmentCount,
+      installmentPlan: body.installmentPlan,
       ...(customer?.uid ? { userId: customer.uid } : {}),
     });
 

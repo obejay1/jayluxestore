@@ -5,6 +5,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebaseAdmin';
 import { getVerifiedCustomer } from '@/lib/requestAuth';
 import { normalizeInstallmentStatus } from '@/lib/installments/status';
+import { calculateInitialInstallmentAmount, getInitialInstallmentPercentage, buildInstallmentAmounts } from '@/lib/installments/planMath';
 import { normalizeNigerianPhone, getOpayRedirectUrl, type OpayCreatePaymentResponse } from '@/lib/payments/opay';
 
 export const runtime = 'nodejs';
@@ -88,12 +89,19 @@ export async function POST(request: NextRequest) {
         throw Object.assign(new Error('This installment plan cannot accept another payment'), { status: 409 });
       }
 
-      const remainingBalance = Math.max(
-        0,
-        Number(plan.remainingBalance ?? Number(plan.totalAmount || 0) - Number(plan.paidAmount || 0)),
-      );
-      const requestedAmount = Number(plan.nextPaymentAmount || remainingBalance);
-      const amount = Math.min(remainingBalance, requestedAmount);
+      const totalAmount = Number(plan.totalAmount || plan.totalInstallmentAmount || 0);
+      const paidAmount = Number(plan.paidAmount || plan.amountPaid || 0);
+      const remainingBalance = Math.max(0, totalAmount - paidAmount);
+      const completedInstallments = Math.max(0, Math.trunc(Number(plan.completedInstallments || 0)));
+      const installmentCount = Math.max(1, Math.trunc(Number(plan.installmentCount || 1)));
+
+      const initialAmount = calculateInitialInstallmentAmount(totalAmount, plan, installmentCount);
+      const scheduleAmounts = buildInstallmentAmounts(totalAmount, installmentCount, initialAmount);
+      const currentDueAmount = completedInstallments === 0
+        ? initialAmount
+        : Number(plan.nextPaymentAmount || scheduleAmounts[completedInstallments] || remainingBalance);
+
+      const amount = Math.min(remainingBalance, Math.max(0, currentDueAmount));
 
       if (!Number.isFinite(amount) || amount <= 0 || remainingBalance <= 0) {
         throw Object.assign(new Error('No payment due'), { status: 400 });

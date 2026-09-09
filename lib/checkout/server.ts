@@ -8,7 +8,7 @@ import {
   sendOrderCreatedEmails,
   sendPaymentConfirmedEmails,
 } from '@/lib/email/workflows';
-import { addInstallmentMonths, buildInstallmentAmounts } from '@/lib/installments/planMath';
+import { addInstallmentMonths, buildInstallmentAmounts, calculateInitialInstallmentAmount } from '@/lib/installments/planMath';
 import type { Order, Product } from '@/lib/types';
 
 const CHECKOUT_COMPLETION_COOKIE_PREFIX = 'jl_checkout_';
@@ -180,6 +180,7 @@ export async function prepareCheckoutIntent(input: {
   couponCode: unknown;
   paymentType: unknown;
   installmentCount?: unknown;
+  installmentPlan?: Record<string, unknown> | null;
   userId?: string;
 }) {
   const customerName = cleanText(input.customerName, 120);
@@ -190,6 +191,7 @@ export async function prepareCheckoutIntent(input: {
   const rawPaymentType = cleanText(input.paymentType, 24);
   const paymentType: CheckoutPaymentType = rawPaymentType === 'Installment' ? 'Installment' : rawPaymentType === 'OPay' ? 'OPay' : 'Paystack';
   const installmentCount = paymentType === 'Installment' ? safeInstallmentCount(input.installmentCount) : null;
+  const installmentPlan = paymentType === 'Installment' ? (input.installmentPlan || null) : null;
 
   if (!customerName || !validEmail(customerEmail) || !customerPhone || !customerAddress) {
     throw new CheckoutError('Complete all checkout details before placing the order.', 400);
@@ -243,8 +245,10 @@ export async function prepareCheckoutIntent(input: {
   const shipping = subtotal > 0 ? shippingFee : 0;
   const total = subtotal + shipping + tax - discountAmount;
   if (total <= 0) throw new CheckoutError('The order total must be greater than zero.', 400);
-  const installmentAmounts = paymentType === 'Installment' ? buildInstallmentAmounts(total, installmentCount!) : [total];
-  const expectedPaymentAmount = installmentAmounts[0];
+  const installmentAmounts = paymentType === 'Installment' ? buildInstallmentAmounts(total, installmentCount!, expectedPaymentAmount) : [total];
+  const expectedPaymentAmount = paymentType === 'Installment'
+    ? calculateInitialInstallmentAmount(total, installmentPlan, installmentCount)
+    : total;
 
   const reference = `JL-CHECKOUT-${randomUUID()}`;
   const browserSecret = randomUUID().replaceAll('-', '') + randomUUID().replaceAll('-', '');
@@ -265,6 +269,7 @@ export async function prepareCheckoutIntent(input: {
     couponCode,
     paymentType,
     ...(installmentCount ? { installmentCount } : {}),
+    ...(installmentPlan ? { installmentPlan } : {}),
     items: orderItems,
     subtotal,
     shipping,
@@ -371,7 +376,7 @@ export async function finalizeCheckoutIntent(
   const estimatedDelivery = new Date(createdAt);
   estimatedDelivery.setDate(estimatedDelivery.getDate() + intent.deliveryDaysCount);
   const installmentCount = intent.paymentType === 'Installment' ? intent.installmentCount! : null;
-  const installmentAmounts = intent.paymentType === 'Installment' ? buildInstallmentAmounts(intent.total, installmentCount!) : [intent.total];
+  const installmentAmounts = intent.paymentType === 'Installment' ? buildInstallmentAmounts(intent.total, installmentCount!, intent.expectedPaymentAmount) : [intent.total];
   const installmentPlanId = intent.paymentType === 'Installment' ? randomUUID() : undefined;
   const remainingBalance = Math.max(0, intent.total - intent.expectedPaymentAmount);
 
@@ -387,7 +392,7 @@ export async function finalizeCheckoutIntent(
     taxRate: intent.taxRate,
     shippingFee: intent.shippingFee,
     discountAmount: intent.discountAmount,
-    paymentMethod: intent.paymentType === 'Installment' ? 'Installment (Paystack)' : intent.paymentType === 'OPay' ? 'OPay' : 'Paystack',
+    paymentMethod: intent.paymentType === 'Installment' ? 'Installment (OPay)' : intent.paymentType === 'OPay' ? 'OPay' : 'Paystack',
     paymentReference: reference,
     paymentStatus: intent.paymentType === 'Installment' && remainingBalance > 0 ? 'Partially Paid' : 'Paid',
     status: 'Processing',
@@ -450,7 +455,7 @@ export async function finalizeCheckoutIntent(
         nextPaymentAmount: remainingBalance > 0 ? installmentAmounts[1] : 0,
         nextPaymentDate,
         planDuration: `${installmentCount} payments`,
-        provider: 'Paystack',
+        provider: 'OPay',
         status: remainingBalance === 0 ? 'completed' : 'active',
         createdAt: createdAt.toISOString(),
         updatedAt: createdAt.toISOString(),
@@ -478,21 +483,21 @@ export async function finalizeCheckoutIntent(
         amount: intent.expectedPaymentAmount,
         expectedAmountKobo: intent.expectedAmountKobo,
         currency: 'NGN',
-        provider: 'Paystack',
+        provider: 'OPay',
         status: 'successful',
         verifiedAt: createdAt.toISOString(),
         remainingBalance,
         createdAt: createdAt.toISOString(),
       });
-      transaction.create(adminDb.collection('paymentTransactions').doc(`Paystack_${reference}`), {
+      transaction.create(adminDb.collection('paymentTransactions').doc(`OPay_${reference}`), {
         planId: installmentPlanId,
         paymentId: reference,
-        provider: 'Paystack',
+        provider: 'OPay',
         reference,
         amount: intent.expectedPaymentAmount,
         status: 'successful',
         currency: 'NGN',
-        idempotencyKey: `Paystack_${reference}`,
+        idempotencyKey: `OPay_${reference}`,
         createdAt: createdAt.toISOString(),
       });
     }

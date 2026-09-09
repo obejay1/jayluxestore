@@ -158,9 +158,7 @@ export default function Checkout() {
 
   const safeTotal = Number(total || 0);
 
-  const installmentInitialAmount = Math.ceil(
-    safeTotal / safeInstallmentCount
-  );
+  const installmentInitialAmount = Math.ceil(safeTotal / safeInstallmentCount);
 
   const installmentPlans = [2, 3, 4].map((count) => {
     const firstPayment = Math.ceil(safeTotal / count);
@@ -170,6 +168,7 @@ export default function Checkout() {
     return {
       count,
       firstPayment,
+      initialPaymentPercentage: Math.round((firstPayment / Math.max(1, safeTotal)) * 100),
       remainingBalance,
       remainingPayments,
       nextPayment: remainingPayments > 0
@@ -245,6 +244,9 @@ export default function Checkout() {
           // JayLuxe keeps the compact locale code internally. The API route
           // maps this safely to OPay's provider-specific enum.
           notifyLanguage: 'en',
+          paymentType: paymentMethod,
+          installmentCount: paymentMethod === 'Installment' ? installmentCount : null,
+          installmentPlan: paymentMethod === 'Installment' ? { initialPaymentPercentage: Math.round((installmentInitialAmount / Math.max(1, safeTotal)) * 100), installmentCount } : null,
         }),
       });
 

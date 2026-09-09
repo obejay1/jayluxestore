@@ -1,0 +1,196 @@
+/* Final source-of-truth override for the JayLuxe gallery lightbox viewer. */
+.jl-gallery-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: block;
+  padding: 0;
+  background: rgba(7, 7, 7, 0.94);
+  backdrop-filter: blur(14px);
+  overscroll-behavior: contain;
+}
+
+.jl-gallery-modal-card,
+.jl-gallery-modal-card--viewer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  overflow: hidden;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.jl-gallery-lightbox-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(env(safe-area-inset-top) + 72px) clamp(54px, 4vw, 88px) calc(env(safe-area-inset-bottom) + 58px);
+}
+
+.jl-gallery-modal-image,
+.jl-gallery-lightbox-viewport {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: transparent;
+  touch-action: none;
+}
+
+.jl-gallery-lightbox-viewport.is-zoomed {
+  cursor: grab;
+}
+
+.jl-gallery-lightbox-track {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.jl-gallery-lightbox-panzoom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  transform-origin: center center;
+  transition: transform 0.18s ease-out;
+  will-change: transform;
+}
+
+.jl-gallery-lightbox-panzoom img,
+.jl-gallery-lightbox-image {
+  width: auto !important;
+  height: auto !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: contain !important;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.jl-gallery-modal-info,
+.jl-gallery-modal-actions,
+.jl-gallery-share-status {
+  display: none !important;
+}
+
+.jl-gallery-modal-close {
+  position: fixed;
+  top: calc(env(safe-area-inset-top) + 18px);
+  right: calc(env(safe-area-inset-right) + 18px);
+  z-index: 10002;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  background: rgba(14, 14, 14, 0.52);
+  color: #ffffff;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.32);
+  backdrop-filter: blur(16px);
+}
+
+.jl-gallery-nav {
+  position: absolute;
+  top: 50%;
+  z-index: 10001;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: rgba(14, 14, 14, 0.46);
+  color: var(--jl-gold, #c8a24b);
+  transform: translateY(-50%);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.26);
+  backdrop-filter: blur(16px);
+}
+
+.jl-gallery-nav.prev {
+  left: clamp(10px, 2.5vw, 28px);
+}
+
+.jl-gallery-nav.next {
+  right: clamp(10px, 2.5vw, 28px);
+}
+
+.jl-gallery-lightbox-counter {
+  position: absolute;
+  bottom: calc(env(safe-area-inset-bottom) + 14px);
+  left: 50%;
+  z-index: 10001;
+  transform: translateX(-50%);
+  min-width: 62px;
+  padding: 8px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: rgba(14, 14, 14, 0.58);
+  color: rgba(255, 255, 255, 0.94);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-align: center;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.24);
+  backdrop-filter: blur(16px);
+}
+
+@media (hover: hover) {
+  .jl-gallery-modal-close:hover,
+  .jl-gallery-nav:hover {
+    border-color: rgba(200, 162, 75, 0.48);
+    background: rgba(18, 18, 18, 0.72);
+    color: var(--jl-gold, #c8a24b);
+  }
+}
+
+@media (max-width: 767px) {
+  .jl-gallery-lightbox-stage {
+    padding: calc(env(safe-area-inset-top) + 74px) 14px calc(env(safe-area-inset-bottom) + 54px);
+  }
+
+  .jl-gallery-modal-close {
+    top: calc(env(safe-area-inset-top) + 14px);
+    right: calc(env(safe-area-inset-right) + 14px);
+    width: 44px;
+    height: 44px;
+  }
+
+  .jl-gallery-nav {
+    width: 42px;
+    height: 42px;
+  }
+
+  .jl-gallery-nav.prev {
+    left: 8px;
+  }
+
+  .jl-gallery-nav.next {
+    right: 8px;
+  }
+
+  .jl-gallery-lightbox-counter {
+    bottom: calc(env(safe-area-inset-bottom) + 10px);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+  }
+}

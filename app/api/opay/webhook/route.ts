@@ -6,6 +6,7 @@ import {
 } from "@/lib/checkout/server";
 import { verifyOpayCallbackSignature } from "@/lib/payments/opay";
 import { adminDb } from "@/lib/firebaseAdmin";
+import { settleVerifiedInstallmentPayment } from '@/lib/installments/settlement';
 
 export const runtime = "nodejs";
 
@@ -65,7 +66,33 @@ export async function POST(req: Request) {
       currency,
     };
 
-    // This is the only point where an OPay payment can complete a JayLuxe
+    // Installment payments are reconciled from the provider webhook only.
+    // The browser return URL never marks an installment as paid.
+    const installmentPayment = await adminDb.collection('installmentPayments').doc(reference).get();
+    if (installmentPayment.exists) {
+      await settleVerifiedInstallmentPayment({
+        reference,
+        status: 'success',
+        amountKobo,
+        currency,
+        metadata: payload as Record<string, unknown>,
+      });
+
+      await paymentRef.set({
+        provider: 'opay',
+        reference,
+        transactionId,
+        amount: amountKobo,
+        currency,
+        status: 'SUCCESS',
+        paidAt: new Date(),
+        updatedAt: new Date(),
+      }, { merge: true });
+
+      return NextResponse.json({ received: true, installment: true });
+    }
+
+    // This is the only point where a normal OPay payment can complete a JayLuxe
     // checkout. HTTP 200 from create-payment never marks the order paid.
     const result = await finalizeCheckoutIntent(reference, suppliedPayment, "OPay");
 

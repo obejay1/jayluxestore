@@ -1,7 +1,7 @@
 'use client';
 
 
-import { useEffect, useId, useMemo, useState } from 'react';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import FocusLock from 'react-focus-lock';
 import {
@@ -10,7 +10,6 @@ import {
   ChevronRight,
   ImageIcon,
   Search,
-  Share2,
   X,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -51,9 +50,16 @@ export default function GalleryPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [shareMessage, setShareMessage] = useState('');
   const modalTitleId = useId();
   const modalDescriptionId = useId();
+  const lightboxViewportRef = useRef<HTMLDivElement | null>(null);
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  const [touchStartY, setTouchStartY] = useState<number | null>(null);
+  const [zoom, setZoom] = useState(1);
+  const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
+  const [pinchState, setPinchState] = useState<{ distance: number; zoom: number } | null>(null);
+  const [dragAnchor, setDragAnchor] = useState<{ x: number; y: number } | null>(null);
+  const [navDirection, setNavDirection] = useState(0);
 
   useEffect(() => {
     async function loadGallery() {
@@ -131,25 +137,115 @@ export default function GalleryPage() {
     ? filteredItems.findIndex((item) => item.id === selectedImage.id)
     : -1;
 
-  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  function resetLightboxTransform() {
+    setZoom(1);
+    setPanOffset({ x: 0, y: 0 });
+    setPinchState(null);
+    setDragAnchor(null);
+    setTouchStartX(null);
+    setTouchStartY(null);
+  }
 
+  function clampPan(x: number, y: number, nextZoom: number) {
+    const viewportRect = lightboxViewportRef.current?.getBoundingClientRect();
+
+    if (!viewportRect || nextZoom <= 1) {
+      return { x: 0, y: 0 };
+    }
+
+    const maxX = (viewportRect.width * (nextZoom - 1)) / 2;
+    const maxY = (viewportRect.height * (nextZoom - 1)) / 2;
+
+    return {
+      x: Math.max(-maxX, Math.min(maxX, x)),
+      y: Math.max(-maxY, Math.min(maxY, y)),
+    };
+  }
+
+  function getTouchDistance(touches: React.TouchList) {
+    if (touches.length < 2) return 0;
+
+    const [firstTouch, secondTouch] = [touches[0], touches[1]];
+    const deltaX = secondTouch.clientX - firstTouch.clientX;
+    const deltaY = secondTouch.clientY - firstTouch.clientY;
+
+    return Math.hypot(deltaX, deltaY);
+  }
 
   function handleGalleryTouchStart(event: React.TouchEvent<HTMLDivElement>) {
-    setTouchStartX(event.touches[0]?.clientX ?? null);
+    if (event.touches.length === 2) {
+      setPinchState({ distance: getTouchDistance(event.touches), zoom });
+      setDragAnchor(null);
+      setTouchStartX(null);
+      setTouchStartY(null);
+      return;
+    }
+
+    const touch = event.touches[0];
+    if (!touch) return;
+
+    setTouchStartX(touch.clientX);
+    setTouchStartY(touch.clientY);
+
+    if (zoom > 1) {
+      setDragAnchor({
+        x: touch.clientX - panOffset.x,
+        y: touch.clientY - panOffset.y,
+      });
+    }
+  }
+
+  function handleGalleryTouchMove(event: React.TouchEvent<HTMLDivElement>) {
+    if (event.touches.length === 2 && pinchState) {
+      event.preventDefault();
+
+      const distance = getTouchDistance(event.touches);
+      const nextZoom = Math.max(1, Math.min(4, pinchState.zoom * (distance / pinchState.distance)));
+      setZoom(nextZoom);
+      setPanOffset((currentOffset) => clampPan(currentOffset.x, currentOffset.y, nextZoom));
+      return;
+    }
+
+    if (event.touches.length === 1 && zoom > 1 && dragAnchor) {
+      event.preventDefault();
+      const touch = event.touches[0];
+      setPanOffset(clampPan(touch.clientX - dragAnchor.x, touch.clientY - dragAnchor.y, zoom));
+    }
   }
 
   function handleGalleryTouchEnd(event: React.TouchEvent<HTMLDivElement>) {
-    if (touchStartX === null) return;
+    if (pinchState && event.touches.length < 2) {
+      setPinchState(null);
+      setDragAnchor(null);
 
-    const endX = event.changedTouches[0]?.clientX ?? touchStartX;
-    const distance = touchStartX - endX;
+      if (zoom <= 1.02) {
+        resetLightboxTransform();
+      }
+      return;
+    }
 
-    if (Math.abs(distance) > 50) {
-      if (distance > 0) nextImage();
+    if (zoom > 1) {
+      if (event.touches.length === 0) {
+        setDragAnchor(null);
+      }
+      return;
+    }
+
+    if (touchStartX === null || touchStartY === null) return;
+
+    const endTouch = event.changedTouches[0];
+    if (!endTouch) return;
+
+    const deltaX = endTouch.clientX - touchStartX;
+    const deltaY = endTouch.clientY - touchStartY;
+
+    if (Math.abs(deltaX) > 50 && Math.abs(deltaX) > Math.abs(deltaY) * 1.2) {
+      if (deltaX < 0) nextImage();
       else previousImage();
     }
 
     setTouchStartX(null);
+    setTouchStartY(null);
   }
 
   function changeCategory(category: string) {
@@ -164,12 +260,16 @@ export default function GalleryPage() {
 
   function nextImage() {
     if (selectedIndex < filteredItems.length - 1) {
+      resetLightboxTransform();
+      setNavDirection(1);
       setSelectedImage(filteredItems[selectedIndex + 1]);
     }
   }
 
   function previousImage() {
     if (selectedIndex > 0) {
+      resetLightboxTransform();
+      setNavDirection(-1);
       setSelectedImage(filteredItems[selectedIndex - 1]);
     }
   }
@@ -184,12 +284,21 @@ export default function GalleryPage() {
 
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === 'Escape') {
+        resetLightboxTransform();
         setSelectedImage(null);
         return;
       }
       const index = filteredItems.findIndex((item) => item.id === currentImage.id);
-      if (event.key === 'ArrowLeft' && index > 0) setSelectedImage(filteredItems[index - 1]);
-      if (event.key === 'ArrowRight' && index < filteredItems.length - 1) setSelectedImage(filteredItems[index + 1]);
+      if (event.key === 'ArrowLeft' && index > 0) {
+        resetLightboxTransform();
+        setNavDirection(-1);
+        setSelectedImage(filteredItems[index - 1]);
+      }
+      if (event.key === 'ArrowRight' && index < filteredItems.length - 1) {
+        resetLightboxTransform();
+        setNavDirection(1);
+        setSelectedImage(filteredItems[index + 1]);
+      }
     }
 
     window.addEventListener('keydown', handleKeyDown);
@@ -198,30 +307,6 @@ export default function GalleryPage() {
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [selectedImage, filteredItems]);
-
-  async function shareImage() {
-    if (!selectedImage) return;
-
-    const shareData = {
-      title: `Jayluxe Gallery: ${selectedImage.title}`,
-      text: selectedImage.description,
-      url: window.location.href,
-    };
-
-    try {
-      if (navigator.share) {
-        await navigator.share(shareData);
-        setShareMessage('Share menu opened.');
-        return;
-      }
-
-      await navigator.clipboard.writeText(window.location.href);
-      setShareMessage('Gallery link copied to your clipboard.');
-    } catch (error) {
-      if (error instanceof DOMException && error.name === 'AbortError') return;
-      setShareMessage('The gallery link could not be shared.');
-    }
-  }
 
   return (
     <main className="jl-gallery-page">
@@ -361,10 +446,11 @@ export default function GalleryPage() {
                     className="jl-gallery-image cursor-pointer"
                     role="button"
                     tabIndex={0}
-                    onClick={() => { setShareMessage(''); setSelectedImage(item); }}
+                    onClick={() => { resetLightboxTransform(); setNavDirection(0); setSelectedImage(item); }}
                     onKeyDown={(event) => {
                       if (event.key === 'Enter' || event.key === ' ') {
-                        setShareMessage('');
+                        resetLightboxTransform();
+                        setNavDirection(0);
                         setSelectedImage(item);
                       }
                     }}
@@ -385,7 +471,7 @@ export default function GalleryPage() {
                     <h3>{item.title}</h3>
                     <p>{item.description}</p>
 
-                    <button type="button" onClick={() => { setShareMessage(''); setSelectedImage(item); }} aria-label={`View details for ${item.title}`}>
+                    <button type="button" onClick={() => { resetLightboxTransform(); setNavDirection(0); setSelectedImage(item); }} aria-label={`View details for ${item.title}`}>
                       View Detail
                       <ArrowRight size={16} />
                     </button>
@@ -446,69 +532,102 @@ export default function GalleryPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onMouseDown={() => setSelectedImage(null)}
+              transition={{ duration: 0.22, ease: 'easeOut' }}
+              onMouseDown={() => {
+                resetLightboxTransform();
+                setSelectedImage(null);
+              }}
             >
               <motion.div
-                className="jl-gallery-modal-card"
-                initial={{ scale: 0.98, y: 8 }}
-                animate={{ scale: 1, y: 0 }}
-                exit={{ scale: 0.98, y: 8 }}
+                className="jl-gallery-modal-card jl-gallery-modal-card--viewer"
+                initial={{ opacity: 0, scale: 0.985, y: 10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.985, y: 10 }}
+                transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}
                 onMouseDown={(event) => event.stopPropagation()}
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby={modalTitleId}
                 aria-describedby={modalDescriptionId}
               >
+                <div className="sr-only">
+                  <h2 id={modalTitleId}>{selectedImage.title}</h2>
+                  <p id={modalDescriptionId}>{selectedImage.description}</p>
+                </div>
+
                 <button
                   type="button"
                   className="jl-gallery-modal-close"
-                  onClick={() => setSelectedImage(null)}
-                  aria-label="Close gallery detail"
+                  onClick={() => {
+                    resetLightboxTransform();
+                    setSelectedImage(null);
+                  }}
+                  aria-label="Close gallery viewer"
                 >
                   <X size={22} aria-hidden="true" />
                 </button>
 
-                <div
-                  className="jl-gallery-modal-image"
-                  onTouchStart={handleGalleryTouchStart}
-                  onTouchEnd={handleGalleryTouchEnd}
-                >
-                  <ResponsiveImage
-                    src={selectedImage.image}
-                    alt={selectedImage.title}
-                    width={1600}
-                    height={1200}
-                    sizes="100vw"
-                    className="jl-gallery-lightbox-image"
-                  />
-                </div>
-
-                <div className="jl-gallery-modal-info">
-                  <span>{selectedImage.category}</span>
-                  <h2 id={modalTitleId}>{selectedImage.title}</h2>
-                  <p id={modalDescriptionId}>{selectedImage.description}</p>
-
-                  <div className="jl-gallery-modal-actions">
-                    <button type="button" onClick={() => void shareImage()}>
-                      <Share2 size={18} aria-hidden="true" /> Share
-                    </button>
-                    <Link href="/services">
-                      Book Similar Look <ArrowRight size={18} aria-hidden="true" />
-                    </Link>
-                  </div>
-                  {shareMessage && <p className="jl-gallery-share-status" role="status">{shareMessage}</p>}
-                </div>
-
                 {selectedIndex > 0 && (
                   <button type="button" className="jl-gallery-nav prev" onClick={previousImage} aria-label="Previous gallery image">
-                    <ChevronLeft size={30} aria-hidden="true" />
+                    <ChevronLeft size={24} aria-hidden="true" />
                   </button>
                 )}
+
                 {selectedIndex < filteredItems.length - 1 && (
                   <button type="button" className="jl-gallery-nav next" onClick={nextImage} aria-label="Next gallery image">
-                    <ChevronRight size={30} aria-hidden="true" />
+                    <ChevronRight size={24} aria-hidden="true" />
                   </button>
                 )}
+
+                <div className="jl-gallery-lightbox-stage">
+                  <div
+                    ref={lightboxViewportRef}
+                    className={`jl-gallery-modal-image jl-gallery-lightbox-viewport${zoom > 1 ? ' is-zoomed' : ''}`}
+                    onTouchStart={handleGalleryTouchStart}
+                    onTouchMove={handleGalleryTouchMove}
+                    onTouchEnd={handleGalleryTouchEnd}
+                  >
+                    <AnimatePresence initial={false} mode="wait">
+                      <motion.div
+                        key={selectedImage.id}
+                        className="jl-gallery-lightbox-track"
+                        initial={{
+                          opacity: 0,
+                          x: navDirection > 0 ? 36 : navDirection < 0 ? -36 : 0,
+                          scale: 0.99,
+                        }}
+                        animate={{ opacity: 1, x: 0, scale: 1 }}
+                        exit={{
+                          opacity: 0,
+                          x: navDirection > 0 ? -36 : navDirection < 0 ? 36 : 0,
+                          scale: 0.99,
+                        }}
+                        transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                      >
+                        <div
+                          className="jl-gallery-lightbox-panzoom"
+                          style={{
+                            transform: `translate3d(${panOffset.x}px, ${panOffset.y}px, 0) scale(${zoom})`,
+                          }}
+                        >
+                          <ResponsiveImage
+                            src={selectedImage.image}
+                            alt={selectedImage.title}
+                            width={1600}
+                            height={1600}
+                            sizes="100vw"
+                            className="jl-gallery-lightbox-image"
+                            priority
+                          />
+                        </div>
+                      </motion.div>
+                    </AnimatePresence>
+                  </div>
+
+                  <div className="jl-gallery-lightbox-counter" aria-live="polite">
+                    {selectedIndex + 1}/{filteredItems.length}
+                  </div>
+                </div>
               </motion.div>
             </motion.div>
           </FocusLock>

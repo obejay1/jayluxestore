@@ -1,7 +1,7 @@
 import { FieldValue } from 'firebase-admin/firestore';
 
 import { adminDb } from '@/lib/firebaseAdmin';
-import { buildInstallmentAmounts } from '@/lib/installments/planMath';
+import { buildInstallmentAmounts, calculateInitialInstallmentAmount } from '@/lib/installments/planMath';
 import { isSuccessfulPaymentStatus } from '@/lib/installments/status';
 
 export class InstallmentSettlementError extends Error {
@@ -11,7 +11,7 @@ export class InstallmentSettlementError extends Error {
   }
 }
 
-type VerifiedPaystackPayment = {
+type VerifiedOPayPayment = {
   reference: string;
   status: string;
   amountKobo: number;
@@ -56,7 +56,7 @@ function nextMonthlyDate(value: unknown): string | null {
 }
 
 export async function settleVerifiedInstallmentPayment(
-  verified: VerifiedPaystackPayment,
+  verified: VerifiedOPayPayment,
 ): Promise<SettlementResult> {
   if (!verified.reference || verified.status !== 'success') {
     throw new InstallmentSettlementError('The provider payment is not successful.', 402);
@@ -169,7 +169,7 @@ export async function settleVerifiedInstallmentPayment(
     const completedBefore = Math.max(0, Math.trunc(Number(plan.completedInstallments || 0)));
     const installmentCount = Math.max(1, Math.trunc(Number(plan.installmentCount || 1)));
     const completedAfter = Math.min(installmentCount, completedBefore + 1);
-    const amounts = buildInstallmentAmounts(totalAmount, installmentCount);
+    const amounts = buildInstallmentAmounts(totalAmount, installmentCount, calculateInitialInstallmentAmount(totalAmount, plan, installmentCount));
     const nextPaymentAmount = remaining > 0
       ? Number(amounts[completedAfter] || Math.min(remaining, Math.ceil(remaining / Math.max(1, installmentCount - completedAfter))))
       : 0;
@@ -177,12 +177,12 @@ export async function settleVerifiedInstallmentPayment(
 
     const transactionRef = adminDb
       .collection('paymentTransactions')
-      .doc(`Paystack_${verified.reference}`);
+      .doc(`OPay_${verified.reference}`);
     const transactionSnap = await transaction.get(transactionRef);
 
     transaction.set(paymentRef, {
       status: 'successful',
-      provider: 'Paystack',
+      provider: 'OPay',
       providerReference: verified.reference,
       providerAmountKobo: verified.amountKobo,
       currency,
@@ -218,12 +218,12 @@ export async function settleVerifiedInstallmentPayment(
       transaction.create(transactionRef, {
         planId,
         paymentId: paymentRef.id,
-        provider: 'Paystack',
+        provider: 'OPay',
         reference: verified.reference,
         amount: paymentAmount,
         status: 'successful',
         currency,
-        idempotencyKey: `Paystack_${verified.reference}`,
+        idempotencyKey: `OPay_${verified.reference}`,
         createdAt: new Date().toISOString(),
       });
     }

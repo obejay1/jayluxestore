@@ -13,10 +13,31 @@ const steps = [
 ];
 
 export default async function OrderTracking({ params }: { params: { id: string } }) {
-  const snap = await adminDb.collection('orders').doc(params.id).get();
-  if (!snap.exists) return notFound();
+  const orderId = String(params?.id || '').trim();
 
-  const order = snap.data() || {};
+  if (!orderId) return notFound();
+
+  let order: Record<string, unknown>;
+
+  try {
+    const snap = await adminDb.collection('orders').doc(orderId).get();
+
+    if (!snap.exists) return notFound();
+
+    order = (snap.data() || {}) as Record<string, unknown>;
+  } catch (error) {
+    console.error('ORDER TRACKING LOAD ERROR:', error);
+
+    return (
+      <main className="jl-account-page" style={{ padding: '32px 20px' }}>
+        <section className="jl-card" style={{ maxWidth: 760, margin: '0 auto' }}>
+          <p style={{ color: '#8c6b2f', fontWeight: 700 }}>JAYLUXE ORDER</p>
+          <h1>We could not open this order.</h1>
+          <p>Please try again. Your order has not been removed.</p>
+        </section>
+      </main>
+    );
+  }
   const paymentStatus = String(order.paymentStatus || '').toLowerCase();
   const orderStatus = String(order.status || '').toLowerCase();
   const confirmed = paymentStatus === 'paid' || paymentStatus === 'completed';
@@ -26,7 +47,7 @@ export default async function OrderTracking({ params }: { params: { id: string }
       <section className="jl-card" style={{ maxWidth: 760, margin: '0 auto' }}>
         <p style={{ color: '#8c6b2f', fontWeight: 700 }}>JAYLUXE ORDER</p>
         <h1>Order Tracking</h1>
-        <p>Reference: {params.id}</p>
+        <p>Reference: {orderId}</p>
 
         <div style={{ marginTop: 24 }}>
           <h2>Current Status</h2>
