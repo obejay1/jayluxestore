@@ -2482,19 +2482,3 @@
     white-space: nowrap;
   }
 }
-
-
-/* Admin-only viewport interaction stability.
-   Does not affect the customer storefront. */
-.jayluxe-admin-viewport-lock {
-  touch-action: manipulation;
-  overscroll-behavior: contain;
-  min-height: 100vh;
-}
-
-.jayluxe-admin-viewport-lock input,
-.jayluxe-admin-viewport-lock textarea,
-.jayluxe-admin-viewport-lock select,
-.jayluxe-admin-viewport-lock button {
-  touch-action: manipulation;
-}

@@ -1,0 +1,118 @@
+/*
+  JayLuxe service card source-of-truth layer.
+  Keep service card UI changes here. This file is intentionally last in
+  the design-system bundle so component intent wins over legacy phase rules.
+*/
+
+.jl-unified-service-card {
+  overflow: hidden;
+}
+
+.jl-service-card-compact .jl-unified-service-body {
+  padding: 1rem;
+}
+
+.jl-service-card-compact .jl-unified-service-category,
+.jl-service-card-compact .jl-unified-service-price {
+  margin-top: 0.35rem;
+}
+
+.jl-responsive-card-grid {
+  display: grid;
+}
+
+@media (max-width: 768px) {
+  .jl-responsive-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .jl-service-card-compact .jl-unified-service-body {
+    padding: 0.75rem;
+  }
+
+  .jl-service-card-compact h3 {
+    font-size: 0.95rem;
+    line-height: 1.25;
+  }
+}
+
+
+/*
+  JayLuxe Explore Luxury Experience source-of-truth.
+  Only controls the homepage Explore JayLuxe section.
+*/
+.jl-explore-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  align-items: stretch;
+}
+
+.jl-explore-card {
+  display: flex;
+  min-height: 140px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  padding: 16px;
+  text-align: center;
+  background: #fffaf0;
+  border: 1px solid rgba(212, 175, 55, 0.18);
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.jl-explore-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.07);
+}
+
+.jl-explore-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  color: #d4af37;
+}
+
+.jl-explore-icon svg {
+  width: 28px;
+  height: 28px;
+}
+
+.jl-explore-card h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.jl-explore-card p {
+  margin: 0;
+  color: var(--jl-muted, #6b7280);
+  font-size: .78rem;
+  line-height: 1.35;
+}
+
+@media (max-width: 767px) {
+  .jl-explore-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .jl-explore-card {
+    min-height: 130px;
+    padding: 14px;
+  }
+
+  .jl-explore-card h3 {
+    font-size: .95rem;
+  }
+
+  .jl-explore-card p {
+    font-size: .75rem;
+  }
+}

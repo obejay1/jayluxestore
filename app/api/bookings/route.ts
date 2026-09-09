@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebaseAdmin';
 import { getEmailConfig } from '@/lib/email/config';
 import { sendManagedEmail } from '@/lib/email/service';
+import { sendSMS } from '@/lib/termii';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -61,6 +62,13 @@ function formatBookingTime(value: string) {
   const displayHour = hours % 12 || 12;
   return `${displayHour}:${minutes} ${suffix}`;
 }
+function formatSmsPhone(value: string) {
+  const phone = value.replace(/[^\\d+]/g, '');
+  if (phone.startsWith('+234')) return phone.slice(1);
+  if (phone.startsWith('0')) return `234${phone.slice(1)}`;
+  return phone.replace(/^\\+/, '');
+}
+
 function escapeHtml(value: string) {
   return value
     .replaceAll('&', '&amp;')
@@ -352,6 +360,33 @@ export async function POST(request: Request) {
       customerResendEmailId: customerEmailResult.resendId || null,
       updatedAt: FieldValue.serverTimestamp(),
     });
+
+    // Send SMS notifications through Termii without blocking successful bookings.
+    const bookingSmsTasks = [];
+
+    const customerSmsPhone = formatSmsPhone(clean(String(body.customerPhone ?? ''), 40));
+    if (customerSmsPhone) {
+      bookingSmsTasks.push(
+        sendSMS({
+          phone: customerSmsPhone,
+          message: `JayLuxe: Your booking request for ${clean(String(body.serviceName ?? 'our service'), 80)} has been received. We will contact you shortly.`,
+        }),
+      );
+    }
+
+    const adminPhone = process.env.JAYLUXE_ADMIN_SMS_PHONE;
+    if (adminPhone) {
+      bookingSmsTasks.push(
+        sendSMS({
+          phone: formatSmsPhone(adminPhone),
+          message: `JayLuxe: New booking request from ${clean(String(body.customerName ?? 'Customer'), 80)} for ${clean(String(body.serviceName ?? 'service'), 80)}.`,
+        }),
+      );
+    }
+
+    if (bookingSmsTasks.length) {
+      await Promise.allSettled(bookingSmsTasks);
+    }
 
     return NextResponse.json({
       ok: true,

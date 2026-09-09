@@ -9,6 +9,8 @@ import {
 } from '@/lib/checkout/server';
 import { adminDb } from '@/lib/firebaseAdmin';
 import { getVerifiedCustomer } from '@/lib/requestAuth';
+import { sendSMS } from '@/lib/termii';
+import { sendAdminOrderNotification } from '@/lib/email';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -52,6 +54,26 @@ export async function POST(request: NextRequest) {
     const result = await finalizeCheckoutIntent(reference);
     const { accessToken, ...safeOrder } = result.order;
     if (!accessToken) throw new CheckoutError('The order access credential is unavailable.', 500);
+
+    if (!result.duplicate) {
+      const orderItems = Array.isArray(result.order.items)
+        ? result.order.items.length
+        : 0;
+
+      const adminPhone = process.env.JAYLUXE_ADMIN_SMS_PHONE?.trim();
+
+      if (adminPhone) {
+        void sendSMS({
+          phone: adminPhone,
+          message: `JayLuxe Alert: New order received. Customer: ${result.order.customerName}. Order ID: ${result.order.id}. Amount: NGN ${result.order.total}. Items: ${orderItems}. Check admin dashboard.`,
+        }).catch((smsError) => {
+          console.error('ADMIN_ORDER_SMS_FAILED', {
+            message: smsError instanceof Error ? smsError.message : String(smsError),
+            orderId: result.order.id,
+          });
+        });
+      }
+    }
 
     const response = NextResponse.json({
       ok: true,
