@@ -6,7 +6,7 @@ module.exports = {
     './lib/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   prefix: 'tw-',
-  important: true,
+  important: false,
   corePlugins: {
     preflight: false,
   },

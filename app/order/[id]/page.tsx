@@ -55,6 +55,17 @@ export default async function OrderTracking({ params }: { params: { id: string }
           <p>Payment: {paymentStatus || 'pending'}</p>
         </div>
 
+        <div style={{ marginTop: 24 }}>
+          <h2>Items</h2>
+          <ul style={{ display: 'grid', gap: 10 }}>
+            {Array.isArray(order.items) && order.items.length ? (order.items as Array<Record<string, unknown>>).map((item, index) => (
+              <li key={index}>
+                {String(item.name || item.productName || 'Item')} × {String(item.quantity || 1)}
+              </li>
+            )) : <li>No item details available.</li>}
+          </ul>
+        </div>
+
         <ol style={{ marginTop: 28, display: 'grid', gap: 12 }}>
           {steps.map((step, index) => (
             <li key={step} style={{ display: 'flex', gap: 10 }}>

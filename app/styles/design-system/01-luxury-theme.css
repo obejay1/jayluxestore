@@ -7175,3 +7175,16 @@ textarea:disabled {
     font-size: 0.51rem;
   }
 }
+
+
+/* Cart hero compact source fix */
+.jl-cart-page .jl-cart-hero {
+  padding-top: clamp(28px, 4vw, 56px);
+  min-height: auto;
+}
+
+@media (max-width: 640px) {
+  .jl-cart-page .jl-cart-hero {
+    padding-top: 28px;
+  }
+}

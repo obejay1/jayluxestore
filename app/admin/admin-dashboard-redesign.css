@@ -1222,3 +1222,65 @@
     white-space: nowrap;
   }
 }
+
+
+/* JayLuxe payment overview refinement - single source for admin payment stats */
+.admin-payment-overview {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin: 18px 0;
+}
+
+.admin-payment-overview article {
+  background: #fffdf8;
+  border: 1px solid rgba(181, 145, 67, .18);
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: 0 8px 24px rgba(20, 16, 12, .06);
+}
+
+.admin-payment-overview article:first-child {
+  background: linear-gradient(145deg, #191714, #2b241b);
+  border-color: transparent;
+}
+
+.admin-payment-overview article:first-child small,
+.admin-payment-overview article:first-child span,
+.admin-payment-overview article:first-child strong {
+  color: #fff8ea;
+}
+
+.admin-payment-overview small {
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  font-weight: 700;
+  font-size: 11px;
+}
+
+.admin-payment-overview strong {
+  display: block;
+  margin: 8px 0;
+  font-size: 32px;
+  line-height: 1;
+  color: #8b6a24;
+}
+
+.admin-payment-overview span {
+  color: #756b60;
+  font-size: 13px;
+}
+
+@media (max-width: 768px) {
+  .admin-payment-overview {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .admin-payment-overview article {
+    padding: 14px;
+  }
+  .admin-payment-overview strong {
+    font-size: 24px;
+  }
+}
