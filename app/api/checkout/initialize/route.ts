@@ -12,10 +12,6 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: NextRequest) {
-  // Paystack is intentionally disabled. OPay is the active checkout provider.
-  // Keep this endpoint and Paystack integration code intact for future reactivation.
-  return NextResponse.json({ message: 'Paystack is currently unavailable. Please use OPay.' }, { status: 503 });
-
   const paystackSecret = process.env.PAYSTACK_SECRET_KEY?.trim();
   if (!paystackSecret) return NextResponse.json({ message: 'Paystack is not configured.' }, { status: 503 });
 
@@ -26,11 +22,12 @@ export async function POST(request: NextRequest) {
     if (suppliedBearer && !customer) return NextResponse.json({ message: 'Your session has expired. Sign in again and retry.' }, { status: 401 });
 
     const requestedEmail = String(body?.customerEmail || '').trim().toLowerCase();
-    if (customer?.email && customer.email.trim().toLowerCase() !== requestedEmail) {
+    const verifiedCustomer = customer;
+    if (verifiedCustomer?.email && verifiedCustomer.email.trim().toLowerCase() !== requestedEmail) {
       return NextResponse.json({ message: 'Use the email address connected to your signed-in account.' }, { status: 400 });
     }
 
-    const { intent, browserSecret } = await prepareCheckoutIntent({ ...body, userId: customer?.uid });
+    const { intent, browserSecret } = await prepareCheckoutIntent({ ...body, userId: verifiedCustomer?.uid });
     const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL?.trim() || process.env.NEXT_PUBLIC_APP_URL?.trim() || new URL(request.url).origin).replace(/\/$/, '');
 
     let providerResponse: Response;
@@ -58,12 +55,13 @@ export async function POST(request: NextRequest) {
     }
 
     const providerData = await providerResponse.json() as { status?: boolean; message?: string; data?: { authorization_url?: string } };
-    if (!providerResponse.ok || !providerData.status || !providerData.data?.authorization_url) {
+    const authorizationUrl = providerData.data?.authorization_url;
+    if (!providerResponse.ok || !providerData.status || !authorizationUrl) {
       await markCheckoutInitializationFailed(intent.reference);
       return NextResponse.json({ message: providerData.message || 'Unable to initialize payment.' }, { status: 502 });
     }
 
-    const response = NextResponse.json({ authorizationUrl: providerData.data.authorization_url, reference: intent.reference, amount: intent.expectedPaymentAmount });
+    const response = NextResponse.json({ authorizationUrl: authorizationUrl, reference: intent.reference, amount: intent.expectedPaymentAmount });
     response.cookies.set(checkoutCompletionCookieName(intent.reference), `${intent.reference}.${browserSecret}`, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',

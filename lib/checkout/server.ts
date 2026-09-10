@@ -245,9 +245,15 @@ export async function prepareCheckoutIntent(input: {
   const shipping = subtotal > 0 ? shippingFee : 0;
   const total = subtotal + shipping + tax - discountAmount;
   if (total <= 0) throw new CheckoutError('The order total must be greater than zero.', 400);
-  const expectedPaymentAmount = paymentType === 'Installment'
-    ? calculateInitialInstallmentAmount(total, installmentPlan, installmentCount)
-    : total;
+  let expectedPaymentAmount: number;
+  if (paymentType === 'Installment') {
+    if (installmentCount == null) {
+      throw new CheckoutError('Choose a valid installment plan.', 400);
+    }
+    expectedPaymentAmount = calculateInitialInstallmentAmount(total, installmentPlan, installmentCount);
+  } else {
+    expectedPaymentAmount = total;
+  }
 
   let installmentAmounts: number[];
   if (paymentType === 'Installment') {
