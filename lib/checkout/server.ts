@@ -245,10 +245,13 @@ export async function prepareCheckoutIntent(input: {
   const shipping = subtotal > 0 ? shippingFee : 0;
   const total = subtotal + shipping + tax - discountAmount;
   if (total <= 0) throw new CheckoutError('The order total must be greater than zero.', 400);
-  const installmentAmounts = paymentType === 'Installment' ? buildInstallmentAmounts(total, installmentCount!, expectedPaymentAmount) : [total];
   const expectedPaymentAmount = paymentType === 'Installment'
     ? calculateInitialInstallmentAmount(total, installmentPlan, installmentCount)
     : total;
+
+  const installmentAmounts = paymentType === 'Installment'
+    ? buildInstallmentAmounts(total, installmentCount!, expectedPaymentAmount)
+    : [total];
 
   const reference = `JL-CHECKOUT-${randomUUID()}`;
   const browserSecret = randomUUID().replaceAll('-', '') + randomUUID().replaceAll('-', '');

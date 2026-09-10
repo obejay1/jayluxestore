@@ -10067,3 +10067,46 @@ body {
  .jl-product-lightbox-nav{width:42px;height:42px;}
  .jl-product-lightbox-nav.prev{left:8px}.jl-product-lightbox-nav.next{right:8px}
 }
+
+/* JayLuxe cart hero mobile spacing refinement */
+@media (max-width: 768px) {
+  .jl-cart-page {
+    padding-top: 96px;
+  }
+
+  .jl-cart-page .jl-cart-hero {
+    min-height: auto;
+    padding-top: 18px;
+    padding-bottom: 8px;
+  }
+
+  .jl-cart-page .jl-cart-hero .jl-page-eyebrow {
+    margin-top: 12px;
+    margin-bottom: 8px;
+  }
+
+  .jl-cart-page .jl-cart-hero h1 {
+    margin-top: 0;
+    margin-bottom: 10px;
+  }
+
+  .jl-cart-page .jl-cart-hero p {
+    margin-bottom: 0;
+  }
+
+  .jl-cart-page .jl-cart-layout {
+    margin-top: 12px;
+  }
+}
+
+@media (max-width: 560px) {
+  .jl-cart-page {
+    padding-top: 88px;
+  }
+
+  .jl-cart-page .jl-cart-hero {
+    min-height: auto;
+    padding-top: 12px;
+    padding-bottom: 4px;
+  }
+}
