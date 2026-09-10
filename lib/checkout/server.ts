@@ -249,9 +249,20 @@ export async function prepareCheckoutIntent(input: {
     ? calculateInitialInstallmentAmount(total, installmentPlan, installmentCount)
     : total;
 
-  const installmentAmounts = paymentType === 'Installment'
-    ? buildInstallmentAmounts(total, installmentCount!, expectedPaymentAmount)
-    : [total];
+  let installmentAmounts: number[];
+  if (paymentType === 'Installment') {
+    if (installmentCount == null) {
+      throw new CheckoutError('Choose a valid installment plan.', 400);
+    }
+
+    installmentAmounts = buildInstallmentAmounts(
+      total,
+      installmentCount,
+      expectedPaymentAmount
+    );
+  } else {
+    installmentAmounts = [total];
+  }
 
   const reference = `JL-CHECKOUT-${randomUUID()}`;
   const browserSecret = randomUUID().replaceAll('-', '') + randomUUID().replaceAll('-', '');
@@ -378,8 +389,23 @@ export async function finalizeCheckoutIntent(
   const accessToken = randomUUID().replaceAll('-', '');
   const estimatedDelivery = new Date(createdAt);
   estimatedDelivery.setDate(estimatedDelivery.getDate() + intent.deliveryDaysCount);
-  const installmentCount = intent.paymentType === 'Installment' ? intent.installmentCount! : null;
-  const installmentAmounts = intent.paymentType === 'Installment' ? buildInstallmentAmounts(intent.total, installmentCount!, intent.expectedPaymentAmount) : [intent.total];
+  let installmentAmounts: number[];
+  let installmentCount: number | undefined;
+
+  if (intent.paymentType === 'Installment') {
+    if (intent.installmentCount == null) {
+      throw new CheckoutError('Invalid installment plan.', 400);
+    }
+
+    installmentCount = intent.installmentCount;
+    installmentAmounts = buildInstallmentAmounts(
+      intent.total,
+      installmentCount,
+      intent.expectedPaymentAmount
+    );
+  } else {
+    installmentAmounts = [intent.total];
+  }
   const installmentPlanId = intent.paymentType === 'Installment' ? randomUUID() : undefined;
   const remainingBalance = Math.max(0, intent.total - intent.expectedPaymentAmount);
 
