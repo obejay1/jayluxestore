@@ -11,12 +11,15 @@ export class InstallmentSettlementError extends Error {
   }
 }
 
-type VerifiedOPayPayment = {
+export type InstallmentPaymentProvider = 'Paystack' | 'OPay';
+
+type VerifiedInstallmentPayment = {
+  provider: InstallmentPaymentProvider;
   reference: string;
   status: string;
   amountKobo: number;
   currency?: string;
-  email?: string;
+  email?: string | null;
   metadata?: Record<string, unknown> | null;
 };
 
@@ -56,14 +59,19 @@ function nextMonthlyDate(value: unknown): string | null {
 }
 
 export async function settleVerifiedInstallmentPayment(
-  verified: VerifiedOPayPayment,
+  verified: VerifiedInstallmentPayment,
 ): Promise<SettlementResult> {
-  if (!verified.reference || verified.status !== 'success') {
+  if (!verified.reference || String(verified.status || '').toLowerCase() !== 'success') {
     throw new InstallmentSettlementError('The provider payment is not successful.', 402);
   }
 
   if (!Number.isInteger(verified.amountKobo) || verified.amountKobo <= 0) {
     throw new InstallmentSettlementError('The provider payment amount is invalid.');
+  }
+
+  const provider = verified.provider;
+  if (provider !== 'Paystack' && provider !== 'OPay') {
+    throw new InstallmentSettlementError('Unsupported installment payment provider.');
   }
 
   const currency = String(verified.currency || 'NGN').toUpperCase();
@@ -109,6 +117,11 @@ export async function settleVerifiedInstallmentPayment(
     const storedCurrency = String(payment.currency || 'NGN').toUpperCase();
     if (storedCurrency !== currency) {
       throw new InstallmentSettlementError('The verified payment currency does not match the installment.');
+    }
+
+    const storedProvider = String(payment.provider || '').trim();
+    if (storedProvider && storedProvider !== provider) {
+      throw new InstallmentSettlementError('The payment provider does not match the stored installment payment.');
     }
 
     const storedEmail = cleanEmail(payment.customerEmail || payment.email);
@@ -177,12 +190,12 @@ export async function settleVerifiedInstallmentPayment(
 
     const transactionRef = adminDb
       .collection('paymentTransactions')
-      .doc(`OPay_${verified.reference}`);
+      .doc(`${provider}_${verified.reference}`);
     const transactionSnap = await transaction.get(transactionRef);
 
     transaction.set(paymentRef, {
       status: 'successful',
-      provider: 'OPay',
+      provider,
       providerReference: verified.reference,
       providerAmountKobo: verified.amountKobo,
       currency,
@@ -201,6 +214,7 @@ export async function settleVerifiedInstallmentPayment(
       nextPaymentDate,
       nextInstallmentNumber: remaining > 0 ? completedAfter + 1 : null,
       status: remaining === 0 ? 'completed' : 'active',
+      lastPaymentProvider: provider,
       pendingPaymentReference: FieldValue.delete(),
       pendingPaymentCreatedAt: FieldValue.delete(),
       updatedAt: FieldValue.serverTimestamp(),
@@ -218,12 +232,12 @@ export async function settleVerifiedInstallmentPayment(
       transaction.create(transactionRef, {
         planId,
         paymentId: paymentRef.id,
-        provider: 'OPay',
+        provider,
         reference: verified.reference,
         amount: paymentAmount,
         status: 'successful',
         currency,
-        idempotencyKey: `OPay_${verified.reference}`,
+        idempotencyKey: `${provider}_${verified.reference}`,
         createdAt: new Date().toISOString(),
       });
     }

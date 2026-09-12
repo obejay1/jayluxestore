@@ -27,7 +27,19 @@ export async function handlePaystackWebhook(rawBody: string, signature: string |
     return { status: 401, body: { error: 'Invalid webhook signature' } };
   }
 
-  let payload: any;
+  type PaystackWebhookPayload = {
+    event?: string;
+    data?: {
+      reference?: string;
+      status?: string;
+      amount?: number;
+      currency?: string;
+      customer?: { email?: string | null } | null;
+      metadata?: Record<string, unknown>;
+    };
+  };
+
+  let payload: PaystackWebhookPayload;
   try {
     payload = JSON.parse(rawBody);
   } catch {
@@ -38,7 +50,7 @@ export async function handlePaystackWebhook(rawBody: string, signature: string |
     return { status: 200, body: { received: true, ignored: true } };
   }
 
-  const data = payload?.data || {};
+  const data = payload.data ?? {};
   const reference = String(data.reference || '').trim();
   if (!reference) return { status: 200, body: { received: true } };
 
@@ -88,6 +100,7 @@ export async function handlePaystackWebhook(rawBody: string, signature: string |
   if (installmentPayment.exists) {
     try {
       const settlement = await settleVerifiedInstallmentPayment({
+        provider: 'Paystack',
         reference,
         status: String(data.status || ''),
         amountKobo: Number(data.amount || 0),

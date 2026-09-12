@@ -47,6 +47,7 @@ export async function POST(req: NextRequest) {
       customerAddress: body.customerAddress,
       couponCode: body.couponCode,
       paymentType: body.paymentType === 'Installment' ? 'Installment' : 'OPay',
+      paymentProvider: 'OPay',
       installmentCount: body.installmentCount,
       installmentPlan: body.installmentPlan,
       ...(customer?.uid ? { userId: customer.uid } : {}),
@@ -59,7 +60,7 @@ export async function POST(req: NextRequest) {
     const publicKey = process.env.OPAY_PUBLIC_KEY?.trim();
     const baseUrl = (process.env.OPAY_BASE_URL?.replace(/\/+$/, "") || "https://api.opaycheckout.com");
 
-    if (!merchantId || !publicKey || !baseUrl) {
+    if (!merchantId || !publicKey || !secret || !baseUrl) {
       await markCheckoutInitializationFailed(intent.reference);
       return NextResponse.json({ error: "OPay is not configured" }, { status: 503 });
     }

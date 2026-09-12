@@ -43,6 +43,9 @@ export async function POST(request: NextRequest) {
     if (String(payment.userId || '') !== customer.uid) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
+    if (String(payment.provider || '') !== 'Paystack') {
+      return NextResponse.json({ error: 'This payment reference is not a Paystack payment.' }, { status: 400 });
+    }
 
     const response = await fetch(
       `https://api.paystack.co/transaction/verify/${encodeURIComponent(paymentReference)}`,
@@ -73,6 +76,7 @@ export async function POST(request: NextRequest) {
     }
 
     const settlement = await settleVerifiedInstallmentPayment({
+      provider: 'Paystack',
       reference: paymentReference,
       status: result.data.status,
       amountKobo: Number(result.data.amount || 0),

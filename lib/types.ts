@@ -106,5 +106,7 @@ export type Transformation = {
   afterImagePublicId?: string;
   description: string;
   featured: boolean;
+  published?: boolean;
+  displayOrder?: number;
   createdAt?: string;
 };

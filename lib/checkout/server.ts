@@ -8,7 +8,7 @@ import {
   sendOrderCreatedEmails,
   sendPaymentConfirmedEmails,
 } from '@/lib/email/workflows';
-import { addInstallmentMonths, buildInstallmentAmounts, calculateInitialInstallmentAmount } from '@/lib/installments/planMath';
+import { addInstallmentMonths, buildInstallmentAmounts } from '@/lib/installments/planMath';
 import type { Order, Product } from '@/lib/types';
 
 const CHECKOUT_COMPLETION_COOKIE_PREFIX = 'jl_checkout_';
@@ -29,6 +29,7 @@ type CouponData = {
 };
 
 export type CheckoutPaymentType = 'Paystack' | 'Installment' | 'OPay';
+export type CheckoutPaymentProvider = 'Paystack' | 'OPay';
 
 export type CheckoutIntent = {
   reference: string;
@@ -45,6 +46,7 @@ export type CheckoutIntent = {
   customerAddress: string;
   couponCode: string;
   paymentType: CheckoutPaymentType;
+  paymentProvider: CheckoutPaymentProvider;
   installmentCount?: number;
   items: Array<{
     id: string;
@@ -179,6 +181,7 @@ export async function prepareCheckoutIntent(input: {
   customerAddress: unknown;
   couponCode: unknown;
   paymentType: unknown;
+  paymentProvider?: unknown;
   installmentCount?: unknown;
   installmentPlan?: Record<string, unknown> | null;
   userId?: string;
@@ -190,8 +193,15 @@ export async function prepareCheckoutIntent(input: {
   const couponCode = cleanText(input.couponCode, 40).toUpperCase();
   const rawPaymentType = cleanText(input.paymentType, 24);
   const paymentType: CheckoutPaymentType = rawPaymentType === 'Installment' ? 'Installment' : rawPaymentType === 'OPay' ? 'OPay' : 'Paystack';
+  const requestedProvider = cleanText(input.paymentProvider, 24);
+  const paymentProvider: CheckoutPaymentProvider = paymentType === 'Paystack'
+    ? 'Paystack'
+    : paymentType === 'OPay'
+      ? 'OPay'
+      : requestedProvider === 'Paystack'
+        ? 'Paystack'
+        : 'OPay';
   const installmentCount = paymentType === 'Installment' ? safeInstallmentCount(input.installmentCount) : null;
-  const installmentPlan = paymentType === 'Installment' ? (input.installmentPlan || null) : null;
 
   if (!customerName || !validEmail(customerEmail) || !customerPhone || !customerAddress) {
     throw new CheckoutError('Complete all checkout details before placing the order.', 400);
@@ -250,7 +260,9 @@ export async function prepareCheckoutIntent(input: {
     if (installmentCount == null) {
       throw new CheckoutError('Choose a valid installment plan.', 400);
     }
-    expectedPaymentAmount = calculateInitialInstallmentAmount(total, installmentPlan, installmentCount);
+    // Installment amounts are derived entirely on the server from the authoritative
+    // order total and selected schedule. Client-supplied percentages are ignored.
+    expectedPaymentAmount = buildInstallmentAmounts(total, installmentCount)[0];
   } else {
     expectedPaymentAmount = total;
   }
@@ -288,8 +300,8 @@ export async function prepareCheckoutIntent(input: {
     customerAddress,
     couponCode,
     paymentType,
+    paymentProvider,
     ...(installmentCount ? { installmentCount } : {}),
-    ...(installmentPlan ? { installmentPlan } : {}),
     items: orderItems,
     subtotal,
     shipping,
@@ -377,13 +389,17 @@ export async function finalizeCheckoutIntent(
   }
   if (intent.status === 'expired' || intent.status === 'initialization_failed') throw new CheckoutError('This checkout session has expired. Please return to your cart and try again.', 410);
 
-  const provider: 'Paystack' | 'OPay' = suppliedProvider || (intent.paymentType === 'OPay' ? 'OPay' : 'Paystack');
+  const storedProvider: 'Paystack' | 'OPay' = intent.paymentProvider
+    || (intent.paymentType === 'Paystack' ? 'Paystack' : 'OPay');
+  if (suppliedProvider && suppliedProvider !== storedProvider) {
+    throw new CheckoutError('The payment provider does not match this checkout.', 400);
+  }
+  const provider: 'Paystack' | 'OPay' = suppliedProvider || storedProvider;
 
-  // OPay returns customers through a browser redirect after Cashier checkout.
-  // A redirect alone is never proof of payment. OPay orders must only be
-  // finalized after the server has supplied a verified OPay payment result
-  // (normally from the webhook/server verification flow).
-  if (intent.paymentType === 'OPay' && !suppliedPayment) {
+  // A browser redirect alone is never proof of an OPay payment. OPay checkouts
+  // (including installment checkouts) are finalized only from a verified
+  // server-side provider result, normally the signed webhook.
+  if (provider === 'OPay' && !suppliedPayment) {
     throw new CheckoutError('OPay payment confirmation is still pending. The order cannot be finalized from the return page.', 409);
   }
 
@@ -427,7 +443,7 @@ export async function finalizeCheckoutIntent(
     taxRate: intent.taxRate,
     shippingFee: intent.shippingFee,
     discountAmount: intent.discountAmount,
-    paymentMethod: intent.paymentType === 'Installment' ? 'Installment (OPay)' : intent.paymentType === 'OPay' ? 'OPay' : 'Paystack',
+    paymentMethod: intent.paymentType === 'Installment' ? `Installment (${provider})` : provider,
     paymentReference: reference,
     paymentStatus: intent.paymentType === 'Installment' && remainingBalance > 0 ? 'Partially Paid' : 'Paid',
     status: 'Processing',
@@ -490,7 +506,7 @@ export async function finalizeCheckoutIntent(
         nextPaymentAmount: remainingBalance > 0 ? installmentAmounts[1] : 0,
         nextPaymentDate,
         planDuration: `${installmentCount} payments`,
-        provider: 'OPay',
+        provider,
         status: remainingBalance === 0 ? 'completed' : 'active',
         createdAt: createdAt.toISOString(),
         updatedAt: createdAt.toISOString(),
@@ -518,21 +534,21 @@ export async function finalizeCheckoutIntent(
         amount: intent.expectedPaymentAmount,
         expectedAmountKobo: intent.expectedAmountKobo,
         currency: 'NGN',
-        provider: 'OPay',
+        provider,
         status: 'successful',
         verifiedAt: createdAt.toISOString(),
         remainingBalance,
         createdAt: createdAt.toISOString(),
       });
-      transaction.create(adminDb.collection('paymentTransactions').doc(`OPay_${reference}`), {
+      transaction.create(adminDb.collection('paymentTransactions').doc(`${provider}_${reference}`), {
         planId: installmentPlanId,
         paymentId: reference,
-        provider: 'OPay',
+        provider,
         reference,
         amount: intent.expectedPaymentAmount,
         status: 'successful',
         currency: 'NGN',
-        idempotencyKey: `OPay_${reference}`,
+        idempotencyKey: `${provider}_${reference}`,
         createdAt: createdAt.toISOString(),
       });
     }

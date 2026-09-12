@@ -71,6 +71,7 @@ export async function POST(req: Request) {
     const installmentPayment = await adminDb.collection('installmentPayments').doc(reference).get();
     if (installmentPayment.exists) {
       await settleVerifiedInstallmentPayment({
+        provider: 'OPay',
         reference,
         status: 'success',
         amountKobo,

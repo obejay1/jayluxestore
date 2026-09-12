@@ -5,13 +5,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebaseAdmin';
 import { getVerifiedCustomer } from '@/lib/requestAuth';
 import { normalizeInstallmentStatus } from '@/lib/installments/status';
-import { calculateInitialInstallmentAmount, getInitialInstallmentPercentage, buildInstallmentAmounts } from '@/lib/installments/planMath';
+import { calculateInitialInstallmentAmount, buildInstallmentAmounts } from '@/lib/installments/planMath';
 import { normalizeNigerianPhone, getOpayRedirectUrl, type OpayCreatePaymentResponse } from '@/lib/payments/opay';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 const PAYMENT_LOCK_MS = 30 * 60 * 1000;
+type InstallmentProvider = 'Paystack' | 'OPay';
 
 function cleanText(value: unknown, maxLength: number) {
   return String(value ?? '').trim().slice(0, maxLength);
@@ -41,12 +42,8 @@ async function releasePaymentLock(planId: string, reference: string, status: str
 }
 
 export async function POST(request: NextRequest) {
-  const opayPublicKey = process.env.OPAY_PUBLIC_KEY?.trim();
-  const merchantId = process.env.OPAY_MERCHANT_ID?.trim();
-  const baseUrl = (process.env.OPAY_BASE_URL?.replace(/\/+$/, '') || 'https://api.opaycheckout.com');
-  if (!opayPublicKey || !merchantId) {
-    return NextResponse.json({ error: 'OPay is not configured.' }, { status: 503 });
-  }
+  let planId = '';
+  let reference = '';
 
   try {
     const customer = await getVerifiedCustomer(request);
@@ -56,15 +53,34 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Customer email is required to make this payment.' }, { status: 400 });
     }
 
-    const body = await request.json();
-    const planId = cleanText(body?.planId, 160);
-    const suppliedOrderId = cleanText(body?.orderId, 160);
+    const body = await request.json() as {
+      planId?: unknown;
+      orderId?: unknown;
+      provider?: unknown;
+    };
+
+    planId = cleanText(body.planId, 160);
+    const suppliedOrderId = cleanText(body.orderId, 160);
+    const provider: InstallmentProvider = cleanText(body.provider, 24) === 'Paystack' ? 'Paystack' : 'OPay';
 
     if (!planId) {
       return NextResponse.json({ error: 'Invalid installment request' }, { status: 400 });
     }
 
-    const reference = `JL-INSTALL-${randomUUID()}`;
+    const paystackSecret = process.env.PAYSTACK_SECRET_KEY?.trim();
+    const opayPublicKey = process.env.OPAY_PUBLIC_KEY?.trim();
+    const opayMerchantId = process.env.OPAY_MERCHANT_ID?.trim();
+    const opaySecret = process.env.OPAY_SECRET_KEY?.trim();
+    const opayBaseUrl = process.env.OPAY_BASE_URL?.replace(/\/+$/, '') || 'https://api.opaycheckout.com';
+
+    if (provider === 'Paystack' && !paystackSecret) {
+      return NextResponse.json({ error: 'Paystack is not configured.' }, { status: 503 });
+    }
+    if (provider === 'OPay' && (!opayPublicKey || !opayMerchantId || !opaySecret)) {
+      return NextResponse.json({ error: 'OPay is not configured.' }, { status: 503 });
+    }
+
+    reference = `JL-INSTALL-${randomUUID()}`;
     const planRef = adminDb.collection('installmentPlans').doc(planId);
     const paymentRef = adminDb.collection('installmentPayments').doc(reference);
 
@@ -91,6 +107,10 @@ export async function POST(request: NextRequest) {
 
       const totalAmount = Number(plan.totalAmount || plan.totalInstallmentAmount || 0);
       const paidAmount = Number(plan.paidAmount || plan.amountPaid || 0);
+      if (!Number.isFinite(totalAmount) || totalAmount <= 0 || !Number.isFinite(paidAmount) || paidAmount < 0) {
+        throw Object.assign(new Error('Installment financial state is invalid'), { status: 409 });
+      }
+
       const remainingBalance = Math.max(0, totalAmount - paidAmount);
       const completedInstallments = Math.max(0, Math.trunc(Number(plan.completedInstallments || 0)));
       const installmentCount = Math.max(1, Math.trunc(Number(plan.installmentCount || 1)));
@@ -102,16 +122,17 @@ export async function POST(request: NextRequest) {
         : Number(plan.nextPaymentAmount || scheduleAmounts[completedInstallments] || remainingBalance);
 
       const amount = Math.min(remainingBalance, Math.max(0, currentDueAmount));
-
       if (!Number.isFinite(amount) || amount <= 0 || remainingBalance <= 0) {
         throw Object.assign(new Error('No payment due'), { status: 400 });
       }
 
       const pendingReference = String(plan.pendingPaymentReference || '').trim();
       const pendingCreatedAt = Date.parse(String(plan.pendingPaymentCreatedAt || ''));
-      const pendingIsFresh = pendingReference
+      const pendingIsFresh = Boolean(
+        pendingReference
         && Number.isFinite(pendingCreatedAt)
-        && Date.now() - pendingCreatedAt < PAYMENT_LOCK_MS;
+        && Date.now() - pendingCreatedAt < PAYMENT_LOCK_MS,
+      );
 
       if (pendingIsFresh) {
         throw Object.assign(
@@ -123,8 +144,7 @@ export async function POST(request: NextRequest) {
       const amountKobo = Math.round(amount * 100);
       const createdAt = new Date().toISOString();
       const customerName = String(plan.customerName || customer.name || 'JayLuxe Customer').trim();
-
-      
+      const installmentNumber = Math.min(installmentCount, completedInstallments + 1);
 
       transaction.create(paymentRef, {
         reference,
@@ -136,7 +156,8 @@ export async function POST(request: NextRequest) {
         amount,
         expectedAmountKobo: amountKobo,
         currency: 'NGN',
-        provider: 'OPay',
+        provider,
+        installmentNumber,
         status: 'pending',
         createdAt,
       });
@@ -147,12 +168,15 @@ export async function POST(request: NextRequest) {
         updatedAt: FieldValue.serverTimestamp(),
       }, { merge: true });
 
-      return { amount, amountKobo, orderId, customerName, customerEmail };
+      return {
+        amount,
+        amountKobo,
+        orderId,
+        customerName,
+        customerEmail,
+        installmentNumber,
+      };
     });
-
-    if (prepared instanceof NextResponse) {
-      return prepared;
-    }
 
     const siteUrl = (
       process.env.NEXT_PUBLIC_SITE_URL?.trim()
@@ -160,13 +184,68 @@ export async function POST(request: NextRequest) {
       || new URL(request.url).origin
     ).replace(/\/$/, '');
 
+    if (provider === 'Paystack') {
+      let response: Response;
+      try {
+        response = await fetch('https://api.paystack.co/transaction/initialize', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${paystackSecret}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: prepared.customerEmail,
+            amount: prepared.amountKobo,
+            currency: 'NGN',
+            reference,
+            callback_url: `${siteUrl}/account/installments?provider=Paystack&reference=${encodeURIComponent(reference)}`,
+            metadata: {
+              type: 'installment',
+              paymentProvider: 'Paystack',
+              planId,
+              orderId: prepared.orderId,
+              userId: customer.uid,
+              installmentNumber: prepared.installmentNumber,
+              amountKobo: prepared.amountKobo,
+            },
+          }),
+          cache: 'no-store',
+        });
+      } catch (error) {
+        await releasePaymentLock(planId, reference, 'initialization_failed');
+        throw error;
+      }
+
+      const data = await response.json() as {
+        status?: boolean;
+        message?: string;
+        data?: { authorization_url?: string };
+      };
+      const authorizationUrl = data.data?.authorization_url;
+
+      if (!response.ok || !data.status || !authorizationUrl) {
+        await releasePaymentLock(planId, reference, 'initialization_failed');
+        return NextResponse.json(
+          { error: data.message || 'Unable to initialize Paystack payment' },
+          { status: 502 },
+        );
+      }
+
+      return NextResponse.json({ authorizationUrl, reference, provider });
+    }
+
+    if (!opayPublicKey || !opayMerchantId) {
+      await releasePaymentLock(planId, reference, 'initialization_failed');
+      return NextResponse.json({ error: 'OPay is not configured.' }, { status: 503 });
+    }
+
     let response: Response;
     try {
-      response = await fetch(`${baseUrl}/api/v1/international/cashier/create`, {
+      response = await fetch(`${opayBaseUrl}/api/v1/international/cashier/create`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${opayPublicKey}`,
-          MerchantId: merchantId,
+          MerchantId: opayMerchantId,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -176,9 +255,9 @@ export async function POST(request: NextRequest) {
             total: prepared.amountKobo,
             currency: 'NGN',
           },
-          returnUrl: `${siteUrl}/account/installments`,
+          returnUrl: `${siteUrl}/account/installments?provider=OPay`,
           callbackUrl: process.env.OPAY_CALLBACK_URL || `${siteUrl}/api/opay/webhook`,
-          cancelUrl: `${siteUrl}/account/installments`,
+          cancelUrl: `${siteUrl}/account/installments?provider=OPay&cancelled=1`,
           payMethod: 'OpayWalletNg',
           userInfo: {
             userId: customer.uid,
@@ -199,7 +278,6 @@ export async function POST(request: NextRequest) {
     }
 
     const data = await response.json() as OpayCreatePaymentResponse;
-
     const authorizationUrl = getOpayRedirectUrl(data);
 
     if (!response.ok || !authorizationUrl) {
@@ -210,14 +288,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    return NextResponse.json({
-      authorizationUrl,
-      reference,
-    });
+    return NextResponse.json({ authorizationUrl, reference, provider });
   } catch (error) {
     const status = typeof error === 'object' && error && 'status' in error
       ? Number((error as { status?: unknown }).status) || 500
       : 500;
+
+    if (planId && reference && status >= 500) {
+      await releasePaymentLock(planId, reference, 'initialization_failed').catch(() => undefined);
+    }
 
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Payment error' },

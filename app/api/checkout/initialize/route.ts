@@ -27,7 +27,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: 'Use the email address connected to your signed-in account.' }, { status: 400 });
     }
 
-    const { intent, browserSecret } = await prepareCheckoutIntent({ ...body, userId: verifiedCustomer?.uid });
+    const { intent, browserSecret } = await prepareCheckoutIntent({
+      ...body,
+      paymentProvider: 'Paystack',
+      userId: verifiedCustomer?.uid,
+    });
     const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL?.trim() || process.env.NEXT_PUBLIC_APP_URL?.trim() || new URL(request.url).origin).replace(/\/$/, '');
 
     let providerResponse: Response;
@@ -42,8 +46,11 @@ export async function POST(request: NextRequest) {
           reference: intent.reference,
           callback_url: `${siteUrl}/checkout/complete?reference=${encodeURIComponent(intent.reference)}`,
           metadata: {
-            type: 'checkout',
+            type: intent.paymentType === 'Installment' ? 'installment_checkout' : 'checkout',
+            checkoutReference: intent.reference,
             paymentType: intent.paymentType,
+            paymentProvider: 'Paystack',
+            amountKobo: intent.expectedAmountKobo,
             ...(intent.userId ? { userId: intent.userId } : {}),
           },
         }),

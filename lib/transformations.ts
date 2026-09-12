@@ -5,6 +5,7 @@ import {
   doc,
   getDocs,
   updateDoc,
+  setDoc,
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { uploadAdminImage } from '@/lib/imageUpload';
@@ -12,6 +13,7 @@ import { Transformation } from '@/lib/types';
 export type { Transformation } from '@/lib/types';
 
 const TRANSFORMATIONS_COLLECTION = 'transformations';
+const TRANSFORMATION_CATEGORIES_COLLECTION = 'transformationCategories';
 
 export const TRANSFORMATION_CATEGORIES = [
   'Wig Installation',
@@ -25,6 +27,35 @@ export const TRANSFORMATION_CATEGORIES = [
   'Pedicure',
 ];
 
+
+export type TransformationCategory = {
+  id: string;
+  name: string;
+  createdAt?: string;
+};
+
+export async function getTransformationCategories(): Promise<TransformationCategory[]> {
+  const snap = await getDocs(collection(db, TRANSFORMATION_CATEGORIES_COLLECTION));
+  return snap.docs.map((d) => ({ id: d.id, ...(d.data() as Omit<TransformationCategory, 'id'>) }))
+    .sort((a,b) => a.name.localeCompare(b.name));
+}
+
+export async function addTransformationCategory(name: string): Promise<string> {
+  const clean = name.trim();
+  if (!clean) throw new Error('Category name is required');
+  const existing = await getTransformationCategories();
+  if (existing.some((c) => c.name.toLowerCase() === clean.toLowerCase())) {
+    throw new Error('Category already exists');
+  }
+  const ref = doc(collection(db, TRANSFORMATION_CATEGORIES_COLLECTION));
+  await setDoc(ref, { name: clean, createdAt: new Date().toISOString() });
+  return ref.id;
+}
+
+export async function removeTransformationCategory(id: string): Promise<void> {
+  await deleteDoc(doc(db, TRANSFORMATION_CATEGORIES_COLLECTION, id));
+}
+
 export type TransformationFormData = {
   title: string;
   category: string;
@@ -34,6 +65,8 @@ export type TransformationFormData = {
   afterImagePublicId?: string;
   description: string;
   featured: boolean;
+  published?: boolean;
+  displayOrder?: number;
 };
 
 function formatTransformation(
@@ -50,6 +83,8 @@ function formatTransformation(
     afterImagePublicId: data.afterImagePublicId || '',
     description: data.description || '',
     featured: Boolean(data.featured),
+    published: data.published !== false,
+    displayOrder: Number(data.displayOrder || 0),
     createdAt: data.createdAt || new Date().toISOString(),
   };
 }
@@ -99,6 +134,8 @@ export async function addTransformation(
     afterImagePublicId: data.afterImagePublicId || '',
     description: data.description.trim(),
     featured: Boolean(data.featured),
+    published: data.published !== false,
+    displayOrder: Number(data.displayOrder || 0),
     createdAt: new Date().toISOString(),
   };
 
@@ -152,4 +189,13 @@ export async function saveTransformation(
 
 export async function removeTransformation(item: string | Transformation): Promise<void> {
   await deleteTransformation(typeof item === 'string' ? item : item.id);
+}
+
+export async function deleteTransformationCategorySafely(id: string): Promise<void> {
+  const transformations = await getTransformations();
+  const category = (await getTransformationCategories()).find((c) => c.id === id);
+  if (category && transformations.some((t) => t.category === category.name)) {
+    throw new Error('Category is currently used by transformations. Reassign items before deleting.');
+  }
+  await deleteDoc(doc(db, TRANSFORMATION_CATEGORIES_COLLECTION, id));
 }

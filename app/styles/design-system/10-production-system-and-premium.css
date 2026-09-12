@@ -6302,3 +6302,62 @@ textarea.input {
  }
  .jl-editorial-image {height:190px;}
 }
+
+/* Paystack + OPay provider selector used by installment checkout/account flows. */
+.jl-installment-provider-picker{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  margin:18px 0;
+  padding:14px 16px;
+  border:1px solid #eadfce;
+  border-radius:16px;
+  background:#fffaf1;
+}
+.jl-installment-provider-picker>span{
+  font-size:13px;
+  font-weight:700;
+  color:#2a241b;
+}
+.jl-installment-provider-picker>div{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.jl-installment-provider-picker button{
+  min-width:96px;
+  min-height:42px;
+  border:1px solid #d8c7aa;
+  border-radius:999px;
+  background:#fff;
+  color:#1a1712;
+  font-weight:700;
+  cursor:pointer;
+  transition:border-color .2s ease,background .2s ease,color .2s ease,transform .2s ease;
+}
+.jl-installment-provider-picker button:hover:not(:disabled){
+  border-color:#b8862f;
+  transform:translateY(-1px);
+}
+.jl-installment-provider-picker button.active{
+  border-color:#b8862f;
+  background:#111;
+  color:#d9b15f;
+}
+.jl-installment-provider-picker button:disabled{
+  opacity:.45;
+  cursor:not-allowed;
+}
+@media(max-width:640px){
+  .jl-installment-provider-picker{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+  .jl-installment-provider-picker>div{
+    width:100%;
+  }
+  .jl-installment-provider-picker button{
+    flex:1 1 0;
+  }
+}

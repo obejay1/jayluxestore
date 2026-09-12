@@ -26,6 +26,8 @@ function money(value = 0) {
 export default function InstallmentsPage() {
   const [plans, setPlans] = useState<InstallmentPlan[]>([]);
   const [paying, setPaying] = useState<string | null>(null);
+  const [providerAvailability, setProviderAvailability] = useState({ paystack: false, opay: false });
+  const [providerByPlan, setProviderByPlan] = useState<Record<string, 'Paystack' | 'OPay'>>({});
 
   async function continuePayment(plan: InstallmentPlan) {
     try {
@@ -33,10 +35,11 @@ export default function InstallmentsPage() {
       const token = await auth.currentUser?.getIdToken();
       if (!token) throw new Error('Please sign in again');
 
+      const selectedProvider = providerByPlan[plan.id] || (providerAvailability.paystack ? 'Paystack' : 'OPay');
       const response = await fetch('/api/installments/create-payment', {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ planId: plan.id, orderId: plan.orderId }),
+        body: JSON.stringify({ planId: plan.id, orderId: plan.orderId, provider: selectedProvider }),
       });
 
       const data = await response.json();
@@ -50,12 +53,24 @@ export default function InstallmentsPage() {
   }
 
   useEffect(() => {
+    void fetch('/api/payments/providers', { cache: 'no-store' })
+      .then((response) => response.json())
+      .then((availability: { paystack?: boolean; opay?: boolean }) => {
+        setProviderAvailability({
+          paystack: Boolean(availability.paystack),
+          opay: Boolean(availability.opay),
+        });
+      })
+      .catch((error) => console.error('Payment provider availability failed to load', error));
+
     const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
       if (!user) { setPlans([]); return; }
       try {
         const token = await user.getIdToken();
-        const reference = new URLSearchParams(window.location.search).get('reference') || new URLSearchParams(window.location.search).get('trxref');
-        if (reference) {
+        const searchParams = new URLSearchParams(window.location.search);
+        const reference = searchParams.get('reference') || searchParams.get('trxref');
+        const returnProvider = searchParams.get('provider');
+        if (reference && returnProvider !== 'OPay') {
           await fetch('/api/installments/verify', {
             method: 'POST',
             headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
@@ -148,7 +163,30 @@ export default function InstallmentsPage() {
                 <div><small>Next Payment</small><b>{money(plan.nextPaymentAmount)}</b></div>
               </div>
               {plan.nextPaymentDate && <p>Next payment date: {plan.nextPaymentDate}</p>}
-              <button className="jl-installment-button" disabled={paying === plan.id || progress >= 100} onClick={() => continuePayment(plan)}>
+              {progress < 100 ? (
+                <div className="jl-installment-provider-picker">
+                  <span>Payment provider</span>
+                  <div>
+                    <button
+                      type="button"
+                      className={(providerByPlan[plan.id] || (providerAvailability.paystack ? 'Paystack' : 'OPay')) === 'Paystack' ? 'active' : ''}
+                      disabled={!providerAvailability.paystack || paying === plan.id}
+                      onClick={() => setProviderByPlan((current) => ({ ...current, [plan.id]: 'Paystack' }))}
+                    >
+                      Paystack
+                    </button>
+                    <button
+                      type="button"
+                      className={(providerByPlan[plan.id] || (providerAvailability.paystack ? 'Paystack' : 'OPay')) === 'OPay' ? 'active' : ''}
+                      disabled={!providerAvailability.opay || paying === plan.id}
+                      onClick={() => setProviderByPlan((current) => ({ ...current, [plan.id]: 'OPay' }))}
+                    >
+                      OPay
+                    </button>
+                  </div>
+                </div>
+              ) : null}
+              <button className="jl-installment-button" disabled={paying === plan.id || progress >= 100 || (!providerAvailability.paystack && !providerAvailability.opay)} onClick={() => continuePayment(plan)}>
                 {progress >= 100 ? <><CheckCircle2 size={18}/> Completed</> : paying === plan.id ? 'Opening Payment...' : <>Pay Next Installment <ArrowRight size={18}/></>}
               </button>
             </div>

@@ -56,10 +56,10 @@ import {
   Booking,
 } from '@/lib/bookings';
 import {
-  getBridalGalleryImages, addBridalGalleryImage, removeBridalGalleryImage, GalleryImage
+  getBridalGalleryImages, addBridalGalleryImage, updateBridalGalleryImage, removeBridalGalleryImage, getBridalGalleryCategories, addBridalGalleryCategory, updateBridalGalleryCategory, GalleryImage
 } from '@/lib/gallery';
 import {
-  getTransformations, saveTransformation, removeTransformation, Transformation
+  getTransformations, saveTransformation, removeTransformation, getTransformationCategories, addTransformationCategory, deleteTransformationCategorySafely, Transformation
 } from '@/lib/transformations';
 import {
   getTestimonials, saveTestimonial, removeTestimonial, Testimonial
@@ -119,7 +119,7 @@ const blankBridalPackage: BridalPackage = {
   description: '',
 };
 
-const transformationCategories = [
+const defaultTransformationCategories = [
   'Wig Installation', 'Wig Revamp', 'Wig Styling', 'Dreadlock Making',
   'Dreadlock Relocking', 'Bridal Makeup', 'Event Makeup', 'Gele Styling', 'Pedicure'
 ];
@@ -127,7 +127,7 @@ const transformationCategories = [
 const blankTransformation: Omit<Transformation, 'createdAt'> = {
   id: '',
   title: '',
-  category: transformationCategories[0],
+  category: defaultTransformationCategories[0],
   beforeImage: '',
   afterImage: '',
   description: '',
@@ -241,6 +241,8 @@ export default function Admin() {
   const [bridalPackages, setBridalPackages] = useState<BridalPackage[]>([]);
   const [bridalGalleryImages, setBridalGalleryImages] = useState<GalleryImage[]>([]);
   const [transformations, setTransformations] = useState<Transformation[]>([]);
+  const [transformationCategories, setTransformationCategories] = useState<string[]>([]);
+  const [newTransformationCategory, setNewTransformationCategory] = useState('');
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [contactMessages, setContactMessages] = useState<ContactMessageDoc[]>([]);
   const [smsLogs, setSmsLogs] = useState<SmsLogDoc[]>([]);
@@ -269,8 +271,17 @@ export default function Admin() {
   const [galleryImageFile, setGalleryImageFile] = useState<string | null>(null);
   const [galleryImagePublicId, setGalleryImagePublicId] = useState('');
   const [galleryImageCaption, setGalleryImageCaption] = useState('');
+  const [bridalGalleryCategories, setBridalGalleryCategories] = useState<string[]>([]);
+  const [newBridalGalleryCategory, setNewBridalGalleryCategory] = useState('');
+  const [galleryImageCategory, setGalleryImageCategory] = useState('');
+
+  useEffect(() => {
+    getBridalGalleryCategories().then(setBridalGalleryCategories).catch(() => setBridalGalleryCategories([]));
+  }, []);
+
   const [activeUploads, setActiveUploads] = useState<Record<string, boolean>>({});
   const [savingGallery, setSavingGallery] = useState(false);
+  const [editingGalleryId, setEditingGalleryId] = useState<string | null>(null);
   const [savingTransformation, setSavingTransformation] = useState(false);
   const [savingTestimonial, setSavingTestimonial] = useState(false);
 
@@ -346,6 +357,8 @@ export default function Admin() {
     setBridalPackages(loadedBridalPackages);
     setBridalGalleryImages(loadedGallery);
     setTransformations(loadedTransformations);
+    const loadedTransformationCategories = await getTransformationCategories().catch(() => []);
+    setTransformationCategories(loadedTransformationCategories.map((c) => c.name));
     setTestimonials(loadedTestimonials);
     setCoupons(loadedCoupons);
 
@@ -593,19 +606,27 @@ export default function Admin() {
     }
     setSavingGallery(true);
     try {
-      await addBridalGalleryImage({
+      const payload = {
         image: galleryImageFile,
         imageUrl: galleryImageFile,
         publicId: galleryImagePublicId,
         caption: galleryImageCaption,
         description: galleryImageCaption,
-      });
+        category: galleryImageCategory,
+      };
+
+      if (editingGalleryId) {
+        await updateBridalGalleryImage(editingGalleryId, payload);
+      } else {
+        await addBridalGalleryImage(payload);
+      }
       void recordAdminActivity({
         action: 'Added Gallery Image',
         description: `Added a bridal gallery image${galleryImageCaption ? `: ${galleryImageCaption}` : '.'}`,
         targetType: 'gallery',
       });
-      showToast('Image uploaded to bridal gallery!', 'success');
+      showToast(editingGalleryId ? 'Gallery image updated!' : 'Image uploaded to bridal gallery!', 'success');
+      setEditingGalleryId(null);
       setGalleryImageFile(null);
       setGalleryImagePublicId('');
       setGalleryImageCaption('');
@@ -633,7 +654,7 @@ export default function Admin() {
     try {
       const transformationToSave = {
         ...data,
-        id: data.id || Date.now().toString(),
+        id: data.id || '',
       };
       const previousTransformation = wasEditing
         ? transformations.find((item) => item.id === data.id)
@@ -678,7 +699,7 @@ export default function Admin() {
     try {
       const testimonialToSave = {
         ...data,
-        id: data.id || Date.now().toString(),
+        id: data.id || '',
         rating: Number(data.rating),
       };
       const previousTestimonial = wasEditing
@@ -1835,6 +1856,14 @@ export default function Admin() {
             </div>
           </div>
 
+          <div className="admin-form-grid" style={{marginBottom:16}}>
+            <input className="input" placeholder="Gallery category name" value={newBridalGalleryCategory} onChange={(e)=>setNewBridalGalleryCategory(e.target.value)} />
+            <button className="btn" onClick={async()=>{try{await addBridalGalleryCategory(newBridalGalleryCategory); setNewBridalGalleryCategory(''); setBridalGalleryCategories(await getBridalGalleryCategories()); showToast('Category added.','success')}catch(e){showToast(e instanceof Error?e.message:'Failed to add category.','error')}}}>Add Category</button>
+          </div>
+          <div className="admin-chip-list" style={{marginBottom:16}}>
+            {bridalGalleryCategories.map((cat)=><span key={cat} className="badge">{cat}<button onClick={async()=>{const next=window.prompt('Rename category',cat); if(next && next.trim()!==cat){try{await updateBridalGalleryCategory(cat,next); setBridalGalleryCategories(await getBridalGalleryCategories()); load(); showToast('Category updated.','success')}catch(e){showToast(e instanceof Error?e.message:'Failed to update category.','error')}}}}>Edit</button></span>)}
+          </div>
+
           <div className="admin-form-grid">
             <AdminImageUploadField
               id="bridal-gallery-image-upload"
@@ -1860,6 +1889,10 @@ export default function Admin() {
               value={galleryImageCaption}
               onChange={(e) => setGalleryImageCaption(e.target.value)}
             />
+            <select className="input admin-field-wide" value={galleryImageCategory} onChange={(e)=>setGalleryImageCategory(e.target.value)}>
+              <option value="">No category</option>
+              {bridalGalleryCategories.map((cat)=><option key={cat} value={cat}>{cat}</option>)}
+            </select>
           </div>
 
           <div style={{ marginTop: 16 }}>
@@ -1880,6 +1913,15 @@ export default function Admin() {
                   <ResponsiveImage src={image.imageUrl} alt={image.caption || 'Bridal gallery image'} width={280} height={158} sizes="(max-width: 600px) 46vw, 180px" />
                   <div className="admin-gallery-overlay">
                     <p>{image.caption}</p>
+                    <button onClick={() => {
+                      setEditingGalleryId(image.id);
+                      setGalleryImageFile(image.imageUrl || image.image || null);
+                      setGalleryImageCaption(image.caption || image.title || '');
+                      setGalleryImageCategory(image.category || '');
+                      document.getElementById('bridal-gallery')?.scrollIntoView({ behavior: 'smooth' });
+                    }}>
+                      Edit
+                    </button>
                     <button onClick={async () => {
                       if (confirm('Delete this image from the gallery?')) {
                         try {
@@ -1907,6 +1949,15 @@ export default function Admin() {
           )}
         </section>
         
+        <section className="table-card" hidden={!can('content')}>
+          <h2>Transformation Categories</h2>
+          <div className="admin-form-grid">
+            <input className="input" placeholder="Category name" value={newTransformationCategory} onChange={(e)=>setNewTransformationCategory(e.target.value)} />
+            <button className="btn" onClick={async()=>{try{await addTransformationCategory(newTransformationCategory); setNewTransformationCategory(''); load(); showToast('Category added.','success')}catch(e){showToast(e instanceof Error?e.message:'Failed to add category.','error')}}}>Add Category</button>
+          </div>
+          <div className="admin-chip-list">{transformationCategories.map((cat)=><span key={cat} className="badge">{cat}<button onClick={async()=>{try{const item=(await getTransformationCategories()).find(c=>c.name===cat); if(item){await deleteTransformationCategorySafely(item.id); load();}}catch(e){showToast(e instanceof Error?e.message:'Cannot delete category.','error')}}}> ×</button></span>)}</div>
+        </section>
+
         <section className="table-card admin-compact-form" id="transformations-form" hidden={!can('content')}>
           <div className="admin-section-title">
             <div>
@@ -1927,7 +1978,7 @@ export default function Admin() {
               value={transformationForm.data.category}
               onChange={(e) => setTransformationForm(p => ({ ...p, data: { ...p.data, category: e.target.value } }))}
             >
-              {transformationCategories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+              {(transformationCategories.length ? transformationCategories : defaultTransformationCategories).map(cat => <option key={cat} value={cat}>{cat}</option>)}
             </select>
             <textarea
               className="input admin-field-wide admin-textarea-compact"

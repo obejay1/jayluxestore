@@ -72,6 +72,8 @@ export default function Checkout() {
   const [paymentMethod, setPaymentMethod] = useState<'Paystack' | 'OPay' | 'Installment'>(
     'OPay'
   );
+  const [installmentProvider, setInstallmentProvider] = useState<'Paystack' | 'OPay'>('Paystack');
+  const [providerAvailability, setProviderAvailability] = useState({ paystack: false, opay: false });
   const [installmentCount, setInstallmentCount] = useState(4);
   const [isProcessingOPay, setIsProcessingOPay] = useState(false);
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
@@ -79,10 +81,9 @@ export default function Checkout() {
   const [checkoutError, setCheckoutError] = useState('');
   const [opayReferenceCode, setOpayReferenceCode] = useState('');
 
-  // OPay availability is controlled server-side. Do not block customers from selecting it
-  // based on a browser environment variable.
-  const opayEnabled = true;
-  const paystackEnabled = false;
+  const opayEnabled = providerAvailability.opay;
+  const paystackEnabled = providerAvailability.paystack;
+  const activeProvider: 'Paystack' | 'OPay' = paymentMethod === 'Installment' ? installmentProvider : paymentMethod;
   const safeInstallmentCount = Number(installmentCount || 1);
 
   useEffect(() => {
@@ -105,6 +106,25 @@ export default function Checkout() {
       })
       .catch((error) => {
         console.error('Checkout settings failed to load:', error);
+      });
+
+    fetch('/api/payments/providers', { cache: 'no-store' })
+      .then((response) => response.json())
+      .then((availability: { paystack?: boolean; opay?: boolean }) => {
+        const next = {
+          paystack: Boolean(availability.paystack),
+          opay: Boolean(availability.opay),
+        };
+        setProviderAvailability(next);
+        if (!next.opay && next.paystack) {
+          setPaymentMethod((current) => current === 'OPay' ? 'Paystack' : current);
+        }
+        if (!next.paystack && next.opay) {
+          setInstallmentProvider('OPay');
+        }
+      })
+      .catch((error) => {
+        console.error('Payment provider availability failed to load:', error);
       });
 
     const unsubscribe = onAuthStateChanged(auth, async (activeUser) => {
@@ -363,8 +383,7 @@ export default function Checkout() {
     total > 0
   );
 
-  const selectedPaymentEnabled =
-    paymentMethod === 'Paystack' ? paystackEnabled : true;
+  const selectedPaymentEnabled = activeProvider === 'Paystack' ? paystackEnabled : opayEnabled;
   const installmentAccountReady = paymentMethod !== 'Installment' || Boolean(userId);
   const canPay = formComplete && selectedPaymentEnabled && installmentAccountReady;
 
@@ -385,7 +404,7 @@ export default function Checkout() {
         </div>
       </div>
       <p className="jl-installment-opay">
-        Payments securely processed with OPay Wallet
+        First payment securely processed with {installmentProvider}.
       </p>
     </div>
   ) : null;
@@ -439,19 +458,23 @@ return (
                   paymentMethod === 'Paystack' ? 'active' : ''
                 }`}
                 onClick={() => {
-                  setCheckoutError('Paystack is currently unavailable.');
+                  setCheckoutError('');
+                  setOpayReferenceCode('');
+                  setPaymentMethod('Paystack');
                 }}
-                disabled
-                aria-disabled="true"
+                disabled={!paystackEnabled}
+                aria-disabled={!paystackEnabled}
               >
                 <span className="jl-payment-option-header">
                   <strong className="jl-payment-option-title">Paystack</strong>
-                  {paymentMethod === 'Paystack' ? (
-                    <span className="jl-payment-selected">Selected</span>
-                  ) : null}
+                  {paystackEnabled ? (
+                    paymentMethod === 'Paystack' ? <span className="jl-payment-selected">Selected</span> : null
+                  ) : (
+                    <span className="jl-payment-unavailable">Setup required</span>
+                  )}
                 </span>
                 <span className="jl-payment-option-description">
-                  Currently unavailable
+                  Pay securely with Paystack.
                 </span>
               </button>
 
@@ -476,8 +499,8 @@ return (
                 type="button"
                 role="radio"
                 aria-checked={paymentMethod === 'OPay'}
-                aria-disabled={false}
-                disabled={false}
+                aria-disabled={!opayEnabled}
+                disabled={!opayEnabled}
                 className={`jl-payment-option jl-payment-opay ${
                   paymentMethod === 'OPay' ? 'active' : ''
                 }`}
@@ -490,7 +513,7 @@ return (
                 <span className="jl-payment-option-header">
                   <strong className="jl-payment-option-title">OPay</strong>
                   {opayEnabled ? (
-                    paymentMethod === 'OPay' ? (
+                    activeProvider === 'OPay' && paymentMethod !== 'Installment' ? (
                       <span className="jl-payment-selected">Selected</span>
                     ) : null
                   ) : (
@@ -511,9 +534,31 @@ return (
                   <span>Choose installment plan</span>
                   <h3>Select your preferred payment schedule</h3>
                   <p>
-                    Pay your first installment today with OPay Wallet.
+                    Choose Paystack or OPay for your first installment.
                     Remaining balance will be scheduled automatically.
                   </p>
+                </div>
+
+                <div className="jl-installment-provider-picker" aria-label="Choose installment payment provider">
+                  <span>Pay first installment with</span>
+                  <div>
+                    <button
+                      type="button"
+                      className={installmentProvider === 'Paystack' ? 'active' : ''}
+                      onClick={() => setInstallmentProvider('Paystack')}
+                      disabled={!paystackEnabled}
+                    >
+                      Paystack
+                    </button>
+                    <button
+                      type="button"
+                      className={installmentProvider === 'OPay' ? 'active' : ''}
+                      onClick={() => setInstallmentProvider('OPay')}
+                      disabled={!opayEnabled}
+                    >
+                      OPay
+                    </button>
+                  </div>
                 </div>
 
                 <div className="jl-installment-plan-cards">
@@ -635,14 +680,14 @@ return (
               <button
                 type="button"
                 className="jl-place-order-btn"
-                onClick={() => void handleOPayPayment()}
+                onClick={() => void (activeProvider === 'Paystack' ? initializePaystackCheckout() : handleOPayPayment())}
                 disabled={isPlacingOrder}
               >
                 {isPlacingOrder
                   ? 'Preparing secure payment…'
                   : paymentMethod === 'Installment'
-                    ? `Pay ${money(installmentInitialAmount)} with OPay`
-                    : `Pay ${money(total)} with OPay`}
+                    ? `Pay ${money(installmentInitialAmount)} with ${activeProvider}`
+                    : `Pay ${money(total)} with ${activeProvider}`}
               </button>
             )
           ) : (
@@ -655,7 +700,7 @@ return (
 
           <p className="jl-payment-security">
             <Lock size={14} aria-hidden="true" />
-            Secure payment via {paymentMethod}
+            Secure payment via {activeProvider}
           </p>
         </aside>
       </section>

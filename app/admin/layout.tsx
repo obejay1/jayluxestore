@@ -1,6 +1,7 @@
 import { createPageMetadata } from '@/lib/seo';
 
 import './admin-design-system.css';
+import './admin-dashboard-redesign.css';
 
 export const metadata = createPageMetadata({
   title: 'Administration',
