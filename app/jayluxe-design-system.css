@@ -26407,3 +26407,103 @@ textarea.input {
     font-size: .75rem;
   }
 }
+
+
+/* JayLuxe transformation portfolio final layout */
+.jj-transformations {
+  padding: 32px 20px;
+  overflow: hidden;
+}
+
+.jj-transformations-carousel {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding-bottom: 8px;
+}
+.jj-transformations-carousel::-webkit-scrollbar { display:none; }
+
+.jj-transformation-slide {
+  flex: 0 0 min(360px, 88vw);
+  scroll-snap-align: start;
+  display:block;
+  border-radius:18px;
+  overflow:hidden;
+  background:#fff;
+  border:1px solid rgba(184,134,47,.18);
+  box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+.jj-ba-home-images {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  padding:10px;
+}
+
+.jj-ba-home-image {
+  height:170px;
+  position:relative;
+  overflow:hidden;
+  border-radius:12px;
+  background:#f8f1e5;
+}
+
+.jj-ba-home-image img {
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
+
+.jj-ba-home-image span {
+  position:absolute;
+  top:8px;
+  left:8px;
+  z-index:2;
+  font-size:10px;
+  padding:4px 8px;
+  border-radius:999px;
+  background:#000;
+  color:#fff;
+}
+
+.jj-transformation-content {
+  padding:12px 14px 16px;
+}
+
+.jj-transformation-content p {
+  display:none;
+}
+
+/* Before after portfolio */
+.jl-ba-grid {
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:18px;
+}
+
+.jl-ba-card {
+  border-radius:18px;
+  overflow:hidden;
+}
+
+.jl-ba-images {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:6px;
+}
+
+.jl-ba-image {
+  object-fit:contain !important;
+}
+
+@media(max-width:900px){
+ .jl-ba-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media(max-width:520px){
+ .jl-ba-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+ .jj-transformation-slide { flex-basis:88vw; }
+ .jj-ba-home-image { height:140px; }
+}

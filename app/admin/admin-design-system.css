@@ -2482,3 +2482,45 @@
     white-space: nowrap;
   }
 }
+
+
+/* Admin viewport stability / zoom resilience */
+.admin-interface-shell {
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.amu-page {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.amu-topbar {
+  width: 100%;
+}
+
+.amu-main,
+.amu-content,
+.admin-content,
+.admin-dashboard-content {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+/* Keep tables/cards stable during browser zoom */
+.amu-card,
+.admin-card,
+.admin-table-wrapper {
+  max-width: 100%;
+}
+
+/* Prevent accidental fixed desktop widths from breaking mobile zoom */
+@media (max-width: 900px) {
+  .amu-page,
+  .admin-interface-shell {
+    min-width: 0;
+  }
+}

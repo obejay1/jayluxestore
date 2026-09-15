@@ -30,11 +30,11 @@ export default async function BeforeAfterPage() {
         .jl-ba-filters{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;padding:20px}
         .jl-ba-filters button{border:1px solid #d8c6a0;background:white;border-radius:999px;padding:10px 20px;color:#17120d}
         .jl-ba-filters .active{background:#17120d;color:white}
-        .jl-ba-grid{max-width:1200px;margin:35px auto;padding:0 20px;display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
-        .jl-ba-card{background:white;cursor:pointer;border-radius:20px;overflow:hidden;box-shadow:0 15px 40px rgba(0,0,0,.08)}
-        .jl-ba-images{display:grid;grid-template-columns:1fr 1fr;aspect-ratio:1/1.15;position:relative}
+        .jl-ba-grid{max-width:1200px;margin:35px auto;padding:0 20px;display:grid;grid-template-columns:repeat(2,1fr);gap:28px}
+        .jl-ba-card{background:white;cursor:pointer;min-width:0;border-radius:20px;overflow:hidden;box-shadow:0 15px 40px rgba(0,0,0,.08)}
+        .jl-ba-images{display:grid;grid-template-columns:1fr 1fr;aspect-ratio:1/1;position:relative}
         .jl-ba-half{position:relative;overflow:hidden}
-        .jl-ba-image{object-fit:cover}
+        .jl-ba-image{object-fit:contain;background:#f8f5ee}
         .jl-ba-half span{position:absolute;top:15px;left:15px;background:rgba(0,0,0,.55);color:white;padding:6px 10px;font-size:11px;letter-spacing:.15em}
         .jl-ba-half+ .jl-ba-half span{left:auto;right:15px}
         .jl-ba-content{padding:24px}
@@ -47,7 +47,7 @@ export default async function BeforeAfterPage() {
         .jl-ba-modal-card{background:#fff;max-width:800px;width:100%;padding:25px;border-radius:24px;position:relative}
         .jl-ba-modal-card button{position:absolute;right:20px;top:15px;font-size:30px;background:none;border:0;z-index:2}
         .jl-ba-modal-images{height:420px;display:grid;grid-template-columns:1fr 1fr;gap:10px;position:relative;overflow:hidden;border-radius:18px}
-        .jl-ba-modal-images img{object-fit:cover}
+        .jl-ba-modal-images img{object-fit:contain;background:#f8f5ee}
         
       `}</style>
     </main>

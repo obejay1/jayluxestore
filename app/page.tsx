@@ -41,6 +41,8 @@ import {
 } from '@/lib/contact';
 
 
+const TRANSFORMATION_FALLBACK_IMAGE = "/images/placeholder-image.png";
+
 type ProductShowcaseProps = {
   id?: string;
   eyebrow: string;
@@ -239,13 +241,13 @@ export default function Home() {
 
           <Link href="/before-after" className="jl-explore-card">
             <span className="jl-explore-icon"><Zap /></span>
-            <h3>Transformation</h3>
+            <h3>Before & After</h3>
             <p>See amazing beauty changes</p>
           </Link>
 
           <Link href="/gallery" className="jl-explore-card">
             <span className="jl-explore-icon"><Images /></span>
-            <h3>Before & After</h3>
+            <h3>Transformation Gallery</h3>
             <p>Real JayLuxe results</p>
           </Link>
         </div>
@@ -410,35 +412,35 @@ export default function Home() {
               <small>BEFORE &amp; AFTER</small>
               <h2>Real Customer Transformations</h2>
             </div>
-            <Link href="/gallery" className="jj-view-all-dark">
+            <Link href="/before-after" className="jj-view-all-dark">
               View Full Gallery <ArrowRight size={16} />
             </Link>
           </div>
 
-          <div className="jj-transformations-grid">
+          <div className="jj-transformations-carousel" aria-label="Customer transformations">
             {transformations.map((t, index) => (
-              <motion.div
+              <Link
+                href={`/gallery?transformation=${encodeURIComponent(t.id)}`}
                 key={t.id}
-                className="jj-transformation-card"
-                initial={{ opacity: 0, y: 8 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-24px' }}
-                transition={{ duration: 0.4, delay: index * 0.06 }}
+                className="jj-transformation-card jj-transformation-slide"
               >
-                <div className="jj-transformation-slider">
-                  <ReactCompareSlider
-                    itemOne={<ReactCompareSliderImage src={getResponsiveDeliverySource(t.beforeImage, 960)} alt="Before" style={{ objectFit: 'cover' }} />}
-                    itemTwo={<ReactCompareSliderImage src={getResponsiveDeliverySource(t.afterImage, 960)} alt="After" style={{ objectFit: 'cover' }} />}
-                  />
-                  <div className="jj-image-label before">Before</div>
-                  <div className="jj-image-label after">After</div>
+                <div className="jj-ba-home-images">
+                  <div className="jj-ba-home-image">
+                    <span>BEFORE</span>
+                    <img src={getResponsiveDeliverySource(t.beforeImage, 600)} alt={`${t.title} before`} onError={(e) => { e.currentTarget.src = TRANSFORMATION_FALLBACK_IMAGE; }} />
+                  </div>
+                  <div className="jj-ba-home-image">
+                    <span>AFTER</span>
+                    <img src={getResponsiveDeliverySource(t.afterImage, 600)} alt={`${t.title} after`} onError={(e) => { e.currentTarget.src = TRANSFORMATION_FALLBACK_IMAGE; }} />
+                  </div>
                 </div>
+
                 <div className="jj-transformation-content">
-                  <span className="jj-transformation-category">{t.category}</span>
+                  {t.category && <span className="jj-transformation-category">{t.category}</span>}
                   <h3>{t.title}</h3>
                   {t.description && <p>{t.description}</p>}
                 </div>
-              </motion.div>
+              </Link>
             ))}
           </div>
         </section>

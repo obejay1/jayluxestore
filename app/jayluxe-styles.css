@@ -1,0 +1,15 @@
+/*
+ JayLuxe CSS entry point.
+ Keep global style loading in one place to prevent layout import drift.
+ Component-specific styles should live with their component.
+*/
+@import './jayluxe-design-system.css';
+@import './jayluxe-phase7-luxury-brand.css';
+@import './jayluxe-phase6-mobile-ux.css';
+@import './jayluxe-phase8-home-conversion.css';
+@import './jayluxe-phase15-home-luxury-compact.css';
+@import './jayluxe-phase17-feature-strip.css';
+@import './jayluxe-phase37-5-polish.css';
+@import './jayluxe-ui-compact-polish.css';
+@import './jayluxe-installment-ui-phase11.css';
+@import './jayluxe-installment-plan-cards-phase13.css';

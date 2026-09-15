@@ -31,12 +31,12 @@ export default function TransformationsPage() {
             </button>
           ))}
         </div>
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-2">
           {filtered.map(t=>(
             <article key={t.id} className="rounded-2xl border bg-white p-4 shadow-sm">
               <div className="grid grid-cols-2 gap-2">
-                <img src={t.beforeImage} className="h-48 w-full rounded-xl object-cover" />
-                <img src={t.afterImage} className="h-48 w-full rounded-xl object-cover" />
+                <img src={t.beforeImage} className="h-48 w-full rounded-xl object-contain bg-[#faf7f0]" />
+                <img src={t.afterImage} className="h-48 w-full rounded-xl object-contain bg-[#faf7f0]" />
               </div>
               <h2 className="mt-4 font-semibold">{t.title}</h2>
               <p className="text-sm text-neutral-500">{t.category}</p>
