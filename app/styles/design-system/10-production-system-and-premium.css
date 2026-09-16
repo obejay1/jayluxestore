@@ -420,17 +420,75 @@ canvas {
 }
 
 /* ---------- Cart / checkout / auth / account ---------- */
-.jl-cart-hero,
+/* Cart is intentionally compact: SiteChrome already provides header separation. */
+.jl-cart-hero {
+  min-height: 0;
+  padding: 18px var(--jl-gutter) 12px;
+  text-align: center;
+}
+
+.jl-cart-hero .jl-page-hero-icon {
+  width: 44px;
+  height: 44px;
+  margin-bottom: 7px;
+}
+
+.jl-cart-hero .jl-page-eyebrow {
+  display: block;
+  margin: 0 0 4px;
+}
+
+.jl-cart-hero h1 {
+  margin: 0 0 5px;
+  font-size: clamp(1.65rem, 3.2vw, 2.4rem);
+  line-height: 1.08;
+}
+
+.jl-cart-hero p {
+  margin: 0;
+  font-size: 0.86rem;
+  line-height: 1.4;
+}
+
 .jl-checkout-hero,
 .jl-account-hero {
   min-height: 150px;
   padding: var(--jl-space-8) var(--jl-gutter);
 }
 
-.jl-cart-layout,
+.jl-cart-layout {
+  gap: var(--jl-space-5);
+  padding-block: 10px var(--jl-major-y);
+}
+
 .jl-checkout-layout {
   gap: var(--jl-space-5);
   padding-block: var(--jl-space-6) var(--jl-major-y);
+}
+
+@media (max-width: 640px) {
+  .jl-cart-hero {
+    padding: 10px 14px 8px;
+  }
+
+  .jl-cart-hero .jl-page-hero-icon {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 5px;
+  }
+
+  .jl-cart-hero h1 {
+    margin-bottom: 3px;
+    font-size: 1.55rem;
+  }
+
+  .jl-cart-hero p {
+    font-size: 0.8rem;
+  }
+
+  .jl-cart-layout {
+    padding-top: 6px;
+  }
 }
 
 .jl-form-card,
@@ -6359,5 +6417,73 @@ textarea.input {
   }
   .jl-installment-provider-picker button{
     flex:1 1 0;
+  }
+}
+
+
+ /* Homepage category card content alignment */
+.jj-category-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.jj-category-image {
+  flex: 0 0 auto;
+  aspect-ratio: 1 / 0.9;
+  overflow: hidden;
+}
+
+.jj-category-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: flex-end;
+  padding: 14px;
+  gap: 6px;
+}
+
+.jj-category-content strong {
+  margin: 0;
+  line-height: 1.25;
+}
+
+.jj-category-content small {
+  margin: 0;
+  line-height: 1.4;
+}
+
+.jj-category-explore {
+  margin-top: 4px;
+}
+
+
+/* Category card typography refinement */
+.jj-category-content strong {
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.jj-category-content small {
+  font-size: 0.72rem;
+  line-height: 1.4;
+}
+
+.jj-category-explore {
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .jj-category-content strong {
+    font-size: 0.9rem;
+  }
+
+  .jj-category-content small {
+    font-size: 0.68rem;
+  }
+
+  .jj-category-explore {
+    font-size: 0.74rem;
   }
 }

@@ -10027,11 +10027,13 @@ body {
 .jl-product-lightbox-close {
   top:18px;
   right:18px;
-  width:46px;
-  height:46px;
+  width:56px;
+  height:56px;
   border-radius:50%;
   display:grid;
   place-items:center;
+  font-size:22px;
+  cursor:pointer;
 }
 .jl-product-lightbox-counter {
   top:18px;
@@ -10043,14 +10045,32 @@ body {
 .jl-product-lightbox-nav {
   top:50%;
   transform:translateY(-50%);
-  width:48px;
-  height:48px;
+  width:58px;
+  height:58px;
   border-radius:50%;
   display:grid;
   place-items:center;
+  cursor:pointer;
 }
-.jl-product-lightbox-nav.prev {left:20px;}
-.jl-product-lightbox-nav.next {right:20px;}
+.jl-product-lightbox-nav.prev {left:18px;}
+.jl-product-lightbox-nav.next {right:18px;}
+
+@media (max-width:640px){
+  .jl-product-lightbox-close {
+    width:52px;
+    height:52px;
+    top:16px;
+    right:16px;
+  }
+
+  .jl-product-lightbox-nav {
+    width:54px;
+    height:54px;
+  }
+
+  .jl-product-lightbox-nav.prev {left:12px;}
+  .jl-product-lightbox-nav.next {right:12px;}
+}
 .jl-product-lightbox-loader {
   position:absolute;
   color:#c9a227;
@@ -10068,263 +10088,38 @@ body {
  .jl-product-lightbox-nav.prev{left:8px}.jl-product-lightbox-nav.next{right:8px}
 }
 
-/* JayLuxe cart hero mobile spacing refinement */
-@media (max-width: 768px) {
-  .jl-cart-page {
-    padding-top: 16px;
-  }
 
-  .jl-cart-page .jl-cart-hero {
-    min-height: auto;
-    padding-top: 8px;
-    padding-bottom: 4px;
-  }
-
-  .jl-cart-page .jl-cart-hero .jl-page-eyebrow {
-    margin-top: 12px;
-    margin-bottom: 8px;
-  }
-
-  .jl-cart-page .jl-cart-hero h1 {
-    margin-top: 0;
-    margin-bottom: 10px;
-  }
-
-  .jl-cart-page .jl-cart-hero p {
-    margin-bottom: 0;
-  }
-
-  .jl-cart-page .jl-cart-layout {
-    margin-top: 12px;
-  }
+/* JayLuxe global typography standard - Cart header reference */
+:root {
+  --jl-page-header-size: 28px;
+  --jl-page-header-weight: 800;
+  --jl-page-header-line-height: 1.15;
+  --jl-page-header-font: var(--font-jayluxe-sans), Inter, system-ui, sans-serif;
 }
 
-@media (max-width: 560px) {
-  .jl-cart-page {
-    padding-top: 0;
-  }
-
-  .jl-cart-page .jl-cart-hero {
-    min-height: auto;
-    padding-top: 8px;
-    padding-bottom: 4px;
-  }
+body,
+button,
+input,
+textarea,
+select {
+  font-family: var(--font-jayluxe-sans), Inter, system-ui, sans-serif;
 }
 
-
-/* JAYLUXE CART FINAL SPACING CONTROL
-   Single scoped cart spacing correction.
-*/
-.jl-cart-page {
-  padding-top: 0;
+.jl-page-header,
+.page-title,
+.jl-page-title {
+  font-family: var(--jl-page-header-font);
+  font-size: var(--jl-page-header-size);
+  font-weight: var(--jl-page-header-weight);
+  line-height: var(--jl-page-header-line-height);
+  letter-spacing: -0.02em;
 }
 
-.jl-cart-page .jl-cart-hero {
-  min-height: auto;
-  margin-bottom: 0;
-  padding-top: 16px;
-  padding-bottom: 12px;
-}
-
-.jl-cart-page .jl-cart-layout {
-  margin-top: 16px;
-}
-
-@media (max-width: 768px) {
-  .jl-cart-page {
-    padding-top: 0;
-  }
-
-  .jl-cart-page .jl-cart-hero {
-    padding-top: 12px;
-    padding-bottom: 8px;
-  }
-
-  .jl-cart-page .jl-cart-layout {
-    margin-top: 12px;
-  }
-}
-
-/* Transformation experience cleanup */
-.jj-transformations { overflow:hidden; }
-.jj-transformations-slider-track {
-  display:flex;
-  gap:20px;
-  overflow-x:auto;
-  scroll-snap-type:x mandatory;
-  padding:4px 2px 16px;
-  scrollbar-width:none;
-}
-.jj-transformations-slider-track::-webkit-scrollbar{display:none;}
-.jj-transformation-slide {
-  flex:0 0 min(86vw,360px);
-  scroll-snap-align:start;
-}
-.jj-transformation-slider {
-  aspect-ratio:1 / .85;
-  background:#faf6ef;
-}
-.jj-transformation-slider img {
-  object-fit:contain !important;
-}
-@media(min-width:900px){
- .jj-transformation-slide{flex-basis:360px;}
- .jj-transformations-slider-track:after{content:"";flex:0 0 20px;}
-}
-.jl-ba-page img{
- max-width:100%;
-}
-
-
-/* JayLuxe Before & After actual rendered component cleanup */
-.jj-transformations {
-  overflow: hidden;
-}
-.jj-transformations-carousel {
-  display: flex;
-  gap: 18px;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  padding: 4px 2px 12px;
-  scrollbar-width: none;
-  overscroll-behavior-x: contain;
-}
-.jj-transformations-carousel::-webkit-scrollbar { display:none; }
-
-.jj-transformation-slide {
-  flex: 0 0 min(88vw, 420px);
-  scroll-snap-align: center;
-  border-radius: 18px;
-  overflow: hidden;
-  background: #fff;
-  border: 1px solid rgba(184,134,47,.18);
-  box-shadow: 0 12px 30px rgba(0,0,0,.08);
-}
-.jj-ba-home-images {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  aspect-ratio: 16/9;
-}
-.jj-ba-home-image {
-  position:relative;
-  background:#faf6ef;
-  overflow:hidden;
-}
-.jj-ba-home-image img {
-  width:100%;
-  height:100%;
-  object-fit:contain;
-}
-.jj-ba-home-image span {
-  position:absolute;
-  z-index:2;
-  top:10px;
-  left:10px;
-  padding:5px 9px;
-  border-radius:999px;
-  background:rgba(0,0,0,.6);
-  color:white;
-  font-size:10px;
-  letter-spacing:.12em;
-}
-.jj-ba-home-image + .jj-ba-home-image span {
-  left:auto;
-  right:10px;
-}
-
-@media (min-width:768px) {
-  .jj-transformation-slide {
-    flex-basis: min(42vw, 460px);
-  }
-}
-
-.jl-ba-grid {
-  grid-template-columns:repeat(2,minmax(0,1fr));
-}
-.jl-ba-image {
-  object-fit:contain !important;
-}
-@media(max-width:640px){
- .jl-ba-grid { grid-template-columns:1fr; }
-}
-
-
-/* ===============================
-   HOMEPAGE TRANSFORMATION COMPACT CARD PASS
-   =============================== */
-
-.jj-transformations {
-  margin-bottom: 32px;
-}
-
-.jj-transformations-carousel {
-  display: flex;
-  gap: 16px;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  padding: 4px 2px 12px;
-  scrollbar-width: none;
-}
-
-.jj-transformations-carousel::-webkit-scrollbar {
-  display: none;
-}
-
-.jj-transformation-slide {
-  flex: 0 0 min(350px, 82vw);
-  scroll-snap-align: start;
-  border-radius: 18px;
-  min-height: 0;
-}
-
-.jj-ba-home-images {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  height: 150px;
-  overflow: hidden;
-  background: #f8f3eb;
-}
-
-.jj-ba-home-image {
-  position: relative;
-  overflow: hidden;
-}
-
-.jj-ba-home-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-.jj-ba-home-image span {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  z-index: 2;
-  padding: 4px 9px;
-  border-radius: 999px;
-  background: rgba(0,0,0,.6);
-  color: #fff;
-  font-size: 10px;
-  letter-spacing: .08em;
-}
-
-.jj-transformation-content {
-  padding: 12px 14px 14px;
-  min-height: auto;
-}
-
-.jj-transformation-content h3 {
-  margin: 8px 0 0;
-  font-size: 16px;
-}
-
-.jj-transformation-content p {
-  display: none;
-}
-
-@media (min-width: 768px) {
-  .jj-transformation-slide {
-    flex-basis: 360px;
+@media (max-width: 640px) {
+  .jl-page-header,
+  .page-title,
+  .jl-page-title {
+    font-size: 28px;
+    line-height: 1.15;
   }
 }

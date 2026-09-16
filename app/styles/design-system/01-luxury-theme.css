@@ -4778,23 +4778,13 @@ textarea:disabled {
 
 @media (max-width: 768px) {
   .jl-cart-page {
-    padding-top: 132px;
     padding-bottom: 90px;
   }
-
-  .jl-cart-hero {
-    min-height: auto;
-    padding-top: 20px;
-  }
-}
-
-.jl-cart-hero {
-  min-height: clamp(260px, 36vw, 390px);
 }
 
 .jl-cart-layout {
   width: min(1180px, calc(100% - 32px));
-  margin-top: 20px;
+  margin-top: 0;
   margin-inline: auto;
 }
 
@@ -6844,10 +6834,6 @@ textarea:disabled {
       calc(92px + env(safe-area-inset-bottom));
   }
 
-  .jl-cart-page .jl-cart-hero {
-    min-height: 240px;
-  }
-
   .jl-cart-page .checkout-hero-pro > div {
     padding: 28px 16px 30px;
   }
@@ -6859,7 +6845,7 @@ textarea:disabled {
 
   .jl-cart-page .jl-cart-layout {
     width: calc(100% - 24px);
-    margin-top: 14px;
+    margin-top: 0;
     gap: 14px;
     padding-bottom:
       calc(40px + env(safe-area-inset-bottom));
@@ -7177,14 +7163,3 @@ textarea:disabled {
 }
 
 
-/* Cart hero compact source fix */
-.jl-cart-page .jl-cart-hero {
-  padding-top: clamp(28px, 4vw, 56px);
-  min-height: auto;
-}
-
-@media (max-width: 640px) {
-  .jl-cart-page .jl-cart-hero {
-    padding-top: 28px;
-  }
-}

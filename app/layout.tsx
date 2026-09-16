@@ -4,8 +4,7 @@ import './jayluxe-styles.css';
 
 import type { Metadata, Viewport } from 'next';
 import {
-  Playfair_Display,
-  Plus_Jakarta_Sans,
+  Inter,
 } from 'next/font/google';
 
 
@@ -20,16 +19,10 @@ import {
   OFFICIAL_WHATSAPP_URL,
 } from '@/lib/contact';
 
-const sans = Plus_Jakarta_Sans({
+const sans = Inter({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-jayluxe-sans',
-});
-
-const serif = Playfair_Display({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-jayluxe-serif',
 });
 
 const siteUrl = getSiteUrl().toString().replace(/\/$/, '');
@@ -115,7 +108,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${sans.variable} ${serif.variable}`}>
+    <html lang="en" className={`${sans.variable}`}>
       <body className={sans.className}>
         <script
           type="application/ld+json"

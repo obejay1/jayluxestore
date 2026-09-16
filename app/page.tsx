@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ReactCompareSlider, ReactCompareSliderImage } from 'react-compare-slider';
 import {
   ArrowRight,
   Truck,
@@ -19,7 +18,7 @@ import {
   MessageCircle,
   Mail,
 } from 'lucide-react';
-import { getResponsiveDeliverySource, getSafeImageSource } from '@/lib/images';
+import { getSafeImageSource } from '@/lib/images';
 import {
   CATEGORY_GRID_CLASSES,
   PRODUCT_GRID_CLASSES,
@@ -32,6 +31,7 @@ import ProductCard from '@/components/ProductCard';
 import ResponsiveImage from '@/components/ResponsiveImage';
 import QuickViewModal from '@/components/QuickViewModal';
 import Footer from '@/components/Footer';
+import HomeTransformationCarousel from '@/components/transformations/HomeTransformationCarousel';
 import { getBridalPackages } from '@/lib/bridal';
 import { getFeaturedTransformations } from '@/lib/transformations';
 import {
@@ -40,8 +40,6 @@ import {
   OFFICIAL_WHATSAPP_URL,
 } from '@/lib/contact';
 
-
-const TRANSFORMATION_FALLBACK_IMAGE = "/images/placeholder-image.png";
 
 type ProductShowcaseProps = {
   id?: string;
@@ -239,15 +237,15 @@ export default function Home() {
             <p>Elegant bridal experiences</p>
           </Link>
 
-          <Link href="/before-after" className="jl-explore-card">
+          <Link href="/gallery" className="jl-explore-card">
             <span className="jl-explore-icon"><Zap /></span>
-            <h3>Before & After</h3>
+            <h3>Transformation</h3>
             <p>See amazing beauty changes</p>
           </Link>
 
-          <Link href="/gallery" className="jl-explore-card">
+          <Link href="/before-after" className="jl-explore-card">
             <span className="jl-explore-icon"><Images /></span>
-            <h3>Transformation Gallery</h3>
+            <h3>Before & After</h3>
             <p>Real JayLuxe results</p>
           </Link>
         </div>
@@ -406,44 +404,7 @@ export default function Home() {
       )}
 
       {transformations.length > 0 && (
-        <section className="jj-transformations">
-          <div className="jj-section-header">
-            <div>
-              <small>BEFORE &amp; AFTER</small>
-              <h2>Real Customer Transformations</h2>
-            </div>
-            <Link href="/before-after" className="jj-view-all-dark">
-              View Full Gallery <ArrowRight size={16} />
-            </Link>
-          </div>
-
-          <div className="jj-transformations-carousel" aria-label="Customer transformations">
-            {transformations.map((t, index) => (
-              <Link
-                href={`/gallery?transformation=${encodeURIComponent(t.id)}`}
-                key={t.id}
-                className="jj-transformation-card jj-transformation-slide"
-              >
-                <div className="jj-ba-home-images">
-                  <div className="jj-ba-home-image">
-                    <span>BEFORE</span>
-                    <img src={getResponsiveDeliverySource(t.beforeImage, 600)} alt={`${t.title} before`} onError={(e) => { e.currentTarget.src = TRANSFORMATION_FALLBACK_IMAGE; }} />
-                  </div>
-                  <div className="jj-ba-home-image">
-                    <span>AFTER</span>
-                    <img src={getResponsiveDeliverySource(t.afterImage, 600)} alt={`${t.title} after`} onError={(e) => { e.currentTarget.src = TRANSFORMATION_FALLBACK_IMAGE; }} />
-                  </div>
-                </div>
-
-                <div className="jj-transformation-content">
-                  {t.category && <span className="jj-transformation-category">{t.category}</span>}
-                  <h3>{t.title}</h3>
-                  {t.description && <p>{t.description}</p>}
-                </div>
-              </Link>
-            ))}
-          </div>
-        </section>
+        <HomeTransformationCarousel items={transformations} />
       )}
 
       {testimonials.length > 0 && (

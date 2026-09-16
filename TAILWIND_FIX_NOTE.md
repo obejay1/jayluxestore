@@ -1,1 +1,0 @@
-Removed unused Tailwind v3 directives from generated globals.css because this project does not include tailwindcss dependency. Existing generated CSS preserved.

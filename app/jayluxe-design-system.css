@@ -4779,23 +4779,13 @@ textarea:disabled {
 
 @media (max-width: 768px) {
   .jl-cart-page {
-    padding-top: 132px;
     padding-bottom: 90px;
   }
-
-  .jl-cart-hero {
-    min-height: auto;
-    padding-top: 20px;
-  }
-}
-
-.jl-cart-hero {
-  min-height: clamp(260px, 36vw, 390px);
 }
 
 .jl-cart-layout {
   width: min(1180px, calc(100% - 32px));
-  margin-top: 20px;
+  margin-top: 0;
   margin-inline: auto;
 }
 
@@ -6845,10 +6835,6 @@ textarea:disabled {
       calc(92px + env(safe-area-inset-bottom));
   }
 
-  .jl-cart-page .jl-cart-hero {
-    min-height: 240px;
-  }
-
   .jl-cart-page .checkout-hero-pro > div {
     padding: 28px 16px 30px;
   }
@@ -6860,7 +6846,7 @@ textarea:disabled {
 
   .jl-cart-page .jl-cart-layout {
     width: calc(100% - 24px);
-    margin-top: 14px;
+    margin-top: 0;
     gap: 14px;
     padding-bottom:
       calc(40px + env(safe-area-inset-bottom));
@@ -7174,19 +7160,6 @@ textarea:disabled {
   .jl-checkout-page .jl-payment-selected,
   .jl-checkout-page .jl-payment-unavailable {
     font-size: 0.51rem;
-  }
-}
-
-
-/* Cart hero compact source fix */
-.jl-cart-page .jl-cart-hero {
-  padding-top: clamp(28px, 4vw, 56px);
-  min-height: auto;
-}
-
-@media (max-width: 640px) {
-  .jl-cart-page .jl-cart-hero {
-    padding-top: 28px;
   }
 }
 
@@ -9336,7 +9309,6 @@ body.jl-remove-hero-images .jl-main-content :is(
   .jl-editorial-hero,
   .jl-policy-hero,
   .jl-shop-hero,
-  .jl-cart-hero,
   .jl-checkout-hero,
   .jl-bridal-hero,
   .jl-services-hero,
@@ -9371,7 +9343,6 @@ body.jl-remove-hero-images .jl-main-content :is(
   .jl-editorial-hero,
   .jl-policy-hero,
   .jl-shop-hero,
-  .jl-cart-hero,
   .jl-checkout-hero,
   .jl-bridal-hero,
   .jl-services-hero,
@@ -9387,7 +9358,6 @@ body.jl-remove-hero-images .jl-main-content :is(
 body.jl-remove-hero-images .jl-main-content :is(
   .jl-editorial-hero-overlay,
   .jl-shop-hero-overlay,
-  .jl-cart-hero-overlay,
   .jl-checkout-hero-overlay,
   .jl-bridal-hero-overlay,
   .jl-services-hero-overlay,
@@ -9404,7 +9374,6 @@ body.jl-remove-hero-images .jl-main-content :is(
   .jl-editorial-hero,
   .jl-policy-hero,
   .jl-shop-hero,
-  .jl-cart-hero,
   .jl-checkout-hero,
   .jl-bridal-hero,
   .jl-services-hero,
@@ -9421,7 +9390,6 @@ body.jl-remove-hero-images .jl-main-content :is(
   .jl-editorial-hero,
   .jl-policy-hero,
   .jl-shop-hero,
-  .jl-cart-hero,
   .jl-checkout-hero,
   .jl-bridal-hero,
   .jl-services-hero,
@@ -9440,7 +9408,6 @@ body.jl-remove-hero-images .jl-main-content :is(
 
 body.jl-remove-hero-images .jl-main-content :is(
   .jl-shop-hero-content,
-  .jl-cart-hero-content,
   .jl-checkout-hero-content,
   .jl-bridal-hero-inner,
   .jl-bridal-hero-content,
@@ -9467,7 +9434,6 @@ body.jl-remove-hero-images .jl-main-content :is(
   .jl-editorial-hero,
   .jl-policy-hero,
   .jl-shop-hero,
-  .jl-cart-hero,
   .jl-checkout-hero,
   .jl-bridal-hero,
   .jl-services-hero,
@@ -9494,7 +9460,6 @@ body.jl-remove-hero-images .jl-main-content :is(
   .jl-editorial-hero,
   .jl-policy-hero,
   .jl-shop-hero,
-  .jl-cart-hero,
   .jl-checkout-hero,
   .jl-bridal-hero,
   .jl-services-hero,
@@ -9571,7 +9536,6 @@ body.jl-remove-hero-images .jl-main-content :is(
     .jl-editorial-hero,
     .jl-policy-hero,
     .jl-shop-hero,
-    .jl-cart-hero,
     .jl-checkout-hero,
     .jl-bridal-hero,
     .jl-services-hero,
@@ -9591,7 +9555,6 @@ body.jl-remove-hero-images .jl-main-content :is(
     .jl-editorial-hero,
     .jl-policy-hero,
     .jl-shop-hero,
-    .jl-cart-hero,
     .jl-checkout-hero,
     .jl-bridal-hero,
     .jl-services-hero,
@@ -20150,17 +20113,75 @@ canvas {
 }
 
 /* ---------- Cart / checkout / auth / account ---------- */
-.jl-cart-hero,
+/* Cart is intentionally compact: SiteChrome already provides header separation. */
+.jl-cart-hero {
+  min-height: 0;
+  padding: 18px var(--jl-gutter) 12px;
+  text-align: center;
+}
+
+.jl-cart-hero .jl-page-hero-icon {
+  width: 44px;
+  height: 44px;
+  margin-bottom: 7px;
+}
+
+.jl-cart-hero .jl-page-eyebrow {
+  display: block;
+  margin: 0 0 4px;
+}
+
+.jl-cart-hero h1 {
+  margin: 0 0 5px;
+  font-size: clamp(1.65rem, 3.2vw, 2.4rem);
+  line-height: 1.08;
+}
+
+.jl-cart-hero p {
+  margin: 0;
+  font-size: 0.86rem;
+  line-height: 1.4;
+}
+
 .jl-checkout-hero,
 .jl-account-hero {
   min-height: 150px;
   padding: var(--jl-space-8) var(--jl-gutter);
 }
 
-.jl-cart-layout,
+.jl-cart-layout {
+  gap: var(--jl-space-5);
+  padding-block: 10px var(--jl-major-y);
+}
+
 .jl-checkout-layout {
   gap: var(--jl-space-5);
   padding-block: var(--jl-space-6) var(--jl-major-y);
+}
+
+@media (max-width: 640px) {
+  .jl-cart-hero {
+    padding: 10px 14px 8px;
+  }
+
+  .jl-cart-hero .jl-page-hero-icon {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 5px;
+  }
+
+  .jl-cart-hero h1 {
+    margin-bottom: 3px;
+    font-size: 1.55rem;
+  }
+
+  .jl-cart-hero p {
+    font-size: 0.8rem;
+  }
+
+  .jl-cart-layout {
+    padding-top: 6px;
+  }
 }
 
 .jl-form-card,
@@ -26406,104 +26427,4 @@ textarea.input {
   .jl-explore-card p {
     font-size: .75rem;
   }
-}
-
-
-/* JayLuxe transformation portfolio final layout */
-.jj-transformations {
-  padding: 32px 20px;
-  overflow: hidden;
-}
-
-.jj-transformations-carousel {
-  display: flex;
-  gap: 16px;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none;
-  padding-bottom: 8px;
-}
-.jj-transformations-carousel::-webkit-scrollbar { display:none; }
-
-.jj-transformation-slide {
-  flex: 0 0 min(360px, 88vw);
-  scroll-snap-align: start;
-  display:block;
-  border-radius:18px;
-  overflow:hidden;
-  background:#fff;
-  border:1px solid rgba(184,134,47,.18);
-  box-shadow:0 10px 30px rgba(0,0,0,.08);
-}
-
-.jj-ba-home-images {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
-  padding:10px;
-}
-
-.jj-ba-home-image {
-  height:170px;
-  position:relative;
-  overflow:hidden;
-  border-radius:12px;
-  background:#f8f1e5;
-}
-
-.jj-ba-home-image img {
-  width:100%;
-  height:100%;
-  object-fit:contain;
-}
-
-.jj-ba-home-image span {
-  position:absolute;
-  top:8px;
-  left:8px;
-  z-index:2;
-  font-size:10px;
-  padding:4px 8px;
-  border-radius:999px;
-  background:#000;
-  color:#fff;
-}
-
-.jj-transformation-content {
-  padding:12px 14px 16px;
-}
-
-.jj-transformation-content p {
-  display:none;
-}
-
-/* Before after portfolio */
-.jl-ba-grid {
-  display:grid;
-  grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:18px;
-}
-
-.jl-ba-card {
-  border-radius:18px;
-  overflow:hidden;
-}
-
-.jl-ba-images {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:6px;
-}
-
-.jl-ba-image {
-  object-fit:contain !important;
-}
-
-@media(max-width:900px){
- .jl-ba-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
-}
-@media(max-width:520px){
- .jl-ba-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
- .jj-transformation-slide { flex-basis:88vw; }
- .jj-ba-home-image { height:140px; }
 }

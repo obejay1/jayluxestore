@@ -1,1 +1,0 @@
-Fixed JSX hydration/parser issue. Moved installmentInfo inside the main JSX wrapper. No payment logic changed.
