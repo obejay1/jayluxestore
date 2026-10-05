@@ -354,14 +354,21 @@ export function addRecentlyViewed(id: string) {
 
 export async function getOrders(): Promise<Order[]> {
   if (db) {
-    const s = await getDocs(
-      query(collection(db, 'orders'), orderBy('createdAt', 'desc'))
-    );
+    const response = await fetch('/api/admin/orders', {
+      cache: 'no-store',
+      headers: { Accept: 'application/json' },
+      credentials: 'same-origin',
+    });
+    const data = (await response.json().catch(() => ({}))) as {
+      orders?: Order[];
+      message?: string;
+    };
 
-    return s.docs.map((d) => ({
-      ...d.data(),
-      id: d.id,
-    })) as Order[];
+    if (!response.ok || !Array.isArray(data.orders)) {
+      throw new Error(data.message || 'Orders could not be loaded.');
+    }
+
+    return data.orders;
   }
 
   return JSON.parse(ls?.getItem('orders') || '[]');
