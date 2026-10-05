@@ -10,6 +10,7 @@ import {
 import { adminDb } from '@/lib/firebaseAdmin';
 import { getVerifiedCustomer } from '@/lib/requestAuth';
 import { sendSMS } from '@/lib/termii';
+import { sendOrderCreatedEmails } from '@/lib/email/workflows';
 import { sendAdminOrderNotification } from '@/lib/email';
 
 export const runtime = 'nodejs';
@@ -56,6 +57,14 @@ export async function POST(request: NextRequest) {
     if (!accessToken) throw new CheckoutError('The order access credential is unavailable.', 500);
 
     if (!result.duplicate) {
+      try {
+        await sendOrderCreatedEmails(result.order);
+      } catch (emailError) {
+        console.error('ADMIN_ORDER_EMAIL_FAILED', {
+          message: emailError instanceof Error ? emailError.message : String(emailError),
+          orderId: result.order.id,
+        });
+      }
       const orderItems = Array.isArray(result.order.items)
         ? result.order.items.length
         : 0;
