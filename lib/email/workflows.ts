@@ -114,7 +114,7 @@ export async function sendOrderCreatedEmails(order: Order) {
 
   if (admin) {
     const template = adminNewOrderTemplate(order);
-    results.push(await sendManagedEmail({
+    const adminResult = await sendManagedEmail({
       eventKey: `admin-new-order:${order.id}`,
       emailType: 'admin_new_order',
       to: admin,
@@ -122,7 +122,17 @@ export async function sendOrderCreatedEmails(order: Order) {
       orderId: order.id,
       replyTo: customer || undefined,
       ...template,
-    }));
+    });
+    results.push(adminResult);
+
+    await recordOrderEmailSummary(order.id, {
+      adminNotificationEmailStatus: adminResult.status,
+      adminNotificationEmailId: adminResult.resendId || null,
+      adminNotificationEmailError: adminResult.error || null,
+      adminNotificationEmailSentAt:
+        adminResult.ok && !adminResult.skipped ? new Date().toISOString() : null,
+      adminNotificationEmailRecipient: admin,
+    });
   }
 
   return results;
