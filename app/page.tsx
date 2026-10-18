@@ -257,10 +257,20 @@ export default function Home() {
             <small>Curated Departments</small>
             <h2>Shop by Category</h2>
           </div>
+          <Link href="/categories" aria-label="View all JayLuxe categories">
+            View All <ArrowRight size={16} aria-hidden="true" />
+          </Link>
         </div>
 
         <div className={`jj-category-grid ${CATEGORY_GRID_CLASSES}`}>
-          {categories.filter((category) => category.active !== false).slice(0, 4).map((category) => (
+          {categories
+            .filter((category) => category.active !== false)
+            .sort((left, right) => {
+              const leftCreatedAt = left.createdAt ? Date.parse(left.createdAt) : 0;
+              const rightCreatedAt = right.createdAt ? Date.parse(right.createdAt) : 0;
+              return rightCreatedAt - leftCreatedAt;
+            })
+            .map((category) => (
             <Link
               href={
                 category.type === 'service'

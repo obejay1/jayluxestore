@@ -10027,6 +10027,7 @@ body {
 .jl-product-lightbox-close {
   top:18px;
   right:18px;
+<<<<<<< HEAD
   width:56px;
   height:56px;
   border-radius:50%;
@@ -10034,6 +10035,13 @@ body {
   place-items:center;
   font-size:22px;
   cursor:pointer;
+=======
+  width:46px;
+  height:46px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+>>>>>>> 72d3d22 (update on categories)
 }
 .jl-product-lightbox-counter {
   top:18px;
@@ -10045,6 +10053,7 @@ body {
 .jl-product-lightbox-nav {
   top:50%;
   transform:translateY(-50%);
+<<<<<<< HEAD
   width:58px;
   height:58px;
   border-radius:50%;
@@ -10071,6 +10080,16 @@ body {
   .jl-product-lightbox-nav.prev {left:12px;}
   .jl-product-lightbox-nav.next {right:12px;}
 }
+=======
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+}
+.jl-product-lightbox-nav.prev {left:20px;}
+.jl-product-lightbox-nav.next {right:20px;}
+>>>>>>> 72d3d22 (update on categories)
 .jl-product-lightbox-loader {
   position:absolute;
   color:#c9a227;
@@ -10087,6 +10106,7 @@ body {
  .jl-product-lightbox-nav{width:42px;height:42px;}
  .jl-product-lightbox-nav.prev{left:8px}.jl-product-lightbox-nav.next{right:8px}
 }
+<<<<<<< HEAD
 
 
 /* JayLuxe global typography standard - Cart header reference */
@@ -10123,3 +10143,5 @@ select {
     line-height: 1.15;
   }
 }
+=======
+>>>>>>> 72d3d22 (update on categories)

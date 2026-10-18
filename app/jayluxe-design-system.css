@@ -26113,6 +26113,837 @@ textarea.input {
   }
 }
 
+<<<<<<< HEAD
+=======
+
+ /* Homepage category card content alignment */
+.jj-category-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.jj-category-image {
+  flex: 0 0 auto;
+  aspect-ratio: 1 / 0.9;
+  overflow: hidden;
+}
+
+.jj-category-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  justify-content: flex-end;
+  padding: 14px;
+  gap: 6px;
+}
+
+.jj-category-content strong {
+  margin: 0;
+  line-height: 1.25;
+}
+
+.jj-category-content small {
+  margin: 0;
+  line-height: 1.4;
+}
+
+.jj-category-explore {
+  margin-top: 4px;
+}
+
+
+/* Category card typography refinement */
+.jj-category-content strong {
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.jj-category-content small {
+  font-size: 0.72rem;
+  line-height: 1.4;
+}
+
+.jj-category-explore {
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .jj-category-content strong {
+    font-size: 0.9rem;
+  }
+
+  .jj-category-content small {
+    font-size: 0.68rem;
+  }
+
+  .jj-category-explore {
+    font-size: 0.74rem;
+  }
+}
+
+/* ===== Consolidated from app/jayluxe-phase7-luxury-brand.css ===== */
+/* Phase 7 - Luxury Brand Visual Refinement */
+.jj-home {
+  overflow:hidden;
+}
+
+.jj-hero {
+  min-height: min(78vh, 760px);
+  border-radius: 0 0 36px 36px;
+}
+
+.jj-hero-overlay {
+  background:
+    linear-gradient(90deg, rgba(0,0,0,.72), rgba(0,0,0,.18));
+}
+
+.jj-hero-content {
+  max-width: 620px;
+  padding: 48px 24px;
+}
+
+.jj-hero-content h1 {
+  font-family: var(--font-jayluxe-serif), Georgia, serif;
+  font-size: clamp(42px, 6vw, 72px);
+  letter-spacing: -1px;
+  line-height: 1.02;
+}
+
+.jj-hero-content p {
+  max-width: 520px;
+  font-size: 18px;
+  line-height: 1.7;
+  opacity: .95;
+}
+
+.jj-btn {
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.jj-btn:hover {
+  transform: translateY(-2px);
+}
+
+.jj-products,
+.jj-trust {
+  padding-top: 72px;
+  padding-bottom: 72px;
+}
+
+.jj-product-grid > * {
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.jj-product-grid > *:hover {
+  transform: translateY(-6px);
+}
+
+.jj-section-header h2 {
+  font-family: var(--font-jayluxe-serif), Georgia, serif;
+  letter-spacing: -.4px;
+}
+
+@media (max-width: 640px) {
+  .jj-hero {
+    min-height: 620px;
+    border-radius: 0 0 24px 24px;
+  }
+
+  .jj-hero-content {
+    padding: 32px 18px;
+  }
+
+  .jj-hero-content h1 {
+    font-size: 42px;
+  }
+
+  .jj-hero-content p {
+    font-size: 15px;
+  }
+
+  .jj-products,
+  .jj-trust {
+    padding-top: 44px;
+    padding-bottom: 44px;
+  }
+}
+
+/* ===== Consolidated from app/jayluxe-phase6-mobile-ux.css ===== */
+/* JayLuxe Phase 6 - Mobile UX polish */
+
+@media (max-width: 768px) {
+  .cart-item {
+    grid-template-columns: 72px minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .cart-img {
+    width: 72px;
+    height: 72px;
+  }
+
+  .summary-total {
+    font-size: 21px;
+  }
+
+  .btn.full,
+  .fixed-action .btn {
+    min-height: 52px;
+    font-size: 15px;
+  }
+
+  .pay-option {
+    padding: 14px;
+    gap: 12px;
+  }
+
+  .detail-hero {
+    height: 300px;
+  }
+
+  .detail-title {
+    font-size: 25px;
+  }
+
+  .desc {
+    font-size: 16px;
+  }
+
+  .admin-shell {
+    padding: 14px;
+  }
+
+  .admin-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .app {
+    padding-bottom: 100px;
+  }
+
+  button,
+  .btn,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+@media (max-width: 420px) {
+  .container {
+    padding: 14px;
+  }
+
+  .page-title {
+    font-size: 24px;
+  }
+
+  .section-title {
+    font-size: 21px;
+  }
+
+  .grid {
+    gap: 12px;
+  }
+}
+
+/* ===== Consolidated from app/jayluxe-phase8-home-conversion.css ===== */
+.jl-story-section,.jl-why-section{padding:72px 5%;}
+.jl-story-card{max-width:900px;margin:auto;text-align:center;padding:70px 40px;border-radius:28px;background:var(--card,#fff);box-shadow:0 18px 60px rgba(0,0,0,.08);}
+.jl-story-card span{letter-spacing:.18em;font-size:.75rem;color:#b08d57;font-weight:700;}
+.jl-story-card h2{font-size:clamp(2rem,4vw,3.5rem);margin:18px 0;}
+.jl-story-card p{max-width:650px;margin:0 auto 28px;line-height:1.8;color:#666;}
+.jl-benefit-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+.jl-benefit-grid>div{padding:30px;border-radius:20px;background:#fff;box-shadow:0 10px 35px rgba(0,0,0,.06);}
+.jl-benefit-grid svg{color:#b08d57;}
+.jl-benefit-grid h3{margin:16px 0 8px;}
+.jl-benefit-grid p{color:#666;}
+@media(max-width:768px){.jl-story-section,.jl-why-section{padding:40px 20px}.jl-story-card{padding:40px 20px}.jl-benefit-grid{grid-template-columns:1fr;}}
+
+/* ===== Consolidated from app/jayluxe-phase15-home-luxury-compact.css ===== */
+/* Phase 15 compact luxury homepage */
+.jl-home-tight-section {
+  margin-block: 32px !important;
+}
+
+.jl-discover-grid,
+.jl-home-promo-features {
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:16px;
+}
+
+.jl-compact-experience-card,
+.jl-home-promo-feature {
+  min-height:150px;
+  border:1px solid rgba(200,162,75,.18);
+  border-radius:18px;
+  background:#fff;
+  padding:18px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:12px;
+  box-shadow:0 10px 25px rgba(0,0,0,.04);
+}
+
+.jl-home-feature-icon,
+.jl-home-promo-icon {
+  width:52px;
+  height:52px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(200,162,75,.12);
+  color:#9a7625;
+}
+
+.jl-editorial-copy strong,
+.jl-home-promo-copy strong {
+  font-size:1rem;
+}
+
+.jl-editorial-copy p,
+.jl-home-promo-copy small {
+  margin:5px 0 0;
+  color:#666;
+  font-size:.88rem;
+}
+
+.jl-home-promo-feature {
+  flex-direction:row;
+  align-items:center;
+  min-height:100px;
+}
+
+.jj-category-grid {
+  gap:16px !important;
+}
+
+.jj-category-card {
+  min-height:280px !important;
+}
+
+.jj-category-image {
+  aspect-ratio:1/1;
+}
+
+.jj-category-image-element {
+  object-fit:contain !important;
+}
+
+@media(max-width:900px){
+ .jl-discover-grid,.jl-home-promo-features{
+  grid-template-columns:repeat(3,minmax(0,1fr));
+ }
+}
+@media(max-width:640px){
+ .jl-discover-grid,.jl-home-promo-features{
+  grid-template-columns:1fr;
+ }
+ .jl-compact-experience-card{
+  min-height:120px;
+ }
+ .jj-category-card{
+  min-height:220px !important;
+ }
+}
+
+
+/* Phase 15.1 mobile compact luxury grids */
+@media (max-width: 640px) {
+  .jl-discover-grid,
+  .jl-home-promo-features {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .jl-compact-experience-card,
+  .jl-home-promo-feature {
+    min-height: 92px;
+    padding: 8px;
+    border-radius: 12px;
+    gap: 6px;
+  }
+
+  .jl-home-feature-icon,
+  .jl-home-promo-icon {
+    width: 28px;
+    height: 28px;
+    margin: 0 auto;
+  }
+
+  .jl-editorial-copy strong,
+  .jl-home-promo-copy strong {
+    font-size: .72rem;
+    text-align: center;
+    display: block;
+  }
+
+  .jl-editorial-copy p,
+  .jl-home-promo-copy small {
+    font-size: .62rem;
+    line-height: 1.2;
+    text-align: center;
+  }
+
+  .jj-category-card {
+    min-height: 150px !important;
+  }
+
+  .jj-category-grid {
+    gap: 8px !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .product-grid,
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .product-name {
+    font-size: 11px;
+    margin-top: 5px;
+  }
+
+  .price {
+    font-size: 11px;
+  }
+
+  .product-img {
+    border-radius: 8px;
+  }
+}
+
+
+/* Icon-only Explore JayLuxe mobile refinement */
+@media (max-width: 768px) {
+  .jl-icon-only-experience {
+    min-height: 0 !important;
+    height: 92px !important;
+    padding: 10px 6px !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 6px !important;
+    box-shadow: none !important;
+  }
+
+  .jl-icon-only-experience .jl-home-feature-icon {
+    width: 38px !important;
+    height: 38px !important;
+  }
+
+  .jl-icon-only-experience strong {
+    font-size: 12px !important;
+    text-align: center;
+  }
+}
+
+/* ===== Consolidated from app/jayluxe-phase17-feature-strip.css ===== */
+/* JayLuxe Phase 17 - compact feature strip */
+
+.jl-feature-strip,
+.luxury-experience-grid,
+.promotion-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+}
+
+.jl-feature-item,
+.luxury-experience-card,
+.promotion-card {
+  min-height: 130px;
+  padding: 18px 14px;
+  text-align: center;
+  border-radius: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.jl-feature-item svg,
+.luxury-experience-card svg,
+.promotion-card svg {
+  width: 28px;
+  height: 28px;
+  margin-bottom: 10px;
+  color: #c8a24b;
+}
+
+.jl-feature-item h3,
+.luxury-experience-card h3,
+.promotion-card h3 {
+  font-size: 0.95rem;
+  margin: 0 0 5px;
+  font-weight: 700;
+}
+
+.jl-feature-item p,
+.luxury-experience-card p,
+.promotion-card p {
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.4;
+}
+
+@media (max-width: 640px) {
+  .jl-feature-strip,
+  .luxury-experience-grid,
+  .promotion-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 4px;
+  }
+
+  .jl-feature-item,
+  .luxury-experience-card,
+  .promotion-card {
+    min-height: 105px;
+    padding: 10px 5px;
+  }
+
+  .jl-feature-item svg,
+  .luxury-experience-card svg,
+  .promotion-card svg {
+    width: 22px;
+    height: 22px;
+    margin-bottom: 6px;
+  }
+
+  .jl-feature-item h3,
+  .luxury-experience-card h3,
+  .promotion-card h3 {
+    font-size: 11px;
+  }
+
+  .jl-feature-item p,
+  .luxury-experience-card p,
+  .promotion-card p {
+    font-size: 9px;
+  }
+}
+
+.jl-category-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.jl-category-grid img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+@media (max-width: 768px) {
+  .jl-category-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+}
+
+/* ===== Consolidated from app/jayluxe-phase37-5-polish.css ===== */
+/* JayLuxe Phase 37.5 frontend polish */
+.jl-checkout-page,
+.jl-checkout-layout,
+.jl-form-card,
+.jl-checkout-summary {
+  box-sizing: border-box;
+}
+
+.jl-checkout-layout {
+  gap: clamp(16px, 2.5vw, 28px) !important;
+}
+
+.jl-form-card,
+.jl-checkout-summary {
+  border-radius: 18px;
+  padding: clamp(16px, 2vw, 24px);
+}
+
+.jl-payment-option {
+  min-height: auto;
+  padding: 14px 16px !important;
+  border-radius: 14px;
+}
+
+.jl-payment-option-description {
+  line-height: 1.45;
+}
+
+.jl-payment-notice {
+  margin-top: 12px !important;
+  padding: 14px 16px !important;
+  border-radius: 14px;
+}
+
+.jl-summary-items {
+  gap: 10px !important;
+}
+
+.jl-summary-item {
+  padding: 10px 0 !important;
+}
+
+.jl-summary-total {
+  margin-top: 12px !important;
+}
+
+@media (max-width: 640px) {
+  .jl-checkout-hero {
+    min-height: 130px !important;
+    padding: 24px 16px !important;
+  }
+
+  .jl-checkout-layout {
+    padding-inline: 14px !important;
+  }
+
+  .jl-form-card,
+  .jl-checkout-summary {
+    border-radius: 16px;
+    padding: 16px;
+  }
+
+  .jl-place-order-btn {
+    min-height: 52px;
+    width: 100%;
+  }
+}
+
+/* Global compact luxury rhythm */
+section {
+  scroll-margin-top: 90px;
+}
+
+img {
+  max-width: 100%;
+}
+
+@media (max-width: 768px) {
+  .container,
+  .jl-container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+/* ===== Consolidated from app/jayluxe-ui-compact-polish.css ===== */
+/* JayLuxe compact polish: feature strips + mobile density */
+
+.jl-discover-grid,
+.jl-home-promo-features {
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:0;
+}
+
+.jl-discover-card,
+.jl-home-promo-feature {
+  min-height:132px !important;
+  padding:18px 14px !important;
+  border-radius:18px !important;
+  display:flex !important;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
+
+.jl-home-feature-icon,
+.jl-home-promo-icon {
+  margin-bottom:8px !important;
+}
+
+.jl-home-feature-icon svg,
+.jl-home-promo-icon svg {
+  width:26px;
+  height:26px;
+}
+
+.jl-editorial-copy,
+.jl-home-promo-copy {
+  gap:4px !important;
+}
+
+.jl-editorial-copy strong,
+.jl-home-promo-copy strong {
+  font-size:15px !important;
+}
+
+.jl-editorial-copy p,
+.jl-home-promo-copy small {
+  font-size:11px !important;
+  line-height:1.35;
+}
+
+.jj-category-grid {
+  grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+  gap:14px !important;
+}
+
+.jj-category-image-element {
+  object-fit:contain !important;
+}
+
+@media (max-width: 767px) {
+  .jl-discover-grid,
+  .jl-home-promo-features {
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:6px;
+    overflow:visible !important;
+  }
+
+  .jl-discover-card,
+  .jl-home-promo-feature {
+    min-height:108px !important;
+    padding:10px 5px !important;
+    border-radius:14px !important;
+  }
+
+  .jl-home-feature-icon svg,
+  .jl-home-promo-icon svg {
+    width:22px;
+    height:22px;
+  }
+
+  .jl-editorial-copy strong,
+  .jl-home-promo-copy strong {
+    font-size:11px !important;
+  }
+
+  .jl-editorial-copy small,
+  .jl-editorial-copy p,
+  .jl-home-promo-copy small {
+    font-size:8px !important;
+  }
+
+  .jj-category-grid {
+    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+    gap:10px !important;
+  }
+}
+
+/* product gallery cleanup */
+.product-gallery,
+.jl-product-gallery {
+  max-height:720px;
+}
+
+.product-gallery img,
+.jl-product-gallery img {
+  object-fit:contain;
+}
+
+/* ===== Consolidated from app/jayluxe-installment-ui-phase11.css ===== */
+.jl-installment-summary-card{
+  border:1px solid #e8dfd2;
+  border-radius:18px;
+  padding:24px;
+  background:#fff;
+  margin:20px 0;
+}
+.jl-installment-summary-card h3{
+  margin:0 0 8px;
+  font-weight:700;
+}
+.jl-installment-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:16px;
+  margin-top:16px;
+}
+.jl-installment-grid span{
+  display:block;
+  font-size:.85rem;
+  color:#6b7280;
+}
+.jl-installment-opay{
+  margin-top:16px;
+}
+@media(max-width:640px){
+  .jl-installment-grid{
+    grid-template-columns:1fr;
+  }
+}
+
+/* ===== Consolidated from app/jayluxe-installment-plan-cards-phase13.css ===== */
+.jl-installment-plan-section{margin-top:24px;padding:24px;border:1px solid #eadfcf;border-radius:24px;background:#fff;}
+.jl-installment-plan-header span{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:#b08a32;font-weight:700;}
+.jl-installment-plan-header h3{margin:8px 0;font-size:24px;}
+.jl-installment-plan-header p{color:#6b7280;}
+.jl-installment-plan-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:20px;}
+.jl-installment-plan-card{padding:20px;text-align:left;border:1px solid #e8dfd2;border-radius:22px;background:#fff;cursor:pointer;transition:.2s;}
+.jl-installment-plan-card:hover{transform:translateY(-3px);box-shadow:0 15px 30px rgba(0,0,0,.08);}
+.jl-installment-plan-card.active{border-color:#c8a24b;box-shadow:0 0 0 3px rgba(200,162,75,.15);}
+.jl-installment-plan-card strong{font-size:20px;}
+.jl-installment-plan-card h4{font-size:24px;margin:8px 0;}
+.jl-installment-plan-card small{color:#777;}
+.jl-installment-plan-card p{color:#666;font-size:14px;}
+.jl-installment-plan-card span{display:inline-block;background:#111;color:white;padding:6px 12px;border-radius:20px;font-size:12px;}
+@media(max-width:900px){.jl-installment-plan-cards{grid-template-columns:1fr;}}
+
+
+/* Phase 14 - compact installment cards */
+.jl-installment-plan-cards {
+  gap: 12px;
+}
+
+.jl-installment-plan-card {
+  padding: 16px;
+  gap: 10px;
+  min-height: auto;
+}
+
+.jl-installment-plan-card-top strong {
+  font-size: 1.05rem;
+}
+
+.jl-installment-plan-price {
+  padding: 10px 12px;
+}
+
+.jl-installment-plan-price strong {
+  font-size: 1.15rem;
+}
+
+.jl-installment-plan-meta {
+  gap: 8px;
+}
+
+.jl-installment-plan-meta > div {
+  padding: 10px;
+}
+
+.jl-installment-plan-meta strong {
+  font-size: 0.85rem;
+}
+
+.jl-installment-plan-foot {
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+@media (max-width: 640px) {
+  .jl-installment-plan-card {
+    padding: 14px;
+  }
+}
+
+>>>>>>> 72d3d22 (update on categories)
 /* Final source-of-truth override for the JayLuxe gallery lightbox viewer. */
 .jl-gallery-modal {
   position: fixed;

@@ -15,7 +15,11 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
+<<<<<<< HEAD
     "jsx": "preserve",
+=======
+    "jsx": "react-jsx",
+>>>>>>> 72d3d22 (update on categories)
     "incremental": true,
     "plugins": [
       {
@@ -33,7 +37,12 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
+<<<<<<< HEAD
     ".next/types/**/*.ts"
+=======
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts"
+>>>>>>> 72d3d22 (update on categories)
   ],
   "exclude": [
     "node_modules"
