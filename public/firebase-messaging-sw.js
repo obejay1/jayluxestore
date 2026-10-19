@@ -1,19 +1,33 @@
-importScripts('/api/push/sw-config');
-importScripts('https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js');
-importScripts('https://www.gstatic.com/firebasejs/10.14.1/firebase-messaging-compat.js');
+try {
+  importScripts('/api/push/sw-config');
+  if (self.__JAYLUXE_FIREBASE_CONFIG__) {
+    importScripts('https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js');
+    importScripts('https://www.gstatic.com/firebasejs/10.14.1/firebase-messaging-compat.js');
+    firebase.initializeApp(self.__JAYLUXE_FIREBASE_CONFIG__);
+    firebase.messaging().onBackgroundMessage((payload) => {
+      const data = payload.data || {};
+      const title = data.title || 'JayLuxe order update';
+      const body = data.body || 'Your order has a new update.';
+      return self.registration.showNotification(title, {
+        body,
+        icon: '/icon-192.png',
+        data: { url: data.url || '/account' },
+        tag: data.eventId || undefined,
+      });
+    });
+  }
+} catch (error) {
+  console.error('Firebase background messaging could not be initialized:', error);
+}
 
-firebase.initializeApp(self.__JAYLUXE_FIREBASE_CONFIG__);
-const messaging = firebase.messaging();
-messaging.onBackgroundMessage((payload) => {
-  const data = payload.data || {};
-  const title = data.title || 'JayLuxe order update';
-  const body = data.body || 'Your order has a new update.';
-  return self.registration.showNotification(title, {
-    body,
-    icon: '/icon-192.png',
-    data: { url: data.url || '/account' },
-    tag: data.eventId || undefined,
-  });
+self.addEventListener('activate', (event) => {
+  event.waitUntil(self.clients.claim());
+});
+
+self.addEventListener('message', (event) => {
+  if (event.data?.type === 'SKIP_WAITING') {
+    void self.skipWaiting();
+  }
 });
 
 self.addEventListener('notificationclick', (event) => {

@@ -88,7 +88,10 @@ async function getCurrentToken() {
   if (!(await isSupported())) return null;
 
   const { default: app } = await import('@/lib/firebase');
-  const serviceWorker = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+  const serviceWorker = await navigator.serviceWorker.register('/firebase-messaging-sw.js', {
+    scope: '/',
+    updateViaCache: 'none',
+  });
   const messaging = getMessaging(app);
   const token = await getToken(messaging, {
     vapidKey: config.vapidKey,

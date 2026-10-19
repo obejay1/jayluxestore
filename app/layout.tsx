@@ -10,6 +10,7 @@ import {
 
 import GoogleAnalytics from '@/components/GoogleAnalytics';
 import HeroImageController from '@/components/HeroImageController';
+import PwaServiceWorker from '@/components/PwaServiceWorker';
 import SiteChrome from '@/components/SiteChrome';
 import ToastViewport from '@/components/ToastViewport';
 import { getSiteUrl } from '@/lib/site';
@@ -55,7 +56,7 @@ export const metadata: Metadata = {
   },
   description:
     'Shop JayLuxe luxury fashion, beauty, bridal and lifestyle essentials with secure checkout, trusted payments and premium customer service.',
-  applicationName: 'JayLuxe',
+  applicationName: 'JAYLUXESTORE',
   category: 'shopping',
   keywords: [
     'JayLuxe',
@@ -66,8 +67,19 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: '/' },
   icons: {
-    icon: '/logo.png',
-    apple: '/logo.png',
+    icon: [
+      { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icon-512.png', sizes: '512x512', type: 'image/png' },
+    ],
+    apple: [{ url: '/icon-192.png', sizes: '192x192', type: 'image/png' }],
+  },
+  appleWebApp: {
+    capable: true,
+    title: 'JayLuxe',
+    statusBarStyle: 'black-translucent',
+  },
+  other: {
+    'apple-mobile-web-app-capable': 'yes',
   },
   openGraph: {
     type: 'website',
@@ -96,10 +108,7 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover',
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#faf8f4' },
-    { media: '(prefers-color-scheme: dark)', color: '#111111' },
-  ],
+  themeColor: '#111111',
 };
 
 export default function RootLayout({
@@ -131,6 +140,7 @@ export default function RootLayout({
 
         <ToastViewport />
         <GoogleAnalytics />
+        <PwaServiceWorker />
       </body>
     </html>
   );

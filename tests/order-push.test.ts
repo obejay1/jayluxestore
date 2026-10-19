@@ -14,8 +14,28 @@ import {
   splitPushTokenBatches,
 } from '../lib/orderPush.ts';
 import { formatOrderNumber } from '../lib/orderNumbers.ts';
+import manifest from '../app/manifest.ts';
 
 const ORDER_NUMBER = 'JL261018-0001';
+
+test('provides an installable JayLuxe manifest with standard and maskable brand icons', () => {
+  const appManifest = manifest();
+  assert.equal(appManifest.name, 'JAYLUXESTORE');
+  assert.equal(appManifest.short_name, 'JayLuxe');
+  assert.equal(appManifest.display, 'standalone');
+  assert.equal(appManifest.start_url, '/');
+  assert.equal(appManifest.background_color, '#faf8f4');
+  assert.equal(appManifest.theme_color, '#111111');
+  assert.deepEqual(
+    appManifest.icons?.map(({ sizes, purpose }) => [sizes, purpose]),
+    [
+      ['192x192', 'any'],
+      ['512x512', 'any'],
+      ['192x192', 'maskable'],
+      ['512x512', 'maskable'],
+    ],
+  );
+});
 
 test('formats public order references without using a Firestore ID', () => {
   assert.equal(formatOrderNumber(new Date('2026-10-18T12:00:00.000Z'), 1), ORDER_NUMBER);
@@ -100,6 +120,7 @@ test('service worker displays background pushes and opens the account order rout
   const listeners = new Map<string, (event: Record<string, unknown>) => void>();
   const displayed: Array<{ title: string; options: { body?: string; data?: { url?: string } } }> = [];
   const opened: string[] = [];
+  const lifecycle: string[] = [];
   let backgroundHandler: ((payload: { data?: Record<string, string> }) => Promise<void>) | undefined;
 
   const context = {
@@ -117,6 +138,8 @@ test('service worker displays background pushes and opens the account order rout
     },
     self: {
       location: { origin: 'https://jayluxestore.com' },
+      skipWaiting: async () => { lifecycle.push('skipWaiting'); },
+      clients: { claim: async () => { lifecycle.push('claim'); } },
       registration: {
         showNotification: async (title: string, options: { body?: string; data?: { url?: string } }) => {
           displayed.push({ title, options });
@@ -146,6 +169,16 @@ test('service worker displays background pushes and opens the account order rout
   assert.equal(displayed[0]?.title, 'JayLuxe order update');
   assert.equal(displayed[0]?.options.body, `Your order ${ORDER_NUMBER} has been shipped.`);
 
+  let activateFinished: Promise<unknown> | undefined;
+  listeners.get('activate')?.({
+    waitUntil(promise: Promise<unknown>) { activateFinished = promise; },
+  });
+  await activateFinished;
+  assert.deepEqual(lifecycle, ['claim']);
+
+  listeners.get('message')?.({ data: { type: 'SKIP_WAITING' } });
+  assert.deepEqual(lifecycle, ['claim', 'skipWaiting']);
+
   let clickFinished: Promise<unknown> | undefined;
   listeners.get('notificationclick')?.({
     notification: {
@@ -156,4 +189,5 @@ test('service worker displays background pushes and opens the account order rout
   });
   await clickFinished;
   assert.deepEqual(opened, [`https://jayluxestore.com/account?order=${ORDER_NUMBER}`]);
+  assert.equal(listeners.has('fetch'), false);
 });
