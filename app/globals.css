@@ -10027,21 +10027,11 @@ body {
 .jl-product-lightbox-close {
   top:18px;
   right:18px;
-<<<<<<< HEAD
-  width:56px;
-  height:56px;
-  border-radius:50%;
-  display:grid;
-  place-items:center;
-  font-size:22px;
-  cursor:pointer;
-=======
   width:46px;
   height:46px;
   border-radius:50%;
   display:grid;
   place-items:center;
->>>>>>> 72d3d22 (update on categories)
 }
 .jl-product-lightbox-counter {
   top:18px;
@@ -10053,34 +10043,6 @@ body {
 .jl-product-lightbox-nav {
   top:50%;
   transform:translateY(-50%);
-<<<<<<< HEAD
-  width:58px;
-  height:58px;
-  border-radius:50%;
-  display:grid;
-  place-items:center;
-  cursor:pointer;
-}
-.jl-product-lightbox-nav.prev {left:18px;}
-.jl-product-lightbox-nav.next {right:18px;}
-
-@media (max-width:640px){
-  .jl-product-lightbox-close {
-    width:52px;
-    height:52px;
-    top:16px;
-    right:16px;
-  }
-
-  .jl-product-lightbox-nav {
-    width:54px;
-    height:54px;
-  }
-
-  .jl-product-lightbox-nav.prev {left:12px;}
-  .jl-product-lightbox-nav.next {right:12px;}
-}
-=======
   width:48px;
   height:48px;
   border-radius:50%;
@@ -10089,7 +10051,6 @@ body {
 }
 .jl-product-lightbox-nav.prev {left:20px;}
 .jl-product-lightbox-nav.next {right:20px;}
->>>>>>> 72d3d22 (update on categories)
 .jl-product-lightbox-loader {
   position:absolute;
   color:#c9a227;
@@ -10106,42 +10067,3 @@ body {
  .jl-product-lightbox-nav{width:42px;height:42px;}
  .jl-product-lightbox-nav.prev{left:8px}.jl-product-lightbox-nav.next{right:8px}
 }
-<<<<<<< HEAD
-
-
-/* JayLuxe global typography standard - Cart header reference */
-:root {
-  --jl-page-header-size: 28px;
-  --jl-page-header-weight: 800;
-  --jl-page-header-line-height: 1.15;
-  --jl-page-header-font: var(--font-jayluxe-sans), Inter, system-ui, sans-serif;
-}
-
-body,
-button,
-input,
-textarea,
-select {
-  font-family: var(--font-jayluxe-sans), Inter, system-ui, sans-serif;
-}
-
-.jl-page-header,
-.page-title,
-.jl-page-title {
-  font-family: var(--jl-page-header-font);
-  font-size: var(--jl-page-header-size);
-  font-weight: var(--jl-page-header-weight);
-  line-height: var(--jl-page-header-line-height);
-  letter-spacing: -0.02em;
-}
-
-@media (max-width: 640px) {
-  .jl-page-header,
-  .page-title,
-  .jl-page-title {
-    font-size: 28px;
-    line-height: 1.15;
-  }
-}
-=======
->>>>>>> 72d3d22 (update on categories)
