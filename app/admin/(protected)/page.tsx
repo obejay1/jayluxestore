@@ -184,6 +184,7 @@ type ContactMessageDoc = {
 type SmsLogDoc = {
   id: string;
   orderId?: string;
+  orderNumber?: string;
   recipientType?: string;
   phone?: string;
   event?: string;
@@ -769,7 +770,7 @@ export default function Admin() {
     }
 
     const confirmed = confirm(
-      `Process the refund for order #${order.id} in the OPay Business Dashboard first. ` +
+      `Process the refund for order #${order.orderNumber || 'Unavailable'} in the OPay Business Dashboard first. ` +
         'Click OK only after OPay confirms the refund. The order will then be marked Refunded.',
     );
 
@@ -779,7 +780,7 @@ export default function Admin() {
       await updateOrderStatus(order.id, 'Refunded');
       void recordAdminActivity({
         action: 'Processed Order',
-        description: `Marked order #${order.id} as Refunded after OPay confirmation.`,
+        description: `Marked order #${order.orderNumber || 'Unavailable'} as Refunded after OPay confirmation.`,
         targetType: 'order',
         targetId: String(order.id),
       });
@@ -804,7 +805,7 @@ export default function Admin() {
       const statusResult = await updateOrderStatus(order.id, status);
       void recordAdminActivity({
         action: 'Updated Order Status',
-        description: `Updated order #${order.id} to ${status}.`,
+        description: `Updated order #${order.orderNumber || 'Unavailable'} to ${status}.`,
         targetType: 'order',
         targetId: String(order.id),
         metadata: { status },
@@ -967,6 +968,7 @@ export default function Admin() {
   const filteredOrders = orders.filter(o => {
     const q = orderSearch.toLowerCase();
     return (
+      (o.orderNumber || '').toLowerCase().includes(q) ||
       String(o.id).toLowerCase().includes(q) ||
       (o.status || '').toLowerCase().includes(q) ||
       (o.paymentMethod || '').toLowerCase().includes(q) ||
@@ -1090,9 +1092,9 @@ export default function Admin() {
   };
 
   const exportOrdersCSV = () => {
-    const headers = ['Order ID', 'Status', 'Total', 'Payment Method', 'Payment Reference', 'Date', 'Customer Name', 'Customer Email', 'Customer Phone', 'Estimated Delivery Date'];
+    const headers = ['Order Number', 'Status', 'Total', 'Payment Method', 'Payment Reference', 'Date', 'Customer Name', 'Customer Email', 'Customer Phone', 'Estimated Delivery Date'];
     const rows = filteredOrders.map((order) => [
-      order.id,
+      order.orderNumber || 'Unavailable',
       order.status || 'Processing',
       Number(order.total || 0),
       order.paymentMethod || 'Paystack',
@@ -2317,7 +2319,7 @@ export default function Admin() {
           <table className="table">
             <thead>
               <tr>
-                <th>Order</th>
+                <th>Order Number</th>
                 <th>Status</th>
                 <th>Total</th>
                 <th>Method</th>
@@ -2337,7 +2339,7 @@ export default function Admin() {
               ) : (
                 paginatedOrders.map((o) => (
                   <tr key={String(o.id)}>
-                    <td>#{o.id}</td>
+                    <td>#{o.orderNumber || 'Unavailable'}</td>
                     <td>{o.status || 'Processing'}</td>
                     <td>{money(Number(o.total || 0))}</td>
                     <td>{o.paymentMethod || 'Paystack'}</td>
@@ -2364,7 +2366,7 @@ export default function Admin() {
                       <button onClick={() => exportOrderInvoicePDF(o)}>Print Invoice</button>
                       <button
                         onClick={() => {
-                          if (confirm(`Mark order #${o.id} as Processing?`)) {
+                          if (confirm(`Mark order #${o.orderNumber || 'Unavailable'} as Processing?`)) {
                             void updateOrderStatusWithNotification(o, 'Processing');
                           }
                         }}
@@ -2373,7 +2375,7 @@ export default function Admin() {
                       </button>
                       <button
                         onClick={() => {
-                          if (confirm(`Mark order #${o.id} as Ready for Shipment?`)) {
+                          if (confirm(`Mark order #${o.orderNumber || 'Unavailable'} as Ready for Shipment?`)) {
                             void updateOrderStatusWithNotification(o, 'Ready for Shipment');
                           }
                         }}
@@ -2382,7 +2384,7 @@ export default function Admin() {
                       </button>
                       <button
                         onClick={() => {
-                          if (confirm(`Mark order #${o.id} as Packed?`)) {
+                          if (confirm(`Mark order #${o.orderNumber || 'Unavailable'} as Packed?`)) {
                             void updateOrderStatusWithNotification(o, 'Packed');
                           }
                         }}
@@ -2391,7 +2393,7 @@ export default function Admin() {
                       </button>
                       <button
                         onClick={() => {
-                          if (confirm(`Mark order #${o.id} as Shipped?`)) {
+                          if (confirm(`Mark order #${o.orderNumber || 'Unavailable'} as Shipped?`)) {
                             void updateOrderStatusWithNotification(o, 'Shipped');
                           }
                         }}
@@ -2400,7 +2402,7 @@ export default function Admin() {
                       </button>
                       <button
                         onClick={() => {
-                          if (confirm(`Mark order #${o.id} as Out for Delivery?`)) {
+                          if (confirm(`Mark order #${o.orderNumber || 'Unavailable'} as Out for Delivery?`)) {
                             void updateOrderStatusWithNotification(o, 'Out for Delivery');
                           }
                         }}
@@ -2409,7 +2411,7 @@ export default function Admin() {
                       </button>
                       <button
                         onClick={() => {
-                          if (confirm(`Mark order #${o.id} as Delivered?`)) {
+                          if (confirm(`Mark order #${o.orderNumber || 'Unavailable'} as Delivered?`)) {
                             void updateOrderStatusWithNotification(o, 'Delivered');
                           }
                         }}
@@ -2421,7 +2423,7 @@ export default function Admin() {
                       ) : (
                         <button
                           onClick={() => {
-                            if (confirm(`Cancel order #${o.id}?`)) {
+                            if (confirm(`Cancel order #${o.orderNumber || 'Unavailable'}?`)) {
                               void updateOrderStatusWithNotification(o, 'Cancelled');
                             }
                           }}
@@ -2930,7 +2932,7 @@ export default function Admin() {
             <tbody>
               {smsLogs.slice(0, 100).map((log) => (
                 <tr key={log.id}>
-                  <td>#{log.orderId || 'N/A'}</td>
+                  <td>#{log.orderNumber || 'Unavailable'}</td>
                   <td>{log.recipientType || 'customer'}<br /><small>{log.phone || ''}</small></td>
                   <td>{log.orderStatus || log.event || 'SMS'}</td>
                   <td>{log.status || 'unknown'}</td>
@@ -2979,7 +2981,7 @@ export default function Admin() {
                 <table className="table" style={{ marginTop: 10 }}>
                   <thead>
                     <tr>
-                      <th>Order ID</th>
+                      <th>Order Number</th>
                       <th>Date</th>
                       <th>Status</th>
                       <th>Total</th>
@@ -2989,7 +2991,7 @@ export default function Admin() {
                   <tbody>
                     {selectedCustomer.orders.map(o => (
                       <tr key={String(o.id)}>
-                        <td>#{o.id}</td>
+                        <td>#{o.orderNumber || 'Unavailable'}</td>
                         <td>{o.createdAt ? new Date(o.createdAt).toLocaleDateString() : 'N/A'}</td>
                         <td>
                           <span className={o.status === 'Delivered' ? 'badge green' : o.status === 'Cancelled' ? 'badge red' : 'badge gold'}>

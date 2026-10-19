@@ -8,7 +8,6 @@ import {
   safeSecretMatch,
 } from '@/lib/checkout/server';
 import { adminDb } from '@/lib/firebaseAdmin';
-import { ensureOrderNumber } from '@/lib/orderNumbersServer';
 import { getVerifiedCustomer } from '@/lib/requestAuth';
 import { sendSMS } from '@/lib/termii';
 import { sendOrderCreatedEmails } from '@/lib/email/workflows';
@@ -54,11 +53,7 @@ export async function POST(request: NextRequest) {
     }
 
     const result = await finalizeCheckoutIntent(reference);
-    const orderNumber = await ensureOrderNumber(
-      adminDb.collection('orders').doc(result.order.id),
-    );
-    if (!orderNumber) throw new CheckoutError('The order reference could not be created.', 500);
-    result.order.orderNumber = orderNumber;
+    const orderNumber = String(result.order.orderNumber || '').trim();
     const { accessToken, ...safeOrder } = result.order;
     if (!accessToken) throw new CheckoutError('The order access credential is unavailable.', 500);
 
@@ -80,7 +75,7 @@ export async function POST(request: NextRequest) {
       if (adminPhone) {
         void sendSMS({
           phone: adminPhone,
-          message: `JayLuxe Alert: New order received. Customer: ${result.order.customerName}. Order ID: ${result.order.id}. Amount: NGN ${result.order.total}. Items: ${orderItems}. Check admin dashboard.`,
+          message: `JayLuxe Alert: New order received. Customer: ${result.order.customerName}. Order Number: ${orderNumber || 'Unavailable'}. Amount: NGN ${result.order.total}. Items: ${orderItems}. Check admin dashboard.`,
         }).catch((smsError) => {
           console.error('ADMIN_ORDER_SMS_FAILED', {
             message: smsError instanceof Error ? smsError.message : String(smsError),
@@ -92,9 +87,13 @@ export async function POST(request: NextRequest) {
 
     const response = NextResponse.json({
       ok: true,
-      orderId: orderNumber,
+      orderId: orderNumber || result.order.id,
       accessToken,
-      order: { ...safeOrder, id: orderNumber, orderNumber },
+      order: {
+        ...safeOrder,
+        id: orderNumber || result.order.id,
+        ...(orderNumber ? { orderNumber } : {}),
+      },
       duplicate: result.duplicate,
     }, { status: result.duplicate ? 200 : 201 });
     response.cookies.set(checkoutCompletionCookieName(reference), '', { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'lax', path: '/', maxAge: 0 });

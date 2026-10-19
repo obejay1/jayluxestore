@@ -55,12 +55,10 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json() as {
       planId?: unknown;
-      orderId?: unknown;
       provider?: unknown;
     };
 
     planId = cleanText(body.planId, 160);
-    const suppliedOrderId = cleanText(body.orderId, 160);
     const provider: InstallmentProvider = cleanText(body.provider, 24) === 'Paystack' ? 'Paystack' : 'OPay';
 
     if (!planId) {
@@ -98,8 +96,7 @@ export async function POST(request: NextRequest) {
       const orderId = String(plan.orderId || '').trim();
       const orderReference = orderId ? adminDb.collection('orders').doc(orderId) : null;
       const orderSnapshot = orderReference ? await transaction.get(orderReference) : null;
-      const orderNumber = String(orderSnapshot?.data()?.orderNumber || '');
-      if (!orderId || !orderSnapshot?.exists || (suppliedOrderId && suppliedOrderId !== orderNumber)) {
+      if (!orderId || !orderSnapshot?.exists) {
         throw Object.assign(new Error('Installment order does not match this plan'), { status: 400 });
       }
 

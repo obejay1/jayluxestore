@@ -606,7 +606,7 @@ export default function AccountPage() {
       <html>
         <head>
           <meta charset="utf-8" />
-          <title>Invoice - Order #${escapeHtml(order.id)}</title>
+          <title>Invoice - Order #${escapeHtml(order.orderNumber || 'Unavailable')}</title>
           <style>
             body { max-width: 820px; margin: 0 auto; padding: 40px; color: #1a1a1a; font-family: Arial, sans-serif; }
             .header { display: flex; justify-content: space-between; gap: 30px; padding-bottom: 20px; margin-bottom: 30px; border-bottom: 2px solid #eaeaea; }
@@ -629,7 +629,7 @@ export default function AccountPage() {
             </div>
             <div style="text-align:right">
               <h2 style="margin:0 0 8px">INVOICE</h2>
-              <p><strong>Order Number:</strong> #${escapeHtml(order.orderNumber || order.id)}</p>
+              <p><strong>Order Number:</strong> #${escapeHtml(order.orderNumber || 'Unavailable')}</p>
               <p><strong>Date:</strong> ${
                 order.createdAt
                   ? escapeHtml(new Date(order.createdAt).toLocaleString())
@@ -1092,7 +1092,7 @@ export default function AccountPage() {
                   <div key={order.orderNumber || order.id} id={`order-${order.orderNumber || order.id}`} className="jl-order-history-item">
                     <div>
                       <strong>Order Number</strong>
-                      <span>#{order.orderNumber || order.id}</span>
+                      <span>#{order.orderNumber || 'Unavailable'}</span>
                     </div>
 
                     <div>

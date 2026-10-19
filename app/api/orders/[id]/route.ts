@@ -5,7 +5,6 @@ import { hasAdminPermission } from '@/lib/adminPermissions';
 import { ADMIN_SESSION_COOKIE } from '@/lib/adminSession';
 import { adminDb } from '@/lib/firebaseAdmin';
 import { getVerifiedCustomer } from '@/lib/requestAuth';
-import { ensureOrderNumber } from '@/lib/orderNumbersServer';
 import type { Order } from '@/lib/types';
 
 export const runtime = 'nodejs';
@@ -68,14 +67,17 @@ export async function GET(
       );
     }
 
-    const orderNumber = await ensureOrderNumber(snapshot.ref);
-    if (!orderNumber) {
-      return NextResponse.json({ message: 'The order could not be loaded.' }, { status: 500 });
-    }
     const { accessToken: _accessToken, id: _documentId, ...customerOrder } = order;
+    const orderNumber = String(order.orderNumber || '').trim();
 
     return NextResponse.json(
-      { order: { ...customerOrder, id: orderNumber, orderNumber } },
+      {
+        order: {
+          ...customerOrder,
+          id: orderNumber || snapshot.id,
+          ...(orderNumber ? { orderNumber } : {}),
+        },
+      },
       { headers: { 'Cache-Control': 'no-store' } },
     );
   } catch (error) {

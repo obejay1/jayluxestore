@@ -132,8 +132,8 @@ export default function OrderTracking() {
       <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gap: 22 }}>
         <section className="jl-card" style={{ padding: 30, borderRadius: 22, border: '1px solid #eadfc9', background: '#fffdf8', boxShadow: '0 12px 35px rgba(0,0,0,.06)' }}>
           <p style={{ color: '#a67c28', fontWeight: 700, letterSpacing: 1 }}>JAYLUXE ORDER</p>
-          <h1 style={{ fontSize: 36, lineHeight: 1.1, marginTop: 8, fontFamily: 'serif' }}>Order #{String(order?.orderNumber || orderId)}</h1>
-          <p style={{ color: '#666' }}>Order reference: {String(order.orderNumber || orderId)}</p>
+          <h1 style={{ fontSize: 36, lineHeight: 1.1, marginTop: 8, fontFamily: 'serif' }}>Order #{String(order.orderNumber || 'Unavailable')}</h1>
+          <p style={{ color: '#666' }}>Order reference: {String(order.orderNumber || 'This legacy order has no assigned order number.')}</p>
 
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginTop: 20 }}>
             <div className="jl-card" style={{ padding: 14, flex: 1, minWidth: 180 }}>

@@ -8,6 +8,7 @@ export type InstallmentSummary = {
   customerEmail?:string;
   customerPhone?:string;
   orderId?:string;
+  orderNumber?:string;
   productName?:string;
   totalAmount:number;
   paidAmount:number;
@@ -25,7 +26,16 @@ export type InstallmentSummary = {
 const moneyNumber=(v:any)=>Number(v||0);
 
 export async function getAdminInstallments(): Promise<InstallmentSummary[]> {
-  const snap = await adminDb.collection('installmentPlans').get();
+  const [snap, ordersSnapshot] = await Promise.all([
+    adminDb.collection('installmentPlans').get(),
+    adminDb.collection('orders').get(),
+  ]);
+  const orderNumbers = new Map(
+    ordersSnapshot.docs.map((document) => [
+      document.id,
+      String(document.data().orderNumber || '').trim(),
+    ]),
+  );
   const now = new Date();
 
   return snap.docs.map(doc=>{
@@ -48,6 +58,7 @@ export async function getAdminInstallments(): Promise<InstallmentSummary[]> {
       customerEmail:d.customerEmail || d.email,
       customerPhone:d.customerPhone || d.phone,
       orderId:d.orderId,
+      orderNumber:orderNumbers.get(String(d.orderId || '')) || '',
       productName:d.productName,
       totalAmount:total,
       paidAmount:paid,
@@ -68,12 +79,19 @@ export async function getInstallmentDetails(id:string){
   const plan = await adminDb.collection('installmentPlans').doc(id).get();
   if(!plan.exists) return null;
 
+  const data = plan.data() || {};
+  const orderId = String(data.orderId || '');
+  const orderSnapshot = orderId
+    ? await adminDb.collection('orders').doc(orderId).get()
+    : null;
+  const orderNumber = String(orderSnapshot?.data()?.orderNumber || '').trim();
   const payments = await adminDb.collection('installmentPayments')
     .where('planId','==',id).get();
 
   return {
     id:plan.id,
-    ...plan.data(),
+    ...data,
+    orderNumber: orderNumber || 'Unavailable',
     payments:payments.docs.map(p=>({id:p.id,...p.data()}))
   };
 }

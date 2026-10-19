@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebaseAdmin';
 import { getVerifiedCustomer } from '@/lib/requestAuth';
-import { ensureOrderNumber } from '@/lib/orderNumbersServer';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -29,7 +28,8 @@ export async function GET(request: NextRequest) {
     const data = serialise(doc.data()) as Record<string, unknown>;
     const orderId = String(data.orderId || '');
     const orderReference = orderId ? adminDb.collection('orders').doc(orderId) : null;
-    const orderNumber = orderReference ? await ensureOrderNumber(orderReference) : null;
+    const orderSnapshot = orderReference ? await orderReference.get() : null;
+    const orderNumber = String(orderSnapshot?.data()?.orderNumber || '').trim();
     return {
       id: doc.id,
       ...data,

@@ -8,7 +8,6 @@ import { sendOrderStatusEmail } from '@/lib/email/workflows';
 import { adminDb } from '@/lib/firebaseAdmin';
 import { dispatchOrderPushEvent } from '@/lib/orderPushServer';
 import { buildOrderPushNotification, isOrderStatusTransition } from '@/lib/orderPush';
-import { formatOrderNumber, orderNumberCounterId } from '@/lib/orderNumbers';
 import type { Order } from '@/lib/types';
 
 export const runtime = 'nodejs';
@@ -102,18 +101,7 @@ export async function PATCH(
       if (status === 'Cancelled') patch.cancelledAt = now;
       if (status === 'Refunded') patch.refundedAt = now;
 
-      let orderNumber = String(current.orderNumber || '').trim();
-      if (!orderNumber) {
-        const createdAt = new Date(current.createdAt || now);
-        const numberingDate = Number.isNaN(createdAt.getTime()) ? new Date(now) : createdAt;
-        const counterRef = adminDb.collection('orderNumberCounters')
-          .doc(orderNumberCounterId(numberingDate));
-        const counter = await transaction.get(counterRef);
-        const sequence = Number(counter.data()?.count || 0) + 1;
-        orderNumber = formatOrderNumber(numberingDate, sequence);
-        patch.orderNumber = orderNumber;
-        transaction.set(counterRef, { count: sequence, updatedAt: now }, { merge: true });
-      }
+      const orderNumber = String(current.orderNumber || '').trim();
 
       const updatedOrder = { ...current, ...patch, orderNumber } as Order;
       const notification = buildOrderPushNotification(status, orderNumber);

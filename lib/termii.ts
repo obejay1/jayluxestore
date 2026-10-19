@@ -104,11 +104,11 @@ export async function verifyOTP({
 
 export function orderConfirmationSMS(
   customerName: string,
-  orderId: string
+  orderNumber: string
 ) {
   return `Hello ${customerName},
 
-Your JayLuxe order #${orderId} has been received successfully.
+Your JayLuxe order #${orderNumber} has been received successfully.
 
 We are preparing your order.
 
@@ -117,66 +117,66 @@ Thank you for shopping with JayLuxe.`;
 
 export function processingSMS(
   customerName: string,
-  orderId: string
+  orderNumber: string
 ) {
   return `Hello ${customerName},
 
-Your JayLuxe order #${orderId} is now being processed.
+Your JayLuxe order #${orderNumber} is now being processed.
 
 We'll notify you once it has been shipped.`;
 }
 
 export function shippedSMS(
   customerName: string,
-  orderId: string
+  orderNumber: string
 ) {
   return `Good news ${customerName}!
 
-Your JayLuxe order #${orderId} has been shipped and is on its way.
+Your JayLuxe order #${orderNumber} has been shipped and is on its way.
 
 Thank you for shopping with JayLuxe.`;
 }
 
 export function deliveredSMS(
   customerName: string,
-  orderId: string
+  orderNumber: string
 ) {
   return `Hello ${customerName},
 
-Your JayLuxe order #${orderId} has been delivered.
+Your JayLuxe order #${orderNumber} has been delivered.
 
 Thank you for choosing JayLuxe. We hope to serve you again soon!`;
 }
 
 export function paymentSuccessfulSMS(
   customerName: string,
-  orderId: string
+  orderNumber: string
 ) {
   return `Hello ${customerName},
 
-Your payment for order #${orderId} was successful.
+Your payment for order #${orderNumber} was successful.
 
 Thank you for shopping with JayLuxe.`;
 }
 
 export function cancelledSMS(
   customerName: string,
-  orderId: string
+  orderNumber: string
 ) {
   return `Hello ${customerName},
 
-Unfortunately your order #${orderId} has been cancelled.
+Unfortunately your order #${orderNumber} has been cancelled.
 
 If you have any questions, please contact JayLuxe support.`;
 }
 
 export function outForDeliverySMS(
   customerName: string,
-  orderId: string
+  orderNumber: string
 ) {
   return `Hello ${customerName},
 
-Your JayLuxe order #${orderId} is out for delivery.
+Your JayLuxe order #${orderNumber} is out for delivery.
 
 Please keep your phone available for the delivery agent.`;
 }

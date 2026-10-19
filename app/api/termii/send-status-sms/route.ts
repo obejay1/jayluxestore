@@ -145,6 +145,7 @@ export async function POST(request: NextRequest) {
       adminDb.collection('smsLogs').add({
         provider: 'Termii',
         orderId,
+        orderNumber: order.orderNumber,
         recipientType: 'customer',
         phone,
         event: `order-status-${typedStatus.toLowerCase().replace(/\s+/g, '-')}`,

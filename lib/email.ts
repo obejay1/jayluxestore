@@ -45,6 +45,7 @@ export async function sendBookingConfirmation(booking: {
 
 export async function sendAdminOrderNotification(order: {
   id: string;
+  orderNumber?: string;
   customerName: string;
   customerEmail?: string;
   customerPhone?: string;
@@ -77,12 +78,12 @@ export async function sendAdminOrderNotification(order: {
           customerName: order.customerName,
           customerEmail: order.customerEmail || '',
           customerPhone: order.customerPhone || '',
-          orderId: order.id,
+          orderId: order.orderNumber || 'Unavailable',
           items,
           total: order.total || 0,
           paymentStatus: order.paymentStatus || 'Pending',
           shippingAddress: order.shippingAddress || '',
-          subject: `New JayLuxe Order Received - ${order.id}`,
+          subject: `New JayLuxe Order Received - ${order.orderNumber || 'Unavailable'}`,
         },
       }),
     });

@@ -132,7 +132,7 @@ export default function InvoicePage() {
       const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
       pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      pdf.save(`invoice-${order.id}.pdf`);
+      pdf.save(`invoice-${order.orderNumber || 'legacy'}.pdf`);
     } catch (error) {
       console.error('Error generating PDF:', error);
       setPdfError('The PDF could not be generated. Please use Print Invoice or try again.');
@@ -171,7 +171,9 @@ export default function InvoicePage() {
       : typeof window !== 'undefined'
         ? window.location.origin
         : process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_SITE_URL || '';
-  const invoiceUrl = `${appOrigin}${buildPrivateOrderUrl(`/invoice/${encodeURIComponent(order.id)}`, accessToken)}`;
+  const invoiceUrl = order.orderNumber
+    ? `${appOrigin}${buildPrivateOrderUrl(`/invoice/${encodeURIComponent(order.orderNumber)}`, accessToken)}`
+    : '';
 
   let watermarkText = 'JAYLUXE';
   let watermarkColor = 'rgba(0, 0, 0, 0.05)';
@@ -268,36 +270,40 @@ export default function InvoicePage() {
               <p style={{ margin: '4px 0 0', color: '#777777', fontSize: 14 }}>Luxury Beauty, Fashion & Lifestyle</p>
             </div>
           </div>
-          <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <QRCodeSVG 
-              value={invoiceUrl} 
-              size={80} 
-              fgColor="#C8A24B" 
-              bgColor="#ffffff" 
-            />
-            <p style={{ margin: '8px 0 0', color: '#777777', fontSize: 11, fontWeight: 500 }}>Scan to verify invoice</p>
-          </div>
+          {invoiceUrl ? (
+            <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <QRCodeSVG
+                value={invoiceUrl}
+                size={80}
+                fgColor="#C8A24B"
+                bgColor="#ffffff"
+              />
+              <p style={{ margin: '8px 0 0', color: '#777777', fontSize: 11, fontWeight: 500 }}>Scan to verify invoice</p>
+            </div>
+          ) : null}
           <div style={{ textAlign: 'right' }}>
             <h2 style={{ margin: '0 0 10px', color: '#111111', fontSize: 24, textTransform: 'uppercase', letterSpacing: 1 }}>Invoice</h2>
-            <p style={{ margin: '4px 0', color: '#444444', fontSize: 14 }}><strong>Invoice No:</strong> INV-{order.id.slice(0, 8).toUpperCase()}</p>
-            <p style={{ margin: '4px 0', color: '#444444', fontSize: 14 }}><strong>Order Number:</strong> #{order.orderNumber || order.id}</p>
+            <p style={{ margin: '4px 0', color: '#444444', fontSize: 14 }}><strong>Invoice No:</strong> {order.orderNumber ? `INV-${order.orderNumber}` : 'Unavailable'}</p>
+            <p style={{ margin: '4px 0', color: '#444444', fontSize: 14 }}><strong>Order Number:</strong> #{order.orderNumber || 'Unavailable'}</p>
             <p style={{ margin: '4px 0', color: '#444444', fontSize: 14 }}><strong>Date:</strong> {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A'}</p>
             {order.deliveryDays && <p style={{ margin: '4px 0', color: '#444444', fontSize: 14 }}><strong>Estimated Delivery:</strong> {order.deliveryDays}</p>}
             {order.estimatedDeliveryDate && <p style={{ margin: '4px 0', color: '#444444', fontSize: 14 }}><strong>Est. Delivery Date:</strong> {new Date(order.estimatedDeliveryDate).toLocaleDateString()}</p>}
           </div>
         </div>
 
-        <div className="invoice-barcode" aria-label="Invoice barcode">
-          <Barcode
-            value={`INV-${order.id.toUpperCase()}`}
-            displayValue={false}
-            height={38}
-            width={1.15}
-            margin={0}
-            lineColor="#111111"
-            background="#FFFFFF"
-          />
-        </div>
+        {order.orderNumber ? (
+          <div className="invoice-barcode" aria-label="Invoice barcode">
+            <Barcode
+              value={`INV-${order.orderNumber}`}
+              displayValue={false}
+              height={38}
+              width={1.15}
+              margin={0}
+              lineColor="#111111"
+              background="#FFFFFF"
+            />
+          </div>
+        ) : null}
 
         {/* Status Section */}
         <div className="invoice-status-grid" style={{ display: 'flex', gap: 16, marginBottom: 30, flexWrap: 'wrap' }}>

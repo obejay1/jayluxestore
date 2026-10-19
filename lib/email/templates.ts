@@ -156,10 +156,11 @@ export function paymentConfirmationTemplate(order: Order) {
 export function adminNewOrderTemplate(order: Order) {
   const siteUrl = PRODUCTION_SITE_URL;
   const adminUrl = `${siteUrl}/admin#orders`;
+  const orderNumber = order.orderNumber || 'Unavailable';
   const body = `
     <p style="font-size:16px;line-height:1.7">A new JayLuxe order has been created successfully.</p>
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#faf7f1;border:1px solid #eee4d5;border-radius:14px">
-      <tr><td style="padding:9px 14px;color:#746b60">Order</td><td style="padding:9px 14px;text-align:right;font-weight:800">#${esc(order.id)}</td></tr>
+      <tr><td style="padding:9px 14px;color:#746b60">Order</td><td style="padding:9px 14px;text-align:right;font-weight:800">#${esc(orderNumber)}</td></tr>
       <tr><td style="padding:9px 14px;color:#746b60">Customer</td><td style="padding:9px 14px;text-align:right">${esc(order.customerName || 'N/A')}</td></tr>
       <tr><td style="padding:9px 14px;color:#746b60">Email</td><td style="padding:9px 14px;text-align:right">${esc(order.customerEmail || 'N/A')}</td></tr>
       <tr><td style="padding:9px 14px;color:#746b60">Phone</td><td style="padding:9px 14px;text-align:right">${esc(order.customerPhone || 'N/A')}</td></tr>
@@ -172,15 +173,16 @@ export function adminNewOrderTemplate(order: Order) {
     ${orderItems(order)}
     ${button('View Order in Admin Dashboard', adminUrl)}`;
   return {
-    subject: `New JayLuxe Order #${order.id}`,
+    subject: `New JayLuxe Order #${orderNumber}`,
     html: shell('New Order Alert', body, { eyebrow: 'Admin notification' }),
-    text: `New order #${order.id} from ${order.customerName || 'Customer'} (${order.customerEmail || 'N/A'}). Total: ${money(order.total)}.`,
+    text: `New order #${orderNumber} from ${order.customerName || 'Customer'} (${order.customerEmail || 'N/A'}). Total: ${money(order.total)}.`,
   };
 }
 
 export function adminPaymentTemplate(order: Order) {
   const siteUrl = PRODUCTION_SITE_URL;
-  const body = `<p style="font-size:16px;line-height:1.7">Payment has been verified for order <strong>#${esc(order.id)}</strong>.</p>
+  const orderNumber = order.orderNumber || 'Unavailable';
+  const body = `<p style="font-size:16px;line-height:1.7">Payment has been verified for order <strong>#${esc(orderNumber)}</strong>.</p>
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#faf7f1;border:1px solid #eee4d5;border-radius:14px">
       <tr><td style="padding:10px 16px;color:#746b60">Customer</td><td style="padding:10px 16px;text-align:right">${esc(order.customerName || 'N/A')}</td></tr>
       <tr><td style="padding:10px 16px;color:#746b60">Reference</td><td style="padding:10px 16px;text-align:right">${esc(order.paymentReference || 'N/A')}</td></tr>
@@ -190,9 +192,9 @@ export function adminPaymentTemplate(order: Order) {
       <tr><td style="padding:10px 16px;color:#746b60">Date</td><td style="padding:10px 16px;text-align:right">${esc(date(order.createdAt))}</td></tr>
     </table>${button('Open Admin Dashboard', `${siteUrl}/admin#orders`)}`;
   return {
-    subject: `JayLuxe Payment Confirmed — Order #${order.id}`,
+    subject: `JayLuxe Payment Confirmed — Order #${orderNumber}`,
     html: shell('Payment Notification', body, { eyebrow: 'Admin notification' }),
-    text: `Payment confirmed for order #${order.id}. Reference: ${order.paymentReference || 'N/A'}. Amount: ${money(order.total)}.`,
+    text: `Payment confirmed for order #${orderNumber}. Reference: ${order.paymentReference || 'N/A'}. Amount: ${money(order.total)}.`,
   };
 }
 
@@ -254,7 +256,8 @@ export function orderStatusTemplate(order: Order, status: string) {
 
 export function adminOrderStatusTemplate(order: Order, status: string) {
   const siteUrl = PRODUCTION_SITE_URL;
-  const body = `<p style="font-size:16px;line-height:1.7">Order <strong>#${esc(order.id)}</strong> has been updated to <strong>${esc(status)}</strong>.</p>
+  const orderNumber = order.orderNumber || 'Unavailable';
+  const body = `<p style="font-size:16px;line-height:1.7">Order <strong>#${esc(orderNumber)}</strong> has been updated to <strong>${esc(status)}</strong>.</p>
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#faf7f1;border:1px solid #eee4d5;border-radius:14px">
       <tr><td style="padding:10px 16px;color:#746b60">Customer</td><td style="padding:10px 16px;text-align:right">${esc(order.customerName || 'Customer')}</td></tr>
       <tr><td style="padding:10px 16px;color:#746b60">Email</td><td style="padding:10px 16px;text-align:right">${esc(order.customerEmail || 'N/A')}</td></tr>
@@ -264,9 +267,9 @@ export function adminOrderStatusTemplate(order: Order, status: string) {
     </table>
     ${button('View Order in Admin Dashboard', `${siteUrl}/admin#orders`)}`;
   return {
-    subject: `JayLuxe Order #${order.id} — ${status}`,
+    subject: `JayLuxe Order #${orderNumber} — ${status}`,
     html: shell('Order Status Notification', body, { eyebrow: 'Admin notification' }),
-    text: `JayLuxe order #${order.id} for ${order.customerName || order.customerEmail || 'Customer'} is now ${status}. Total: ${money(order.total)}.`,
+    text: `JayLuxe order #${orderNumber} for ${order.customerName || order.customerEmail || 'Customer'} is now ${status}. Total: ${money(order.total)}.`,
   };
 }
 

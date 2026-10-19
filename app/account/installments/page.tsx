@@ -40,7 +40,7 @@ export default function InstallmentsPage() {
       const response = await fetch('/api/installments/create-payment', {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ planId: plan.id, orderId: plan.orderId, provider: selectedProvider }),
+        body: JSON.stringify({ planId: plan.id, provider: selectedProvider }),
       });
 
       const data = await response.json();

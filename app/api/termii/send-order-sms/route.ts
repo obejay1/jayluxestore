@@ -2,7 +2,6 @@ import { FieldValue } from 'firebase-admin/firestore';
 import { NextRequest, NextResponse } from 'next/server';
 
 import { adminDb } from '@/lib/firebaseAdmin';
-import { ensureOrderNumber } from '@/lib/orderNumbersServer';
 import { orderConfirmationSMS, sendSMS } from '@/lib/termii';
 import type { Order } from '@/lib/types';
 
@@ -22,6 +21,7 @@ function errorMessage(error: unknown) {
 
 async function logSms(input: {
   orderId: string;
+  orderNumber: string;
   recipientType: 'customer' | 'business';
   phone: string;
   event: string;
@@ -34,6 +34,7 @@ async function logSms(input: {
     await adminDb.collection('smsLogs').add({
       provider: 'Termii',
       orderId: input.orderId,
+      orderNumber: input.orderNumber,
       recipientType: input.recipientType,
       phone: input.phone,
       event: input.event,
@@ -50,6 +51,7 @@ async function logSms(input: {
 
 async function sendAndLog(input: {
   orderId: string;
+  orderNumber: string;
   recipientType: 'customer' | 'business';
   phone: string;
   event: string;
@@ -118,11 +120,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const orderNumber = await ensureOrderNumber(snapshot.ref);
+    const orderNumber = String(order.orderNumber || '').trim();
     if (!orderNumber) {
-      return NextResponse.json({ success: false, message: 'Order not found.' }, { status: 404 });
+      return NextResponse.json({ success: false, message: 'Order number is unavailable.' }, { status: 409 });
     }
-    order.orderNumber = orderNumber;
 
     if (
       order.confirmationSmsStatus === 'sent' &&
@@ -157,6 +158,7 @@ export async function POST(request: NextRequest) {
     const customerResult = await Promise.allSettled([
       sendAndLog({
         orderId,
+        orderNumber,
         recipientType: 'customer',
         phone: customerPhone,
         event: 'order-placed',
@@ -171,6 +173,7 @@ export async function POST(request: NextRequest) {
       const businessResult = await Promise.allSettled([
         sendAndLog({
           orderId,
+          orderNumber,
           recipientType: 'business',
           phone: businessPhone,
           event: 'new-order-received',

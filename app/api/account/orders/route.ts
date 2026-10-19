@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import type { DocumentData, QueryDocumentSnapshot } from 'firebase-admin/firestore';
 
 import { adminDb } from '@/lib/firebaseAdmin';
-import { ensureOrderNumber } from '@/lib/orderNumbersServer';
 import { getVerifiedCustomer } from '@/lib/requestAuth';
 import type { Order } from '@/lib/types';
 
@@ -11,10 +10,13 @@ export const dynamic = 'force-dynamic';
 
 async function toOrder(snapshot: QueryDocumentSnapshot<DocumentData>): Promise<Order> {
   const data = snapshot.data() as Order;
-  const orderNumber = await ensureOrderNumber(snapshot.ref);
   const { accessToken: _accessToken, id: _documentId, ...safeOrder } = data;
-  if (!orderNumber) throw new Error('A customer order number could not be assigned.');
-  return { ...safeOrder, id: orderNumber, orderNumber } as Order;
+  const orderNumber = String(data.orderNumber || '').trim();
+  return {
+    ...safeOrder,
+    id: orderNumber || snapshot.id,
+    ...(orderNumber ? { orderNumber } : {}),
+  } as Order;
 }
 
 function orderTime(order: Order) {
