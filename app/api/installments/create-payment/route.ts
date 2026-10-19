@@ -96,7 +96,10 @@ export async function POST(request: NextRequest) {
       }
 
       const orderId = String(plan.orderId || '').trim();
-      if (!orderId || (suppliedOrderId && suppliedOrderId !== orderId)) {
+      const orderReference = orderId ? adminDb.collection('orders').doc(orderId) : null;
+      const orderSnapshot = orderReference ? await transaction.get(orderReference) : null;
+      const orderNumber = String(orderSnapshot?.data()?.orderNumber || '');
+      if (!orderId || !orderSnapshot?.exists || (suppliedOrderId && suppliedOrderId !== orderNumber)) {
         throw Object.assign(new Error('Installment order does not match this plan'), { status: 400 });
       }
 

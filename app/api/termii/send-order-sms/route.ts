@@ -2,6 +2,7 @@ import { FieldValue } from 'firebase-admin/firestore';
 import { NextRequest, NextResponse } from 'next/server';
 
 import { adminDb } from '@/lib/firebaseAdmin';
+import { ensureOrderNumber } from '@/lib/orderNumbersServer';
 import { orderConfirmationSMS, sendSMS } from '@/lib/termii';
 import type { Order } from '@/lib/types';
 
@@ -93,7 +94,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const snapshot = await adminDb.collection('orders').doc(orderId).get();
+    const orders = adminDb.collection('orders');
+    let snapshot = await orders.doc(orderId).get();
+    if (!snapshot.exists) {
+      const matchingOrder = await orders.where('orderNumber', '==', orderId).limit(1).get();
+      snapshot = matchingOrder.docs[0] || snapshot;
+    }
     if (!snapshot.exists) {
       return NextResponse.json(
         { success: false, message: 'Order not found.' },
@@ -111,6 +117,12 @@ export async function POST(request: NextRequest) {
         { status: 403 },
       );
     }
+
+    const orderNumber = await ensureOrderNumber(snapshot.ref);
+    if (!orderNumber) {
+      return NextResponse.json({ success: false, message: 'Order not found.' }, { status: 404 });
+    }
+    order.orderNumber = orderNumber;
 
     if (
       order.confirmationSmsStatus === 'sent' &&
@@ -135,12 +147,12 @@ export async function POST(request: NextRequest) {
     const customerPhone = formatPhone(order.customerPhone);
     const customerMessage = orderConfirmationSMS(
       order.customerName || 'Customer',
-      orderId,
+      orderNumber,
     );
 
     const businessPhoneValue = process.env.TERMII_BUSINESS_PHONE?.trim();
     const businessPhone = businessPhoneValue ? formatPhone(businessPhoneValue) : '';
-    const businessMessage = `New JayLuxe order ${orderId}. Customer: ${order.customerName || 'Customer'}. Total: NGN ${Number(order.total || 0).toLocaleString('en-NG')}. Open the admin dashboard to process it.`;
+    const businessMessage = `New JayLuxe order ${orderNumber}. Customer: ${order.customerName || 'Customer'}. Total: NGN ${Number(order.total || 0).toLocaleString('en-NG')}. Open the admin dashboard to process it.`;
 
     const customerResult = await Promise.allSettled([
       sendAndLog({

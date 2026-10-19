@@ -46,13 +46,14 @@ function formatOrderTemplateMoney(value: number) {
 
 function getOrderUrl(order: Order) {
   const siteUrl = getSiteUrlString();
-  return `${siteUrl}/order/${encodeURIComponent(order.id)}${order.accessToken ? `#access_token=${encodeURIComponent(order.accessToken)}` : ''}`;
+  if (!order.orderNumber) return `${siteUrl}/account`;
+  return `${siteUrl}/order/${encodeURIComponent(order.orderNumber)}${order.accessToken ? `#access_token=${encodeURIComponent(order.accessToken)}` : ''}`;
 }
 
 function getOrderConfirmationTemplateVariables(order: Order) {
   return {
     CUSTOMER_NAME: order.customerName || order.customer?.name || 'Customer',
-    ORDER_NUMBER: `#${order.id}`,
+    ORDER_NUMBER: `#${order.orderNumber || 'N/A'}`,
     ORDER_DATE: formatOrderTemplateDate(order.createdAt),
     ORDER_TOTAL: formatOrderTemplateMoney(order.total),
     DELIVERY_ADDRESS:

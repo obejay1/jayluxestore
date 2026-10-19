@@ -10,6 +10,7 @@ import { auth } from '@/lib/firebase';
 type InstallmentPlan = {
   id: string;
   orderId?: string;
+  orderNumber?: string;
   productName?: string;
   totalAmount?: number;
   paidAmount?: number;
@@ -148,7 +149,7 @@ export default function InstallmentsPage() {
               <div>
                 <small>YOUR INSTALLMENT PLAN</small>
                 <h2>{plan.productName || 'JayLuxe Order'}</h2>
-                <p>Order #{plan.orderId || plan.id}</p>
+                <p>Order #{plan.orderNumber || 'Unavailable'}</p>
               </div>
               <strong>{plan.status || 'Active'}</strong>
             </div>

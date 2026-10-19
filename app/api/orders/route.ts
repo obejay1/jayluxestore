@@ -8,6 +8,7 @@ import {
   safeSecretMatch,
 } from '@/lib/checkout/server';
 import { adminDb } from '@/lib/firebaseAdmin';
+import { ensureOrderNumber } from '@/lib/orderNumbersServer';
 import { getVerifiedCustomer } from '@/lib/requestAuth';
 import { sendSMS } from '@/lib/termii';
 import { sendOrderCreatedEmails } from '@/lib/email/workflows';
@@ -53,6 +54,11 @@ export async function POST(request: NextRequest) {
     }
 
     const result = await finalizeCheckoutIntent(reference);
+    const orderNumber = await ensureOrderNumber(
+      adminDb.collection('orders').doc(result.order.id),
+    );
+    if (!orderNumber) throw new CheckoutError('The order reference could not be created.', 500);
+    result.order.orderNumber = orderNumber;
     const { accessToken, ...safeOrder } = result.order;
     if (!accessToken) throw new CheckoutError('The order access credential is unavailable.', 500);
 
@@ -86,9 +92,9 @@ export async function POST(request: NextRequest) {
 
     const response = NextResponse.json({
       ok: true,
-      orderId: result.order.id,
+      orderId: orderNumber,
       accessToken,
-      order: safeOrder,
+      order: { ...safeOrder, id: orderNumber, orderNumber },
       duplicate: result.duplicate,
     }, { status: result.duplicate ? 200 : 201 });
     response.cookies.set(checkoutCompletionCookieName(reference), '', { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'lax', path: '/', maxAge: 0 });

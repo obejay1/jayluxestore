@@ -5,15 +5,11 @@ import { hasAdminPermission } from '@/lib/adminPermissions';
 import { ADMIN_SESSION_COOKIE } from '@/lib/adminSession';
 import { adminDb } from '@/lib/firebaseAdmin';
 import { getVerifiedCustomer } from '@/lib/requestAuth';
+import { ensureOrderNumber } from '@/lib/orderNumbersServer';
 import type { Order } from '@/lib/types';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-
-function safeOrder(order: Order) {
-  const { accessToken: _accessToken, ...safe } = order;
-  return safe;
-}
 
 export async function GET(
   request: NextRequest,
@@ -26,7 +22,12 @@ export async function GET(
   }
 
   try {
-    const snapshot = await adminDb.collection('orders').doc(orderId).get();
+    const orders = adminDb.collection('orders');
+    let snapshot = await orders.doc(orderId).get();
+    if (!snapshot.exists) {
+      const matchingOrder = await orders.where('orderNumber', '==', orderId).limit(1).get();
+      snapshot = matchingOrder.docs[0] || snapshot;
+    }
     if (!snapshot.exists) {
       return NextResponse.json({ message: 'Order not found.' }, { status: 404 });
     }
@@ -67,8 +68,14 @@ export async function GET(
       );
     }
 
+    const orderNumber = await ensureOrderNumber(snapshot.ref);
+    if (!orderNumber) {
+      return NextResponse.json({ message: 'The order could not be loaded.' }, { status: 500 });
+    }
+    const { accessToken: _accessToken, id: _documentId, ...customerOrder } = order;
+
     return NextResponse.json(
-      { order: safeOrder(order) },
+      { order: { ...customerOrder, id: orderNumber, orderNumber } },
       { headers: { 'Cache-Control': 'no-store' } },
     );
   } catch (error) {

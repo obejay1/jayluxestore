@@ -9,6 +9,7 @@ import {
 } from 'firebase-admin/app';
 import { getAuth, type Auth } from 'firebase-admin/auth';
 import { getFirestore, type Firestore } from 'firebase-admin/firestore';
+import { getMessaging, type Messaging } from 'firebase-admin/messaging';
 
 /**
  * Firebase App Hosting and Cloud Run provide Google Application Default
@@ -133,3 +134,4 @@ function createLazyProxy<T extends object>(factory: () => T): T {
 
 export const adminAuth: Auth = createLazyProxy(() => getAuth(getAdminApp()));
 export const adminDb: Firestore = createLazyProxy(() => getFirestore(getAdminApp()));
+export const adminMessaging: Messaging = createLazyProxy(() => getMessaging(getAdminApp()));

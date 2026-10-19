@@ -2,16 +2,19 @@ import { NextRequest, NextResponse } from 'next/server';
 import type { DocumentData, QueryDocumentSnapshot } from 'firebase-admin/firestore';
 
 import { adminDb } from '@/lib/firebaseAdmin';
+import { ensureOrderNumber } from '@/lib/orderNumbersServer';
 import { getVerifiedCustomer } from '@/lib/requestAuth';
 import type { Order } from '@/lib/types';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-function toOrder(snapshot: QueryDocumentSnapshot<DocumentData>): Order {
+async function toOrder(snapshot: QueryDocumentSnapshot<DocumentData>): Promise<Order> {
   const data = snapshot.data() as Order;
-  const { accessToken: _accessToken, ...safeOrder } = data;
-  return { ...safeOrder, id: snapshot.id } as Order;
+  const orderNumber = await ensureOrderNumber(snapshot.ref);
+  const { accessToken: _accessToken, id: _documentId, ...safeOrder } = data;
+  if (!orderNumber) throw new Error('A customer order number could not be assigned.');
+  return { ...safeOrder, id: orderNumber, orderNumber } as Order;
 }
 
 function orderTime(order: Order) {
@@ -44,11 +47,11 @@ export async function GET(request: NextRequest) {
     const snapshots = await Promise.all(queries);
     const orders = new Map<string, Order>();
 
-    snapshots.forEach((snapshot) => {
-      snapshot.docs.forEach((document) => {
-        orders.set(document.id, toOrder(document));
-      });
-    });
+    await Promise.all(snapshots.map(async (snapshot) => {
+      await Promise.all(snapshot.docs.map(async (document) => {
+        orders.set(document.id, await toOrder(document));
+      }));
+    }));
 
     return NextResponse.json(
       {

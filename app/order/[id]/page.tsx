@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation';
 import { onAuthStateChanged } from 'firebase/auth';
 
 import { auth } from '@/lib/firebase';
-import { captureOrderAccessToken } from '@/lib/orderAccess';
+import { cacheOrderAccessToken, captureOrderAccessToken } from '@/lib/orderAccess';
 
 const money = (value: unknown) => {
   const amount = Number(value || 0);
@@ -50,7 +50,14 @@ export default function OrderTracking() {
         if (!response.ok || !data.order) {
           throw new Error(data.message || 'The order could not be loaded.');
         }
-        if (!cancelled) setOrder(data.order);
+        if (!cancelled) {
+          const publicOrderNumber = String(data.order.orderNumber || '');
+          if (publicOrderNumber && publicOrderNumber !== orderId) {
+            if (accessToken) cacheOrderAccessToken(publicOrderNumber, accessToken);
+            window.history.replaceState(null, '', `/order/${encodeURIComponent(publicOrderNumber)}`);
+          }
+          setOrder(data.order);
+        }
       } catch (loadError) {
         if (!cancelled) {
           setOrder(null);
@@ -125,8 +132,8 @@ export default function OrderTracking() {
       <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gap: 22 }}>
         <section className="jl-card" style={{ padding: 30, borderRadius: 22, border: '1px solid #eadfc9', background: '#fffdf8', boxShadow: '0 12px 35px rgba(0,0,0,.06)' }}>
           <p style={{ color: '#a67c28', fontWeight: 700, letterSpacing: 1 }}>JAYLUXE ORDER</p>
-          <h1 style={{ fontSize: 36, lineHeight: 1.1, marginTop: 8, fontFamily: 'serif' }}>Order #{orderId.slice(0, 8).toUpperCase()}</h1>
-          <p style={{ color: '#666' }}>Order reference: {orderId}</p>
+          <h1 style={{ fontSize: 36, lineHeight: 1.1, marginTop: 8, fontFamily: 'serif' }}>Order #{String(order?.orderNumber || orderId)}</h1>
+          <p style={{ color: '#666' }}>Order reference: {String(order.orderNumber || orderId)}</p>
 
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginTop: 20 }}>
             <div className="jl-card" style={{ padding: 14, flex: 1, minWidth: 180 }}>

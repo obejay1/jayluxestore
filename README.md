@@ -72,6 +72,16 @@ firebase deploy --only firestore:rules
 
 The browser Firebase configuration is public application configuration. Firebase Admin credentials and private keys are never exposed through `NEXT_PUBLIC_*` variables.
 
+### Order status push notifications
+
+Customers can opt in from **My Account → Enable order notifications**. Permission is requested only after that button is pressed. The browser gets an FCM token using the Firebase web-push VAPID key; authenticated Next.js API routes associate each token with the verified Firebase UID. Firestore rules deny browser access to token records and the notification outbox.
+
+Configure `NEXT_PUBLIC_FIREBASE_VAPID_KEY` with the Web Push certificate key from **Firebase Console → Project settings → Cloud Messaging** for the same Firebase project as the web app. Firebase Admin credentials remain server-only and are used by the Vercel Node.js route to send FCM messages. The public `firebase-messaging-sw.js` service worker synchronously loads public Firebase web configuration from `/api/push/sw-config`, renders background notifications, and routes clicks to the authenticated account order list by public order number.
+
+Order numbers are allocated transactionally as `JLyymmdd-####`; customer-facing order pages and order-status messages use `orderNumber`, never the Firestore document ID. Existing orders receive a number the first time their owner opens an authenticated/private order page or an administrator changes their status.
+
+Status changes and notification outbox events are committed together in Firestore. Vercel then attempts delivery from the Node.js API route; push-provider errors do not roll back the status update. Failed device deliveries are retried with backoff by the `/api/cron/order-push` Vercel Cron Job declared in `vercel.json`. Configure a high-entropy server-only `CRON_SECRET` in Vercel. The five-minute schedule requires a Vercel plan that supports five-minute Cron Jobs; on a plan with a stricter Cron frequency, adjust the schedule to that plan's limit. The route is protected by the matching Bearer secret. Invalid/expired FCM tokens are removed, and each device delivery is recorded separately so already delivered devices are not resent when another device fails.
+
 ### Authentication and sessions
 
 Customer authentication remains Firebase Email/Password. Customer password reset returns users to the production login URL. Admin/staff sign-in still exchanges a recent Firebase ID token for a signed, HttpOnly, `SameSite=Lax`, Secure-in-production session cookie. Protected admin APIs continue verifying the session server-side.
@@ -93,10 +103,12 @@ NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
 NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
 NEXT_PUBLIC_FIREBASE_APP_ID=
 NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=
+NEXT_PUBLIC_FIREBASE_VAPID_KEY=
 
 FIREBASE_ADMIN_PROJECT_ID=
 FIREBASE_ADMIN_CLIENT_EMAIL=
 FIREBASE_ADMIN_PRIVATE_KEY=
+CRON_SECRET=
 
 PAYSTACK_SECRET_KEY=
 

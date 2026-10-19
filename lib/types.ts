@@ -26,6 +26,7 @@ export type Product = {
 export type Category={id:string;name:string;slug?:string;type:'product'|'service';description?:string;image?:string;imagePublicId?:string;active?:boolean;createdAt?:string;};
 export type Order={
 	id:string;
+	orderNumber?:string;
 	userId?:string;
 	accessToken?:string;
 	customerEmailLower?:string;
@@ -42,6 +43,7 @@ export type Order={
 	paymentReference?:string;
 	installmentPlanId?:string;
 	status:string;
+	statusRevision?:number;
 	createdAt:string;
 	customer?:{name:string;phone:string;address:string};
 	customerEmail?:string;

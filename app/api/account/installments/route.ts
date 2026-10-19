@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebaseAdmin';
 import { getVerifiedCustomer } from '@/lib/requestAuth';
+import { ensureOrderNumber } from '@/lib/orderNumbersServer';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -24,6 +25,17 @@ export async function GET(request: NextRequest) {
   if (!customer?.uid) return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
 
   const snap = await adminDb.collection('installmentPlans').where('userId','==',customer.uid).get();
-  const plans = snap.docs.map((doc) => ({ id: doc.id, ...(serialise(doc.data()) as Record<string, unknown>) }));
+  const plans = await Promise.all(snap.docs.map(async (doc) => {
+    const data = serialise(doc.data()) as Record<string, unknown>;
+    const orderId = String(data.orderId || '');
+    const orderReference = orderId ? adminDb.collection('orders').doc(orderId) : null;
+    const orderNumber = orderReference ? await ensureOrderNumber(orderReference) : null;
+    return {
+      id: doc.id,
+      ...data,
+      orderId: orderNumber || 'Unavailable',
+      orderNumber: orderNumber || 'Unavailable',
+    };
+  }));
   return NextResponse.json({ plans });
 }

@@ -1,9 +1,14 @@
+import { createHash } from 'node:crypto';
 import { NextRequest, NextResponse } from 'next/server';
+import { FieldValue } from 'firebase-admin/firestore';
 
 import { adminAuthErrorResponse, requireAdminSession } from '@/lib/adminServerAuth';
 import { hasTrustedRequestOrigin } from '@/lib/adminRequest';
 import { sendOrderStatusEmail } from '@/lib/email/workflows';
 import { adminDb } from '@/lib/firebaseAdmin';
+import { dispatchOrderPushEvent } from '@/lib/orderPushServer';
+import { buildOrderPushNotification, isOrderStatusTransition } from '@/lib/orderPush';
+import { formatOrderNumber, orderNumberCounterId } from '@/lib/orderNumbers';
 import type { Order } from '@/lib/types';
 
 export const runtime = 'nodejs';
@@ -71,44 +76,88 @@ export async function PATCH(
 
   const reference = adminDb.collection('orders').doc(orderId);
   try {
-    const snapshot = await reference.get();
-    if (!snapshot.exists) {
-      return NextResponse.json({ ok: false, message: 'Order not found.' }, { status: 404 });
-    }
-
-    const current = { ...(snapshot.data() as Order), id: snapshot.id };
-    if (current.status === status) {
-      return NextResponse.json({ ok: true, unchanged: true, emailStatus: 'not_needed' });
-    }
-
     const now = new Date().toISOString();
-    const patch: Record<string, string> = {
-      status,
-      updatedAt: now,
-    };
-
     const courier = clean(body.courier, 120);
     const trackingNumber = clean(body.trackingNumber, 160);
     const trackingUrl = clean(body.trackingUrl, 500);
     const estimatedDeliveryDate = clean(body.estimatedDeliveryDate, 120);
 
-    if (courier) patch.courier = courier;
-    if (trackingNumber) patch.trackingNumber = trackingNumber;
-    if (trackingUrl) patch.trackingUrl = trackingUrl;
-    if (estimatedDeliveryDate) patch.estimatedDeliveryDate = estimatedDeliveryDate;
-    if (status === 'Delivered') patch.deliveredAt = now;
-    if (status === 'Cancelled') patch.cancelledAt = now;
-    if (status === 'Refunded') patch.refundedAt = now;
+    const transition = await adminDb.runTransaction(async (transaction) => {
+      const snapshot = await transaction.get(reference);
+      if (!snapshot.exists) return { notFound: true as const };
 
-    await reference.set(patch, { merge: true });
-    const updatedOrder = { ...current, ...patch } as Order;
+      const current = { ...(snapshot.data() as Order), id: snapshot.id };
+      if (!isOrderStatusTransition(current.status, status)) return { unchanged: true as const };
+
+      const patch: Record<string, string | number> = {
+        status,
+        updatedAt: now,
+        statusRevision: Number(current.statusRevision || 0) + 1,
+      };
+      if (courier) patch.courier = courier;
+      if (trackingNumber) patch.trackingNumber = trackingNumber;
+      if (trackingUrl) patch.trackingUrl = trackingUrl;
+      if (estimatedDeliveryDate) patch.estimatedDeliveryDate = estimatedDeliveryDate;
+      if (status === 'Delivered') patch.deliveredAt = now;
+      if (status === 'Cancelled') patch.cancelledAt = now;
+      if (status === 'Refunded') patch.refundedAt = now;
+
+      let orderNumber = String(current.orderNumber || '').trim();
+      if (!orderNumber) {
+        const createdAt = new Date(current.createdAt || now);
+        const numberingDate = Number.isNaN(createdAt.getTime()) ? new Date(now) : createdAt;
+        const counterRef = adminDb.collection('orderNumberCounters')
+          .doc(orderNumberCounterId(numberingDate));
+        const counter = await transaction.get(counterRef);
+        const sequence = Number(counter.data()?.count || 0) + 1;
+        orderNumber = formatOrderNumber(numberingDate, sequence);
+        patch.orderNumber = orderNumber;
+        transaction.set(counterRef, { count: sequence, updatedAt: now }, { merge: true });
+      }
+
+      const updatedOrder = { ...current, ...patch, orderNumber } as Order;
+      const notification = buildOrderPushNotification(status, orderNumber);
+      let eventId: string | null = null;
+      if (notification && current.userId) {
+        eventId = createHash('sha256')
+          .update(`${reference.path}:${patch.statusRevision}`)
+          .digest('hex');
+        transaction.create(adminDb.collection('orderPushEvents').doc(eventId), {
+          userId: current.userId,
+          orderNumber: notification.orderNumber,
+          status: notification.status,
+          statusRevision: patch.statusRevision,
+          url: notification.url,
+          state: 'pending',
+          attempts: 0,
+          nextAttemptAtMs: Date.now(),
+          createdAt: FieldValue.serverTimestamp(),
+          updatedAt: FieldValue.serverTimestamp(),
+        });
+      }
+
+      transaction.update(reference, patch);
+      return { updatedOrder, eventId };
+    });
+
+    if ('notFound' in transition) {
+      return NextResponse.json({ ok: false, message: 'Order not found.' }, { status: 404 });
+    }
+    if ('unchanged' in transition) {
+      return NextResponse.json({
+        ok: true,
+        unchanged: true,
+        emailStatus: 'not_needed',
+        pushStatus: 'not_needed',
+      });
+    }
 
     // The order state is authoritative. Email failure is logged but does not
     // roll back or hide a successful admin status change.
     let emailStatus = 'failed';
     let emailError: string | null = null;
     try {
-      const emailResult = await sendOrderStatusEmail(updatedOrder, status);
+      const emailResult = await sendOrderStatusEmail(transition.updatedOrder, status);
       emailStatus = emailResult.status;
       emailError = emailResult.error || null;
     } catch (emailFailure) {
@@ -116,11 +165,23 @@ export async function PATCH(
       console.error('ORDER STATUS EMAIL ERROR:', emailFailure);
     }
 
+    let pushStatus = 'not_requested';
+    if (transition.eventId) {
+      try {
+        const pushResult = await dispatchOrderPushEvent(transition.eventId);
+        pushStatus = pushResult.status;
+      } catch (pushFailure) {
+        pushStatus = 'failed';
+        console.error('ORDER STATUS PUSH ERROR:', pushFailure);
+      }
+    }
+
     return NextResponse.json({
       ok: true,
       status,
       emailStatus,
       emailError,
+      pushStatus,
     });
   } catch (error) {
     console.error('ADMIN ORDER STATUS ERROR:', error);

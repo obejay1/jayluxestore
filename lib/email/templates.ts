@@ -105,11 +105,14 @@ function totals(order: Order): string {
 
 export function orderConfirmationTemplate(order: Order) {
   const siteUrl = PRODUCTION_SITE_URL;
-  const orderUrl = `${siteUrl}/order/${encodeURIComponent(order.id)}${order.accessToken ? `#access_token=${encodeURIComponent(order.accessToken)}` : ''}`;
+  const orderNumber = order.orderNumber || 'N/A';
+  const orderUrl = order.orderNumber
+    ? `${siteUrl}/order/${encodeURIComponent(order.orderNumber)}${order.accessToken ? `#access_token=${encodeURIComponent(order.accessToken)}` : ''}`
+    : `${siteUrl}/account`;
   const body = `
     <p style="margin:0 0 18px;font-size:16px;line-height:1.7">Hello <strong>${esc(order.customerName || 'Customer')}</strong>, thank you for shopping with JayLuxe. Your order has been confirmed and is now being prepared.</p>
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin:18px 0;background:#faf7f1;border:1px solid #eee4d5;border-radius:14px">
-      <tr><td style="padding:14px"><strong>Order</strong><br><span style="color:#746b60">#${esc(order.id)}</span></td><td style="padding:14px;text-align:right"><strong>Order date</strong><br><span style="color:#746b60">${esc(date(order.createdAt))}</span></td></tr>
+      <tr><td style="padding:14px"><strong>Order</strong><br><span style="color:#746b60">#${esc(orderNumber)}</span></td><td style="padding:14px;text-align:right"><strong>Order date</strong><br><span style="color:#746b60">${esc(date(order.createdAt))}</span></td></tr>
     </table>
     ${orderItems(order)}
     ${totals(order)}
@@ -121,17 +124,20 @@ export function orderConfirmationTemplate(order: Order) {
     ${button('View Your Order', orderUrl)}`;
 
   return {
-    subject: `Your JayLuxe Order #${order.id} Has Been Confirmed`,
+    subject: `Your JayLuxe Order #${orderNumber} Has Been Confirmed`,
     html: shell('Order Confirmation', body, { eyebrow: 'Order confirmed' }),
-    text: `Hello ${order.customerName || 'Customer'}, your JayLuxe order #${order.id} has been confirmed. Total: ${money(order.total)}. View your order: ${orderUrl}`,
+    text: `Hello ${order.customerName || 'Customer'}, your JayLuxe order #${orderNumber} has been confirmed. Total: ${money(order.total)}. View your order: ${orderUrl}`,
   };
 }
 
 export function paymentConfirmationTemplate(order: Order) {
   const siteUrl = PRODUCTION_SITE_URL;
-  const orderUrl = `${siteUrl}/order/${encodeURIComponent(order.id)}${order.accessToken ? `#access_token=${encodeURIComponent(order.accessToken)}` : ''}`;
+  const orderNumber = order.orderNumber || 'N/A';
+  const orderUrl = order.orderNumber
+    ? `${siteUrl}/order/${encodeURIComponent(order.orderNumber)}${order.accessToken ? `#access_token=${encodeURIComponent(order.accessToken)}` : ''}`
+    : `${siteUrl}/account`;
   const body = `
-    <p style="font-size:16px;line-height:1.7">Hello <strong>${esc(order.customerName || 'Customer')}</strong>, we successfully verified your payment for JayLuxe order <strong>#${esc(order.id)}</strong>.</p>
+    <p style="font-size:16px;line-height:1.7">Hello <strong>${esc(order.customerName || 'Customer')}</strong>, we successfully verified your payment for JayLuxe order <strong>#${esc(orderNumber)}</strong>.</p>
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin:20px 0;background:#faf7f1;border:1px solid #eee4d5;border-radius:14px">
       <tr><td style="padding:10px 16px;color:#746b60">Amount</td><td style="padding:10px 16px;text-align:right;font-weight:800">${esc(money(order.total))}</td></tr>
       <tr><td style="padding:10px 16px;color:#746b60">Reference</td><td style="padding:10px 16px;text-align:right">${esc(order.paymentReference || 'N/A')}</td></tr>
@@ -141,9 +147,9 @@ export function paymentConfirmationTemplate(order: Order) {
     </table>
     ${button('View Order', orderUrl)}`;
   return {
-    subject: `Payment Confirmed for JayLuxe Order #${order.id}`,
+    subject: `Payment Confirmed for JayLuxe Order #${orderNumber}`,
     html: shell('Payment Confirmed', body, { eyebrow: 'Secure payment verified' }),
-    text: `Payment confirmed for JayLuxe order #${order.id}. Amount: ${money(order.total)}. Reference: ${order.paymentReference || 'N/A'}.`,
+    text: `Payment confirmed for JayLuxe order #${orderNumber}. Amount: ${money(order.total)}. Reference: ${order.paymentReference || 'N/A'}.`,
   };
 }
 
@@ -192,7 +198,10 @@ export function adminPaymentTemplate(order: Order) {
 
 export function orderStatusTemplate(order: Order, status: string) {
   const siteUrl = PRODUCTION_SITE_URL;
-  const orderUrl = `${siteUrl}/order/${encodeURIComponent(order.id)}${order.accessToken ? `#access_token=${encodeURIComponent(order.accessToken)}` : ''}`;
+  const orderNumber = order.orderNumber || 'N/A';
+  const orderUrl = order.orderNumber
+    ? `${siteUrl}/order/${encodeURIComponent(order.orderNumber)}${order.accessToken ? `#access_token=${encodeURIComponent(order.accessToken)}` : ''}`
+    : `${siteUrl}/account`;
   const normalized = status.trim();
   const headingByStatus: Record<string, string> = {
     Pending: 'We Received Your Order',
@@ -220,25 +229,25 @@ export function orderStatusTemplate(order: Order, status: string) {
     ? `<div style="margin:20px 0;padding:18px;background:#f3f8f1;border:1px solid #dbe9d7;border-radius:14px"><strong>Delivered</strong><div style="margin-top:8px;color:#52604c">Delivered on ${esc(date(order.deliveredAt || new Date().toISOString()))}.</div></div>`
     : '';
 
-  const body = `<p style="font-size:16px;line-height:1.7">Hello <strong>${esc(order.customerName || 'Customer')}</strong>, here is the latest update for JayLuxe order <strong>#${esc(order.id)}</strong>.</p>
+  const body = `<p style="font-size:16px;line-height:1.7">Hello <strong>${esc(order.customerName || 'Customer')}</strong>, here is the latest update for JayLuxe order <strong>#${esc(orderNumber)}</strong>.</p>
     <div style="margin:20px 0;padding:18px;background:#17130f;color:#fff;border-radius:14px;text-align:center"><div style="font-size:12px;color:#d4af55;text-transform:uppercase;letter-spacing:.14em">Current status</div><div style="margin-top:8px;font-size:22px;font-family:Georgia,serif">${esc(normalized)}</div></div>
     ${shippingDetails}${deliveryDetails}${orderItems(order)}
     ${button(normalized === 'Delivered' ? 'Shop Again' : 'View Your Order', normalized === 'Delivered' ? `${siteUrl}/shop` : orderUrl)}`;
 
   return {
     subject: normalized === 'Processing'
-      ? `Your JayLuxe Order #${order.id} Is Being Processed`
+      ? `Your JayLuxe Order #${orderNumber} Is Being Processed`
       : normalized === 'Shipped'
-        ? `Your JayLuxe Order #${order.id} Has Been Shipped`
+        ? `Your JayLuxe Order #${orderNumber} Has Been Shipped`
         : normalized === 'Delivered'
-          ? `Your JayLuxe Order #${order.id} Has Been Delivered`
+          ? `Your JayLuxe Order #${orderNumber} Has Been Delivered`
           : normalized === 'Cancelled'
-            ? `Your JayLuxe Order #${order.id} Has Been Cancelled`
+            ? `Your JayLuxe Order #${orderNumber} Has Been Cancelled`
             : normalized === 'Refunded'
-              ? `Your JayLuxe Order #${order.id} Has Been Refunded`
-              : `JayLuxe Order #${order.id} — ${normalized}`,
+              ? `Your JayLuxe Order #${orderNumber} Has Been Refunded`
+              : `JayLuxe Order #${orderNumber} — ${normalized}`,
     html: shell(heading, body, { eyebrow: 'Order update' }),
-    text: `Hello ${order.customerName || 'Customer'}, your JayLuxe order #${order.id} status is now ${normalized}. View your order: ${orderUrl}`,
+    text: `Hello ${order.customerName || 'Customer'}, your JayLuxe order #${orderNumber} status is now ${normalized}. View your order: ${orderUrl}`,
   };
 }
 
@@ -352,15 +361,16 @@ export function newsletterAdminTemplate(email: string) {
 
 export function reviewRequestTemplate(order: Order) {
   const siteUrl = PRODUCTION_SITE_URL;
+  const orderNumber = order.orderNumber || 'N/A';
   const body = `<p style="font-size:16px;line-height:1.7">Hello <strong>${esc(order.customerName || 'Customer')}</strong>, thank you for shopping with JayLuxe.</p>
-    <p style="color:#655d53;line-height:1.7">We hope you are enjoying your purchase from order <strong>#${esc(order.id)}</strong>. We would appreciate your feedback because it helps us improve the JayLuxe experience.</p>
+    <p style="color:#655d53;line-height:1.7">We hope you are enjoying your purchase from order <strong>#${esc(orderNumber)}</strong>. We would appreciate your feedback because it helps us improve the JayLuxe experience.</p>
     ${orderItems(order)}
     <p style="color:#655d53;line-height:1.7">Thank you for choosing JayLuxe. We look forward to serving you again.</p>
     ${button('Share Your Feedback', `${siteUrl}/testimonials`)}`;
   return {
     subject: 'How was your JayLuxe experience?',
     html: shell('How was your JayLuxe experience?', body, { eyebrow: 'Thank you for choosing JayLuxe' }),
-    text: `Thank you for shopping with JayLuxe. Share your feedback for order #${order.id}: ${siteUrl}/testimonials`,
+    text: `Thank you for shopping with JayLuxe. Share your feedback for order #${orderNumber}: ${siteUrl}/testimonials`,
   };
 }
 

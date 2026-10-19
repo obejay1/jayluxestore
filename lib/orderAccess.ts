@@ -12,6 +12,15 @@ export function buildPrivateOrderUrl(path: string, accessToken?: string | null) 
   return token ? `${path}#${HASH_KEY}=${encodeURIComponent(token)}` : path;
 }
 
+export function cacheOrderAccessToken(orderNumber: string, accessToken: string) {
+  if (typeof window === 'undefined' || !orderNumber || !accessToken) return;
+  try {
+    sessionStorage.setItem(storageKey(orderNumber), accessToken);
+  } catch {
+    // Session storage can be unavailable in hardened browser contexts.
+  }
+}
+
 export function captureOrderAccessToken(orderId: string): string {
   if (typeof window === 'undefined') return '';
 
@@ -23,7 +32,7 @@ export function captureOrderAccessToken(orderId: string): string {
 
   if (token) {
     try {
-      sessionStorage.setItem(storageKey(orderId), token);
+      cacheOrderAccessToken(orderId, token);
     } catch {
       // Session storage can be unavailable in hardened browser contexts.
     }

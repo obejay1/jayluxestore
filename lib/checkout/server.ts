@@ -9,6 +9,7 @@ import {
   sendPaymentConfirmedEmails,
 } from '@/lib/email/workflows';
 import { addInstallmentMonths, buildInstallmentAmounts } from '@/lib/installments/planMath';
+import { formatOrderNumber, orderNumberCounterId } from '@/lib/orderNumbers';
 import type { Order, Product } from '@/lib/types';
 
 const CHECKOUT_COMPLETION_COOKIE_PREFIX = 'jl_checkout_';
@@ -480,8 +481,18 @@ export async function finalizeCheckoutIntent(
       return;
     }
 
+    const orderNumberCounterRef = adminDb.collection('orderNumberCounters')
+      .doc(orderNumberCounterId(createdAt));
+    const orderNumberCounter = await transaction.get(orderNumberCounterRef);
+    const orderNumberSequence = Number(orderNumberCounter.data()?.count || 0) + 1;
+    order.orderNumber = formatOrderNumber(createdAt, orderNumberSequence);
+
     const orderRef = adminDb.collection('orders').doc(orderId);
     transaction.create(orderRef, order);
+    transaction.set(orderNumberCounterRef, {
+      count: orderNumberSequence,
+      updatedAt: createdAt.toISOString(),
+    }, { merge: true });
     transaction.create(paymentRef, { provider, paymentReference: reference, orderId, installmentPlanId: installmentPlanId || null, createdAt: createdAt.toISOString() });
     transaction.set(intentRef, { status: 'completed', reservationStatus: 'consumed', cleanupAt: null, orderId, updatedAt: createdAt.toISOString() }, { merge: true });
 

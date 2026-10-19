@@ -26,6 +26,8 @@ import {
   ShoppingCart,
   CheckCircle2,
   Circle,
+  Bell,
+  BellOff,
   MapPin,
   Truck,
   User as UserIcon,
@@ -35,6 +37,17 @@ import {
 import Footer from '@/components/Footer';
 import PageHeroIcon from '@/components/PageHeroIcon';
 import { auth } from '@/lib/firebase';
+import {
+  disableOrderPush,
+  enableOrderPush,
+  getCustomerPushPermissionState,
+  hasExplicitOrderPushOptIn,
+  removeOrderPushBeforeLogout,
+  scheduleOrderPushTokenRefresh,
+  showForegroundOrderPush,
+  syncGrantedOrderPush,
+} from '@/lib/customerPush';
+import type { PushPermissionState } from '@/lib/orderPush';
 import { getCart, getWishlist, money } from '@/lib/store';
 import type { Order } from '@/lib/types';
 
@@ -43,6 +56,7 @@ type AuthMode = 'login' | 'register';
 type InstallmentPlan = {
   id: string;
   orderId?: string;
+  orderNumber?: string;
   productName?: string;
   totalAmount?: number;
   paidAmount?: number;
@@ -147,6 +161,10 @@ export default function AccountPage() {
   const [customerOrders, setCustomerOrders] = useState<Order[]>([]);
   const [ordersLoading, setOrdersLoading] = useState(false);
   const [ordersError, setOrdersError] = useState('');
+  const [pushPermissionState, setPushPermissionState] = useState<PushPermissionState>('signed_out');
+  const [pushEnabled, setPushEnabled] = useState(false);
+  const [pushBusy, setPushBusy] = useState(false);
+  const [pushMessage, setPushMessage] = useState('');
 
   const [wishlistCount, setWishlistCount] = useState(0);
   const [cartCount, setCartCount] = useState(0);
@@ -180,6 +198,15 @@ export default function AccountPage() {
   }, [firebaseUser]);
 
   useEffect(() => {
+    const orderNumber = new URLSearchParams(window.location.search).get('order');
+    if (!orderNumber || !customerOrders.some((order) => order.orderNumber === orderNumber)) return;
+    document.getElementById(`order-${orderNumber}`)?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+    });
+  }, [customerOrders]);
+
+  useEffect(() => {
     const updateWishlist = () => setWishlistCount(getWishlist().length);
     const updateCart = () =>
       setCartCount(
@@ -197,6 +224,46 @@ export default function AccountPage() {
       window.removeEventListener('cart', updateCart);
     };
   }, []);
+
+  useEffect(() => {
+    if (!firebaseUser) {
+      setPushPermissionState('signed_out');
+      setPushEnabled(false);
+      setPushMessage('');
+      return;
+    }
+
+    const permissionState = getCustomerPushPermissionState(true);
+    setPushPermissionState(permissionState);
+    if (permissionState !== 'enabled' || !hasExplicitOrderPushOptIn(firebaseUser)) {
+      setPushEnabled(false);
+      return;
+    }
+
+    let cancelled = false;
+    let unsubscribeForeground: () => void = () => {};
+    const cancelRefresh = scheduleOrderPushTokenRefresh(firebaseUser);
+    void syncGrantedOrderPush(firebaseUser).then((result) => {
+      if (cancelled) return;
+      setPushEnabled(result.status === 'enabled');
+      if (result.status === 'unavailable') setPushMessage(result.message);
+    });
+    void showForegroundOrderPush().then((unsubscribe) => {
+      if (cancelled) {
+        unsubscribe();
+      } else {
+        unsubscribeForeground = unsubscribe;
+      }
+    }).catch((error) => {
+      console.error('Foreground order notifications could not be started:', error);
+    });
+
+    return () => {
+      cancelled = true;
+      unsubscribeForeground();
+      cancelRefresh();
+    };
+  }, [firebaseUser, pushEnabled]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -434,6 +501,7 @@ export default function AccountPage() {
     clearAuthFeedback();
 
     try {
+      if (auth.currentUser) await removeOrderPushBeforeLogout(auth.currentUser);
       await signOut(auth);
       setAuthMode('login');
       setFullName('');
@@ -443,6 +511,49 @@ export default function AccountPage() {
       setAuthError(getFirebaseErrorMessage(error));
     } finally {
       setAuthLoading(false);
+    }
+
+  }
+
+  async function handleEnableOrderPush() {
+    if (!firebaseUser) return;
+    setPushBusy(true);
+    setPushMessage('');
+    try {
+      const result = await enableOrderPush(firebaseUser);
+      setPushPermissionState(getCustomerPushPermissionState(true));
+      setPushEnabled(result.status === 'enabled');
+      if (result.status === 'denied') {
+        setPushMessage('Notifications are blocked in your browser settings. JayLuxe will respect that choice.');
+      } else if (result.status === 'unsupported') {
+        setPushMessage('Push notifications are not supported by this browser or are not configured.');
+      } else if (result.status === 'unavailable') {
+        setPushMessage(result.message);
+      } else {
+        setPushMessage(result.status === 'disabled'
+          ? 'Notifications are turned off on this device. Enable them here when you are ready.'
+          : 'Order notifications are enabled for this device.');
+      }
+    } catch (error) {
+      setPushMessage(error instanceof Error ? error.message : 'Order notifications could not be enabled.');
+    } finally {
+      setPushBusy(false);
+    }
+  }
+
+  async function handleDisableOrderPush() {
+    if (!firebaseUser) return;
+    setPushBusy(true);
+    setPushMessage('');
+    try {
+      await disableOrderPush(firebaseUser);
+      setPushEnabled(false);
+      setPushMessage('Order notifications are turned off on this device.');
+    } catch (error) {
+      console.error('Order notifications could not be disabled:', error);
+      setPushMessage(error instanceof Error ? error.message : 'Order notifications could not be turned off.');
+    } finally {
+      setPushBusy(false);
     }
   }
 
@@ -518,7 +629,7 @@ export default function AccountPage() {
             </div>
             <div style="text-align:right">
               <h2 style="margin:0 0 8px">INVOICE</h2>
-              <p><strong>Order ID:</strong> #${escapeHtml(order.id)}</p>
+              <p><strong>Order Number:</strong> #${escapeHtml(order.orderNumber || order.id)}</p>
               <p><strong>Date:</strong> ${
                 order.createdAt
                   ? escapeHtml(new Date(order.createdAt).toLocaleString())
@@ -855,7 +966,7 @@ export default function AccountPage() {
                           <div>
                             <small>Active Plan</small>
                             <strong>
-                              Order #{plan.orderId || plan.id}
+                              Order #{plan.orderNumber || 'Unavailable'}
                             </strong>
                           </div>
                           <span>
@@ -893,6 +1004,55 @@ export default function AccountPage() {
               </button>
             </div>
 
+            <section
+              aria-labelledby="order-notifications-heading"
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                gap: 20,
+                flexWrap: 'wrap',
+                padding: 20,
+                margin: '20px 0',
+                border: '1px solid #eadfc9',
+                borderRadius: 16,
+                background: '#fffdf8',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14, maxWidth: 600 }}>
+                {pushEnabled ? <Bell size={22} aria-hidden="true" /> : <BellOff size={22} aria-hidden="true" />}
+                <div>
+                  <h2 id="order-notifications-heading" style={{ margin: 0 }}>Order notifications</h2>
+                  <p style={{ margin: '6px 0', color: '#655d53' }}>
+                    Get updates when your order is confirmed, prepared, shipped, or delivered.
+                    Notifications are enabled only after you choose to allow them.
+                  </p>
+                  <p aria-live="polite" style={{ margin: 0, color: pushMessage ? '#655d53' : '#847a6d' }}>
+                    {pushMessage || (pushEnabled
+                      ? 'Notifications are enabled on this device.'
+                      : pushPermissionState === 'denied'
+                        ? 'Notifications are blocked in your browser settings.'
+                        : pushPermissionState === 'unsupported'
+                          ? 'Push notifications are unavailable in this browser.'
+                          : 'Enable notifications to receive order updates on this device.')}
+                  </p>
+                </div>
+              </div>
+              {pushEnabled ? (
+                <button type="button" onClick={() => void handleDisableOrderPush()} disabled={pushBusy}>
+                  {pushBusy ? 'Updating…' : 'Turn off notifications'}
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => void handleEnableOrderPush()}
+                  disabled={pushBusy || pushPermissionState === 'denied' || pushPermissionState === 'unsupported'}
+                >
+                  {pushBusy ? 'Enabling…' : 'Enable order notifications'}
+                </button>
+              )}
+            </section>
+
             <div className="jl-order-history">
               <div className="jl-order-history-header">
                 <div>
@@ -929,10 +1089,10 @@ export default function AccountPage() {
                 </div>
               ) : (
                 customerOrders.map((order) => (
-                  <div key={order.id} className="jl-order-history-item">
+                  <div key={order.orderNumber || order.id} id={`order-${order.orderNumber || order.id}`} className="jl-order-history-item">
                     <div>
-                      <strong>Order ID</strong>
-                      <span>#{order.id}</span>
+                      <strong>Order Number</strong>
+                      <span>#{order.orderNumber || order.id}</span>
                     </div>
 
                     <div>
@@ -955,10 +1115,13 @@ export default function AccountPage() {
                     </div>
 
                     <div className="jl-order-history-actions">
-                      <Link href={`/order/${order.id}`}>
+                      <Link href={`/order/${encodeURIComponent(order.orderNumber || order.id)}`}>
                         View Order <ChevronRight size={18} />
                       </Link>
 
+                      <Link href={`/invoice/${encodeURIComponent(order.orderNumber || order.id)}`}>
+                        Invoice <ChevronRight size={16} />
+                      </Link>
                       <button type="button" onClick={() => exportOrderInvoicePDF(order)}>
                         <Printer size={16} />
                         Print Invoice

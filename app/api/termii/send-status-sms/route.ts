@@ -123,7 +123,13 @@ export async function POST(request: NextRequest) {
     const typedStatus = status as SupportedStatus;
     const customerName = order.customerName || 'Customer';
     phone = formatPhone(order.customerPhone);
-    message = createStatusMessage(typedStatus, customerName, orderId);
+    if (!order.orderNumber) {
+      return NextResponse.json(
+        { success: false, message: 'Order number is unavailable.' },
+        { status: 409 },
+      );
+    }
+    message = createStatusMessage(typedStatus, customerName, order.orderNumber);
 
     const data = await sendSMS({ phone, message });
 

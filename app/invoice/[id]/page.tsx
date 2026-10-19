@@ -8,7 +8,11 @@ import { OFFICIAL_EMAIL } from '@/lib/contact';
 import { auth } from '@/lib/firebase';
 import { PRODUCTION_SITE_URL } from '@/lib/site';
 import type { Order } from '@/lib/types';
-import { buildPrivateOrderUrl, captureOrderAccessToken } from '@/lib/orderAccess';
+import {
+  buildPrivateOrderUrl,
+  cacheOrderAccessToken,
+  captureOrderAccessToken,
+} from '@/lib/orderAccess';
 import { QRCodeSVG } from 'qrcode.react';
 import Barcode from 'react-barcode';
 import { useParams, useRouter } from 'next/navigation';
@@ -68,6 +72,11 @@ export default function InvoicePage() {
         }
 
         if (!cancelled) {
+          const publicOrderNumber = String(data.order.orderNumber || '');
+          if (publicOrderNumber && publicOrderNumber !== params.id) {
+            if (capturedToken) cacheOrderAccessToken(publicOrderNumber, capturedToken);
+            window.history.replaceState(null, '', `/invoice/${encodeURIComponent(publicOrderNumber)}`);
+          }
           setOrder(data.order);
           setLoadError('');
         }
@@ -271,7 +280,7 @@ export default function InvoicePage() {
           <div style={{ textAlign: 'right' }}>
             <h2 style={{ margin: '0 0 10px', color: '#111111', fontSize: 24, textTransform: 'uppercase', letterSpacing: 1 }}>Invoice</h2>
             <p style={{ margin: '4px 0', color: '#444444', fontSize: 14 }}><strong>Invoice No:</strong> INV-{order.id.slice(0, 8).toUpperCase()}</p>
-            <p style={{ margin: '4px 0', color: '#444444', fontSize: 14 }}><strong>Order ID:</strong> #{order.id}</p>
+            <p style={{ margin: '4px 0', color: '#444444', fontSize: 14 }}><strong>Order Number:</strong> #{order.orderNumber || order.id}</p>
             <p style={{ margin: '4px 0', color: '#444444', fontSize: 14 }}><strong>Date:</strong> {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A'}</p>
             {order.deliveryDays && <p style={{ margin: '4px 0', color: '#444444', fontSize: 14 }}><strong>Estimated Delivery:</strong> {order.deliveryDays}</p>}
             {order.estimatedDeliveryDate && <p style={{ margin: '4px 0', color: '#444444', fontSize: 14 }}><strong>Est. Delivery Date:</strong> {new Date(order.estimatedDeliveryDate).toLocaleDateString()}</p>}

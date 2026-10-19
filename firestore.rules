@@ -125,6 +125,19 @@ service cloud.firestore {
       allow read, write: if hasPermission('orders') || hasPermission('reports');
     }
 
+    // Push tokens and delivery outbox entries are managed only by trusted server routes.
+    match /pushNotificationTokens/{tokenId} {
+      allow read, write: if false;
+    }
+
+    match /orderPushEvents/{eventId} {
+      allow read, write: if false;
+    }
+
+    match /orderNumberCounters/{counterId} {
+      allow read, write: if false;
+    }
+
     match /contactMessages/{messageId} {
       allow read: if hasPermission('orders');
       allow write: if false;

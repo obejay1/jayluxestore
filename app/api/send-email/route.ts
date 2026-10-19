@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { sendOrderCreatedEmails } from '@/lib/email/workflows';
 import { adminDb } from '@/lib/firebaseAdmin';
+import { ensureOrderNumber } from '@/lib/orderNumbersServer';
 import type { Order } from '@/lib/types';
 
 export const runtime = 'nodejs';
@@ -27,7 +28,12 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const snapshot = await adminDb.collection('orders').doc(orderId).get();
+    const orders = adminDb.collection('orders');
+    let snapshot = await orders.doc(orderId).get();
+    if (!snapshot.exists) {
+      const matchingOrder = await orders.where('orderNumber', '==', orderId).limit(1).get();
+      snapshot = matchingOrder.docs[0] || snapshot;
+    }
     if (!snapshot.exists) {
       return NextResponse.json({ message: 'Order not found.' }, { status: 404 });
     }
@@ -36,6 +42,12 @@ export async function POST(request: NextRequest) {
     if (!order.accessToken || order.accessToken !== accessToken) {
       return NextResponse.json({ message: 'Invalid order access token.' }, { status: 403 });
     }
+
+    const orderNumber = await ensureOrderNumber(snapshot.ref);
+    if (!orderNumber) {
+      return NextResponse.json({ message: 'Order not found.' }, { status: 404 });
+    }
+    order.orderNumber = orderNumber;
 
     const results = await sendOrderCreatedEmails(order);
     return NextResponse.json({ ok: true, results: results.map((result) => result.status) });
